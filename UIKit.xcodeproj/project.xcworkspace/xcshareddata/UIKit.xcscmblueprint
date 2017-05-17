@@ -1,0 +1,29 @@
+{
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "11649421215EB44E50C84D169EDC82D6B145E13E" : 9223372036854775807,
+    "035DDE7903B1C1B7A3FB4C83F826CFD21123E3CC" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "BBEA5E09-A48F-4907-BC36-BCDF09252C49",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "11649421215EB44E50C84D169EDC82D6B145E13E" : "..\/..\/..",
+    "035DDE7903B1C1B7A3FB4C83F826CFD21123E3CC" : ".."
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "UIKit",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "UIKit.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/flowkey\/NativePlayerIOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "035DDE7903B1C1B7A3FB4C83F826CFD21123E3CC"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/flowkey\/smartphone-app.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "11649421215EB44E50C84D169EDC82D6B145E13E"
+    }
+  ]
+}
