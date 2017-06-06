@@ -187,6 +187,7 @@
 		5C6AB7811EDC18BA006F90AC /* UITouch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITouch.swift; path = Sources/UITouch.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CABasicAnimation.swift; path = Sources/CABasicAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CAAction.swift; path = Sources/CAAction.swift; sourceTree = SOURCE_ROOT; };
+		5CAF2D1D1EE6FD29004C6380 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIPanGestureRecognizer.swift; path = Sources/UIPanGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITapGestureRecognizer.swift; path = Sources/UITapGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL+TouchHandling.swift"; sourceTree = "<group>"; };
@@ -323,6 +324,7 @@
 				5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */,
 				5C27E8051ECB301900F5020D /* UIKit+SDL.swift */,
 				5C361E221ECC348700B3F561 /* UIView+SDL.swift */,
+				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
 			);
 			name = SDL;
 			path = Sources;

@@ -19,7 +19,7 @@ public func print(_ items: Any...) {
 }
 
 // Only use this on Android! It's private because the API is incompatible with `Swift.print`.
-// We don't want `print(xyz, .priority)` anywhere in cross-platform code!
+// We don't want `log(xyz, .priority)` anywhere in cross-platform code!
 private func log(_ items: Any..., priority: LogPriority) {
     let text = items.map { item in
         if let item = item as? CustomStringConvertible {
