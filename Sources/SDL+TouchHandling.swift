@@ -67,13 +67,16 @@ extension SDL {
     }
 }
 
-private extension CGPoint {
-    init(_ event: SDL_MouseButtonEvent) {
-        let scale = SDL.window.scaleFactor
-        self = CGPoint(x: CGFloat(event.x) * scale, y: CGFloat(event.y) * scale)
-    }
+private protocol SDLEventWithCoordinates {
+    var x: Int32 { get }
+    var y: Int32 { get }
+}
 
-    init(_ event: SDL_MouseMotionEvent) {
+extension SDL_MouseButtonEvent: SDLEventWithCoordinates {}
+extension SDL_MouseMotionEvent: SDLEventWithCoordinates {}
+
+private extension CGPoint {
+    init(_ event: SDLEventWithCoordinates) {
         let scale = SDL.window.scaleFactor
         self = CGPoint(x: CGFloat(event.x) * scale, y: CGFloat(event.y) * scale)
     }
