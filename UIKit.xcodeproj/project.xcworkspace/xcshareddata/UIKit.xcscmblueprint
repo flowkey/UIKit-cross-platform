@@ -1,15 +1,18 @@
 {
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "3E5024C92640687A19152FAE23147A59BF62F21E",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "11649421215EB44E50C84D169EDC82D6B145E13E" : 9223372036854775807,
-    "035DDE7903B1C1B7A3FB4C83F826CFD21123E3CC" : 9223372036854775807
+    "3E5024C92640687A19152FAE23147A59BF62F21E" : 9223372036854775807,
+    "035DDE7903B1C1B7A3FB4C83F826CFD21123E3CC" : 9223372036854775807,
+    "11649421215EB44E50C84D169EDC82D6B145E13E" : 9223372036854775807
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "BBEA5E09-A48F-4907-BC36-BCDF09252C49",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "11649421215EB44E50C84D169EDC82D6B145E13E" : "..\/..\/..",
-    "035DDE7903B1C1B7A3FB4C83F826CFD21123E3CC" : ".."
+    "3E5024C92640687A19152FAE23147A59BF62F21E" : "UIKit\/",
+    "035DDE7903B1C1B7A3FB4C83F826CFD21123E3CC" : "..",
+    "11649421215EB44E50C84D169EDC82D6B145E13E" : "..\/..\/.."
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "UIKit",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
@@ -24,6 +27,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/flowkey\/smartphone-app.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "11649421215EB44E50C84D169EDC82D6B145E13E"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/flowkey\/UIKit-SDL.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "3E5024C92640687A19152FAE23147A59BF62F21E"
     }
   ]
 }
