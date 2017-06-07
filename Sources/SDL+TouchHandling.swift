@@ -10,7 +10,7 @@
 
 extension SDL {
     func handleTouchDown(_ event: SDL_MouseButtonEvent) {
-        let point = CGPoint(event)
+        let point = CGPoint.from(event)
         guard let hitView = rootView.hitTest(point, with: nil) else { return }
 
         print("hit", hitView)
@@ -35,7 +35,7 @@ extension SDL {
 
         touch.previousPositionInView = touch.positionInView
 
-        let point = CGPoint(event)
+        let point = CGPoint.from(event)
         touch.positionInView = touch.view?.convert(point, from: rootView) ?? point
 
         touch.gestureRecognizers.forEach { gestureRecognizer in
@@ -67,7 +67,7 @@ extension SDL {
     }
 }
 
-private protocol SDLEventWithCoordinates {
+protocol SDLEventWithCoordinates {
     var x: Int32 { get }
     var y: Int32 { get }
 }
@@ -75,10 +75,12 @@ private protocol SDLEventWithCoordinates {
 extension SDL_MouseButtonEvent: SDLEventWithCoordinates {}
 extension SDL_MouseMotionEvent: SDLEventWithCoordinates {}
 
-private extension CGPoint {
-    init(_ event: SDLEventWithCoordinates) {
-        self.x = CGFloat(event.x)
-        self.y = CGFloat(event.y)
+extension CGPoint {
+    static func from(_ event: SDLEventWithCoordinates) -> CGPoint {
+        var point = CGPoint()
+        point.x = CGFloat(event.x)
+        point.y = CGFloat(event.y)
+        return point
     }
 }
 

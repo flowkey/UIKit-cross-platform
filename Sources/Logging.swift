@@ -32,7 +32,8 @@ private func log(_ items: Any..., priority: LogPriority) {
     _ = android_log_write(priority.rawValue, loggingTag, text)
 }
 
-public func fatalError(_ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) -> Never {
+
+public func fatalError(_ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line, _ flag: Bool = false) -> Never {
     log("\(file): \(line)\n" + message(), priority: .error)
     Swift.fatalError(message, file: file, line: line)
 }

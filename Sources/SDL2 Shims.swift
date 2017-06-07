@@ -133,22 +133,15 @@ class Window {
 
         // On the Mac, the provided size should == (gpuWindow.w, gpuWindow.h)
         // On Android etc. (or maybe always wenn fullscreen), the native device size is taken, so set size
-        let gpuWindow = rawPointer.pointee
-
-        // Test this on Android:
-        if let displayMode = SDLDisplayMode.current {
-            print(displayMode.w, displayMode.h)
-            print(size)
-            print(gpuWindow.viewport)
-            print(gpuWindow.base_w, gpuWindow.base_h)
-            print(gpuWindow.w, gpuWindow.h)
-        }
-
         var size = size
-        size.width = CGFloat(gpuWindow.w)
-        size.height = CGFloat(gpuWindow.h)
+        let gpuWindow = rawPointer.pointee
+        if options.contains([SDL_WINDOW_FULLSCREEN, SDL_WINDOW_ALLOW_HIGHDPI]), gpuWindow.base_w > gpuWindow.w {
+            rawPointer.pointee.w = gpuWindow.base_w
+            rawPointer.pointee.h = gpuWindow.base_h
+            size.width = CGFloat(gpuWindow.base_w)
+            size.height = CGFloat(gpuWindow.base_h)
+        }
         self.size = size
-
         scaleFactor = CGFloat(gpuWindow.base_w) / CGFloat(gpuWindow.w)
     }
 

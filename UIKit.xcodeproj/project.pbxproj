@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5C27E7B81ECB2F6500F5020D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7AE1ECB2F6500F5020D /* UIKit.framework */; };
-		5C27E7BF1ECB2F6500F5020D /* UIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C27E7B11ECB2F6500F5020D /* UIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D21ECB2F9100F5020D /* Cocoa.framework */; };
 		5C27E7DD1ECB2F9100F5020D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D31ECB2F9100F5020D /* AudioToolbox.framework */; };
 		5C27E7DE1ECB2F9100F5020D /* ForceFeedback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D41ECB2F9100F5020D /* ForceFeedback.framework */; };
@@ -41,6 +40,7 @@
 		5C6AB77E1ED71867006F90AC /* CATransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77D1ED71867006F90AC /* CATransaction.swift */; };
 		5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */; };
 		5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7811EDC18BA006F90AC /* UITouch.swift */; };
+		5CA995A21EE8182F007D0456 /* UIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C27E7B11ECB2F6500F5020D /* UIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */; };
 		5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */; };
 		5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */; };
@@ -245,7 +245,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C27E7BF1ECB2F6500F5020D /* UIKit.h in Headers */,
+				5CA995A21EE8182F007D0456 /* UIKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,20 +502,15 @@
 		5C27E7C31ECB2F6500F5020D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = FTSYMMN5B5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/UIKit",
-				);
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/UIKit",
 					"$(PROJECT_DIR)/../SDL/SDL2/include",
 				);
 				INFOPLIST_FILE = UIKit/Info.plist;
@@ -533,20 +528,15 @@
 		5C27E7C41ECB2F6500F5020D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = FTSYMMN5B5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/UIKit",
-				);
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/UIKit",
 					"$(PROJECT_DIR)/../SDL/SDL2/include",
 				);
 				INFOPLIST_FILE = UIKit/Info.plist;
