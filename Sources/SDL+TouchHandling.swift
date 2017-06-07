@@ -77,8 +77,8 @@ extension SDL_MouseMotionEvent: SDLEventWithCoordinates {}
 
 private extension CGPoint {
     init(_ event: SDLEventWithCoordinates) {
-        let scale = SDL.window.scaleFactor
-        self = CGPoint(x: CGFloat(event.x) * scale, y: CGFloat(event.y) * scale)
+        self.x = CGFloat(event.x)
+        self.y = CGFloat(event.y)
     }
 }
 
