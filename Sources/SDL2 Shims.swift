@@ -25,70 +25,7 @@ extension SDLBool: ExpressibleByBooleanLiteral {
     }
 }
 
-class SDLRenderer {
-    public typealias Options = SDLRendererFlags
-    public let rawPointer: OpaquePointer
-    init?(window: SDLWindow, index: Int, options: Options) {
-        guard let renderer = SDL_CreateRenderer(window.rawPointer, -1, options.rawValue) else { return nil }
-        rawPointer = renderer
-    }
-
-    var blendMode: SDLBlendMode? {
-        get {
-            var blendMode: SDLBlendMode = SDLBlendMode(rawValue: 0)
-            return SDL_GetRenderDrawBlendMode(rawPointer, &blendMode) == 0 ? blendMode : nil
-        }
-        set {
-            guard let newValue = newValue else { return }
-            SDL_SetRenderDrawBlendMode(rawPointer, newValue)
-        }
-    }
-
-    func getDrawColor() -> (r: UInt8, g: UInt8, b: UInt8, a: UInt8) {
-        var r: UInt8 = 0
-        var g: UInt8 = 0
-        var b: UInt8 = 0
-        var a: UInt8 = 0
-        SDL_GetRenderDrawColor(rawPointer, &r, &g, &b, &a)
-        return (r, g, b, a)
-    }
-
-    func setDrawColor(r: UInt8, g: UInt8, b: UInt8, a: UInt8 = 255) {
-        SDL_SetRenderDrawColor(rawPointer, r, g, b, a)
-    }
-
-    func fill() {
-        SDL_RenderFillRect(rawPointer, nil)
-    }
-
-    func fill(_ rect: SDLRect) {
-        var rect = rect
-        SDL_RenderFillRect(rawPointer, &rect)
-    }
-
-    func fill(_ rects: [SDLRect]) {
-        SDL_RenderFillRects(rawPointer, rects, Int32(rects.count))
-    }
-
-    func clear() {
-        SDL_RenderClear(rawPointer)
-    }
-
-    func present() {
-        SDL_RenderPresent(rawPointer)
-    }
-
-    deinit { SDL_DestroyRenderer(rawPointer) }
-}
-
-extension SDLRenderer.Options: OptionSet {
-    static let software = __SDL_RENDERER_SOFTWARE
-    static let accelerated = __SDL_RENDERER_ACCELERATED
-    static let presentVSync = __SDL_RENDERER_PRESENTVSYNC
-    static let targetTexture = __SDL_RENDERER_TARGETTEXTURE
-}
-
-class Texture {
+final class Texture {
     let rawPointer: UnsafeMutablePointer<GPU_Image>
 
     let height: Int
@@ -121,28 +58,41 @@ class Texture {
     deinit { GPU_FreeImage(rawPointer) }
 }
 
-class Window {
+final class Window {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
-
     let size: CGSize
-    let scaleFactor: CGFloat
 
+    // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
+    // The easiest solution is just to work in 1:1 pixels
     init(size: CGSize, options: SDLWindowFlags) {
-        let pointer = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue)
-        rawPointer = pointer!
+        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
+        let windowIsFullscreen = options.contains(SDL_WINDOW_FULLSCREEN)
 
-        // On the Mac, the provided size should == (gpuWindow.w, gpuWindow.h)
-        // On Android etc. (or maybe always wenn fullscreen), the native device size is taken, so set size
         var size = size
-        let gpuWindow = rawPointer.pointee
-        if options.contains([SDL_WINDOW_FULLSCREEN, SDL_WINDOW_ALLOW_HIGHDPI]), gpuWindow.base_w > gpuWindow.w {
-            rawPointer.pointee.w = gpuWindow.base_w
-            rawPointer.pointee.h = gpuWindow.base_h
-            size.width = CGFloat(gpuWindow.base_w)
-            size.height = CGFloat(gpuWindow.base_h)
+        if windowIsFullscreen, let displayMode = SDLDisplayMode.current {
+            // Fix fullscreen resolution on Mac and make Android easier to reason about:
+            GPU_SetPreInitFlags(GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)
+            size = CGSize(width: CGFloat(displayMode.w), height: CGFloat(displayMode.h))
         }
+
+        rawPointer = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue)!
+
+        #if os(Android)
+        GPU_SetVirtualResolution(rawPointer, UInt16(size.width / 2), UInt16(size.height / 2))
+        size.width /= 2
+        size.height /= 2
+        pixelCoordinateContentScale = 2
+        #else
+        pixelCoordinateContentScale = 1
+        #endif
+
         self.size = size
-        scaleFactor = CGFloat(gpuWindow.base_w) / CGFloat(gpuWindow.w)
+    }
+
+    private let pixelCoordinateContentScale: CGFloat
+
+    func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
+        return CGPoint(x: inputX / pixelCoordinateContentScale, y: inputY / pixelCoordinateContentScale)
     }
 
     func blit(_ texture: Texture, to destination: CGPoint) {
@@ -188,53 +138,13 @@ class Window {
         rawPointer.pointee.flip()
     }
 
-    // The docs state that we shouldn't try to free the GPU_Target ourselves..
-    //deinit { GPU_FreeImage(rawPointer) }
+    deinit {
+        // GPU_FreeImage(rawPointer) // The docs state that we shouldn't try to free the GPU_Target ourselves..
+        GPU_Quit()
+    }
 }
 
-class SDLWindow {
-    public typealias Options = SDLWindowFlags
-    public let rawPointer: OpaquePointer
-
-    let contentsScale: Double
-    let id: UInt32
-
-    var width: Int
-    var height: Int
-
-    init?(title: String, x: Int = Int(SDL_WINDOWPOS_UNDEFINED_MASK), y: Int = Int(SDL_WINDOWPOS_UNDEFINED_MASK), w: Int, h: Int, options: Options = []) {
-        guard let window = __SDL_CreateWindow(title, Int32(x), Int32(y), Int32(w), Int32(h), options.rawValue) else { return nil }
-
-        rawPointer = window
-        id = SDL_GetWindowID(rawPointer)
-
-        width = w
-        height = h
-
-        // test for retina
-        var actualWidth: Int32 = 0
-        var actualHeight: Int32 = 0
-        SDL_GL_GetDrawableSize(window, &actualWidth, &actualHeight)
-        contentsScale = (actualWidth > 0) ? Double(actualWidth) / Double(w) : 1.0
-    }
-
-    func updateWindowSurface() {
-        SDL_UpdateWindowSurface(rawPointer)
-    }
-
-    var surface: SDLSurface? {
-        guard let surface = SDL_GetWindowSurface(rawPointer) else {
-            print(SDLError().description)
-            return nil
-        }
-        return surface.pointee
-    }
-
-    deinit { SDL_DestroyWindow(rawPointer) }
-}
-
-extension SDLWindow.Options: OptionSet {}
-
+extension SDLWindowFlags: OptionSet {}
 
 extension SDLDisplayMode {
     static var current: SDLDisplayMode? {

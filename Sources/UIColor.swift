@@ -68,13 +68,6 @@ extension Double {
     }
 }
 
-extension SDLRenderer {
-    var color: UIColor {
-        get { return UIColor(getDrawColor()) }
-        set { setDrawColor(r: newValue.red, g: newValue.green, b: newValue.blue, a: newValue.alpha) }
-    }
-}
-
 extension UIColor {
     var sdlColor: SDLColor {
         return SDLColor(r: red, g: green, b: blue, a: alpha)

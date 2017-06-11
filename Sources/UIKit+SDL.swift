@@ -36,29 +36,28 @@ final public class SDL { // XXX: only public for startRunLoop()
     }
 
     private init() {
-        let windowOptions: SDLWindow.Options
+        let windowOptions: SDLWindowFlags
 
         #if os(Android)
             // XXX: Get the screen dimensions (via displayMode?)
-            // Samsung galaxy S7 resolution (`/ 2` for retina)
-            let SCREEN_WIDTH = Int32(1920 / 2)
-            let SCREEN_HEIGHT = Int32(1080 / 2)
+            // Samsung galaxy S7 resolution (`* 3 / 2` for Samsung retina)
+            let SCREEN_WIDTH = Int32(2560 * 3 / 2)
+            let SCREEN_HEIGHT = Int32(1440 * 3 / 2)
 
              windowOptions = [SDL_WINDOW_ALLOW_HIGHDPI, SDL_WINDOW_FULLSCREEN]
         #else
-            // Samsung galaxy S7 resolution (`/ 2` for retina)
-            let SCREEN_WIDTH = Int32(2560 / 2)
-            let SCREEN_HEIGHT = Int32(1440 / 2)
-            windowOptions = [SDL_WINDOW_ALLOW_HIGHDPI]
+            let SCREEN_WIDTH = Int32(2560 / 3)
+            let SCREEN_HEIGHT = Int32(1440 / 3)
+            windowOptions = [
+                SDL_WINDOW_ALLOW_HIGHDPI,
+                //SDL_WINDOW_FULLSCREEN
+            ]
         #endif
 
-        window = Window(size: CGSize(width: Int(SCREEN_WIDTH), height: Int(SCREEN_HEIGHT)), options: windowOptions)
-
-        rootView.frame.height = CGFloat(SCREEN_HEIGHT)
-        rootView.frame.width = CGFloat(SCREEN_WIDTH)
-
-        GPU_SetDebugLevel(GPU_DEBUG_LEVEL_MAX);
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
+
+        window = Window(size: CGSize(width: Int(SCREEN_WIDTH), height: Int(SCREEN_HEIGHT)), options: windowOptions)
+        rootView.frame.size = window.size
     }
 
     private var isRunning = false
