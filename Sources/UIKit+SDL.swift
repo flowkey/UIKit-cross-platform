@@ -39,15 +39,15 @@ final public class SDL { // XXX: only public for startRunLoop()
         let windowOptions: SDLWindowFlags
 
         #if os(Android)
-            // XXX: Get the screen dimensions (via displayMode?)
-            // Samsung galaxy S7 resolution (`* 3 / 2` for Samsung retina)
-            let SCREEN_WIDTH = Int32(2560 * 3 / 2)
-            let SCREEN_HEIGHT = Int32(1440 * 3 / 2)
+            // height/width are determined by the window when fullscreen:
+            let SCREEN_WIDTH = 0
+            let SCREEN_HEIGHT = 0
 
              windowOptions = [SDL_WINDOW_ALLOW_HIGHDPI, SDL_WINDOW_FULLSCREEN]
         #else
-            let SCREEN_WIDTH = Int32(2560 / 3)
-            let SCREEN_HEIGHT = Int32(1440 / 3)
+            // This corresponds to the Samsung S7 screen at its 1080p 1.5x Retina resolution:
+            let SCREEN_WIDTH = 2560 / 3
+            let SCREEN_HEIGHT = 1440 / 3
             windowOptions = [
                 SDL_WINDOW_ALLOW_HIGHDPI,
                 //SDL_WINDOW_FULLSCREEN
@@ -56,7 +56,7 @@ final public class SDL { // XXX: only public for startRunLoop()
 
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
 
-        window = Window(size: CGSize(width: Int(SCREEN_WIDTH), height: Int(SCREEN_HEIGHT)), options: windowOptions)
+        window = Window(size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT), options: windowOptions)
         rootView.frame.size = window.size
     }
 
