@@ -12,6 +12,7 @@
 
 open class Button: UIView {
     public var image: UIImage?
+    public var titleLabel: UILabel?
     public let tapGestureRecognizer = UITapGestureRecognizer()
     public var onPress: (() -> Void)? {
         didSet { tapGestureRecognizer.onPress = onPress }
