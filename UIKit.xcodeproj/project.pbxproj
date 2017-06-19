@@ -23,7 +23,6 @@
 		5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C361E221ECC348700B3F561 /* UIView+SDL.swift */; };
 		5C6AB7181ED3BECD006F90AC /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7101ED3BECD006F90AC /* Button.swift */; };
 		5C6AB7191ED3BECD006F90AC /* CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7111ED3BECD006F90AC /* CALayer.swift */; };
-		5C6AB71A1ED3BECD006F90AC /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7121ED3BECD006F90AC /* Geometry.swift */; };
 		5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7131ED3BECD006F90AC /* UIColor.swift */; };
 		5C6AB71C1ED3BECD006F90AC /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7141ED3BECD006F90AC /* UIImage.swift */; };
 		5C6AB71D1ED3BECD006F90AC /* UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7151ED3BECD006F90AC /* UIImageView.swift */; };
@@ -50,6 +49,9 @@
 		5CE5C57A1EDDAE5000680154 /* CGPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5791EDDAE5000680154 /* CGPath.swift */; };
 		83E5F7EB1EF8156400279C59 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F7EA1EF8156400279C59 /* Texture.swift */; };
 		83E5F7ED1EF8157300279C59 /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F7EC1EF8157300279C59 /* Window.swift */; };
+		83E5F8011EF826E400279C59 /* CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8001EF826E400279C59 /* CGFloat.swift */; };
+		83E5F8031EF8270200279C59 /* CGPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8021EF8270200279C59 /* CGPoint.swift */; };
+		83E5F8051EF8270B00279C59 /* CGSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8041EF8270B00279C59 /* CGSize.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,7 +85,6 @@
 		5C361E221ECC348700B3F561 /* UIView+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SDL.swift"; sourceTree = "<group>"; };
 		5C6AB7101ED3BECD006F90AC /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Button.swift; path = Sources/Button.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB7111ED3BECD006F90AC /* CALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CALayer.swift; path = Sources/CALayer.swift; sourceTree = SOURCE_ROOT; };
-		5C6AB7121ED3BECD006F90AC /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Geometry.swift; path = Sources/Geometry.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB7131ED3BECD006F90AC /* UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIColor.swift; path = Sources/UIColor.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB7141ED3BECD006F90AC /* UIImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIImage.swift; path = Sources/UIImage.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB7151ED3BECD006F90AC /* UIImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIImageView.swift; path = Sources/UIImageView.swift; sourceTree = SOURCE_ROOT; };
@@ -92,7 +93,7 @@
 		5C6AB75E1ED575CF006F90AC /* UIScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIScrollView.swift; path = Sources/UIScrollView.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB7601ED5762A006F90AC /* UIEdgeInsets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIEdgeInsets.swift; path = Sources/UIEdgeInsets.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB7641ED5A0C3006F90AC /* UIEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIEvent.swift; path = Sources/UIEvent.swift; sourceTree = SOURCE_ROOT; };
-		5C6AB7681ED5A5E0006F90AC /* CGAffineTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGAffineTransform.swift; path = Sources/CGAffineTransform.swift; sourceTree = SOURCE_ROOT; };
+		5C6AB7681ED5A5E0006F90AC /* CGAffineTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGAffineTransform.swift; path = UIKit/CGAffineTransform.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB76A1ED5A648006F90AC /* UIView+animate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIView+animate.swift"; path = "Sources/UIView+animate.swift"; sourceTree = SOURCE_ROOT; };
 		5C6AB76D1ED5B8DB006F90AC /* UIGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIGestureRecognizer.swift; path = Sources/UIGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB7701ED680BC006F90AC /* UIResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIResponder.swift; path = Sources/UIResponder.swift; sourceTree = SOURCE_ROOT; };
@@ -106,10 +107,13 @@
 		5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIPanGestureRecognizer.swift; path = Sources/UIPanGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITapGestureRecognizer.swift; path = Sources/UITapGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL+TouchHandling.swift"; sourceTree = "<group>"; };
-		5CE5C5771EDDAD8200680154 /* CGRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGRect.swift; path = Sources/CGRect.swift; sourceTree = SOURCE_ROOT; };
-		5CE5C5791EDDAE5000680154 /* CGPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGPath.swift; path = Sources/CGPath.swift; sourceTree = SOURCE_ROOT; };
+		5CE5C5771EDDAD8200680154 /* CGRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGRect.swift; path = UIKit/Geometry/CGRect.swift; sourceTree = SOURCE_ROOT; };
+		5CE5C5791EDDAE5000680154 /* CGPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGPath.swift; path = UIKit/Geometry/CGPath.swift; sourceTree = SOURCE_ROOT; };
 		83E5F7EA1EF8156400279C59 /* Texture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
 		83E5F7EC1EF8157300279C59 /* Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
+		83E5F8001EF826E400279C59 /* CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloat.swift; sourceTree = "<group>"; };
+		83E5F8021EF8270200279C59 /* CGPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGPoint.swift; sourceTree = "<group>"; };
+		83E5F8041EF8270B00279C59 /* CGSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGSize.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,16 +169,14 @@
 		5C27E7B01ECB2F6500F5020D /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				83E5F7FF1EF826CC00279C59 /* Geometry */,
 				5C6AB7101ED3BECD006F90AC /* Button.swift */,
 				5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */,
 				5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */,
 				5C6AB7111ED3BECD006F90AC /* CALayer.swift */,
 				5C6AB77D1ED71867006F90AC /* CATransaction.swift */,
 				5C6AB7681ED5A5E0006F90AC /* CGAffineTransform.swift */,
-				5CE5C5791EDDAE5000680154 /* CGPath.swift */,
-				5CE5C5771EDDAD8200680154 /* CGRect.swift */,
 				5C6AB77B1ED70F97006F90AC /* DisplayLink.swift */,
-				5C6AB7121ED3BECD006F90AC /* Geometry.swift */,
 				5C6AB7131ED3BECD006F90AC /* UIColor.swift */,
 				5C6AB7601ED5762A006F90AC /* UIEdgeInsets.swift */,
 				5C6AB7641ED5A0C3006F90AC /* UIEvent.swift */,
@@ -242,6 +244,18 @@
 			);
 			name = SDL;
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		83E5F7FF1EF826CC00279C59 /* Geometry */ = {
+			isa = PBXGroup;
+			children = (
+				83E5F8001EF826E400279C59 /* CGFloat.swift */,
+				5CE5C5791EDDAE5000680154 /* CGPath.swift */,
+				83E5F8021EF8270200279C59 /* CGPoint.swift */,
+				5CE5C5771EDDAD8200680154 /* CGRect.swift */,
+				83E5F8041EF8270B00279C59 /* CGSize.swift */,
+			);
+			path = Geometry;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -375,16 +389,18 @@
 				5C6AB7691ED5A5E0006F90AC /* CGAffineTransform.swift in Sources */,
 				5C27E8181ECB301900F5020D /* UIKit+SDL.swift in Sources */,
 				5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */,
+				83E5F8011EF826E400279C59 /* CGFloat.swift in Sources */,
 				5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */,
 				5C6AB76E1ED5B8DB006F90AC /* UIGestureRecognizer.swift in Sources */,
 				5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */,
 				83E5F7EB1EF8156400279C59 /* Texture.swift in Sources */,
+				83E5F8051EF8270B00279C59 /* CGSize.swift in Sources */,
 				5C6AB75F1ED575CF006F90AC /* UIScrollView.swift in Sources */,
 				5C6AB7651ED5A0C3006F90AC /* UIEvent.swift in Sources */,
 				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
-				5C6AB71A1ED3BECD006F90AC /* Geometry.swift in Sources */,
 				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
+				83E5F8031EF8270200279C59 /* CGPoint.swift in Sources */,
 				5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */,
 				5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
