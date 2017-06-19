@@ -52,6 +52,7 @@
 		83E5F8011EF826E400279C59 /* CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8001EF826E400279C59 /* CGFloat.swift */; };
 		83E5F8031EF8270200279C59 /* CGPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8021EF8270200279C59 /* CGPoint.swift */; };
 		83E5F8051EF8270B00279C59 /* CGSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8041EF8270B00279C59 /* CGSize.swift */; };
+		5CFBD23E1EF8145C00BC9EBB /* FontLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFBD23D1EF8145C00BC9EBB /* FontLoader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +115,9 @@
 		83E5F8001EF826E400279C59 /* CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloat.swift; sourceTree = "<group>"; };
 		83E5F8021EF8270200279C59 /* CGPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGPoint.swift; sourceTree = "<group>"; };
 		83E5F8041EF8270B00279C59 /* CGSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGSize.swift; sourceTree = "<group>"; };
+		5CE5C5771EDDAD8200680154 /* CGRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGRect.swift; path = Sources/CGRect.swift; sourceTree = SOURCE_ROOT; };
+		5CE5C5791EDDAE5000680154 /* CGPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGPath.swift; path = Sources/CGPath.swift; sourceTree = SOURCE_ROOT; };
+		5CFBD23D1EF8145C00BC9EBB /* FontLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -241,6 +245,7 @@
 				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
 				83E5F7EA1EF8156400279C59 /* Texture.swift */,
 				83E5F7EC1EF8157300279C59 /* Window.swift */,
+				5CFBD23D1EF8145C00BC9EBB /* FontLoader.swift */,
 			);
 			name = SDL;
 			path = Sources;
@@ -399,6 +404,7 @@
 				5C6AB7651ED5A0C3006F90AC /* UIEvent.swift in Sources */,
 				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
 				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
+				5CFBD23E1EF8145C00BC9EBB /* FontLoader.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
 				83E5F8031EF8270200279C59 /* CGPoint.swift in Sources */,
 				5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */,
