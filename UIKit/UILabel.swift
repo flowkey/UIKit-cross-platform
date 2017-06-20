@@ -20,6 +20,14 @@ open class UILabel: UIView {
     private let textLayer = CALayer()
     open var text: String? { didSet { renderText() } }
     open var font: UIFont = .systemFont(ofSize: 12) { didSet { renderText() } }
+    
+    override open var frame: CGRect {
+        didSet {
+            if oldValue.size != frame.size {
+                renderText()
+            }
+        }
+    }
 
     private func renderText() {
         let wrapLength = numberOfLines > 0 ? bounds.width : 0

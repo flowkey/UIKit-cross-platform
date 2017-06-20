@@ -27,9 +27,14 @@ internal class FontRenderer {
 
         let resourcesDir = macSourcesDir + "/Resources/"
         let pathToFontFile = resourcesDir + name
-
+        
+        // TODO: get and add correct contentScaleFactor according to device later
+        let contentScaleFactor = 2.0
+        let adjustedFontSize = Int32(size * contentScaleFactor)
+        
         let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
-        guard let font = TTF_OpenFontRW(rwOp, 1, Int32(size)) else { return nil }
+        
+        guard let font = TTF_OpenFontRW(rwOp, 1, adjustedFontSize) else { return nil }
         rawPointer = font
     }
     
