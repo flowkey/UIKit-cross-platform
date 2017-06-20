@@ -9,7 +9,12 @@
 import SDL
 
 open class CALayer {
-    var texture: Texture?
+    var texture: Texture? {
+        didSet {
+            let newSize = texture?.size ?? .zero
+            self.bounds.size = newSize
+        }
+    }
 
     public var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer] = []

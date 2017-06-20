@@ -12,6 +12,11 @@ extension UIView {
     final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect()) {
         if isHidden || alpha < 0.01 { return }
 
+        if needsDisplay {
+            draw()
+            needsDisplay = false
+        }
+
         if needsLayout {
             layoutSubviews()
             needsLayout = false

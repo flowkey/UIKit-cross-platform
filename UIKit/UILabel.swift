@@ -13,35 +13,36 @@ public enum NSTextAlignment {
 }
 
 open class UILabel: UIView {
-    open var numberOfLines: Int = 1
-    open var textColor: UIColor = .black
-    open var textAlignment: NSTextAlignment = .left {
-        didSet {
-            switch textAlignment {
-            case .left: textLayer.frame.origin = .zero
-            case .center: textLayer.frame.midX = bounds.midX
-            case .right: textLayer.frame.maxX = bounds.maxX
-            }
-        }
+    public var numberOfLines: Int = 1 {
+        didSet { setNeedsDisplay() }
+    }
+
+    public var textColor: UIColor = .black {
+        didSet { setNeedsDisplay() }
+    }
+
+    public var textAlignment: NSTextAlignment = .left {
+        didSet { setNeedsLayout() }
     }
 
     private let textLayer = CALayer()
 
-    open var text: String? {
-        didSet { renderText() }
+    public var text: String? {
+        didSet { setNeedsDisplay() }
     }
 
-    open var font: UIFont = .systemFont(ofSize: 16) {
-        didSet { renderText() }
+    public var font: UIFont = .systemFont(ofSize: 16) {
+        didSet { setNeedsDisplay() }
     }
 
     override open var frame: CGRect {
-        didSet { if oldValue.size != frame.size { renderText() } }
+        didSet { if oldValue.size != frame.size { setNeedsDisplay() } }
     }
 
-    private func renderText() {
+    open override func draw() {
         let wrapLength = (numberOfLines > 0) ? bounds.width : 0
         textLayer.texture = font.render(text, color: textColor, wrapLength: wrapLength)
+        layoutSubviews()
     }
 
     override public init(frame: CGRect) {
@@ -50,6 +51,14 @@ open class UILabel: UIView {
     }
 
     open func sizeToFit() {
-        self.bounds.size = self.text?.size(with: self.font) ?? .zero
+        bounds.size = text?.size(with: self.font) ?? .zero
+    }
+
+    open override func layoutSubviews() {
+        switch textAlignment {
+        case .left: textLayer.frame.origin = .zero
+        case .center: textLayer.frame.midX = bounds.midX
+        case .right: textLayer.frame.maxX = bounds.maxX
+        }
     }
 }

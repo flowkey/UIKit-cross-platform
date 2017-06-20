@@ -39,6 +39,14 @@ open class UIView: UIResponder {
 
     open var isUserInteractionEnabled = true
     internal var needsLayout = false
+    internal var needsDisplay = true
+
+    /// Override this to draw to the layer's texture whenever `self.needsDisplay`
+    open func draw() {}
+
+    public func setNeedsDisplay() {
+        needsDisplay = true
+    }
 
     public func setNeedsLayout() {
         needsLayout = true

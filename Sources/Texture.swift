@@ -13,12 +13,8 @@ internal final class Texture {
 
     var scale: Float = 2 // TODO: get from window
 
-    var height: Int {
-        return Int(rawPointer.pointee.h)
-    }
-
-    var width: Int {
-        return Int(rawPointer.pointee.w)
+    var size: CGSize {
+        return CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
     }
 
     init?(imagePath: String) {

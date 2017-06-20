@@ -8,6 +8,8 @@
 
 import SDL.ttf
 
+let contentScaleFactor = 2.0 // TODO: get and add correct contentScaleFactor according to device
+
 let macSourcesDir: String = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + ".."
 
 func initSDL_ttf() -> Bool {
@@ -27,33 +29,29 @@ internal class FontRenderer {
 
         let resourcesDir = macSourcesDir + "/Resources/"
         let pathToFontFile = resourcesDir + name + ".ttf"
-
-        // TODO: get and add correct contentScaleFactor according to device later
-        let contentScaleFactor = 2.0
-        let adjustedFontSize = Int32(size * contentScaleFactor)
-        
         let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
-        
+
+        let adjustedFontSize = Int32(size * contentScaleFactor)
         guard let font = TTF_OpenFontRW(rwOp, 1, adjustedFontSize) else { return nil }
         rawPointer = font
     }
 
     func getLineHeight() -> Int {
-        return Int(TTF_FontHeight(rawPointer))
+        return Int(Double(TTF_FontHeight(rawPointer)) / contentScaleFactor)
     }
 
     func size(of text: String) -> CGSize {
-        let unicode16text = text.utf16.map { $0 }
+        let unicode16text = text.utf16.map { $0 } + [0]
         var width: Int32 = 0
         var height: Int32 = 0
         TTF_SizeUNICODE(rawPointer, unicode16text, &width, &height)
 
-        return CGSize(width: CGFloat(width), height: CGFloat(height))
+        return CGSize(width: CGFloat(width) / contentScaleFactor, height: CGFloat(height) / contentScaleFactor)
     }
 
     func render(_ text: String?, color: UIColor, wrapLength: Int = 0) -> Texture? {
         guard let text = text else { return nil }
-        let unicode16Text = text.utf16.map { $0 }
+        let unicode16Text = text.utf16.map { $0 } + [0]
 
         guard
             let surface = (wrapLength > 0) ?
