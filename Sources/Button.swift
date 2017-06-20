@@ -13,13 +13,14 @@
 open class Button: UIView {
     public var image: UIImage?
     public var titleLabel: UILabel?
+    
     public let tapGestureRecognizer = UITapGestureRecognizer()
     public var onPress: (() -> Void)? {
         didSet { tapGestureRecognizer.onPress = onPress }
     }
 
     open func sizeToFit() {
-        bounds.size = image?.size ?? .zero
+//        bounds.size = image?.size ?? .zero
     }
 
     public override init(frame: CGRect) {
