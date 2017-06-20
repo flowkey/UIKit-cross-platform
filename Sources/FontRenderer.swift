@@ -24,26 +24,27 @@ internal class FontRenderer {
         if initSDL_ttf() == false {
             return nil
         }
-        
-        let resourcesDir = macSourcesDir + "/Resources"
-        let pathToFontFile = resourcesDir + "/\(name)"
-        
+
+        let resourcesDir = macSourcesDir + "/Resources/"
+        let pathToFontFile = resourcesDir + name
+
         let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
-        
-        guard let font = TTF_OpenFontRW(rwOp, Int32(true), Int32(size)) else {
-            return nil
-        }
-        
+        guard let font = TTF_OpenFontRW(rwOp, 1, Int32(size)) else { return nil }
         rawPointer = font
     }
     
     func render(_ text: String?, color: UIColor, wrapLength: Int = 0) -> Texture? {
         guard let text = text else { return nil }
         let unicode16Text = text.utf16.map { $0 }
-        guard let surface = TTF_RenderUNICODE_Blended_Wrapped(rawPointer, unicode16Text, color.sdlColor, UInt32(wrapLength)) else {
+
+        guard
+            let surface = (wrapLength > 0) ?
+                TTF_RenderUNICODE_Blended_Wrapped(rawPointer, unicode16Text, color.sdlColor, UInt32(wrapLength)) :
+                TTF_RenderUNICODE_Blended(rawPointer, unicode16Text, color.sdlColor)
+        else {
             return nil
         }
-        
+
         return Texture(surface: surface)
     }
 }
