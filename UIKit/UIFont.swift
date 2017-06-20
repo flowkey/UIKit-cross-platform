@@ -8,32 +8,70 @@
 
 import SDL
 
-private let systemFontName = "Roboto-Regular.ttf"
+private let systemFontName = "Roboto"
 
-open class UIFont {
-    public var fontName: String
-    public var familyName: String?
+open class UIFont: Hashable {
+    private let fontFileName: String
+    //public let fontName: String
+    //public var familyName: String?
     public var pointSize: CGFloat
-    public var systemFontSize: CGFloat = 14 // random value, to be adjusted
-    
-    private let renderer: FontRenderer
-    
-    private init?(name: String, size: CGFloat) {
-        print("init font \(name) with size \(size)")
-        self.fontName = name
-        self.pointSize = size
-        guard let fontRenderer = FontRenderer(name: fontName, size: size) else {
-            return nil
-        }
-        self.renderer = fontRenderer
+
+    public let lineHeight: CGFloat
+
+    // These are the only public initializers for now:
+
+    public static func systemFont(ofSize size: CGFloat) -> UIFont {
+        return UIFont.of(name: systemFontName + "-Regular", size: size)!
     }
-    
-    public static func systemFont(ofSize fontSize: CGFloat) -> UIFont {
-        // return system Font object in specified size
-        return UIFont(name: systemFontName, size: fontSize)!
+
+    public static func boldSystemFont(ofSize size: CGFloat) -> UIFont {
+        return UIFont.of(name: systemFontName + "-Bold", size: size)!
     }
-    
+
+    // MARK: Implementation details:
+
+    fileprivate let renderer: FontRenderer
+
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> Texture? {
         return renderer.render(text, color: color, wrapLength: Int(wrapLength))
+    }
+
+    public let hashValue: Int
+
+    public static func == (lhs: UIFont, rhs: UIFont) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+
+
+    // MARK: INITIALIZATION
+
+    static var loadedFonts = Set<UIFont>()
+
+    static fileprivate func of(name fontFileName: String, size: CGFloat) -> UIFont? {
+        if let cachedFont = UIFont.loadedFonts.first(where: { $0.fontFileName == fontFileName && $0.pointSize == size }) {
+            return cachedFont
+        } else if let loadedFont = UIFont(name: fontFileName, size: size) {
+            UIFont.loadedFonts.insert(loadedFont)
+            return loadedFont
+        } else {
+            return nil
+        }
+    }
+
+    // Don't use this directly, use `UIFont.of(name:size:)` instead to take advantage of caching!
+    private init?(name fontFileName: String, size: CGFloat) {
+        guard let renderer = FontRenderer(name: fontFileName, size: size) else { return nil }
+        self.renderer = renderer
+        self.fontFileName = fontFileName
+        self.pointSize = size
+        self.lineHeight = CGFloat(renderer.getLineHeight())
+        self.hashValue = fontFileName.hashValue ^ size.hashValue
+    }
+}
+
+
+extension String {
+    public func size(with font: UIFont) -> CGSize {
+        return font.renderer.size(of: self)
     }
 }

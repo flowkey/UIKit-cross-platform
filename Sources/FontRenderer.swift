@@ -26,8 +26,8 @@ internal class FontRenderer {
         }
 
         let resourcesDir = macSourcesDir + "/Resources/"
-        let pathToFontFile = resourcesDir + name
-        
+        let pathToFontFile = resourcesDir + name + ".ttf"
+
         // TODO: get and add correct contentScaleFactor according to device later
         let contentScaleFactor = 2.0
         let adjustedFontSize = Int32(size * contentScaleFactor)
@@ -37,7 +37,20 @@ internal class FontRenderer {
         guard let font = TTF_OpenFontRW(rwOp, 1, adjustedFontSize) else { return nil }
         rawPointer = font
     }
-    
+
+    func getLineHeight() -> Int {
+        return Int(TTF_FontHeight(rawPointer))
+    }
+
+    func size(of text: String) -> CGSize {
+        let unicode16text = text.utf16.map { $0 }
+        var width: Int32 = 0
+        var height: Int32 = 0
+        TTF_SizeUNICODE(rawPointer, unicode16text, &width, &height)
+
+        return CGSize(width: CGFloat(width), height: CGFloat(height))
+    }
+
     func render(_ text: String?, color: UIColor, wrapLength: Int = 0) -> Texture? {
         guard let text = text else { return nil }
         let unicode16Text = text.utf16.map { $0 }
@@ -53,3 +66,4 @@ internal class FontRenderer {
         return Texture(surface: surface)
     }
 }
+

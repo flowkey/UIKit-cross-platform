@@ -33,14 +33,8 @@ extension CALayer {
         if isHidden || opacity < 0.01 { return } // could be a hidden sublayer of a visible layer
         let absoluteFrame = frame.in(parentAbsoluteFrame).offsetBy(bounds.origin)
 
-        // Big performance optimization. Don't render anything that's entirely offscreen.
-        // Buggy
-        let rootViewFrame = SDL.rootView.frame
-        if
-            absoluteFrame.minX > rootViewFrame.maxX || absoluteFrame.maxX < rootViewFrame.minX ||
-            absoluteFrame.minY > rootViewFrame.maxY || absoluteFrame.maxY < rootViewFrame.minY {
-            return
-        }
+        // Big performance optimization. Don't render anything that's entirely offscreen:
+        if !absoluteFrame.intersects(SDL.rootView.frame) { return }
 
         if let backgroundColor = backgroundColor {
             SDL.window.fill(absoluteFrame, with: backgroundColor, cornerRadius: cornerRadius)
