@@ -13,14 +13,30 @@ public enum NSTextAlignment {
 }
 
 open class UILabel: UIView {
-    open var text: String?
-    open var font: UIFont = .systemFont(ofSize: 12)
-    open var textColor: UIColor!
+    open var textColor: UIColor = .black
     open var textAlignment: NSTextAlignment = .left
     open var numberOfLines: Int = 1
     
+    private let textLayer = CALayer()
+    
+    open var text: String? {
+        didSet {
+            renderText()
+        }
+    }
+    open var font: UIFont = .systemFont(ofSize: 12) {
+        didSet {
+            renderText()
+        }
+    }
+    
     override public init(frame: CGRect) {
         super.init(frame: frame)
+    }
+    
+    private func renderText() {
+        let wrapLength = numberOfLines > 0 ? bounds.width : 0
+        textLayer.texture = font.render(text, color: textColor, wrapLength: wrapLength)
     }
     
     open func sizeToFit() {

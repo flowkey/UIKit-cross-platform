@@ -8,7 +8,7 @@
 
 import SDL.ttf
 
-let macSourcesDir: String = String(#file.characters.dropLast("FontLoader.swift".characters.count)) + ".."
+let macSourcesDir: String = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + ".."
 
 func initSDL_ttf() -> Bool {
     if TTF_WasInit() == 1 {
@@ -25,7 +25,7 @@ internal class FontRenderer {
             return nil
         }
         
-        let resourcesDir = macSourcesDir + "/Resources/"
+        let resourcesDir = macSourcesDir + "/Resources"
         let pathToFontFile = resourcesDir + "/\(name)"
         
         let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
@@ -37,7 +37,8 @@ internal class FontRenderer {
         rawPointer = font
     }
     
-    func render(_ text: String, color: UIColor, wrapLength: Int = 0) -> Texture? {
+    func render(_ text: String?, color: UIColor, wrapLength: Int = 0) -> Texture? {
+        guard let text = text else { return nil }
         let unicode16Text = text.utf16.map { $0 }
         guard let surface = TTF_RenderUNICODE_Blended_Wrapped(rawPointer, unicode16Text, color.sdlColor, UInt32(wrapLength)) else {
             return nil
