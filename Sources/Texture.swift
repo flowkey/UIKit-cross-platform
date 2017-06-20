@@ -10,28 +10,26 @@ import SDL
 
 internal final class Texture {
     let rawPointer: UnsafeMutablePointer<GPU_Image>
-    
+
+    var scale: Float = 2 // TODO: get from window
+
     var height: Int {
         return Int(rawPointer.pointee.h)
     }
+
     var width: Int {
         return Int(rawPointer.pointee.w)
     }
-    var scale: Float = 2 // TODO: get from window
-    
+
     init?(imagePath: String) {
         guard let image = GPU_LoadImage(imagePath) else { return nil }
-        
         rawPointer = image
-        
         scaleImage(scale)
     }
     
     init?(surface: UnsafeMutablePointer<SDLSurface>) {
         guard let image = GPU_CopyImageFromSurface(surface) else { return nil }
-        
         rawPointer = image
-        
         scaleImage(scale)
     }
     
@@ -51,6 +49,6 @@ internal final class Texture {
         rawPointer.pointee = image
         GPU_SetAnchor(rawPointer, 0, 0)
     }
-    
+
     deinit { GPU_FreeImage(rawPointer) }
 }
