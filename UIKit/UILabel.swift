@@ -18,25 +18,17 @@ open class UILabel: UIView {
     open var numberOfLines: Int = 1
     
     private let textLayer = CALayer()
-    
-    open var text: String? {
-        didSet {
-            renderText()
-        }
-    }
-    open var font: UIFont = .systemFont(ofSize: 12) {
-        didSet {
-            renderText()
-        }
-    }
-    
-    override public init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    
+    open var text: String? { didSet { renderText() } }
+    open var font: UIFont = .systemFont(ofSize: 12) { didSet { renderText() } }
+
     private func renderText() {
         let wrapLength = numberOfLines > 0 ? bounds.width : 0
         textLayer.texture = font.render(text, color: textColor, wrapLength: wrapLength)
+    }
+
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        layer.addSublayer(textLayer)
     }
     
     open func sizeToFit() {
