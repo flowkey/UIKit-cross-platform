@@ -24,6 +24,7 @@ open class Button: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
+        
         tapGestureRecognizer.view = self
         addGestureRecognizer(tapGestureRecognizer)
     }

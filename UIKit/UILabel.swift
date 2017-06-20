@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public enum TextAlignment {
+public enum NSTextAlignment {
     case center
     case left
     case right
@@ -14,9 +14,9 @@ public enum TextAlignment {
 
 open class UILabel: UIView {
     open var text: String?
-    open var font: UIFont!
+    open var font: UIFont = .systemFont(ofSize: 12)
     open var textColor: UIColor!
-    open var textAlignment: TextAlignment = .left
+    open var textAlignment: NSTextAlignment = .left
     open var numberOfLines: Int = 1
     
     override public init(frame: CGRect) {

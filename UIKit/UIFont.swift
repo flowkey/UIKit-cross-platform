@@ -6,21 +6,30 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import SDL
+
+private let systemFontName = "SomeSystemFont"
+
 open class UIFont {
     public var fontName: String
     public var familyName: String?
     public var pointSize: CGFloat
     public var systemFontSize: CGFloat = 14 // random value, to be adjusted
-    var systemFont: String = "SomeSystemFont"
     
-    init(name: String, size: CGFloat) {
+    private let fontRenderer: FontRenderer
+    
+    private init?(name: String, size: CGFloat) {
         print("init font \(name) with size \(size)")
         self.fontName = name
         self.pointSize = size
+        guard let fontRenderer = FontRenderer(name: fontName, size: size) else {
+            return nil
+        }
+        self.fontRenderer = fontRenderer
     }
     
-    public func systemFont(ofSize fontSize: CGFloat) -> UIFont {
+    public static func systemFont(ofSize fontSize: CGFloat) -> UIFont {
         // return system Font object in specified size
-        return UIFont(name: systemFont, size: fontSize)
+        return UIFont(name: systemFontName, size: fontSize)!
     }
 }
