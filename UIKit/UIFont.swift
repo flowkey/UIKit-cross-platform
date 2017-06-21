@@ -12,9 +12,11 @@ private let systemFontName = "Roboto" // XXX: change this depending on platform?
 
 public enum FontWeight: String {
     case UIFontWeightThin = "Thin"
+    case UIFontWeightLight = "Light"
     case UIFontWeightRegular = "Regular"
     case UIFontWeightMedium = "Medium"
     case UIFontWeightBold = "Bold"
+    case UIFontWeightBlack = "Black"
 }
 
 open class UIFont: Hashable {
