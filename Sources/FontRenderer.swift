@@ -34,7 +34,7 @@ internal class FontRenderer {
     }
 
     func getLineHeight() -> Int {
-        return Int(Double(TTF_FontHeight(rawPointer)) / contentScaleFactor)
+        return Int(Double(TTF_FontLineSkip(rawPointer)) / contentScaleFactor)
     }
 
     func size(of text: String) -> CGSize {
