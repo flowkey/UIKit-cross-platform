@@ -20,7 +20,7 @@ open class Button: UIView {
     }
 
     open func sizeToFit() {
-//        bounds.size = image?.size ?? .zero
+        bounds.size = image?.size ?? .zero
     }
 
     public override init(frame: CGRect) {

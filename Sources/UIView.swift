@@ -92,6 +92,7 @@ open class UIView: UIResponder {
 
     open func addSubview(_ view: UIView) {
         insertSubview(view, at: subviews.endIndex)
+        needsLayout = false
     }
 
     open func insertSubview(_ view: UIView, aboveSubview siblingSubview: UIView) {

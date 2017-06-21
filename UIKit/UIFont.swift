@@ -10,11 +10,11 @@ import SDL
 
 private let systemFontName = "Roboto"
 
-public enum FontWeight {
-    case UIFontWeightThin
-    case UIFontWeightRegular
-    case UIFontWeightMedium
-    case UIFontWeightBold
+public enum FontWeight: String {
+    case UIFontWeightThin = "Thin"
+    case UIFontWeightRegular = "Regular"
+    case UIFontWeightMedium = "Medium"
+    case UIFontWeightBold = "Bold"
 }
 
 open class UIFont: Hashable {
@@ -28,14 +28,11 @@ open class UIFont: Hashable {
     // These are the only public initializers for now:
 
     public static func boldSystemFont(ofSize size: CGFloat) -> UIFont {
-        return UIFont.of(name: systemFontName + "-Bold", size: size)!
+        return systemFont(ofSize: size, weight: .UIFontWeightBold)
     }
     
     public static func systemFont(ofSize fontSize: CGFloat, weight: FontWeight = .UIFontWeightRegular) -> UIFont {
-        if weight == .UIFontWeightBold {
-            return boldSystemFont(ofSize: fontSize)
-        }
-        return UIFont.of(name: systemFontName + "-Regular", size: fontSize)!
+        return UIFont.of(name: systemFontName + "-" + weight.rawValue, size: fontSize)!
     }
 
     // MARK: Implementation details:
