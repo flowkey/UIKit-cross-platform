@@ -242,14 +242,14 @@
 		5C27E7F51ECB301900F5020D /* SDL */ = {
 			isa = PBXGroup;
 			children = (
+				5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */,
+				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
 				5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */,
 				5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */,
+				83E5F7EA1EF8156400279C59 /* Texture.swift */,
 				5C27E8051ECB301900F5020D /* UIKit+SDL.swift */,
 				5C361E221ECC348700B3F561 /* UIView+SDL.swift */,
-				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
-				83E5F7EA1EF8156400279C59 /* Texture.swift */,
 				83E5F7EC1EF8157300279C59 /* Window.swift */,
-				5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */,
 			);
 			name = SDL;
 			path = Sources;

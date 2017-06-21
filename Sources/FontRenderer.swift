@@ -13,10 +13,7 @@ let contentScaleFactor = 2.0 // TODO: get and add correct contentScaleFactor acc
 let macSourcesDir: String = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + ".."
 
 func initSDL_ttf() -> Bool {
-    if TTF_WasInit() == 1 {
-        return true
-    }
-    return TTF_Init() != -1
+    return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
 }
 
 internal class FontRenderer {
@@ -41,17 +38,19 @@ internal class FontRenderer {
     }
 
     func size(of text: String) -> CGSize {
-        let unicode16text = text.utf16.map { $0 } + [0]
         var width: Int32 = 0
         var height: Int32 = 0
-        TTF_SizeUNICODE(rawPointer, unicode16text, &width, &height)
+        TTF_SizeUNICODE(rawPointer, text.toUTF16(), &width, &height)
 
-        return CGSize(width: CGFloat(width) / contentScaleFactor, height: CGFloat(height) / contentScaleFactor)
+        return CGSize(
+            width: CGFloat(width) / contentScaleFactor,
+            height: CGFloat(height) / contentScaleFactor
+        )
     }
 
     func render(_ text: String?, color: UIColor, wrapLength: Int = 0) -> Texture? {
         guard let text = text else { return nil }
-        let unicode16Text = text.utf16.map { $0 } + [0]
+        let unicode16Text = text.toUTF16()
 
         guard
             let surface = (wrapLength > 0) ?
@@ -65,3 +64,10 @@ internal class FontRenderer {
     }
 }
 
+
+private extension String {
+    func toUTF16() -> [UInt16] {
+        // Add a 0 to the end of the array to mark the end of the C string
+        return self.utf16.map { $0 } + [0]
+    }
+}
