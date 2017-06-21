@@ -30,6 +30,7 @@ internal class FontRenderer {
 
         let adjustedFontSize = Int32(size * contentScaleFactor)
         guard let font = TTF_OpenFontRW(rwOp, 1, adjustedFontSize) else { return nil }
+        TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
         rawPointer = font
     }
 
