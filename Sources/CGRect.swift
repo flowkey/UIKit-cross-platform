@@ -60,23 +60,32 @@ extension CGRect {
     }
 
     public var width: CGFloat {
-        get { return CGFloat(self.size.width) }
+        get { return self.size.width }
         set { self.size.width = newValue }
     }
 
     public var height: CGFloat {
-        get { return CGFloat(self.size.height) }
+        get { return self.size.height }
         set { self.size.height = newValue }
     }
 
     public func contains(_ point: CGPoint) -> Bool {
         return
             (point.x >= minX) && (point.x < maxX) &&
-                (point.y >= minY) && (point.y < maxY)
+            (point.y >= minY) && (point.y < maxY)
     }
 
     public func insetBy(dx: CGFloat, dy: CGFloat) -> CGRect {
         return CGRect(x: origin.x + dx, y: origin.y + dy, width: size.width + dx, height: size.height + dy)
+    }
+}
+
+extension CGRect {
+    public func intersects(_ other: CGRect) -> Bool {
+        return (
+            self.maxX > other.minX && self.maxY > other.minY ||
+            self.minX < other.maxY && self.minY < other.maxY
+        )
     }
 }
 

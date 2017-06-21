@@ -12,6 +12,8 @@
 
 open class Button: UIView {
     public var image: UIImage?
+    public var titleLabel: UILabel?
+    
     public let tapGestureRecognizer = UITapGestureRecognizer()
     public var onPress: (() -> Void)? {
         didSet { tapGestureRecognizer.onPress = onPress }
@@ -23,6 +25,7 @@ open class Button: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
+        
         tapGestureRecognizer.view = self
         addGestureRecognizer(tapGestureRecognizer)
     }

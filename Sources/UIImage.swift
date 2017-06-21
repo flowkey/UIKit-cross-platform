@@ -17,7 +17,7 @@ public class UIImage {
     public init?(path: String) {
         guard let texture = Texture(imagePath: path) else { return nil }
         self.texture = texture
-        self.size = CGSize(width: texture.width, height: texture.height)
+        self.size = texture.size
         scale = 2 // TODO: get from last path component
     }
 }

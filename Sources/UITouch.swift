@@ -7,7 +7,7 @@
 //
 
 public class UITouch {
-    static var activeTouches: Set<UITouch> = []
+    static var activeTouches = Set<UITouch>()
 
     init(at point: CGPoint, in view: UIView, touchId: Int) {
         self.view = view
