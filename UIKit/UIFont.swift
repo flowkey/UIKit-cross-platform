@@ -8,7 +8,7 @@
 
 import SDL
 
-private let systemFontName = "Roboto"
+private let systemFontName = "Roboto" // XXX: change this depending on platform?
 
 public enum FontWeight: String {
     case UIFontWeightThin = "Thin"
@@ -22,7 +22,6 @@ open class UIFont: Hashable {
     //public let fontName: String
     //public var familyName: String?
     public var pointSize: CGFloat
-    
     public let lineHeight: CGFloat
 
     // These are the only public initializers for now:
@@ -30,13 +29,15 @@ open class UIFont: Hashable {
     public static func boldSystemFont(ofSize size: CGFloat) -> UIFont {
         return systemFont(ofSize: size, weight: .UIFontWeightBold)
     }
-    
+
     public static func systemFont(ofSize fontSize: CGFloat, weight: FontWeight = .UIFontWeightRegular) -> UIFont {
-        return UIFont.of(name: systemFontName + "-" + weight.rawValue, size: fontSize)!
+        return UIFont.fromCacheIfPossible(name: systemFontName + "-" + weight.rawValue, size: fontSize)!
     }
 
     // MARK: Implementation details:
 
+    /// Renderer is the interface to our rendering backend (at time of writing, SDL_ttf)
+    /// If we ever want to change the backend, we should only have to change the FontRenderer class:
     fileprivate let renderer: FontRenderer
 
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> Texture? {
@@ -54,10 +55,10 @@ open class UIFont: Hashable {
 
     static var loadedFonts = Set<UIFont>()
 
-    static fileprivate func of(name fontFileName: String, size: CGFloat) -> UIFont? {
+    static fileprivate func fromCacheIfPossible(name fontFileName: String, size: CGFloat) -> UIFont? {
         if let cachedFont = UIFont.loadedFonts.first(where: { $0.fontFileName == fontFileName && $0.pointSize == size }) {
             return cachedFont
-        } else if let loadedFont = UIFont(name: fontFileName, size: size) {
+        } else if let loadedFont = UIFont(fromDiskWithFileName: fontFileName, size: size) {
             UIFont.loadedFonts.insert(loadedFont)
             return loadedFont
         } else {
@@ -66,7 +67,7 @@ open class UIFont: Hashable {
     }
 
     // Don't use this directly, use `UIFont.of(name:size:)` instead to take advantage of caching!
-    private init?(name fontFileName: String, size: CGFloat) {
+    private init?(fromDiskWithFileName fontFileName: String, size: CGFloat) {
         guard let renderer = FontRenderer(name: fontFileName, size: size) else { return nil }
         self.renderer = renderer
         self.fontFileName = fontFileName
