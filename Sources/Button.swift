@@ -22,8 +22,23 @@ public enum ContentVerticalAlignment {
 }
 
 open class Button: UIView {
-    public var image: UIImage?
     public var imageView: UIImageView?
+    public var image: UIImage? {
+        get {
+            return imageView?.image
+        }
+        set {
+            if imageView == nil {
+                imageView = UIImageView()
+            }
+            imageView?.image = newValue
+            imageView?.sizeToFit()
+            if let imageView = imageView {
+                addSubview(imageView)
+            }
+        }
+    }
+    
     public var titleLabel: UILabel? {
         didSet {
             oldValue?.removeFromSuperview()
