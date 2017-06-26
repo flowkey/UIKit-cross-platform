@@ -33,11 +33,15 @@ open class UIFont: Hashable {
     }
 
     public static func systemFont(ofSize fontSize: CGFloat, weight: FontWeight = .UIFontWeightRegular) -> UIFont {
-        return UIFont.fromCacheIfPossible(name: systemFontName + "-" + weight.rawValue, size: fontSize)!
+        return UIFont(fontFileName: systemFontName + "-" + weight.rawValue, fontSize: fontSize)
     }
     
-    public static func of(name: String, size: CGFloat) -> UIFont {
-        return UIFont.fromCacheIfPossible(name: name, size: size)!
+    public init(fontFileName: String, fontSize: CGFloat) {
+        self.renderer = FontRenderer(name: fontFileName, size: fontSize)
+        self.fontFileName = fontFileName
+        self.pointSize = fontSize
+        self.lineHeight = CGFloat(renderer.getLineHeight())
+        self.hashValue = fontFileName.hashValue ^ fontSize.hashValue
     }
 
     // MARK: Implementation details:
@@ -54,32 +58,6 @@ open class UIFont: Hashable {
 
     public static func == (lhs: UIFont, rhs: UIFont) -> Bool {
         return lhs.hashValue == rhs.hashValue
-    }
-
-
-    // MARK: INITIALIZATION
-
-    static var loadedFonts = Set<UIFont>()
-
-    static fileprivate func fromCacheIfPossible(name fontFileName: String, size: CGFloat) -> UIFont? {
-        if let cachedFont = UIFont.loadedFonts.first(where: { $0.fontFileName == fontFileName && $0.pointSize == size }) {
-            return cachedFont
-        } else if let loadedFont = UIFont(fromDiskWithFileName: fontFileName, size: size) {
-            UIFont.loadedFonts.insert(loadedFont)
-            return loadedFont
-        } else {
-            return nil
-        }
-    }
-
-    // Don't use this directly, use `UIFont.of(name:size:)` instead to take advantage of caching!
-    private init?(fromDiskWithFileName fontFileName: String, size: CGFloat) {
-        guard let renderer = FontRenderer(name: fontFileName, size: size) else { return nil }
-        self.renderer = renderer
-        self.fontFileName = fontFileName
-        self.pointSize = size
-        self.lineHeight = CGFloat(renderer.getLineHeight())
-        self.hashValue = fontFileName.hashValue ^ size.hashValue
     }
 }
 

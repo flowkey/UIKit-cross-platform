@@ -18,20 +18,40 @@ func initSDL_ttf() -> Bool {
 
 internal class FontRenderer {
     let rawPointer: OpaquePointer
+    static var loadedFontPointerDict = [String: OpaquePointer]()
     
-    init?(name: String, size: CGFloat) {
-        if initSDL_ttf() == false {
+    init(name: String, size: CGFloat) {
+        let adjustedFontSize = Int32(size * contentScaleFactor)
+        if let loadedPointer = FontRenderer.loadFontPointerFromCacheIfPossible(fontName: name, size: adjustedFontSize) {
+            rawPointer = loadedPointer
+        } else {
+            fatalError("no font found for \(name) of size \(size)")
+        }
+    }
+    
+    static fileprivate func loadFontPointerFromCacheIfPossible(fontName: String, size: Int32) -> OpaquePointer? {
+        let fontIdentifier = fontName + String(size)
+        if let cachedFontPointer = FontRenderer.loadedFontPointerDict[fontIdentifier] {
+            return cachedFontPointer
+        } else if let newFontPointer = FontRenderer.loadFontPointerFromDisk(fileName: fontName, fontSize: size) {
+            loadedFontPointerDict[fontIdentifier] = newFontPointer
+            return newFontPointer
+        } else {
             return nil
         }
-
+    }
+    
+    static fileprivate func loadFontPointerFromDisk(fileName: String, fontSize: Int32) -> OpaquePointer? {
+        if initSDL_ttf() == false { return nil }
+        
         let resourcesDir = macSourcesDir + "/Resources/"
-        let pathToFontFile = resourcesDir + name + ".ttf"
+        let pathToFontFile = resourcesDir + fileName + ".ttf"
         let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
-
-        let adjustedFontSize = Int32(size * contentScaleFactor)
-        guard let font = TTF_OpenFontRW(rwOp, 1, adjustedFontSize) else { return nil }
+        
+        guard let font = TTF_OpenFontRW(rwOp, 1, fontSize) else { return nil }
         TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
-        rawPointer = font
+        
+        return font
     }
 
     func getLineHeight() -> Int {

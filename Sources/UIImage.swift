@@ -22,7 +22,7 @@ public class UIImage {
     }
     
     public init?(iconName: String, fontName: String, fontSize: CGFloat, color: UIColor) {
-        let font = UIFont.of(name: fontName, size: fontSize)
+        let font = UIFont(fontFileName: fontName, fontSize: fontSize)
         guard let fontTexture = font.render(iconName, color: color) else { return nil }
         texture = fontTexture
         size = fontTexture.size
