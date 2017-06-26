@@ -35,6 +35,10 @@ open class UIFont: Hashable {
     public static func systemFont(ofSize fontSize: CGFloat, weight: FontWeight = .UIFontWeightRegular) -> UIFont {
         return UIFont.fromCacheIfPossible(name: systemFontName + "-" + weight.rawValue, size: fontSize)!
     }
+    
+    public static func of(name: String, size: CGFloat) -> UIFont {
+        return UIFont.fromCacheIfPossible(name: name, size: size)!
+    }
 
     // MARK: Implementation details:
 

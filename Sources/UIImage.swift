@@ -20,4 +20,12 @@ public class UIImage {
         self.size = texture.size
         scale = 2 // TODO: get from last path component
     }
+    
+    public init?(iconName: String, fontName: String, fontSize: CGFloat, color: UIColor) {
+        let font = UIFont.of(name: fontName, size: fontSize)
+        guard let fontTexture = font.render(iconName, color: color) else { return nil }
+        texture = fontTexture
+        size = fontTexture.size
+        scale = 2 // TODO: get from last path component
+    }
 }
