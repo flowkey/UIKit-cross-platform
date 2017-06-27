@@ -19,7 +19,7 @@ public enum FontWeight: String {
     case UIFontWeightBlack = "Black"
 }
 
-open class UIFont: Hashable {
+open class UIFont {
     private let fontFileName: String
     //public let fontName: String
     //public var familyName: String?
@@ -41,7 +41,6 @@ open class UIFont: Hashable {
         self.fontFileName = fontFileName
         self.pointSize = fontSize
         self.lineHeight = CGFloat(renderer.getLineHeight())
-        self.hashValue = fontFileName.hashValue ^ fontSize.hashValue
     }
 
     // MARK: Implementation details:
@@ -52,12 +51,6 @@ open class UIFont: Hashable {
 
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> Texture? {
         return renderer.render(text, color: color, wrapLength: Int(wrapLength))
-    }
-
-    public let hashValue: Int
-
-    public static func == (lhs: UIFont, rhs: UIFont) -> Bool {
-        return lhs.hashValue == rhs.hashValue
     }
 }
 
