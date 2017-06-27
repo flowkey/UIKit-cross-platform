@@ -72,15 +72,17 @@ internal final class Window {
         }
     }
 
-    func outline(_ rect: CGRect, with color: UIColor) {
-        GPU_Rectangle(rawPointer, GPU_Rect(rect), color: color.sdlColor)
+    func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat) {
+        GPU_SetLineThickness(Float(lineThickness))
+        GPU_Rectangle(rawPointer, GPU_Rect(rect), color: lineColor.sdlColor)
     }
 
-    func outline(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
-        if cornerRadius >= 1 {
-            GPU_RectangleRound(rawPointer, GPU_Rect(rect), cornerRadius: Float(cornerRadius), color: color.sdlColor)
+    func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat, cornerRadius: CGFloat) {
+        if cornerRadius > 1 {
+            GPU_SetLineThickness(Float(lineThickness))
+            GPU_RectangleRound(rawPointer, GPU_Rect(rect), cornerRadius: Float(cornerRadius), color: lineColor.sdlColor)
         } else {
-            outline(rect, with: color)
+            outline(rect, lineColor: lineColor, lineThickness: lineThickness)
         }
     }
 

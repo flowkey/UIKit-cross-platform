@@ -55,6 +55,7 @@
 		83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8101EF8316C00279C59 /* CGPoint.swift */; };
 		83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8111EF8316C00279C59 /* CGFloat.swift */; };
 		83E5F8181EF8323500279C59 /* CGAffineTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */; };
+		83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,6 +121,7 @@
 		83E5F8111EF8316C00279C59 /* CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CGFloat.swift; path = Sources/CGFloat.swift; sourceTree = SOURCE_ROOT; };
 		83E5F8121EF8316C00279C59 /* CGSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CGSize.swift; path = Sources/CGSize.swift; sourceTree = SOURCE_ROOT; };
 		83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CGAffineTransform.swift; path = Sources/CGAffineTransform.swift; sourceTree = SOURCE_ROOT; };
+		83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+SDL.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -242,6 +244,7 @@
 		5C27E7F51ECB301900F5020D /* SDL */ = {
 			isa = PBXGroup;
 			children = (
+				83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */,
 				5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */,
 				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
 				5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */,
@@ -408,6 +411,7 @@
 				5C6AB7651ED5A0C3006F90AC /* UIEvent.swift in Sources */,
 				83E5F8151EF8322800279C59 /* CGSize.swift in Sources */,
 				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
+				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
 				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
