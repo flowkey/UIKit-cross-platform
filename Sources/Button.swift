@@ -62,7 +62,7 @@ open class Button: UIView {
     open var horizontalPadding = 8.0
     open var verticalPadding = 5.0
     
-    open var contentHorizontalAlignment: ContentHorizontalAlignment = .left
+    open var contentHorizontalAlignment: ContentHorizontalAlignment = .center
     open var contentVerticalAlignment: ContentVerticalAlignment = .center
     
     public let tapGestureRecognizer = UITapGestureRecognizer()
