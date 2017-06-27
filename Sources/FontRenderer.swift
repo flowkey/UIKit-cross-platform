@@ -10,7 +10,8 @@ import SDL.ttf
 
 let contentScaleFactor = 2.0 // TODO: get and add correct contentScaleFactor according to device
 
-let macSourcesDir: String = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + ".."
+let UIKitDir = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + "../"
+let assetsDir = UIKitDir + "../../assets/"
 
 func initSDL_ttf() -> Bool {
     return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
@@ -23,9 +24,8 @@ internal class FontRenderer {
         if initSDL_ttf() == false {
             return nil
         }
-
-        let resourcesDir = macSourcesDir + "/Resources/"
-        let pathToFontFile = resourcesDir + name + ".ttf"
+        
+        let pathToFontFile = assetsDir + name + ".ttf"
         let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
 
         let adjustedFontSize = Int32(size * contentScaleFactor)
