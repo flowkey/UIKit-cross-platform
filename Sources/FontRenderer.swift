@@ -8,11 +8,9 @@
 
 import SDL.ttf
 
-let contentScaleFactor = 2.0 // TODO: get and add correct contentScaleFactor according to device
-
-let macSourcesDir: String = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + ".."
-
-private var loadedFontPointerDict = [String: OpaquePointer]()
+private let contentScaleFactor = 2.0 // TODO: get and add correct contentScaleFactor according to device
+private let macSourcesDir: String = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + ".."
+private var loadedFontPointers = [String: OpaquePointer]()
 
 private func initSDL_ttf() -> Bool {
     return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
@@ -63,10 +61,10 @@ internal class FontRenderer {
 
 private func loadFontPointerFromCacheIfPossible(fontName: String, size: Int32) -> OpaquePointer? {
     let fontIdentifier = fontName + String(size)
-    if let cachedFontPointer = loadedFontPointerDict[fontIdentifier] {
+    if let cachedFontPointer = loadedFontPointers[fontIdentifier] {
         return cachedFontPointer
     } else if let newFontPointer = loadFontPointerFromDisk(fileName: fontName, fontSize: size) {
-        loadedFontPointerDict[fontIdentifier] = newFontPointer
+        loadedFontPointers[fontIdentifier] = newFontPointer
         return newFontPointer
     } else {
         return nil
