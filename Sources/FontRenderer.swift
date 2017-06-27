@@ -12,35 +12,10 @@ let contentScaleFactor = 2.0 // TODO: get and add correct contentScaleFactor acc
 
 let macSourcesDir: String = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + ".."
 
-private func initSDL_ttf() -> Bool {
-    return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
-}
-
 private var loadedFontPointerDict = [String: OpaquePointer]()
 
-private func loadFontPointerFromCacheIfPossible(fontName: String, size: Int32) -> OpaquePointer? {
-    let fontIdentifier = fontName + String(size)
-    if let cachedFontPointer = loadedFontPointerDict[fontIdentifier] {
-        return cachedFontPointer
-    } else if let newFontPointer = loadFontPointerFromDisk(fileName: fontName, fontSize: size) {
-        loadedFontPointerDict[fontIdentifier] = newFontPointer
-        return newFontPointer
-    } else {
-        return nil
-    }
-}
-
-private func loadFontPointerFromDisk(fileName: String, fontSize: Int32) -> OpaquePointer? {
-    if initSDL_ttf() == false { return nil }
-    
-    let resourcesDir = macSourcesDir + "/Resources/"
-    let pathToFontFile = resourcesDir + fileName + ".ttf"
-    let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
-    
-    guard let font = TTF_OpenFontRW(rwOp, 1, fontSize) else { return nil }
-    TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
-    
-    return font
+private func initSDL_ttf() -> Bool {
+    return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
 }
 
 internal class FontRenderer {
@@ -84,6 +59,31 @@ internal class FontRenderer {
 
         return Texture(surface: surface)
     }
+}
+
+private func loadFontPointerFromCacheIfPossible(fontName: String, size: Int32) -> OpaquePointer? {
+    let fontIdentifier = fontName + String(size)
+    if let cachedFontPointer = loadedFontPointerDict[fontIdentifier] {
+        return cachedFontPointer
+    } else if let newFontPointer = loadFontPointerFromDisk(fileName: fontName, fontSize: size) {
+        loadedFontPointerDict[fontIdentifier] = newFontPointer
+        return newFontPointer
+    } else {
+        return nil
+    }
+}
+
+private func loadFontPointerFromDisk(fileName: String, fontSize: Int32) -> OpaquePointer? {
+    if initSDL_ttf() == false { return nil }
+    
+    let resourcesDir = macSourcesDir + "/Resources/"
+    let pathToFontFile = resourcesDir + fileName + ".ttf"
+    let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
+    
+    guard let font = TTF_OpenFontRW(rwOp, 1, fontSize) else { return nil }
+    TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
+    
+    return font
 }
 
 
