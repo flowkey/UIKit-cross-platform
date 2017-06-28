@@ -8,30 +8,26 @@
 
 import SDL.ttf
 
-let contentScaleFactor = 2.0 // TODO: get and add correct contentScaleFactor according to device
+private let contentScaleFactor = 2.0 // TODO: get and add correct contentScaleFactor according to device
+private var loadedFontPointers = [String: OpaquePointer]()
 
 let UIKitDir = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + "../"
 let assetsDir = UIKitDir + "../../assets/"
 
-func initSDL_ttf() -> Bool {
+private func initSDL_ttf() -> Bool {
     return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
 }
 
 internal class FontRenderer {
     let rawPointer: OpaquePointer
     
-    init?(name: String, size: CGFloat) {
-        if initSDL_ttf() == false {
-            return nil
-        }
-        
-        let pathToFontFile = assetsDir + name + ".ttf"
-        let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
-
+    init(name: String, size: CGFloat) {
         let adjustedFontSize = Int32(size * contentScaleFactor)
-        guard let font = TTF_OpenFontRW(rwOp, 1, adjustedFontSize) else { return nil }
-        TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
-        rawPointer = font
+        if let loadedPointer = loadFontPointerFromCacheIfPossible(fontName: name, size: adjustedFontSize) {
+            rawPointer = loadedPointer
+        } else {
+            fatalError("no font found for \(name) of size \(size)")
+        }
     }
 
     func getLineHeight() -> Int {
@@ -63,6 +59,30 @@ internal class FontRenderer {
 
         return Texture(surface: surface)
     }
+}
+
+private func loadFontPointerFromCacheIfPossible(fontName: String, size: Int32) -> OpaquePointer? {
+    let fontIdentifier = fontName + String(size)
+    if let cachedFontPointer = loadedFontPointers[fontIdentifier] {
+        return cachedFontPointer
+    } else if let newFontPointer = loadFontPointerFromDisk(fileName: fontName, fontSize: size) {
+        loadedFontPointers[fontIdentifier] = newFontPointer
+        return newFontPointer
+    } else {
+        return nil
+    }
+}
+
+private func loadFontPointerFromDisk(fileName: String, fontSize: Int32) -> OpaquePointer? {
+    if initSDL_ttf() == false { return nil }
+    
+    let pathToFontFile = assetsDir + fileName + ".ttf"
+    let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
+    
+    guard let font = TTF_OpenFontRW(rwOp, 1, fontSize) else { return nil }
+    TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
+    
+    return font
 }
 
 
