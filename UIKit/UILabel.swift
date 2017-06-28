@@ -25,7 +25,7 @@ open class UILabel: UIView {
         didSet { setNeedsLayout() }
     }
 
-    private let textLayer = CALayer()
+    public let textLayer = CALayer()
 
     public var text: String? {
         didSet { setNeedsDisplay() }
