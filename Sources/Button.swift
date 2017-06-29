@@ -59,8 +59,11 @@ open class Button: UIView {
         }
     }
     
-    open var horizontalPadding = 8.0
-    open var verticalPadding = 5.0
+    open var contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0) {
+        didSet {
+            layoutSubviews()
+        }
+    }
     
     open var contentHorizontalAlignment: ContentHorizontalAlignment = .center
     open var contentVerticalAlignment: ContentVerticalAlignment = .center
@@ -77,8 +80,8 @@ open class Button: UIView {
         let imageSize = imageView?.frame.size ?? .zero
         let labelSize = titleLabel?.frame.size ?? .zero
         
-        frame.width = imageSize.width + labelSize.width + 2 * horizontalPadding
-        frame.height = max(imageSize.height, labelSize.height) + 2 * verticalPadding
+        frame.width = imageSize.width + labelSize.width + contentEdgeInsets.left + contentEdgeInsets.right
+        frame.height = max(imageSize.height, labelSize.height) + contentEdgeInsets.top + contentEdgeInsets.bottom
     }
     
     public override init(frame: CGRect) {
@@ -104,11 +107,11 @@ open class Button: UIView {
             imageView?.frame.midX = bounds.midX - labelWidth / 2
             titleLabel?.frame.midX = bounds.midX + imageWidth / 2
         case .left:
-            imageView?.frame.origin.x = 0 + horizontalPadding
-            titleLabel?.frame.origin.x = 0 + imageWidth + horizontalPadding
+            imageView?.frame.origin.x = contentEdgeInsets.left
+            titleLabel?.frame.origin.x = imageWidth + contentEdgeInsets.left
         case .right:
-            imageView?.frame.maxX = bounds.maxX - labelWidth - horizontalPadding
-            titleLabel?.frame.maxX = bounds.maxX - horizontalPadding
+            imageView?.frame.maxX = bounds.maxX - labelWidth - contentEdgeInsets.right
+            titleLabel?.frame.maxX = bounds.maxX - contentEdgeInsets.right
         }
         
         switch contentVerticalAlignment {
@@ -116,11 +119,11 @@ open class Button: UIView {
             imageView?.frame.midY = bounds.midY
             titleLabel?.frame.midY = bounds.midY
         case .top:
-            imageView?.frame.origin.y = 0 + verticalPadding
-            titleLabel?.frame.origin.y = 0 + verticalPadding
+            imageView?.frame.origin.y = contentEdgeInsets.top
+            titleLabel?.frame.origin.y = contentEdgeInsets.top
         case .bottom:
-            imageView?.frame.maxY = bounds.maxY - verticalPadding
-            titleLabel?.frame.maxY = bounds.maxY - verticalPadding
+            imageView?.frame.maxY = bounds.maxY - contentEdgeInsets.bottom
+            titleLabel?.frame.maxY = bounds.maxY - contentEdgeInsets.bottom
         }
     }
 }
