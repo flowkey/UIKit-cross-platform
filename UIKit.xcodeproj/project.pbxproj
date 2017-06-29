@@ -47,6 +47,7 @@
 		5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5771EDDAD8200680154 /* CGRect.swift */; };
 		5CE5C57A1EDDAE5000680154 /* CGPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5791EDDAE5000680154 /* CGPath.swift */; };
 		5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */; };
+		8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8378E17D1F05503600E138BD /* UIVisualEffectView.swift */; };
 		83E5F7EB1EF8156400279C59 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F7EA1EF8156400279C59 /* Texture.swift */; };
 		83E5F7ED1EF8157300279C59 /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F7EC1EF8157300279C59 /* Window.swift */; };
 		83E5F7F31EF8188400279C59 /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F7F21EF8188400279C59 /* UILabel.swift */; };
@@ -113,6 +114,7 @@
 		5CE5C5771EDDAD8200680154 /* CGRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGRect.swift; path = Sources/CGRect.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5791EDDAE5000680154 /* CGPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGPath.swift; path = Sources/CGPath.swift; sourceTree = SOURCE_ROOT; };
 		5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontRenderer.swift; sourceTree = "<group>"; };
+		8378E17D1F05503600E138BD /* UIVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIVisualEffectView.swift; sourceTree = "<group>"; };
 		83E5F7EA1EF8156400279C59 /* Texture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
 		83E5F7EC1EF8157300279C59 /* Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		83E5F7F21EF8188400279C59 /* UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 				5C6AB7161ED3BECD006F90AC /* UIView.swift */,
 				5C6AB76A1ED5A648006F90AC /* UIView+animate.swift */,
 				5C6AB7171ED3BECD006F90AC /* UIWindow.swift */,
+				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -408,6 +411,7 @@
 				5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */,
 				83E5F7EB1EF8156400279C59 /* Texture.swift in Sources */,
 				5C6AB75F1ED575CF006F90AC /* UIScrollView.swift in Sources */,
+				8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */,
 				5C6AB7651ED5A0C3006F90AC /* UIEvent.swift in Sources */,
 				83E5F8151EF8322800279C59 /* CGSize.swift in Sources */,
 				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
