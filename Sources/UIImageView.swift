@@ -16,6 +16,8 @@ public class UIImageView: UIView {
             self.frame.height = CGFloat(image.size.height)
             updateTextureFromImage()
         }
+        
+        isUserInteractionEnabled = false
     }
 
     private func updateTextureFromImage() {
