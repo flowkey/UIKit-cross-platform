@@ -68,11 +68,6 @@ open class Button: UIView {
     open var contentHorizontalAlignment: ContentHorizontalAlignment = .center
     open var contentVerticalAlignment: ContentVerticalAlignment = .center
     
-    public let tapGestureRecognizer = UITapGestureRecognizer()
-    public var onPress: (() -> Void)? {
-        didSet { tapGestureRecognizer.onPress = onPress }
-    }
-    
     open func sizeToFit() {
         layoutSubviews()
         titleLabel?.sizeToFit()
@@ -84,16 +79,16 @@ open class Button: UIView {
         frame.height = max(imageSize.height, labelSize.height) + contentEdgeInsets.top + contentEdgeInsets.bottom
     }
     
+    public let tapGestureRecognizer = UITapGestureRecognizer()
+    public var onPress: (() -> Void)? {
+        didSet { tapGestureRecognizer.onPress = onPress }
+    }
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
         tapGestureRecognizer.view = self
         addGestureRecognizer(tapGestureRecognizer)
-    }
-    
-    public func setTitleColor(color: UIColor) {
-        // TODO: add attribute parameter to set different colors for each attribute
-        titleLabel?.textColor = color
     }
     
     open override func layoutSubviews() {
@@ -128,3 +123,19 @@ open class Button: UIView {
     }
 }
 
+extension Button {
+    public func setTitle(_ text: String) {
+        // TODO: add attribute parameter to set different colors for each attribute
+        titleLabel?.text = text
+    }
+    
+    public func setTitleColor(color: UIColor) {
+        // TODO: add attribute parameter to set different colors for each attribute
+        titleLabel?.textColor = color
+    }
+    
+    public func setTitleShadowColor(color: UIColor) {
+        // TODO: add attribute parameter to set different colors for each attribute
+        titleLabel?.shadowColor = color
+    }
+}
