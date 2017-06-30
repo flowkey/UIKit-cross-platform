@@ -21,7 +21,7 @@ public class UIImage {
         scale = 2 // TODO: get from last path component
     }
     
-    internal init?(texture: Texture) {
+    internal init(texture: Texture) {
         self.texture = texture
         self.size = texture.size
         scale = 2 // TODO: get from last path component

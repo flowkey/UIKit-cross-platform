@@ -9,64 +9,60 @@
 // Note: we deliberately don't wrap UIButton.
 // This allows us to have a somewhat custom API free of objc selectors etc.
 
-public enum ContentHorizontalAlignment {
+public enum UIControlContentHorizontalAlignment {
     case center
     case left
     case right
+    // missing fill and leading (BETA) and trailing (BETA) from iOS UIKIt
 }
 
-public enum ContentVerticalAlignment {
+public enum UIControlContentVerticalAlignment {
     case center
     case top
     case bottom
+    // missing fill from iOS UIKIt
 }
 
 open class Button: UIView {
-    public var imageView: UIImageView?
-    public var image: UIImage? {
-        get {
-            return imageView?.image
+    public var imageView: UIImageView? {
+        didSet {
+            oldValue?.removeFromSuperview()
+            if let imageView = imageView { addSubview(imageView) }
         }
+    }
+    public var image: UIImage? {
+        get { return imageView?.image }
         set {
-            if imageView == nil {
-                imageView = UIImageView()
-            }
-            imageView?.image = newValue
+            guard let image = newValue else { imageView = nil; return }
+
+            if imageView == nil { imageView = UIImageView() }
+            imageView?.image = image
             imageView?.sizeToFit()
-            if let imageView = imageView {
-                addSubview(imageView)
-            }
         }
     }
     
     public var titleLabel: UILabel? {
         didSet {
             oldValue?.removeFromSuperview()
-            if let titleLabel = titleLabel {
-                addSubview(titleLabel)
-            }
+            if let titleLabel = titleLabel { addSubview(titleLabel) }
         }
     }
     open var text: String? {
         get { return titleLabel?.text }
         set {
-            if let text = newValue {
-                if titleLabel == nil { titleLabel = UILabel() }
-                titleLabel?.text = text
-            } else {
-                titleLabel = nil
-            }
+            guard let text = newValue else { titleLabel = nil; return }
+
+            if titleLabel == nil { titleLabel = UILabel() }
+            titleLabel?.text = text
         }
     }
     
-    open var contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0) {
-        didSet {
-            layoutSubviews()
-        }
+    open var contentEdgeInsets = UIEdgeInsets() {
+        didSet { layoutSubviews() }
     }
     
-    open var contentHorizontalAlignment: ContentHorizontalAlignment = .center
-    open var contentVerticalAlignment: ContentVerticalAlignment = .center
+    public var contentHorizontalAlignment: UIControlContentHorizontalAlignment = .center
+    public var contentVerticalAlignment: UIControlContentVerticalAlignment = .center
     
     open func sizeToFit() {
         layoutSubviews()
@@ -129,12 +125,12 @@ extension Button {
         titleLabel?.text = text
     }
     
-    public func setTitleColor(color: UIColor) {
+    public func setTitleColor(_ color: UIColor) {
         // TODO: add attribute parameter to set different colors for each attribute
         titleLabel?.textColor = color
     }
     
-    public func setTitleShadowColor(color: UIColor) {
+    public func setTitleShadowColor(_ color: UIColor) {
         // TODO: add attribute parameter to set different colors for each attribute
         titleLabel?.shadowColor = color
     }
