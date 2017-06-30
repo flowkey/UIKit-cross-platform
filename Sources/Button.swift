@@ -9,21 +9,7 @@
 // Note: we deliberately don't wrap UIButton.
 // This allows us to have a somewhat custom API free of objc selectors etc.
 
-public enum UIControlContentHorizontalAlignment {
-    case center
-    case left
-    case right
-    // missing fill and leading (BETA) and trailing (BETA) from iOS UIKIt
-}
-
-public enum UIControlContentVerticalAlignment {
-    case center
-    case top
-    case bottom
-    // missing fill from iOS UIKIt
-}
-
-open class Button: UIView {
+open class Button: UIControl {
     public var imageView: UIImageView? {
         didSet {
             oldValue?.removeFromSuperview()
@@ -61,12 +47,10 @@ open class Button: UIView {
         didSet { layoutSubviews() }
     }
     
-    public var contentHorizontalAlignment: UIControlContentHorizontalAlignment = .center
-    public var contentVerticalAlignment: UIControlContentVerticalAlignment = .center
-    
     open func sizeToFit() {
         layoutSubviews()
         titleLabel?.sizeToFit()
+        imageView?.sizeToFit()
         
         let imageSize = imageView?.frame.size ?? .zero
         let labelSize = titleLabel?.frame.size ?? .zero
