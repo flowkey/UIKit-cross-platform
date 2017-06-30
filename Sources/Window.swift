@@ -32,7 +32,7 @@ internal final class Window {
             size.width /= 2
             size.height /= 2
             pixelCoordinateContentScale = 2
-        #else
+        #else // Mac:
             pixelCoordinateContentScale = 1
         #endif
         
@@ -63,9 +63,7 @@ internal final class Window {
     }
 
     func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
-        if cornerRadius >= rect.width / 2 {
-            GPU_CircleFilled(rawPointer, Float(rect.midX), Float(rect.midY), Float(rect.width / 2), color.sdlColor)
-        } else if cornerRadius >= 1 {
+        if cornerRadius >= 1 {
             GPU_RectangleRoundFilled(rawPointer, GPU_Rect(rect), cornerRadius: Float(cornerRadius), color: color.sdlColor)
         } else {
             fill(rect, with: color)
