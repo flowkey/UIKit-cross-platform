@@ -20,6 +20,28 @@ public enum UIControlContentVerticalAlignment {
     // missing fill from iOS UIKIt
 }
 
+public struct UIControlState: OptionSet, Hashable {
+    public var rawValue: Int
+
+    public var hashValue: Int {
+        return rawValue.hashValue
+    }
+
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+
+    public static let normal = UIControlState(rawValue: 1 << 0)
+
+    public static let highlighted = UIControlState(rawValue: 1 << 1)
+
+    public static let selected = UIControlState(rawValue: 1 << 2)
+
+    public static func == (lhs: UIControlState, rhs: UIControlState) -> Bool {
+        return lhs.rawValue == rhs.rawValue
+    }
+}
+
 // current minimal implementation of UIControl for content alignment in Button
 open class UIControl: UIView {
     public var contentHorizontalAlignment: UIControlContentHorizontalAlignment = .left

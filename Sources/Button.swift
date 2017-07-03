@@ -42,6 +42,11 @@ open class Button: UIControl {
             titleLabel?.text = text
         }
     }
+
+    private var currentControlState: UIControlState = .normal
+    private var titleForControlState = [UIControlState: String]()
+    private var titleColorForControlState = [UIControlState: UIColor]()
+    private var titleShadowColorForControlState = [UIControlState: UIColor]()
     
     open var contentEdgeInsets = UIEdgeInsets() {
         didSet { layoutSubviews() }
@@ -72,6 +77,14 @@ open class Button: UIControl {
     }
     
     open override func layoutSubviews() {
+        titleLabel?.text = titleForControlState[currentControlState]
+        if let titleColorForCurrentControlState = titleColorForControlState[currentControlState] {
+            titleLabel?.textColor = titleColorForCurrentControlState
+        }
+        if let titleShadowColorForCurrentControlState = titleColorForControlState[currentControlState] {
+            titleLabel?.shadowColor = titleShadowColorForCurrentControlState
+        }
+
         titleLabel?.layoutSubviews()
         
         let imageWidth = imageView?.frame.width ?? 0
@@ -104,18 +117,15 @@ open class Button: UIControl {
 }
 
 extension Button {
-    public func setTitle(_ text: String) {
-        // TODO: add attribute parameter to set different colors for each attribute
-        titleLabel?.text = text
+    public func setTitle(_ text: String, for state: UIControlState) {
+        titleForControlState[state] = text
     }
     
-    public func setTitleColor(_ color: UIColor) {
-        // TODO: add attribute parameter to set different colors for each attribute
-        titleLabel?.textColor = color
+    public func setTitleColor(_ color: UIColor, for state: UIControlState) {
+        titleColorForControlState[state] = color
     }
     
-    public func setTitleShadowColor(_ color: UIColor) {
-        // TODO: add attribute parameter to set different colors for each attribute
-        titleLabel?.shadowColor = color
+    public func setTitleShadowColor(_ color: UIColor, for state: UIControlState) {
+        titleShadowColorForControlState[state] = color
     }
 }
