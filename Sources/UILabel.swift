@@ -16,6 +16,10 @@ open class UILabel: UIView {
     public var numberOfLines: Int = 1 {
         didSet { setNeedsDisplay() }
     }
+    
+    public var text: String? {
+        didSet { setNeedsDisplay() }
+    }
 
     public var textColor: UIColor = .black {
         didSet { setNeedsDisplay() }
@@ -25,11 +29,9 @@ open class UILabel: UIView {
         didSet { setNeedsLayout() }
     }
 
-    private let textLayer = CALayer()
-
-    public var text: String? {
-        didSet { setNeedsDisplay() }
-    }
+    public let textLayer = CALayer()
+    
+    public var shadowColor: UIColor?
 
     public var font: UIFont = .systemFont(ofSize: 16) {
         didSet { setNeedsDisplay() }
@@ -42,6 +44,7 @@ open class UILabel: UIView {
     open override func draw() {
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
         textLayer.texture = font.render(text, color: textColor, wrapLength: wrapLength)
+        textLayer.shadowColor = shadowColor?.cgColor
         layoutSubviews()
     }
 
