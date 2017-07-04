@@ -9,24 +9,41 @@
 import SDL.ttf
 
 private let contentScaleFactor = 2.0 // TODO: get and add correct contentScaleFactor according to device
-private var loadedFontPointers = [String: OpaquePointer]()
+private var loadedFontPointers = [FontPointer]()
 
-let UIKitDir = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + "../"
-let assetsDir = UIKitDir + "../../assets/"
+#if os(Android)
+private let assetsDir = ""
+#else
+private let assetsDir = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + "../Resources/"
+#endif
 
 private func initSDL_ttf() -> Bool {
     return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
 }
 
+private struct FontPointer {
+    let rawPointer: OpaquePointer
+    let name: String
+    let size: Int32
+
+    init(_ rawPointer: OpaquePointer, name: String, size: Int32) {
+        self.rawPointer = rawPointer
+        self.name = name
+        self.size = size
+    }
+}
+
 internal class FontRenderer {
     let rawPointer: OpaquePointer
     
-    init(name: String, size: CGFloat) {
-        let adjustedFontSize = Int32(size * contentScaleFactor)
-        if let loadedPointer = loadFontPointerFromCacheIfPossible(fontName: name, size: adjustedFontSize) {
+    init?(name: String, size: Int32) {
+        if let loadedPointer = loadFontPointerFromCacheIfPossible(name: name, size: size) {
             rawPointer = loadedPointer
+        } else if let loadedFont = loadFontPointerFromDisk(name: name, size: size) {
+            rawPointer = loadedFont
+            loadedFontPointers.append(FontPointer(loadedFont, name: name, size: size))
         } else {
-            fatalError("no font found for \(name) of size \(size)")
+            return nil
         }
     }
 
@@ -61,27 +78,23 @@ internal class FontRenderer {
     }
 }
 
-private func loadFontPointerFromCacheIfPossible(fontName: String, size: Int32) -> OpaquePointer? {
-    let fontIdentifier = fontName + String(size)
-    if let cachedFontPointer = loadedFontPointers[fontIdentifier] {
-        return cachedFontPointer
-    } else if let newFontPointer = loadFontPointerFromDisk(fileName: fontName, fontSize: size) {
-        loadedFontPointers[fontIdentifier] = newFontPointer
-        return newFontPointer
-    } else {
-        return nil
-    }
+private func loadFontPointerFromCacheIfPossible(name: String, size: Int32) -> OpaquePointer? {
+    return loadedFontPointers.first(where: { $0.size == size })?.rawPointer
 }
 
-private func loadFontPointerFromDisk(fileName: String, fontSize: Int32) -> OpaquePointer? {
-    if initSDL_ttf() == false { return nil }
-    
-    let pathToFontFile = assetsDir + fileName + ".ttf"
+
+private func loadFontPointerFromDisk(name: String, size: Int32) -> OpaquePointer? {
+    if !initSDL_ttf() { return nil }
+
+    let adjustedFontSize = Int32(CGFloat(size) * contentScaleFactor)
+
+    // Android assets MUST have lowercase filenames:
+    let pathToFontFile = (assetsDir + name + ".ttf").lowercased()
     let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
-    
-    guard let font = TTF_OpenFontRW(rwOp, 1, fontSize) else { return nil }
+
+    let font = TTF_OpenFontRW(rwOp, 1, adjustedFontSize)
     TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
-    
+
     return font
 }
 

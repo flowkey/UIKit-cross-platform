@@ -33,11 +33,16 @@ open class UIFont {
     }
 
     public static func systemFont(ofSize fontSize: CGFloat, weight: FontWeight = .UIFontWeightRegular) -> UIFont {
-        return UIFont(fontFileName: systemFontName + "-" + weight.rawValue, fontSize: fontSize)
+        return UIFont(fontFileName: systemFontName + "-" + weight.rawValue, fontSize: fontSize)!
     }
     
-    public init(fontFileName: String, fontSize: CGFloat) {
-        self.renderer = FontRenderer(name: fontFileName, size: fontSize)
+    public init?(fontFileName: String, fontSize: CGFloat) {
+        guard let renderer = FontRenderer(name: fontFileName, size: Int32(fontSize)) else {
+            print("Couldn't load font", fontFileName)
+            return nil
+        }
+
+        self.renderer = renderer
         self.fontFileName = fontFileName
         self.pointSize = fontSize
         self.lineHeight = CGFloat(renderer.getLineHeight())
