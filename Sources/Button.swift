@@ -106,16 +106,19 @@ open class Button: UIControl {
 extension Button {
     public func setTitle(_ text: String) {
         // TODO: add attribute parameter to set different colors for each attribute
-        titleLabel?.text = text
+        self.text = text
+        layoutSubviews()
     }
     
     public func setTitleColor(_ color: UIColor) {
         // TODO: add attribute parameter to set different colors for each attribute
         titleLabel?.textColor = color
+        layoutSubviews()
     }
     
     public func setTitleShadowColor(_ color: UIColor) {
         // TODO: add attribute parameter to set different colors for each attribute
         titleLabel?.shadowColor = color
+        layoutSubviews()
     }
 }
