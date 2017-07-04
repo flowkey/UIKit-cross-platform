@@ -15,9 +15,10 @@ extension CALayer {
         
         // Big performance optimization. Don't render anything that's entirely offscreen:
         if !absoluteFrame.intersects(SDL.rootView.frame) { return }
-        
+
         if let backgroundColor = backgroundColor {
-            SDL.window.fill(absoluteFrame, with: backgroundColor, cornerRadius: cornerRadius)
+            let opacity = self.opacity * (CGFloat(backgroundColor.alpha) / CGFloat(UInt8.max))
+            SDL.window.fill(absoluteFrame, with: backgroundColor.withAlphaComponent(opacity), cornerRadius: cornerRadius)
         }
         
         if borderWidth > 0 {

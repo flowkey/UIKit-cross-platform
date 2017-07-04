@@ -92,8 +92,8 @@ final public class SDL { // XXX: only public for startRunLoop()
             } else if !eventWasHandled && !firstRender {
                 // We can avoid updating the screen at all unless there is active touch input
                 // or a running animation. We still need to handle the case of animations here!
-                SDL_Delay(16)
-                continue
+                //SDL_Delay(16)
+                //continue
             }
 
             window.clear()

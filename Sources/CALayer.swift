@@ -86,6 +86,7 @@ open class CALayer {
         return nil // TODO: Return the default CABasicAnimation of 0.25 seconds of all animatable properties
     }
     
+    // TODO: remove this function after implementing CGImage to get font texture in UIImage extension for fonts
     open func convertToUIImage() -> UIImage? {
         guard let texture = self.texture else { return nil }
         return UIImage(texture: texture)
