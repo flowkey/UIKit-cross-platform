@@ -14,7 +14,8 @@ private var loadedFontPointers = [FontPointer]()
 #if os(Android)
 private let assetsDir = ""
 #else
-private let assetsDir = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + "../Resources/"
+private let UIKitDir = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + "../"
+private let assetsDir = UIKitDir + "../../assets/"
 #endif
 
 private func initSDL_ttf() -> Bool {
