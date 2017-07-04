@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import UIKit
+@testable import UIKit
 
 class ButtonTests: XCTestCase {
 
@@ -18,6 +18,10 @@ class ButtonTests: XCTestCase {
     let smallFontSize = 12.0
     let mediumFontSize = 15.0
     let largeFontSize = 18.0
+
+    let smallImageSize = UIKit.CGSize(width: 40, height: 40)
+    let mediumImageSize = UIKit.CGSize(width: 80, height: 80)
+    let largeImageSize = UIKit.CGSize(width: 150, height: 150)
 
     let testButton = Button(frame: .zero)
 
@@ -49,7 +53,6 @@ class ButtonTests: XCTestCase {
         XCTAssertEqual(testButton.titleLabel?.text, longButtonText)
     }
 
-
     func testFrameSizeToFitWithLabel() {
         testButton.text = shortButtonText
         testButton.sizeToFit()
@@ -65,5 +68,34 @@ class ButtonTests: XCTestCase {
         testButton.sizeToFit()
         let frameSizeWithLongLabelText = UIKit.CGSize(width: 245.0, height: 19.0)
         XCTAssertEqual(testButton.frame.size, frameSizeWithLongLabelText)
+    }
+
+    func testFrameSizeToFitWithImage() {
+        testButton.image = UIImage(texture: Texture(size: smallImageSize)!)
+        testButton.sizeToFit()
+        XCTAssertEqual(testButton.frame.size, smallImageSize)
+
+        testButton.image = UIImage(texture: Texture(size: mediumImageSize)!)
+        testButton.sizeToFit()
+        XCTAssertEqual(testButton.frame.size, mediumImageSize)
+
+        testButton.image = UIImage(texture: Texture(size: largeImageSize)!)
+        testButton.sizeToFit()
+        XCTAssertEqual(testButton.frame.size, largeImageSize)
+    }
+}
+
+extension Texture {
+    convenience init?(size: UIKit.CGSize) {
+        var gpuImage = GPU_Image()
+
+        gpuImage.w = UInt16(size.width)
+        gpuImage.h = UInt16(size.height)
+
+        // TODO: check capacity of 16 or initialize in different way without explizit capacity
+        let gpuImagePointer = UnsafeMutablePointer<GPU_Image>.allocate(capacity: 16)
+        gpuImagePointer.initialize(to: gpuImage)
+
+        self.init(gpuImage: gpuImagePointer)
     }
 }

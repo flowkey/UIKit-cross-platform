@@ -18,7 +18,11 @@ internal final class Texture {
     }
 
     init?(imagePath: String) {
-        guard let image = GPU_LoadImage(imagePath) else { return nil }
+        print("texture for imagePath", imagePath)
+        guard let image = GPU_LoadImage(imagePath) else {
+            print("image loading failed for", imagePath)
+            return nil }
+        print("texture rawPointer", image)
         rawPointer = image
         scaleImage(scale)
     }
@@ -27,6 +31,10 @@ internal final class Texture {
         guard let image = GPU_CopyImageFromSurface(surface) else { return nil }
         rawPointer = image
         scaleImage(scale)
+    }
+
+    init?(gpuImage: UnsafeMutablePointer<GPU_Image>) {
+        rawPointer = gpuImage
     }
     
     private func scaleImage(_ scale: Float) {
