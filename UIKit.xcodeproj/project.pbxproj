@@ -48,6 +48,7 @@
 		5CE5C57A1EDDAE5000680154 /* CGPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5791EDDAE5000680154 /* CGPath.swift */; };
 		5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */; };
 		8318D27B1F0695080029816A /* UIControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D27A1F0695080029816A /* UIControl.swift */; };
+		833860B41F0D55BC004DD55E /* ButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTests.swift */; };
 		8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8378E17D1F05503600E138BD /* UIVisualEffectView.swift */; };
 		83B76ED31F0BCD4C0096736C /* ButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTests.swift */; };
 		83E5F7EB1EF8156400279C59 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F7EA1EF8156400279C59 /* Texture.swift */; };
@@ -117,6 +118,8 @@
 		5CE5C5791EDDAE5000680154 /* CGPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGPath.swift; path = Sources/CGPath.swift; sourceTree = SOURCE_ROOT; };
 		5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontRenderer.swift; sourceTree = "<group>"; };
 		8318D27A1F0695080029816A /* UIControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIControl.swift; sourceTree = "<group>"; };
+		833860AC1F0D55B3004DD55E /* iOSTestTarget.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTestTarget.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		833860B01F0D55B3004DD55E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8378E17D1F05503600E138BD /* UIVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIVisualEffectView.swift; sourceTree = "<group>"; };
 		83B76ED21F0BCD4C0096736C /* ButtonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTests.swift; sourceTree = "<group>"; };
 		83E5F7EA1EF8156400279C59 /* Texture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
@@ -156,12 +159,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		833860A91F0D55B3004DD55E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		5C27E7A41ECB2F6500F5020D = {
 			isa = PBXGroup;
 			children = (
+				833860AD1F0D55B3004DD55E /* iOSTestTarget */,
 				5C27E7D11ECB2F9100F5020D /* Frameworks */,
 				5C27E7AF1ECB2F6500F5020D /* Products */,
 				5C27E7F51ECB301900F5020D /* SDL */,
@@ -176,6 +187,7 @@
 			children = (
 				5C27E7AE1ECB2F6500F5020D /* UIKit.framework */,
 				5C27E7B71ECB2F6500F5020D /* UIKitTests.xctest */,
+				833860AC1F0D55B3004DD55E /* iOSTestTarget.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -267,6 +279,14 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
+		833860AD1F0D55B3004DD55E /* iOSTestTarget */ = {
+			isa = PBXGroup;
+			children = (
+				833860B01F0D55B3004DD55E /* Info.plist */,
+			);
+			path = iOSTestTarget;
+			sourceTree = "<group>";
+		};
 		83E5F7FF1EF826CC00279C59 /* Geometry */ = {
 			isa = PBXGroup;
 			children = (
@@ -329,13 +349,30 @@
 			productReference = 5C27E7B71ECB2F6500F5020D /* UIKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		833860AB1F0D55B3004DD55E /* iOSTestTarget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 833860B31F0D55B3004DD55E /* Build configuration list for PBXNativeTarget "iOSTestTarget" */;
+			buildPhases = (
+				833860A81F0D55B3004DD55E /* Sources */,
+				833860A91F0D55B3004DD55E /* Frameworks */,
+				833860AA1F0D55B3004DD55E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = iOSTestTarget;
+			productName = iOSTestTarget;
+			productReference = 833860AC1F0D55B3004DD55E /* iOSTestTarget.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		5C27E7A51ECB2F6500F5020D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0830;
+				LastSwiftUpdateCheck = 0900;
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = flowkey;
 				TargetAttributes = {
@@ -350,6 +387,10 @@
 						DevelopmentTeam = FTSYMMN5B5;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
+					};
+					833860AB1F0D55B3004DD55E = {
+						CreatedOnToolsVersion = 9.0;
+						DevelopmentTeam = 8AA348BVEZ;
 					};
 				};
 			};
@@ -367,6 +408,7 @@
 			targets = (
 				5C27E7AD1ECB2F6500F5020D /* UIKit */,
 				5C27E7B61ECB2F6500F5020D /* UIKitTests */,
+				833860AB1F0D55B3004DD55E /* iOSTestTarget */,
 			);
 		};
 /* End PBXProject section */
@@ -380,6 +422,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5C27E7B51ECB2F6500F5020D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		833860AA1F0D55B3004DD55E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -440,6 +489,14 @@
 			files = (
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
 				83B76ED31F0BCD4C0096736C /* ButtonTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		833860A81F0D55B3004DD55E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				833860B41F0D55BC004DD55E /* ButtonTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -644,6 +701,47 @@
 			};
 			name = Release;
 		};
+		833860B11F0D55B3004DD55E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 8AA348BVEZ;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = iOSTestTarget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.christianhaug.iOSTestTarget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		833860B21F0D55B3004DD55E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 8AA348BVEZ;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = iOSTestTarget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.christianhaug.iOSTestTarget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -673,6 +771,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		833860B31F0D55B3004DD55E /* Build configuration list for PBXNativeTarget "iOSTestTarget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				833860B11F0D55B3004DD55E /* Debug */,
+				833860B21F0D55B3004DD55E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
