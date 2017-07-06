@@ -33,15 +33,6 @@ open class Button: UIControl {
             if let titleLabel = titleLabel { addSubview(titleLabel) }
         }
     }
-    open var text: String? {
-        get { return titleLabel?.text }
-        set {
-            guard let text = newValue else { titleLabel = nil; return }
-
-            if titleLabel == nil { titleLabel = UILabel() }
-            titleLabel?.text = text
-        }
-    }
 
     private var currentControlState: UIControlState = .normal
     private var titleForControlState = [UIControlState: String]()
@@ -77,7 +68,10 @@ open class Button: UIControl {
     }
     
     open override func layoutSubviews() {
-        titleLabel?.text = titleForControlState[currentControlState]
+        if let titleForCurrentControlState = titleForControlState[currentControlState] {
+            if titleLabel == nil { titleLabel = UILabel() }
+            titleLabel?.text = titleForCurrentControlState
+        }
         if let titleColorForCurrentControlState = titleColorForControlState[currentControlState] {
             titleLabel?.textColor = titleColorForCurrentControlState
         }
@@ -119,13 +113,16 @@ open class Button: UIControl {
 extension Button {
     public func setTitle(_ text: String, for state: UIControlState) {
         titleForControlState[state] = text
+        layoutSubviews()
     }
     
     public func setTitleColor(_ color: UIColor, for state: UIControlState) {
         titleColorForControlState[state] = color
+        layoutSubviews()
     }
     
     public func setTitleShadowColor(_ color: UIColor, for state: UIControlState) {
         titleShadowColorForControlState[state] = color
+        layoutSubviews()
     }
 }
