@@ -35,7 +35,7 @@ private struct FontPointer {
 }
 
 internal class FontRenderer {
-    let rawPointer: OpaquePointer
+    let rawPointer: OpaquePointer // TTF_Font
     
     init?(name: String, size: Int32) {
         if let loadedPointer = loadFontPointerFromCacheIfPossible(name: name, size: size) {
