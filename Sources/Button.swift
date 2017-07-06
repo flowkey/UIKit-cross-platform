@@ -33,15 +33,11 @@ open class Button: UIControl {
             if let titleLabel = titleLabel { addSubview(titleLabel) }
         }
     }
-    open var text: String? {
-        get { return titleLabel?.text }
-        set {
-            guard let text = newValue else { titleLabel = nil; return }
 
-            if titleLabel == nil { titleLabel = UILabel() }
-            titleLabel?.text = text
-        }
-    }
+    private var currentControlState: UIControlState = .normal
+    private var titleForControlState = [UIControlState: String]()
+    private var titleColorForControlState = [UIControlState: UIColor]()
+    private var titleShadowColorForControlState = [UIControlState: UIColor]()
     
     open var contentEdgeInsets = UIEdgeInsets() {
         didSet { layoutSubviews() }
@@ -72,6 +68,17 @@ open class Button: UIControl {
     }
     
     open override func layoutSubviews() {
+        if let titleForCurrentControlState = titleForControlState[currentControlState] {
+            if titleLabel == nil { titleLabel = UILabel() }
+            titleLabel?.text = titleForCurrentControlState
+        }
+        if let titleColorForCurrentControlState = titleColorForControlState[currentControlState] {
+            titleLabel?.textColor = titleColorForCurrentControlState
+        }
+        if let titleShadowColorForCurrentControlState = titleColorForControlState[currentControlState] {
+            titleLabel?.shadowColor = titleShadowColorForCurrentControlState
+        }
+
         titleLabel?.layoutSubviews()
         
         let imageWidth = imageView?.frame.width ?? 0
@@ -104,21 +111,18 @@ open class Button: UIControl {
 }
 
 extension Button {
-    public func setTitle(_ text: String) {
-        // TODO: add attribute parameter to set different colors for each attribute
-        self.text = text
+    public func setTitle(_ text: String, for state: UIControlState) {
+        titleForControlState[state] = text
         layoutSubviews()
     }
     
-    public func setTitleColor(_ color: UIColor) {
-        // TODO: add attribute parameter to set different colors for each attribute
-        titleLabel?.textColor = color
+    public func setTitleColor(_ color: UIColor, for state: UIControlState) {
+        titleColorForControlState[state] = color
         layoutSubviews()
     }
     
-    public func setTitleShadowColor(_ color: UIColor) {
-        // TODO: add attribute parameter to set different colors for each attribute
-        titleLabel?.shadowColor = color
+    public func setTitleShadowColor(_ color: UIColor, for state: UIControlState) {
+        titleShadowColorForControlState[state] = color
         layoutSubviews()
     }
 }

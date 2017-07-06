@@ -39,7 +39,7 @@ class ButtonTests: XCTestCase {
     }
 
     override func tearDown() {
-        testButton.setTitle(nil, for: .normal)
+        testButton.setTitle("", for: .normal)
         //        testButton.setImage(nil, for: .normal)
         super.tearDown()
     }
