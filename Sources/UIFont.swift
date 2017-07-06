@@ -20,9 +20,8 @@ public enum FontWeight: String {
 }
 
 open class UIFont {
-    private let fontFileName: String
-    //public let fontName: String
-    //public var familyName: String?
+    public var fontName: String
+    public var familyName: String?
     public var pointSize: CGFloat
     public let lineHeight: CGFloat
 
@@ -33,17 +32,17 @@ open class UIFont {
     }
 
     public static func systemFont(ofSize fontSize: CGFloat, weight: FontWeight = .UIFontWeightRegular) -> UIFont {
-        return UIFont(fontFileName: systemFontName + "-" + weight.rawValue, fontSize: fontSize)!
+        return UIFont(name: systemFontName + "-" + weight.rawValue, fontSize: fontSize)!
     }
     
-    public init?(fontFileName: String, fontSize: CGFloat) {
+    public init?(name fontFileName: String, fontSize: CGFloat) {
         guard let renderer = FontRenderer(name: fontFileName, size: Int32(fontSize)) else {
             print("Couldn't load font", fontFileName)
             return nil
         }
 
         self.renderer = renderer
-        self.fontFileName = fontFileName
+        self.fontName = fontFileName
         self.pointSize = fontSize
         self.lineHeight = CGFloat(renderer.getLineHeight())
     }
