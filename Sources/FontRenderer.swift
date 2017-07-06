@@ -15,6 +15,7 @@ private var loadedFontPointers = [FontPointer]()
 private let assetsDir = ""
 #else
 private let UIKitDir = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + "../"
+private let UIKitResourcesDir = UIKitDir + "Resources/"
 private let assetsDir = UIKitDir + "../../assets/"
 #endif
 
@@ -90,10 +91,20 @@ private func loadFontPointerFromDisk(name: String, size: Int32) -> OpaquePointer
     let adjustedFontSize = Int32(CGFloat(size) * contentScaleFactor)
 
     // Android assets MUST have lowercase filenames:
-    let pathToFontFile = (assetsDir + name + ".ttf").lowercased()
-    let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
+    let assetPathToFontFile = (assetsDir + name + ".ttf").lowercased()
+    let internalResourcePathToFontFile = (UIKitResourcesDir + name + ".ttf").lowercased()
+    
+    var font: OpaquePointer
 
-    let font = TTF_OpenFontRW(rwOp, 1, adjustedFontSize)
+    if let rwOpFromAssets = SDL_RWFromFile(assetPathToFontFile, "rb") {
+        font = TTF_OpenFontRW(rwOpFromAssets, 1, adjustedFontSize)
+    } else if let rwOpFromResources = SDL_RWFromFile(internalResourcePathToFontFile, "rb") {
+        font = TTF_OpenFontRW(rwOpFromResources, 1, adjustedFontSize)
+    } else {
+        print("no Font file found for \(name)")
+        return nil
+    }
+
     TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
 
     return font

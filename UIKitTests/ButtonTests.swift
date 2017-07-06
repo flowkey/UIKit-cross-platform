@@ -57,20 +57,29 @@ class ButtonTests: XCTestCase {
         testButton.setTitle(shortButtonText, for: .normal)
         testButton.titleLabel?.font = .systemFont(ofSize: smallFontSize)
         testButton.sizeToFit()
+        testButton.titleLabel?.sizeToFit()
         let frameSizeWithShortLabelText = UIKit.CGSize(width: 28.5, height: 14.5)
         XCTAssertEqual(testButton.frame.size, frameSizeWithShortLabelText)
+        XCTAssertEqual(testButton.titleLabel?.font.lineHeight, 14)
+        XCTAssertEqual(testButton.titleLabel?.frame.size, UIKit.CGSize(width: 28.5, height: 14.5))
 
         testButton.setTitle(mediumButtonText, for: .normal)
         testButton.titleLabel?.font = .systemFont(ofSize: mediumFontSize)
         testButton.sizeToFit()
+        testButton.titleLabel?.sizeToFit()
         let frameSizeWithMediumLabelText = UIKit.CGSize(width: 136.5, height: 19.0)
         XCTAssertEqual(testButton.frame.size, frameSizeWithMediumLabelText)
+        XCTAssertEqual(testButton.titleLabel?.font.lineHeight, 19)
+        XCTAssertEqual(testButton.titleLabel?.frame.size, UIKit.CGSize(width: 136.5, height: 19.0))
 
         testButton.setTitle(longButtonText, for: .normal)
         testButton.titleLabel?.font = .systemFont(ofSize: largeFontSize)
         testButton.sizeToFit()
+        testButton.titleLabel?.sizeToFit()
         let frameSizeWithLongLabelText = UIKit.CGSize(width: 306.5, height: 24.0)
         XCTAssertEqual(testButton.frame.size, frameSizeWithLongLabelText)
+        XCTAssertEqual(testButton.titleLabel?.font.lineHeight, 23)
+        XCTAssertEqual(testButton.titleLabel?.frame.size, UIKit.CGSize(width: 306.5, height: 24.0))
     }
 
         func testFrameSizeToFitWithImage() {

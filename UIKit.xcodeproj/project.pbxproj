@@ -779,6 +779,7 @@
 				833860B21F0D55B3004DD55E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
