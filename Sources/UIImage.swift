@@ -15,9 +15,7 @@ public class UIImage {
     public let scale: Double
 
     public init?(path: String) {
-        print("UIImage init path")
         guard let texture = Texture(imagePath: path) else { return nil }
-        print("image texture", texture)
         self.texture = texture
         self.size = texture.size
         scale = 2 // TODO: get from last path component

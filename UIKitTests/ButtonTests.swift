@@ -7,8 +7,12 @@
 //
 
 import XCTest
-//@testable
+
+#if os(iOS)
 import UIKit
+#else
+@testable import UIKit
+#endif
 
 class ButtonTests: XCTestCase {
 
@@ -40,15 +44,6 @@ class ButtonTests: XCTestCase {
         super.tearDown()
     }
 
-    //    func testSetText() {
-    //        testButton.text = shortButtonText
-    //        XCTAssertEqual(testButton.titleLabel?.text, shortButtonText)
-    //        testButton.text = mediumButtonText
-    //        XCTAssertEqual(testButton.titleLabel?.text, mediumButtonText)
-    //        testButton.text = longButtonText
-    //        XCTAssertEqual(testButton.titleLabel?.text, longButtonText)
-    //    }
-
     func testSetTitle() {
         testButton.setTitle(shortButtonText, for: .normal)
         XCTAssertEqual(testButton.titleLabel?.text, shortButtonText)
@@ -78,39 +73,44 @@ class ButtonTests: XCTestCase {
         XCTAssertEqual(testButton.frame.size, frameSizeWithLongLabelText)
     }
 
-    //    func testFrameSizeToFitWithImage() {
-    //        testButton.image = UIImage(texture: Texture(size: smallImageSize)!)
-    //        testButton.sizeToFit()
-    //        XCTAssertEqual(testButton.frame.size, smallImageSize)
-    //
-    //        testButton.image = UIImage(texture: Texture(size: mediumImageSize)!)
-    //        testButton.sizeToFit()
-    //        XCTAssertEqual(testButton.frame.size, mediumImageSize)
-    //
-    //        testButton.image = UIImage(texture: Texture(size: largeImageSize)!)
-    //        testButton.sizeToFit()
-    //        XCTAssertEqual(testButton.frame.size, largeImageSize)
-    //    }
-    //
-    //    func testContentEdgeInsets() {
-    //        testButton.text = mediumButtonText
-    //        testButton.image = UIImage(texture: Texture(size: smallImageSize)!)
-    //        testButton.sizeToFit()
-    //
-    //        XCTAssertEqual(testButton.titleLabel?.frame.origin, CGPoint(x: 40.0, y: 0.0))
-    //        XCTAssertEqual(testButton.imageView?.frame.origin, CGPoint(x: 0.0, y: 0.0))
-    //
-    //        testButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 0)
-    //
-    //        XCTAssertEqual(testButton.titleLabel?.frame.origin, CGPoint(x: 50.0, y: 10.0))
-    //        XCTAssertEqual(testButton.imageView?.frame.origin, CGPoint(x: 10.0, y: 10.0))
-    //
-    //        testButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)
-    //
-    //        // TODO: correct tests, should not be equal to previous frame.origin
-    //        XCTAssertEqual(testButton.titleLabel?.frame.origin, CGPoint(x: 40.0, y: 0.0))
-    //        XCTAssertEqual(testButton.imageView?.frame.origin, CGPoint(x: 0.0, y: 0.0))
-    //    }
+        func testFrameSizeToFitWithImage() {
+            #if os(iOS)
+            UIGraphicsBeginImageContext(mediumImageSize)
+            testButton.setImage(UIGraphicsGetImageFromCurrentImageContext(), for: .normal)
+            UIGraphicsEndImageContext()
+            #else
+            testButton.image = UIImage(texture: Texture(size: mediumImageSize)!)
+            #endif
+
+            testButton.sizeToFit()
+            XCTAssertEqual(testButton.frame.size, mediumImageSize)
+        }
+
+        func testContentEdgeInsets() {
+            testButton.setTitle(mediumButtonText, for: .normal)
+            #if os(iOS)
+            UIGraphicsBeginImageContext(smallImageSize)
+            testButton.setImage(UIGraphicsGetImageFromCurrentImageContext(), for: .normal)
+            UIGraphicsEndImageContext()
+            #else
+            testButton.image = UIImage(texture: Texture(size: smallImageSize)!)
+            #endif
+            testButton.sizeToFit()
+
+            XCTAssertEqual(testButton.titleLabel?.frame.origin, CGPoint(x: 40.0, y: 0.0))
+            XCTAssertEqual(testButton.imageView?.frame.origin, CGPoint(x: 0.0, y: 0.0))
+
+            testButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 0)
+
+            XCTAssertEqual(testButton.titleLabel?.frame.origin, CGPoint(x: 50.0, y: 10.0))
+            XCTAssertEqual(testButton.imageView?.frame.origin, CGPoint(x: 10.0, y: 10.0))
+
+            testButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)
+
+            // TODO: correct tests, should not be equal to previous frame.origin
+            XCTAssertEqual(testButton.titleLabel?.frame.origin, CGPoint(x: 40.0, y: 0.0))
+            XCTAssertEqual(testButton.imageView?.frame.origin, CGPoint(x: 0.0, y: 0.0))
+        }
 }
 
 #if !os(iOS)

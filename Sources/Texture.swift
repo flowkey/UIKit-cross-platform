@@ -18,11 +18,7 @@ internal final class Texture {
     }
 
     init?(imagePath: String) {
-        print("texture for imagePath", imagePath)
-        guard let image = GPU_LoadImage(imagePath) else {
-            print("image loading failed for", imagePath)
-            return nil }
-        print("texture rawPointer", image)
+        guard let image = GPU_LoadImage(imagePath) else { return nil }
         rawPointer = image
         scaleImage(scale)
     }
