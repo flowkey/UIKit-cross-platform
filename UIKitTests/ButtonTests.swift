@@ -64,32 +64,33 @@ class ButtonTests: XCTestCase {
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
         testButton.sizeToFit()
 
+        // move those to UIFontTests
+        XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), smallFontLineHeight)
         XCTAssertEqual(testButton.titleLabel?.font.fontName, "Roboto-Medium")
 
-        let frameSizeWithShortLabelText = UIKit.CGSize(width: 28.5, height: 14.5)
-        XCTAssertEqual(testButton.frame.size, frameSizeWithShortLabelText)
-        XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), smallFontLineHeight)
-        XCTAssertEqual(testButton.titleLabel?.frame.size, UIKit.CGSize(width: 28.5, height: 14.5))
+        let frameSizeWithShortLabelText = UIKit.CGSize(width: 28.5, height: 26.5)
+        XCTAssertEqualWithAccuracy(testButton.frame.width, frameSizeWithShortLabelText.width, accuracy: 1.5)
+        XCTAssertEqualWithAccuracy(testButton.frame.height, frameSizeWithShortLabelText.height, accuracy: 0.5)
 
         testButton.setTitle(mediumButtonText, for: .normal)
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: mediumFontSize)!
         testButton.sizeToFit()
         testButton.titleLabel?.sizeToFit()
 
-        let frameSizeWithMediumLabelText = UIKit.CGSize(width: 136.5, height: 19.0)
-        XCTAssertEqual(testButton.frame.size, frameSizeWithMediumLabelText)
+        let frameSizeWithMediumLabelText = UIKit.CGSize(width: 136.5, height: 31.0)
+        XCTAssertEqualWithAccuracy(testButton.frame.width, frameSizeWithMediumLabelText.width, accuracy: 0.5)
+        XCTAssertEqualWithAccuracy(testButton.frame.height, frameSizeWithMediumLabelText.height, accuracy: 0.1)
         XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), mediumFontLineHeight)
-        XCTAssertEqual(testButton.titleLabel?.frame.size, UIKit.CGSize(width: 136.5, height: 19.0))
 
         testButton.setTitle(longButtonText, for: .normal)
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: largeFontSize)!
         testButton.sizeToFit()
         testButton.titleLabel?.sizeToFit()
         
-        let frameSizeWithLongLabelText = UIKit.CGSize(width: 306.5, height: 24.0)
-        XCTAssertEqual(testButton.frame.size, frameSizeWithLongLabelText)
+        let frameSizeWithLongLabelText = UIKit.CGSize(width: 307.5, height: 36.0)
+        XCTAssertEqualWithAccuracy(testButton.frame.width, frameSizeWithLongLabelText.width, accuracy: 1.5)
+        XCTAssertEqualWithAccuracy(testButton.frame.height, frameSizeWithLongLabelText.height, accuracy: 0.1)
         XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), largeFontLineHeight)
-        XCTAssertEqual(testButton.titleLabel?.frame.size, UIKit.CGSize(width: 306.5, height: 24.0))
     }
 
         func testFrameSizeToFitWithImage() {
