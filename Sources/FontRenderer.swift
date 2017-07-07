@@ -93,9 +93,9 @@ private func loadFontPointerFromDisk(name: String, size: Int32) -> OpaquePointer
     let pathToFontFile = (assetsDir + name + ".ttf").lowercased()
     let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
 
-    let font = TTF_OpenFontRW(rwOp, 1, adjustedFontSize)
-    TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
+    guard let font = TTF_OpenFontRW(rwOp, 1, adjustedFontSize) else { return nil }
 
+    TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
     return font
 }
 
