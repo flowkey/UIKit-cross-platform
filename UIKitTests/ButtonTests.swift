@@ -20,9 +20,12 @@ class ButtonTests: XCTestCase {
     let mediumButtonText = "MediumButtonText"
     let longButtonText = "ThisIsALongTextToTestTheButton"
 
-    let smallFontSize: UIKit.CGFloat = 12.0
-    let mediumFontSize: UIKit.CGFloat = 16.0 // default
-    let largeFontSize: UIKit.CGFloat = 20.0
+    let smallFontSize: UIKit.CGFloat = 12
+    let smallFontLineHeight: UIKit.CGFloat = 14
+    let mediumFontSize: UIKit.CGFloat = 16 // default
+    let mediumFontLineHeight: UIKit.CGFloat = 19
+    let largeFontSize: UIKit.CGFloat = 20
+    let largeFontLineHeight: UIKit.CGFloat = 23
 
     let smallImageSize = UIKit.CGSize(width: 40, height: 40)
     let mediumImageSize = UIKit.CGSize(width: 80, height: 80)
@@ -54,31 +57,38 @@ class ButtonTests: XCTestCase {
     }
 
     func testFrameSizeToFitWithLabel() {
+        #if os(iOS)
+        loadCustomFont(name: "Roboto-Medium", fontExtension: "ttf")
+        #endif
         testButton.setTitle(shortButtonText, for: .normal)
-        testButton.titleLabel?.font = .systemFont(ofSize: smallFontSize)
+        testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
         testButton.sizeToFit()
-        testButton.titleLabel?.sizeToFit()
+
+        XCTAssertEqual(testButton.titleLabel?.font.fontName, "Roboto-Medium")
+
         let frameSizeWithShortLabelText = UIKit.CGSize(width: 28.5, height: 14.5)
         XCTAssertEqual(testButton.frame.size, frameSizeWithShortLabelText)
-        XCTAssertEqual(testButton.titleLabel?.font.lineHeight, 14)
+        XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), smallFontLineHeight)
         XCTAssertEqual(testButton.titleLabel?.frame.size, UIKit.CGSize(width: 28.5, height: 14.5))
 
         testButton.setTitle(mediumButtonText, for: .normal)
-        testButton.titleLabel?.font = .systemFont(ofSize: mediumFontSize)
+        testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: mediumFontSize)!
         testButton.sizeToFit()
         testButton.titleLabel?.sizeToFit()
+
         let frameSizeWithMediumLabelText = UIKit.CGSize(width: 136.5, height: 19.0)
         XCTAssertEqual(testButton.frame.size, frameSizeWithMediumLabelText)
-        XCTAssertEqual(testButton.titleLabel?.font.lineHeight, 19)
+        XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), mediumFontLineHeight)
         XCTAssertEqual(testButton.titleLabel?.frame.size, UIKit.CGSize(width: 136.5, height: 19.0))
 
         testButton.setTitle(longButtonText, for: .normal)
-        testButton.titleLabel?.font = .systemFont(ofSize: largeFontSize)
+        testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: largeFontSize)!
         testButton.sizeToFit()
         testButton.titleLabel?.sizeToFit()
+        
         let frameSizeWithLongLabelText = UIKit.CGSize(width: 306.5, height: 24.0)
         XCTAssertEqual(testButton.frame.size, frameSizeWithLongLabelText)
-        XCTAssertEqual(testButton.titleLabel?.font.lineHeight, 23)
+        XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), largeFontLineHeight)
         XCTAssertEqual(testButton.titleLabel?.frame.size, UIKit.CGSize(width: 306.5, height: 24.0))
     }
 
@@ -137,4 +147,28 @@ class ButtonTests: XCTestCase {
             self.init(gpuImage: gpuImagePointer)
         }
     }
+#endif
+
+#if os(iOS)
+func loadCustomFont(name: String, fontExtension: String) -> Bool {
+    let fileManager = FileManager.default
+
+    let bundleURL = Bundle.init(for: ButtonTests.self).bundleURL
+
+    do {
+        let contents = try fileManager.contentsOfDirectory(at: bundleURL, includingPropertiesForKeys: [], options: .skipsHiddenFiles)
+        for url in contents {
+            if url.pathExtension == fontExtension {
+                let fontData = NSData(contentsOf: url)!
+                let provider = CGDataProvider.init(data: fontData)!
+                if let font = CGFont.init(provider) {
+                    CTFontManagerRegisterGraphicsFont(font, nil)
+                }
+            }
+        }
+    } catch {
+        print("error: \(error)")
+    }
+    return true
+}
 #endif
