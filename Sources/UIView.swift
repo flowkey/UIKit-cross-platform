@@ -42,7 +42,9 @@ open class UIView: UIResponder {
     internal var needsDisplay = true
 
     /// Override this to draw to the layer's texture whenever `self.needsDisplay`
-    open func draw() {}
+    open func draw() {
+        needsDisplay = false
+    }
 
     public func setNeedsDisplay() {
         needsDisplay = true
@@ -108,7 +110,8 @@ open class UIView: UIResponder {
     open func didMoveToSuperview() {}
 
     open func layoutSubviews() {
-        subviews.forEach { $0.layoutSubviews() }
+        needsLayout = false
+        subviews.forEach { $0.setNeedsLayout() }
     }
 
 

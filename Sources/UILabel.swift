@@ -64,5 +64,6 @@ open class UILabel: UIView {
         case .center: textLayer.frame.midX = bounds.midX
         case .right: textLayer.frame.maxX = bounds.maxX
         }
+        super.layoutSubviews()
     }
 }

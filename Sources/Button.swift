@@ -100,6 +100,8 @@ open class Button: UIControl {
             imageView?.frame.maxY = bounds.maxY - contentEdgeInsets.bottom
             titleLabel?.frame.maxY = bounds.maxY - contentEdgeInsets.bottom
         }
+
+        super.layoutSubviews()
     }
 }
 

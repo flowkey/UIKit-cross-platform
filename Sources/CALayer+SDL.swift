@@ -20,11 +20,11 @@ extension CALayer {
             let opacity = self.opacity * (CGFloat(backgroundColor.alpha) / CGFloat(UInt8.max))
             SDL.window.fill(absoluteFrame, with: backgroundColor.withAlphaComponent(opacity), cornerRadius: cornerRadius)
         }
-        
+
         if borderWidth > 0 {
             SDL.window.outline(absoluteFrame, lineColor: borderColor, lineThickness: borderWidth, cornerRadius: cornerRadius)
         }
-        
+
         if let shadowPath = shadowPath, let shadowColor = shadowColor {
             let absoluteShadowOpacity = shadowOpacity * opacity * 0.5 // for "shadow" effect ;)
             
