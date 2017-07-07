@@ -76,7 +76,13 @@ open class Button: UIControl {
         
         let imageWidth = imageView?.frame.width ?? 0
         let labelWidth = titleLabel?.frame.width ?? 0
-        
+
+        // If either image or label are nil, center the other element (UIKit default behaviour):
+        let contentHorizontalAlignment =
+            (titleLabel == nil || imageView == nil) ? .center : self.contentHorizontalAlignment
+        let contentVerticalAlignment =
+            (titleLabel == nil || imageView == nil) ? .center : self.contentVerticalAlignment
+
         switch contentHorizontalAlignment {
         case .center:
             imageView?.frame.midX = bounds.midX - labelWidth / 2
