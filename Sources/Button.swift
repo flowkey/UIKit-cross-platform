@@ -41,10 +41,6 @@ open class Button: UIControl {
 
     private var defaultLabelVerticalPadding: CGFloat = 6
     
-    open var contentEdgeInsets = UIEdgeInsets() {
-        didSet { layoutSubviews() }
-    }
-    
     open func sizeToFit() {
         layoutSubviews()
         titleLabel?.sizeToFit()
@@ -100,11 +96,11 @@ open class Button: UIControl {
             imageView?.frame.midX = bounds.midX - labelWidth / 2
             titleLabel?.frame.midX = bounds.midX + imageWidth / 2
         case .left:
-            imageView?.frame.origin.x = contentEdgeInsets.left
-            titleLabel?.frame.origin.x = imageWidth + contentEdgeInsets.left
+            imageView?.frame.origin.x = 0
+            titleLabel?.frame.origin.x = imageWidth
         case .right:
-            imageView?.frame.maxX = bounds.maxX - labelWidth - contentEdgeInsets.right
-            titleLabel?.frame.maxX = bounds.maxX - contentEdgeInsets.right
+            imageView?.frame.maxX = bounds.maxX - labelWidth
+            titleLabel?.frame.maxX = bounds.maxX
         }
         
         switch contentVerticalAlignment {
@@ -112,11 +108,11 @@ open class Button: UIControl {
             imageView?.frame.midY = bounds.midY
             titleLabel?.frame.midY = bounds.midY
         case .top:
-            imageView?.frame.origin.y = contentEdgeInsets.top
-            titleLabel?.frame.origin.y = contentEdgeInsets.top
+            imageView?.frame.origin.y = 0
+            titleLabel?.frame.origin.y = 0
         case .bottom:
-            imageView?.frame.maxY = bounds.maxY - contentEdgeInsets.bottom
-            titleLabel?.frame.maxY = bounds.maxY - contentEdgeInsets.bottom
+            imageView?.frame.maxY = bounds.maxY
+            titleLabel?.frame.maxY = bounds.maxY
         }
     }
 }

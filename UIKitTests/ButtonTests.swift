@@ -56,7 +56,7 @@ class ButtonTests: XCTestCase {
         XCTAssertEqual(testButton.titleLabel?.text, longButtonText)
     }
 
-    func testSizeToFitWithoutLabelAndImage() {
+    func testSizeToFitWithNoLabelAndNoImage () {
         let defaultSizeForEmptyButton = UIKit.CGSize(width: 30.0, height: 34.0)
         testButton.sizeToFit()
         XCTAssertEqual(testButton.frame.size, defaultSizeForEmptyButton)
@@ -121,33 +121,6 @@ class ButtonTests: XCTestCase {
 
     func testContentAlignmentWithLabelAndImage() {
 
-    }
-
-    // BREAKS: understand & implement edgeInsets before fixing this test
-    func testContentEdgeInsets() {
-        testButton.setTitle(mediumButtonText, for: .normal)
-        #if os(iOS)
-        UIGraphicsBeginImageContext(smallImageSize)
-        testButton.setImage(UIGraphicsGetImageFromCurrentImageContext(), for: .normal)
-        UIGraphicsEndImageContext()
-        #else
-        testButton.image = UIImage(texture: Texture(size: smallImageSize)!)
-        #endif
-        testButton.sizeToFit()
-
-        XCTAssertEqual(testButton.titleLabel?.frame.origin, CGPoint(x: 40.0, y: 0.0))
-        XCTAssertEqual(testButton.imageView?.frame.origin, CGPoint(x: 0.0, y: 0.0))
-
-        testButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 0)
-
-        XCTAssertEqual(testButton.titleLabel?.frame.origin, CGPoint(x: 50.0, y: 10.0))
-        XCTAssertEqual(testButton.imageView?.frame.origin, CGPoint(x: 10.0, y: 10.0))
-
-        testButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)
-
-        // TODO: correct tests, should not be equal to previous frame.origin
-        XCTAssertEqual(testButton.titleLabel?.frame.origin, CGPoint(x: 40.0, y: 0.0))
-        XCTAssertEqual(testButton.imageView?.frame.origin, CGPoint(x: 0.0, y: 0.0))
     }
 }
 
