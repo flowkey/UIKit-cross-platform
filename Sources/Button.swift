@@ -39,7 +39,7 @@ open class Button: UIControl {
     private var titleColorForControlState = [UIControlState: UIColor]()
     private var titleShadowColorForControlState = [UIControlState: UIColor]()
 
-    private var defaultVerticalPadding: CGFloat = 6
+    private var defaultLabelVerticalPadding: CGFloat = 6
     
     open var contentEdgeInsets = UIEdgeInsets() {
         didSet { layoutSubviews() }
@@ -52,9 +52,18 @@ open class Button: UIControl {
         
         let imageSize = imageView?.frame.size ?? .zero
         let labelSize = titleLabel?.frame.size ?? .zero
-        
-        frame.width = imageSize.width + labelSize.width + contentEdgeInsets.left + contentEdgeInsets.right
-        frame.height = max(imageSize.height, labelSize.height) + 2 * defaultVerticalPadding + contentEdgeInsets.top + contentEdgeInsets.bottom
+
+        if imageView != nil {
+            frame.width = imageSize.width + labelSize.width
+            frame.height = max(imageSize.height, labelSize.height)
+        } else {
+            if titleLabel != nil {
+                frame.width = labelSize.width
+                frame.height = labelSize.height + 2 * defaultLabelVerticalPadding
+            } else {
+                frame.size = CGSize(width: 30, height: 34)
+            }
+        }
     }
     
     public let tapGestureRecognizer = UITapGestureRecognizer()
