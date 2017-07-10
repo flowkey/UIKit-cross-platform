@@ -108,11 +108,19 @@ open class Button: UIControl {
             imageView?.frame.midY = bounds.midY
             titleLabel?.frame.midY = bounds.midY
         case .top:
-            imageView?.frame.origin.y = 0
-            titleLabel?.frame.origin.y = 0
+            if imageView == nil {
+                titleLabel?.frame.origin.y = defaultLabelVerticalPadding
+            } else {
+                titleLabel?.frame.origin.y = 0
+                imageView?.frame.origin.y = 0
+            }
         case .bottom:
-            imageView?.frame.maxY = bounds.maxY
-            titleLabel?.frame.maxY = bounds.maxY
+            if imageView == nil {
+                titleLabel?.frame.origin.y = bounds.maxY - defaultLabelVerticalPadding
+            } else {
+                titleLabel?.frame.maxY = bounds.maxY
+                imageView?.frame.maxY = bounds.maxY
+            }
         }
     }
 }

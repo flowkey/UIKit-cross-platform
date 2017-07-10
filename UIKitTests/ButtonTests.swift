@@ -100,28 +100,109 @@ class ButtonTests: XCTestCase {
     }
 
     func testSizeToFitWithImage() {
-        #if os(iOS)
-        UIGraphicsBeginImageContext(mediumImageSize)
-        testButton.setImage(UIGraphicsGetImageFromCurrentImageContext(), for: .normal)
-        UIGraphicsEndImageContext()
-        #else
-        testButton.image = UIImage(texture: Texture(size: mediumImageSize)!)
-        #endif
+//        testButton.image = createTestImage(ofSize: mediumImageSize)
+        testButton.setImage(createTestImage(ofSize: mediumImageSize), for: .normal)
 
         testButton.sizeToFit()
         XCTAssertEqual(testButton.frame.size, mediumImageSize)
     }
 
     func testContentAlignmentWithOnlyLabel() {
+        #if os(iOS)
+            loadCustomFont(name: "Roboto-Medium", fontExtension: "ttf")
+        #endif
+        testButton.setTitle(shortButtonText, for: .normal)
+        testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
+        testButton.sizeToFit()
+        testButton.frame = CGRect(origin: testButton.frame.origin, size: CGSize(width: 200, height: 100))
+        testButton.layoutSubviews()
+
+        let centeredSmallTitleLabelOrigin = UIKit.CGPoint(x: 85.5, y: 42.85)
+        XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.center)
+        XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.center)
+        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.x)!, centeredSmallTitleLabelOrigin.x, accuracy: 0.3)
+        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.y)!, centeredSmallTitleLabelOrigin.y, accuracy: 0.15)
+
+        let topLeftTitleLabelOrigin = UIKit.CGPoint(x: 0.0, y: 6.0)
+        testButton.contentHorizontalAlignment = .left
+        testButton.contentVerticalAlignment = .top
+        testButton.layoutSubviews()
+        XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.left)
+        XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.top)
+        XCTAssertEqual((testButton.titleLabel?.frame.origin.x)!, topLeftTitleLabelOrigin.x)
+        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.y)!, topLeftTitleLabelOrigin.y, accuracy: 0.001)
+
     }
 
     func testContentAlignmentWithOnlyImage() {
+        let testImageSize = UIKit.CGSize(width: 40, height: 40)
+        let buttonFrameSize = UIKit.CGSize(width: 200, height: 100)
+//        testButton.image = createTestImage(ofSize: testImageSize)
+        testButton.setImage(createTestImage(ofSize: testImageSize), for: .normal)
 
+        testButton.sizeToFit()
+        testButton.frame = CGRect(origin: testButton.frame.origin, size: buttonFrameSize)
+        testButton.layoutSubviews()
+
+        XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.center)
+        XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.center)
+        XCTAssertEqual(testButton.imageView?.frame.origin.x, buttonFrameSize.width / 2 - testImageSize.width / 2)
+        XCTAssertEqual(testButton.imageView?.frame.origin.y, buttonFrameSize.height / 2 - testImageSize.height / 2)
+
+        testButton.contentHorizontalAlignment = .left
+        testButton.contentVerticalAlignment = .top
+        testButton.layoutSubviews()
+
+        XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.left)
+        XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.top)
+        XCTAssertEqual(testButton.imageView?.frame.origin.x, 0.0)
+        XCTAssertEqual(testButton.imageView?.frame.origin.y, 0.0)
+
+        testButton.contentHorizontalAlignment = .right
+        testButton.contentVerticalAlignment = .bottom
+        testButton.layoutSubviews()
+
+        XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.right)
+        XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.bottom)
+        XCTAssertEqual(testButton.imageView?.frame.origin.x, buttonFrameSize.width  - testImageSize.width)
+        XCTAssertEqual(testButton.imageView?.frame.origin.y, buttonFrameSize.height - testImageSize.height)
     }
 
     func testContentAlignmentWithLabelAndImage() {
+        #if os(iOS)
+            loadCustomFont(name: "Roboto-Medium", fontExtension: "ttf")
+        #endif
+        testButton.setTitle(shortButtonText, for: .normal)
+        testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
 
+        let testImageSize = UIKit.CGSize(width: 10, height: 10)
+//        testButton.image = createTestImage(ofSize: testImageSize)
+        testButton.setImage(createTestImage(ofSize: testImageSize), for: .normal)
+
+        testButton.sizeToFit()
+        testButton.frame = CGRect(origin: testButton.frame.origin, size: CGSize(width: 200, height: 100))
+        testButton.layoutSubviews()
+
+        testButton.contentHorizontalAlignment = .left
+        testButton.contentVerticalAlignment = .top
+        testButton.layoutSubviews()
+        XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.left)
+        XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.top)
+        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.x)!, testImageSize.width, accuracy: 0.001)
+        XCTAssertEqual((testButton.titleLabel?.frame.origin.y)!, 0.0)
     }
+}
+
+func createTestImage(ofSize imageSize: UIKit.CGSize) -> UIImage {
+    var testImage: UIImage
+    #if os(iOS)
+        UIGraphicsBeginImageContext(imageSize)
+        testImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+    #else
+        testImage = UIImage(texture: Texture(size: imageSize)!)
+    #endif
+    return testImage
 }
 
 #if !os(iOS)

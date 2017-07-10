@@ -44,6 +44,6 @@ public struct UIControlState: OptionSet, Hashable {
 
 // current minimal implementation of UIControl for content alignment in Button
 open class UIControl: UIView {
-    public var contentHorizontalAlignment: UIControlContentHorizontalAlignment = .left
-    public var contentVerticalAlignment: UIControlContentVerticalAlignment = .top
+    public var contentHorizontalAlignment: UIControlContentHorizontalAlignment = .center
+    public var contentVerticalAlignment: UIControlContentVerticalAlignment = .center
 }
