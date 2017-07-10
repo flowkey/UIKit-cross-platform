@@ -37,6 +37,8 @@ public struct UIControlState: OptionSet, Hashable {
 
     public static let selected = UIControlState(rawValue: 1 << 2)
 
+    public static let disabled = UIControlState(rawValue: 1 << 3)
+
     public static func == (lhs: UIControlState, rhs: UIControlState) -> Bool {
         return lhs.rawValue == rhs.rawValue
     }
