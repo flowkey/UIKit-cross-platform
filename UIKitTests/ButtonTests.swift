@@ -44,8 +44,8 @@ class ButtonTests: XCTestCase {
     }
 
     override func tearDown() {
-        testButton.setTitle("", for: .normal)
-        //        testButton.setImage(nil, for: .normal)
+        testButton.setTitle(nil, for: .normal)
+        testButton.setImage(nil, for: .normal)
         super.tearDown()
     }
 
@@ -71,6 +71,7 @@ class ButtonTests: XCTestCase {
         testButton.setTitle(shortButtonText, for: .normal)
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
         testButton.sizeToFit()
+        testButton.layoutSubviews()
 
         // move those to UIFontTests
         XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), smallFontLineHeight)
@@ -82,8 +83,8 @@ class ButtonTests: XCTestCase {
 
         testButton.setTitle(mediumButtonText, for: .normal)
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: mediumFontSize)!
+        testButton.titleLabel?.layoutSubviews() // FIX!!
         testButton.sizeToFit()
-        testButton.titleLabel?.sizeToFit()
 
         let frameSizeWithMediumLabelText = UIKit.CGSize(width: 136.5, height: 31.0)
         XCTAssertEqualWithAccuracy(testButton.frame.width, frameSizeWithMediumLabelText.width, accuracy: 0.5)
@@ -94,6 +95,7 @@ class ButtonTests: XCTestCase {
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: largeFontSize)!
         testButton.sizeToFit()
         testButton.titleLabel?.sizeToFit()
+        testButton.layoutSubviews()
         
         let frameSizeWithLongLabelText = UIKit.CGSize(width: 307.5, height: 36.0)
         XCTAssertEqualWithAccuracy(testButton.frame.width, frameSizeWithLongLabelText.width, accuracy: 1.5)
@@ -102,9 +104,8 @@ class ButtonTests: XCTestCase {
     }
 
     func testSizeToFitWithImage() {
-//        testButton.image = createTestImage(ofSize: mediumImageSize)
         testButton.setImage(createTestImage(ofSize: mediumImageSize), for: .normal)
-
+        testButton.layoutSubviews()
         testButton.sizeToFit()
         XCTAssertEqual(testButton.frame.size, mediumImageSize)
     }
@@ -145,7 +146,7 @@ class ButtonTests: XCTestCase {
     func testContentAlignmentWithOnlyImage() {
         let testImageSize = UIKit.CGSize(width: 40, height: 40)
         let buttonFrameSize = UIKit.CGSize(width: 200, height: 100)
-//        testButton.image = createTestImage(ofSize: testImageSize)
+
         testButton.setImage(createTestImage(ofSize: testImageSize), for: .normal)
 
         testButton.sizeToFit()
@@ -185,7 +186,7 @@ class ButtonTests: XCTestCase {
 
         let testImageSize = UIKit.CGSize(width: 30, height: 30)
         let buttonFrameSize = UIKit.CGSize(width: 200, height: 100)
-//        testButton.image = createTestImage(ofSize: testImageSize)
+
         testButton.setImage(createTestImage(ofSize: testImageSize), for: .normal)
 
         testButton.sizeToFit()

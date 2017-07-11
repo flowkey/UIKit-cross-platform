@@ -35,12 +35,7 @@ open class Button: UIControl {
         }
     }
 
-    private var currentControlState: UIControlState = .normal
-    private var titleForControlState = [UIControlState: String]()
-    private var titleColorForControlState = [UIControlState: UIColor]()
-    private var titleShadowColorForControlState = [UIControlState: UIColor]()
-
-    private var defaultLabelVerticalPadding: CGFloat = 6
+    private let defaultLabelVerticalPadding: CGFloat = 6
 
     open func sizeToFit() {
         setNeedsLayout()
@@ -74,17 +69,25 @@ open class Button: UIControl {
         addGestureRecognizer(tapGestureRecognizer)
     }
 
+    private var images = [UIControlState: UIImage]()
     private var titles = [UIControlState: String]()
     private var titleColors = [UIControlState: UIColor]()
     private var titleShadowColors = [UIControlState: UIColor]()
     
     open override func layoutSubviews() {
         // Only change subview attributes if a corresponding entry exists in our dictionaries:
+
         if let titleForCurrentControlState = titles[state] {
             if titleLabel == nil { titleLabel = UILabel() }
             titleLabel?.text = titleForCurrentControlState
         } else if titles.isEmpty {
             titleLabel = nil
+        }
+
+        if let imageForCurrentControlState = images[state] {
+            image = imageForCurrentControlState
+        } else if images.isEmpty {
+            image = nil
         }
 
         if let titleColorForCurrentControlState = titleColors[state] {
@@ -137,7 +140,12 @@ open class Button: UIControl {
 }
 
 extension Button {
-    public func setTitle(_ text: String, for state: UIControlState) {
+    public func setImage(_ image: UIImage?, for state: UIControlState) {
+        images[state] = image
+        setNeedsLayout()
+    }
+
+    public func setTitle(_ text: String?, for state: UIControlState) {
         titles[state] = text
         setNeedsLayout()
     }
