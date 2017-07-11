@@ -27,6 +27,8 @@ class ButtonTests: XCTestCase {
     let largeFontSize: UIKit.CGFloat = 20
     let largeFontLineHeight: UIKit.CGFloat = 23
 
+    let defaultLabelVerticalPadding: UIKit.CGFloat = 6
+
     let smallImageSize = UIKit.CGSize(width: 40, height: 40)
     let mediumImageSize = UIKit.CGSize(width: 80, height: 80)
     let largeImageSize = UIKit.CGSize(width: 150, height: 150)
@@ -108,30 +110,36 @@ class ButtonTests: XCTestCase {
     }
 
     func testContentAlignmentWithOnlyLabel() {
+        let buttonFrameSize = UIKit.CGSize(width: 200, height: 100)
         #if os(iOS)
             loadCustomFont(name: "Roboto-Medium", fontExtension: "ttf")
         #endif
         testButton.setTitle(shortButtonText, for: .normal)
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
         testButton.sizeToFit()
-        testButton.frame = CGRect(origin: testButton.frame.origin, size: CGSize(width: 200, height: 100))
+        testButton.frame = CGRect(origin: testButton.frame.origin, size: buttonFrameSize)
         testButton.layoutSubviews()
 
-        let centeredSmallTitleLabelOrigin = UIKit.CGPoint(x: 85.5, y: 42.85)
         XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.center)
         XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.center)
-        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.x)!, centeredSmallTitleLabelOrigin.x, accuracy: 0.3)
-        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.y)!, centeredSmallTitleLabelOrigin.y, accuracy: 0.15)
+        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.x)!, buttonFrameSize.width / 2 - (testButton.titleLabel?.frame.width)! / 2, accuracy: 0.01)
+        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.y)!, buttonFrameSize.height / 2 - (testButton.titleLabel?.frame.height)! / 2, accuracy: 0.18)
 
-        let topLeftTitleLabelOrigin = UIKit.CGPoint(x: 0.0, y: 6.0)
         testButton.contentHorizontalAlignment = .left
         testButton.contentVerticalAlignment = .top
         testButton.layoutSubviews()
         XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.left)
         XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.top)
-        XCTAssertEqual((testButton.titleLabel?.frame.origin.x)!, topLeftTitleLabelOrigin.x)
-        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.y)!, topLeftTitleLabelOrigin.y, accuracy: 0.001)
+        XCTAssertEqual(testButton.titleLabel?.frame.origin.x, 0.0)
+        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.y)!, defaultLabelVerticalPadding, accuracy: 0.001)
 
+        testButton.contentHorizontalAlignment = .right
+        testButton.contentVerticalAlignment = .bottom
+        testButton.layoutSubviews()
+        XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.right)
+        XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.bottom)
+        XCTAssertEqual(testButton.titleLabel?.frame.origin.x, buttonFrameSize.width - (testButton.titleLabel?.frame.width)!)
+        XCTAssertEqual(testButton.titleLabel?.frame.origin.y, buttonFrameSize.height - (testButton.titleLabel?.frame.height)! - defaultLabelVerticalPadding)
     }
 
     func testContentAlignmentWithOnlyImage() {
@@ -175,21 +183,41 @@ class ButtonTests: XCTestCase {
         testButton.setTitle(shortButtonText, for: .normal)
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
 
-        let testImageSize = UIKit.CGSize(width: 10, height: 10)
+        let testImageSize = UIKit.CGSize(width: 30, height: 30)
+        let buttonFrameSize = UIKit.CGSize(width: 200, height: 100)
 //        testButton.image = createTestImage(ofSize: testImageSize)
         testButton.setImage(createTestImage(ofSize: testImageSize), for: .normal)
 
         testButton.sizeToFit()
-        testButton.frame = CGRect(origin: testButton.frame.origin, size: CGSize(width: 200, height: 100))
+        testButton.frame = CGRect(origin: testButton.frame.origin, size: buttonFrameSize)
         testButton.layoutSubviews()
+
+        XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.center)
+        XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.center)
+        XCTAssertEqualWithAccuracy((testButton.imageView?.frame.origin.x)!, (buttonFrameSize.width - (testImageSize.width + (testButton.titleLabel?.frame.width)!)) / 2, accuracy: 0.001)
+        XCTAssertEqual(testButton.imageView?.frame.origin.y, buttonFrameSize.height / 2 - testImageSize.height / 2)
+        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.x)!, (buttonFrameSize.width - (testButton.titleLabel?.frame.width)! + testImageSize.width) / 2, accuracy: 0.001)
+        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.y)!, (buttonFrameSize.height - (testButton.titleLabel?.frame.height)!) / 2, accuracy: 0.17)
 
         testButton.contentHorizontalAlignment = .left
         testButton.contentVerticalAlignment = .top
         testButton.layoutSubviews()
         XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.left)
         XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.top)
+        XCTAssertEqual(testButton.imageView?.frame.origin.x, 0.0)
+        XCTAssertEqual(testButton.imageView?.frame.origin.y, 0.0)
         XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.x)!, testImageSize.width, accuracy: 0.001)
         XCTAssertEqual((testButton.titleLabel?.frame.origin.y)!, 0.0)
+
+        testButton.contentHorizontalAlignment = .right
+        testButton.contentVerticalAlignment = .bottom
+        testButton.layoutSubviews()
+        XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.right)
+        XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.bottom)
+        XCTAssertEqualWithAccuracy((testButton.imageView?.frame.origin.x)!, buttonFrameSize.width - (testButton.titleLabel?.frame.width)! - testImageSize.width, accuracy: 0.1)
+        XCTAssertEqual(testButton.imageView?.frame.origin.y, buttonFrameSize.height - testImageSize.height)
+        XCTAssertEqual(testButton.titleLabel?.frame.origin.x, buttonFrameSize.width - (testButton.titleLabel?.frame.width)!)
+        XCTAssertEqual(testButton.titleLabel?.frame.origin.y, buttonFrameSize.height - (testButton.titleLabel?.frame.height)!)
     }
 }
 
