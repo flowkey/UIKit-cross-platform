@@ -55,15 +55,23 @@ open class UILabel: UIView {
 
     open func sizeToFit() {
         // XXX: We should take numberOfLines into account here!
-        bounds.size = text?.size(with: self.font) ?? .zero
+        guard let text = self.text else { return }
+        let previousFrame = self.frame
+        bounds.size = text.size(with: self.font)
+        layout(&frame, in: previousFrame) // uses text alignment to adjust self.frame
+        setNeedsLayout()
     }
 
     open override func layoutSubviews() {
-        switch textAlignment {
-        case .left: textLayer.frame.origin = .zero
-        case .center: textLayer.frame.midX = bounds.midX
-        case .right: textLayer.frame.maxX = bounds.maxX
-        }
+        layout(&textLayer.frame, in: self.bounds)
         super.layoutSubviews()
+    }
+
+    private func layout(_ rect: inout CGRect, in bounds: CGRect) {
+        switch textAlignment {
+        case .left: rect.minX = bounds.minX
+        case .center: rect.midX = bounds.midX
+        case .right: rect.maxX = bounds.maxX
+        }
     }
 }

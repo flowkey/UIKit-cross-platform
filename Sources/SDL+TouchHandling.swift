@@ -9,7 +9,7 @@
 // TODO: This urgently needs tests!
 
 extension SDL {
-    func handleTouchDown(_ event: SDL_MouseButtonEvent) {
+    static func handleTouchDown(_ event: SDL_MouseButtonEvent) {
         let point = CGPoint.from(event)
         guard let hitView = rootView.hitTest(point, with: nil) else { return }
 
@@ -30,7 +30,7 @@ extension SDL {
         }
     }
 
-    func handleTouchMove(_ event: SDL_MouseMotionEvent) {
+    static func handleTouchMove(_ event: SDL_MouseMotionEvent) {
         guard let touch = UITouch.activeTouches.first(where: { $0.touchId == Int(0) }) else { return }
 
         touch.previousPositionInView = touch.positionInView
@@ -49,7 +49,7 @@ extension SDL {
         }
     }
 
-    func handleTouchUp(_ event: SDL_MouseButtonEvent) {
+    static func handleTouchUp(_ event: SDL_MouseButtonEvent) {
         guard let touch = UITouch.activeTouches.first(where: {$0.touchId == Int(0) }) else { return }
 
         touch.gestureRecognizers.forEach { gestureRecognizer in

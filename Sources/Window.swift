@@ -16,17 +16,18 @@ internal final class Window {
     // The easiest solution is just to work in 1:1 pixels
     init(size: CGSize, options: SDLWindowFlags) {
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
-        let windowIsFullscreen = options.contains(SDL_WINDOW_FULLSCREEN)
-        
+
+        GPU_SetPreInitFlags(GPU_INIT_ENABLE_VSYNC)
+
         var size = size
-        if windowIsFullscreen, let displayMode = SDLDisplayMode.current {
+        if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
             // Fix fullscreen resolution on Mac and make Android easier to reason about:
-            GPU_SetPreInitFlags(GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)
+            GPU_SetPreInitFlags(GPU_GetPreInitFlags() | GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)
             size = CGSize(width: CGFloat(displayMode.w), height: CGFloat(displayMode.h))
         }
         
         rawPointer = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue)!
-        
+
         #if os(Android)
             GPU_SetVirtualResolution(rawPointer, UInt16(size.width / 2), UInt16(size.height / 2))
             size.width /= 2
@@ -46,27 +47,23 @@ internal final class Window {
     }
 
     func blit(_ texture: Texture, to destination: CGPoint) {
-        rawPointer.pointee.blit(texture.rawPointer, from: nil, x: Float(destination.x), y: Float(destination.y))
+        GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
     }
 
     func blit(_ texture: Texture, from source: CGRect, to destination: CGPoint) {
         var source = GPU_Rect(source)
-        rawPointer.pointee.blit(texture.rawPointer, from: &source, x: Float(destination.x), y: Float(destination.y))
+        GPU_Blit(texture.rawPointer, &source, rawPointer, Float(destination.x), Float(destination.y))
     }
 
     func clear() {
-        rawPointer.pointee.clear()
-    }
-
-    func fill(_ rect: CGRect, with color: UIColor) {
-        GPU_RectangleFilled(rawPointer, GPU_Rect(rect), color: color.sdlColor)
+        GPU_Clear(rawPointer)
     }
 
     func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
         if cornerRadius >= 1 {
             GPU_RectangleRoundFilled(rawPointer, GPU_Rect(rect), cornerRadius: Float(cornerRadius), color: color.sdlColor)
         } else {
-            fill(rect, with: color)
+            GPU_RectangleFilled(rawPointer, GPU_Rect(rect), color: color.sdlColor)
         }
     }
 
@@ -85,7 +82,7 @@ internal final class Window {
     }
 
     func flip() {
-        rawPointer.pointee.flip()
+        GPU_Flip(rawPointer)
     }
 
     deinit {

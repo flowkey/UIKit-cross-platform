@@ -20,12 +20,15 @@ internal final class Texture {
     init?(imagePath: String) {
         guard let image = GPU_LoadImage(imagePath) else { return nil }
         rawPointer = image
+        GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
+        GPU_SetImageFilter(rawPointer, GPU_FILTER_NEAREST)
         scaleImage(scale)
     }
     
     init?(surface: UnsafeMutablePointer<SDLSurface>) {
         guard let image = GPU_CopyImageFromSurface(surface) else { return nil }
         rawPointer = image
+        GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
         scaleImage(scale)
     }
     
