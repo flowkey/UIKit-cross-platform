@@ -32,11 +32,8 @@ public struct UIControlState: OptionSet, Hashable {
     }
 
     public static let normal = UIControlState(rawValue: 1 << 0)
-
     public static let highlighted = UIControlState(rawValue: 1 << 1)
-
     public static let selected = UIControlState(rawValue: 1 << 2)
-
     public static let disabled = UIControlState(rawValue: 1 << 3)
 
     public static func == (lhs: UIControlState, rhs: UIControlState) -> Bool {
@@ -48,4 +45,21 @@ public struct UIControlState: OptionSet, Hashable {
 open class UIControl: UIView {
     public var contentHorizontalAlignment: UIControlContentHorizontalAlignment = .left
     public var contentVerticalAlignment: UIControlContentVerticalAlignment = .top
+
+    open var isEnabled = true
+    open var isHighlighted = false
+    open var isSelected = false
+
+    public var state: UIControlState {
+        var controlState = UIControlState() // starts as .normal
+        if isHighlighted { controlState.formUnion(.highlighted) }
+        if isSelected { controlState.formUnion(.selected) }
+        if !isEnabled { controlState.formUnion(.disabled) }
+
+        if controlState != [.normal] { // contains no other state
+            controlState.subtract(.normal)
+        }
+
+        return controlState
+    }
 }

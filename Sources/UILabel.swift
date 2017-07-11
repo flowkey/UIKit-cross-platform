@@ -45,7 +45,7 @@ open class UILabel: UIView {
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
         textLayer.texture = font.render(text, color: textColor, wrapLength: wrapLength)
         textLayer.shadowColor = shadowColor?.cgColor
-        layoutSubviews()
+        setNeedsLayout()
     }
 
     override public init(frame: CGRect) {
