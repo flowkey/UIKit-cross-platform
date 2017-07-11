@@ -21,6 +21,8 @@
 		5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */; };
 		5C27E8181ECB301900F5020D /* UIKit+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27E8051ECB301900F5020D /* UIKit+SDL.swift */; };
 		5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C361E221ECC348700B3F561 /* UIView+SDL.swift */; };
+		5C3716B61F10050600B2C366 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3716B51F10050600B2C366 /* Timer.swift */; };
+		5C391A8F1F13F62500EE012C /* VideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C391A8E1F13F62500EE012C /* VideoPlayer.swift */; };
 		5C6AB7181ED3BECD006F90AC /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7101ED3BECD006F90AC /* Button.swift */; };
 		5C6AB7191ED3BECD006F90AC /* CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7111ED3BECD006F90AC /* CALayer.swift */; };
 		5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7131ED3BECD006F90AC /* UIColor.swift */; };
@@ -38,6 +40,8 @@
 		5C6AB77E1ED71867006F90AC /* CATransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77D1ED71867006F90AC /* CATransaction.swift */; };
 		5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */; };
 		5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7811EDC18BA006F90AC /* UITouch.swift */; };
+		5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
+		5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037241F138B8A0058E592 /* MeteringView.swift */; };
 		5CA995A21EE8182F007D0456 /* UIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C27E7B11ECB2F6500F5020D /* UIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */; };
 		5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */; };
@@ -89,6 +93,8 @@
 		5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL2 Shims.swift"; sourceTree = "<group>"; };
 		5C27E8051ECB301900F5020D /* UIKit+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+SDL.swift"; sourceTree = "<group>"; };
 		5C361E221ECC348700B3F561 /* UIView+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SDL.swift"; sourceTree = "<group>"; };
+		5C3716B51F10050600B2C366 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		5C391A8E1F13F62500EE012C /* VideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoPlayer.swift; path = Sources/VideoPlayer.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB7101ED3BECD006F90AC /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Button.swift; path = Sources/Button.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB7111ED3BECD006F90AC /* CALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CALayer.swift; path = Sources/CALayer.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB7131ED3BECD006F90AC /* UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIColor.swift; path = Sources/UIColor.swift; sourceTree = SOURCE_ROOT; };
@@ -106,6 +112,8 @@
 		5C6AB77D1ED71867006F90AC /* CATransaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CATransaction.swift; path = Sources/CATransaction.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewTests.swift; sourceTree = "<group>"; };
 		5C6AB7811EDC18BA006F90AC /* UITouch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITouch.swift; path = Sources/UITouch.swift; sourceTree = SOURCE_ROOT; };
+		5C9037201F137FB70058E592 /* CGRectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGRectTests.swift; sourceTree = "<group>"; };
+		5C9037241F138B8A0058E592 /* MeteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MeteringView.swift; path = Sources/MeteringView.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CABasicAnimation.swift; path = Sources/CABasicAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CAAction.swift; path = Sources/CAAction.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D1D1EE6FD29004C6380 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
@@ -207,6 +215,8 @@
 				5C6AB76A1ED5A648006F90AC /* UIView+animate.swift */,
 				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
 				5C6AB7171ED3BECD006F90AC /* UIWindow.swift */,
+				5C9037241F138B8A0058E592 /* MeteringView.swift */,
+				5C391A8E1F13F62500EE012C /* VideoPlayer.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -216,6 +226,7 @@
 			children = (
 				5C27E7BE1ECB2F6500F5020D /* Info.plist */,
 				5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */,
+				5C9037201F137FB70058E592 /* CGRectTests.swift */,
 			);
 			path = UIKitTests;
 			sourceTree = "<group>";
@@ -259,6 +270,7 @@
 				5C27E8051ECB301900F5020D /* UIKit+SDL.swift */,
 				5C361E221ECC348700B3F561 /* UIView+SDL.swift */,
 				83E5F7EC1EF8157300279C59 /* Window.swift */,
+				5C3716B51F10050600B2C366 /* Timer.swift */,
 			);
 			name = SDL;
 			path = Sources;
@@ -392,6 +404,7 @@
 			files = (
 				5C6AB71E1ED3BECD006F90AC /* UIView.swift in Sources */,
 				5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */,
+				5C391A8F1F13F62500EE012C /* VideoPlayer.swift in Sources */,
 				5C6AB7181ED3BECD006F90AC /* Button.swift in Sources */,
 				5C6AB71C1ED3BECD006F90AC /* UIImage.swift in Sources */,
 				5C6AB7191ED3BECD006F90AC /* CALayer.swift in Sources */,
@@ -410,6 +423,7 @@
 				5C27E8181ECB301900F5020D /* UIKit+SDL.swift in Sources */,
 				5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */,
 				5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */,
+				5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */,
 				5C6AB76E1ED5B8DB006F90AC /* UIGestureRecognizer.swift in Sources */,
 				8318D27B1F0695080029816A /* UIControl.swift in Sources */,
 				5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */,
@@ -426,6 +440,7 @@
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,
 				83E5F7F61EF81AB500279C59 /* UIFont.swift in Sources */,
 				5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */,
+				5C3716B61F10050600B2C366 /* Timer.swift in Sources */,
 				5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
 			);
@@ -436,6 +451,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
+				5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

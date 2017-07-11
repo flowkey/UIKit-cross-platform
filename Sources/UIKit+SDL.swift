@@ -8,34 +8,10 @@
 
 import SDL
 
+private var shouldQuit = false
 final public class SDL { // XXX: only public for startRunLoop()
-    // Not private but can't be accessed directly outside of extensions because SDL.shared is private:
-    let window: Window
-    let rootView = UIWindow()
-
-    private var update: (() -> Void)?
-
-    static private let shared = SDL()
-    static var window: Window { return SDL.shared.window }
-    static var rootView: UIWindow { return SDL.shared.rootView }
-
-    static var update: (() -> Void)? {
-        get { return SDL.shared.update }
-        set { SDL.shared.update = newValue }
-    }
-
-    public static func startRunLoop() {
-        if SDL.shared.isRunning == false {
-            SDL.shared.isRunning = true
-            SDL.shared.startRunLoop()
-        }
-    }
-
-    public static func initialize() {
-        SDL.shared.window.clear() // do something random to ensure that `SDL.shared` exists
-    }
-
-    private init() {
+    static let rootView = UIWindow()
+    static let window: Window = {
         let windowOptions: SDLWindowFlags
 
         #if os(Android)
@@ -43,7 +19,7 @@ final public class SDL { // XXX: only public for startRunLoop()
             let SCREEN_WIDTH = 0
             let SCREEN_HEIGHT = 0
 
-             windowOptions = [SDL_WINDOW_ALLOW_HIGHDPI, SDL_WINDOW_FULLSCREEN]
+            windowOptions = [SDL_WINDOW_FULLSCREEN]
         #else
             // This corresponds to the Samsung S7 screen at its 1080p 1.5x Retina resolution:
             let SCREEN_WIDTH = 2560 / 3
@@ -56,44 +32,50 @@ final public class SDL { // XXX: only public for startRunLoop()
 
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
 
-        window = Window(size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT), options: windowOptions)
+        let window = Window(size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT), options: windowOptions)
         rootView.frame.size = window.size
+        return window
+    }()
+
+    static var update: (() -> Void)?
+
+    public static func startRunLoop() {
+        if isRunning == false {
+            isRunning = true
+            _startRunLoop()
+        }
     }
 
-    private var isRunning = false
-    private var shouldQuit = false
-    var e = SDL_Event()
+    public static func initialize() {
+        SDL.window.clear() // do something random to ensure that `SDL.shared` exists
+    }
 
-    func startRunLoop() {
+    private static var isRunning = false
+
+    private static func _startRunLoop() {
         var firstRender = true // screen is black until first touch if we don't check for this
+        let fpsView = MeteringView(metric: "FPS")
+        fpsView.frame = CGRect(x: 0, y: 0, width: 150, height: 25)
+        fpsView.frame.maxX = rootView.bounds.maxX
+        fpsView.sizeToFit()
+        rootView.addSubview(fpsView)
 
+        var frameTimer = Timer()
         while (!shouldQuit) {
-            var eventWasHandled = false
-            while SDL_PollEvent(&e) == 1 {
-                switch SDL_EventType(rawValue: e.type) {
-                case SDL_QUIT:
-                    shouldQuit = true
-                case SDL_MOUSEBUTTONDOWN:
-                    handleTouchDown(e.button)
-                    eventWasHandled = true
-                case SDL_MOUSEMOTION:
-                    handleTouchMove(e.motion)
-                    eventWasHandled = true
-                case SDL_MOUSEBUTTONUP:
-                    handleTouchUp(e.button)
-                    eventWasHandled = true
-                default:
-                    break
-                }
-            }
+            defer { frameTimer = Timer() } // reset for next frame
+
+            let eventWasHandled = handleEventsIfNeeded()
 
             if let update = update { // update exists when a DisplayLink is active
                 update()
             } else if !eventWasHandled && !firstRender {
                 // We can avoid updating the screen at all unless there is active touch input
                 // or a running animation. We still need to handle the case of animations here!
-                //SDL_Delay(16)
-                //continue
+
+                // Sleep to avoid 100% CPU load when nothing is happening!
+                // Normally this case is covered by the automatic VSYNC in window.flip():
+                sleepFor(milliseconds: (1000.0 / 60.0) - frameTimer.getElapsedTimeInMilliseconds())
+                continue
             }
 
             window.clear()
@@ -101,8 +83,38 @@ final public class SDL { // XXX: only public for startRunLoop()
             window.flip()
 
             firstRender = false
+            let frameTime = frameTimer.getElapsedTimeInMilliseconds()
+            fpsView.addMeasurement(1000.0 / frameTime)
         }
     }
 
-    deinit { SDL_Quit() }
+    private static func handleEventsIfNeeded() -> Bool {
+        var eventWasHandled = false
+        var e = SDL_Event()
+        while SDL_PollEvent(&e) == 1 {
+            switch SDL_EventType(rawValue: e.type) {
+            case SDL_QUIT:
+                shouldQuit = true
+            case SDL_MOUSEBUTTONDOWN:
+                handleTouchDown(e.button)
+                eventWasHandled = true
+            case SDL_MOUSEMOTION:
+                handleTouchMove(e.motion)
+                eventWasHandled = true
+            case SDL_MOUSEBUTTONUP:
+                handleTouchUp(e.button)
+                eventWasHandled = true
+            default: break
+            }
+        }
+
+        return eventWasHandled
+    }
+}
+
+
+private func measure(_ function: @autoclosure () -> Void) -> Double {
+    let timer = Timer()
+    function()
+    return timer.getElapsedTimeInMilliseconds()
 }

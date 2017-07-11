@@ -82,17 +82,10 @@ extension CGRect {
 
 extension CGRect {
     public func intersects(_ other: CGRect) -> Bool {
-        return (
-            self.maxX > other.minX && self.maxY > other.minY ||
-            self.minX < other.maxY && self.minY < other.maxY
-        )
-    }
-}
+        if min(self.maxX, other.maxX) < max(self.minX, other.minX) { return false }
+        if min(self.maxY, other.maxY) < max(self.minY, other.minY) { return false }
 
-extension CGRect {
-    // XXX: delete this and just use `offsetBy(otherRect.origin)`:
-    public func `in`(_ other: CGRect) -> CGRect {
-        return CGRect(x: minX + other.minX, y: minY + other.minY, width: width, height: height)
+        return true
     }
 }
 
@@ -101,18 +94,6 @@ extension CGRect {
         var offsetCopy = self
         offsetCopy.origin = self.origin.offsetBy(point)
         return offsetCopy
-    }
-}
-
-extension CGRect {
-    var inContentScale: GPU_Rect {
-        let scale = 2.0 //SDL.window.contentsScale
-        return GPU_Rect(
-            x: Float(minX * scale),
-            y: Float(minY * scale),
-            w: Float(width * scale),
-            h: Float(height * scale)
-        )
     }
 }
 

@@ -8,7 +8,7 @@
 
 import SDL.ttf
 
-private let contentScaleFactor = 2.0 // TODO: get and add correct contentScaleFactor according to device
+private let contentScaleFactor: CGFloat = 2.0 // TODO: get and add correct contentScaleFactor according to device
 private var loadedFontPointers = [FontPointer]()
 
 #if os(Android)
@@ -49,7 +49,7 @@ internal class FontRenderer {
     }
 
     func getLineHeight() -> Int {
-        return Int(Double(TTF_FontLineSkip(rawPointer)) / contentScaleFactor)
+        return Int(CGFloat(TTF_FontLineSkip(rawPointer)) / contentScaleFactor)
     }
 
     func size(of text: String) -> CGSize {
@@ -74,6 +74,8 @@ internal class FontRenderer {
         else {
             return nil
         }
+
+        defer { SDL_free(surface) }
 
         return Texture(surface: surface)
     }
