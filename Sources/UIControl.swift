@@ -51,7 +51,7 @@ open class UIControl: UIView {
     open var isSelected = false
 
     public var state: UIControlState {
-        var controlState = UIControlState() // starts as .normal
+        var controlState: UIControlState = .normal // starts as .normal
         if isHighlighted { controlState.formUnion(.highlighted) }
         if isSelected { controlState.formUnion(.selected) }
         if !isEnabled { controlState.formUnion(.disabled) }
