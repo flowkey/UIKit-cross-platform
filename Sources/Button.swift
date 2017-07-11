@@ -16,6 +16,7 @@ open class Button: UIControl {
             if let imageView = imageView { addSubview(imageView) }
         }
     }
+
     public var image: UIImage? {
         get { return imageView?.image }
         set {
@@ -33,55 +34,60 @@ open class Button: UIControl {
             if let titleLabel = titleLabel { addSubview(titleLabel) }
         }
     }
-    open var text: String? {
-        get { return titleLabel?.text }
-        set {
-            guard let text = newValue else { titleLabel = nil; return }
 
-            if titleLabel == nil { titleLabel = UILabel() }
-            titleLabel?.text = text
-        }
-    }
-    
     open var contentEdgeInsets = UIEdgeInsets() {
-        didSet { layoutSubviews() }
+        didSet { setNeedsLayout() }
     }
-    
+
     open func sizeToFit() {
-        layoutSubviews()
+        setNeedsLayout()
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
-        
+
         let imageSize = imageView?.frame.size ?? .zero
         let labelSize = titleLabel?.frame.size ?? .zero
-        
+
         frame.width = imageSize.width + labelSize.width + contentEdgeInsets.left + contentEdgeInsets.right
         frame.height = max(imageSize.height, labelSize.height) + contentEdgeInsets.top + contentEdgeInsets.bottom
     }
-    
+
     public let tapGestureRecognizer = UITapGestureRecognizer()
     public var onPress: (() -> Void)? {
         didSet { tapGestureRecognizer.onPress = onPress }
     }
-    
+
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
         tapGestureRecognizer.view = self
         addGestureRecognizer(tapGestureRecognizer)
     }
+
+    private var titles = [UIControlState: String]()
+    private var titleColors = [UIControlState: UIColor]()
+    private var titleShadowColors = [UIControlState: UIColor]()
     
     open override func layoutSubviews() {
-        titleLabel?.layoutSubviews()
-        
+        // Only change subview attributes if a corresponding entry exists in our dictionaries:
+        if let titleForCurrentControlState = titles[state] {
+            if titleLabel == nil { titleLabel = UILabel() }
+            titleLabel?.text = titleForCurrentControlState
+        } else if titles.isEmpty {
+            titleLabel = nil
+        }
+
+        if let titleColorForCurrentControlState = titleColors[state] {
+            titleLabel?.textColor = titleColorForCurrentControlState
+        }
+
+        if let titleShadowColorForCurrentControlState = titleShadowColors[state] {
+            titleLabel?.shadowColor = titleShadowColorForCurrentControlState
+        }
+
+        titleLabel?.setNeedsLayout()
+
         let imageWidth = imageView?.frame.width ?? 0
         let labelWidth = titleLabel?.frame.width ?? 0
-
-        // If either image or label are nil, center the other element (UIKit default behaviour):
-        let contentHorizontalAlignment =
-            (titleLabel == nil || imageView == nil) ? .center : self.contentHorizontalAlignment
-        let contentVerticalAlignment =
-            (titleLabel == nil || imageView == nil) ? .center : self.contentVerticalAlignment
 
         switch contentHorizontalAlignment {
         case .center:
@@ -94,7 +100,7 @@ open class Button: UIControl {
             imageView?.frame.maxX = bounds.maxX - labelWidth - contentEdgeInsets.right
             titleLabel?.frame.maxX = bounds.maxX - contentEdgeInsets.right
         }
-        
+
         switch contentVerticalAlignment {
         case .center:
             imageView?.frame.midY = bounds.midY
@@ -112,18 +118,18 @@ open class Button: UIControl {
 }
 
 extension Button {
-    public func setTitle(_ text: String) {
-        // TODO: add attribute parameter to set different colors for each attribute
-        titleLabel?.text = text
+    public func setTitle(_ text: String, for state: UIControlState) {
+        titles[state] = text
+        setNeedsLayout()
     }
-    
-    public func setTitleColor(_ color: UIColor) {
-        // TODO: add attribute parameter to set different colors for each attribute
-        titleLabel?.textColor = color
+
+    public func setTitleColor(_ color: UIColor, for state: UIControlState) {
+        titleColors[state] = color
+        setNeedsLayout()
     }
-    
-    public func setTitleShadowColor(_ color: UIColor) {
-        // TODO: add attribute parameter to set different colors for each attribute
-        titleLabel?.shadowColor = color
+
+    public func setTitleShadowColor(_ color: UIColor, for state: UIControlState) {
+        titleShadowColors[state] = color
+        setNeedsLayout()
     }
 }
