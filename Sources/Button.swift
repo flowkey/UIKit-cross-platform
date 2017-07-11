@@ -116,7 +116,7 @@ open class Button: UIControl {
             }
         case .bottom:
             if imageView == nil {
-                titleLabel?.frame.origin.y = bounds.maxY - defaultLabelVerticalPadding
+                titleLabel?.frame.maxY = bounds.maxY - defaultLabelVerticalPadding
             } else {
                 titleLabel?.frame.maxY = bounds.maxY
                 imageView?.frame.maxY = bounds.maxY
