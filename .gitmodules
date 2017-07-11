@@ -1,0 +1,3 @@
+[submodule "Packages/SDL"]
+	path = Packages/SDL
+	url = https://github.com/flowkey/SDL2-SwiftPackageManager
