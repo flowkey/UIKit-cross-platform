@@ -8,7 +8,7 @@
 
 import SDL.ttf
 
-private let contentScaleFactor = 2.0 // TODO: get and add correct contentScaleFactor according to device
+private let contentScaleFactor: CGFloat = 2.0 // TODO: get and add correct contentScaleFactor according to device
 private var loadedFontPointers = [FontPointer]()
 
 #if os(Android)
@@ -36,7 +36,7 @@ private struct FontPointer {
 }
 
 internal class FontRenderer {
-    let rawPointer: OpaquePointer
+    let rawPointer: OpaquePointer // TTF_Font
     
     init?(name: String, size: Int32) {
         if let loadedPointer = loadFontPointerFromCacheIfPossible(name: name, size: size) {
@@ -50,7 +50,7 @@ internal class FontRenderer {
     }
 
     func getLineHeight() -> Int {
-        return Int(Double(TTF_FontLineSkip(rawPointer)) / contentScaleFactor)
+        return Int(CGFloat(TTF_FontLineSkip(rawPointer)) / contentScaleFactor)
     }
 
     func size(of text: String) -> CGSize {
@@ -75,6 +75,8 @@ internal class FontRenderer {
         else {
             return nil
         }
+
+        defer { SDL_free(surface) }
 
         return Texture(surface: surface)
     }
@@ -106,7 +108,6 @@ private func loadFontPointerFromDisk(name: String, size: Int32) -> OpaquePointer
     }
 
     TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
-
     return font
 }
 

@@ -14,14 +14,14 @@ public struct UIColor {
     let blue: UInt8
     let alpha: UInt8
 
-    public init(hex: Int, alpha: Double = 1) {
+    public init(hex: Int, alpha: CGFloat = 1) {
         let red = (hex & 0xFF0000) >> 16
         let green = (hex & 0x00FF00) >> 8
         let blue = (hex & 0x0000FF)
-        self.init(red: Double(red) / 255, green: Double(green) / 255, blue: Double(blue) / 255, alpha: alpha)
+        self.init(red: CGFloat(red) / 255, green: CGFloat(green) / 255, blue: CGFloat(blue) / 255, alpha: alpha)
     }
 
-    public init(red: Double, green: Double, blue: Double, alpha: Double = 1) {
+    public init(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat = 1) {
         self.red = red.normalisedToUInt8()
         self.green = green.normalisedToUInt8()
         self.blue = blue.normalisedToUInt8()
@@ -48,23 +48,23 @@ extension UIColor {
         return self
     }
 
-    public func withAlphaComponent(_ alpha: Double) -> UIColor {
+    public func withAlphaComponent(_ alpha: CGFloat) -> UIColor {
         return UIColor((self.red, self.green, self.blue, alpha.normalisedToUInt8()))
     }
 }
 
 extension UInt8 {
-    func toNormalisedDouble() -> Double {
-        return Double(self) / Double(UInt8.max)
+    func toNormalisedCGFloat() -> CGFloat {
+        return CGFloat(self) / CGFloat(UInt8.max)
     }
 }
 
-extension Double {
+extension CGFloat {
     /// Normalises a double value to a number between 0 and 1,
     /// then converts it to a range of 0 to 255 (UInt8.max):
     func normalisedToUInt8() -> UInt8 {
         let normalisedValue = min(max(self, 0), 1) // prevent overflow
-        return UInt8(normalisedValue * Double(UInt8.max))
+        return UInt8(normalisedValue * CGFloat(UInt8.max))
     }
 }
 

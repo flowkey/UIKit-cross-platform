@@ -13,10 +13,10 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         self.onPan = onPan
     }
 
-    var initialTouchPoint: CGPoint = .zero // should probably be optional instead
-    var trackedTouch: UITouch?
+    private var initialTouchPoint: CGPoint = .zero // should probably be optional instead
+    private var trackedTouch: UITouch?
 
-    let minimumTranslationThreshold: CGFloat = 5
+    private let minimumTranslationThreshold: CGFloat = 5
 
     open func translation(in view: UIView?) -> CGPoint {
         guard let trackedTouch = trackedTouch else { return .zero }
@@ -27,8 +27,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     open func setTranslation(_ point: CGPoint, in view: UIView?) {
         guard let trackedTouch = trackedTouch else { return }
-        let position = trackedTouch.positionInView
-        let positionInTargetView = trackedTouch.view?.convert(position, to: view) ?? position
+        let positionInTargetView = trackedTouch.location(in: view)
         initialTouchPoint = CGPoint(x: positionInTargetView.x + point.x, y: positionInTargetView.y + point.y)
     }
 

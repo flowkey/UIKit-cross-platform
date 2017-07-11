@@ -131,6 +131,8 @@ open class Button: UIControl {
                 imageView?.frame.maxY = bounds.maxY
             }
         }
+
+        super.layoutSubviews()
     }
 }
 
