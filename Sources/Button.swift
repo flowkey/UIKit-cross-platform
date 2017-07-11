@@ -16,6 +16,7 @@ open class Button: UIControl {
             if let imageView = imageView { addSubview(imageView) }
         }
     }
+
     public var image: UIImage? {
         get { return imageView?.image }
         set {
@@ -40,9 +41,9 @@ open class Button: UIControl {
     private var titleShadowColorForControlState = [UIControlState: UIColor]()
 
     private var defaultLabelVerticalPadding: CGFloat = 6
-    
+
     open func sizeToFit() {
-        layoutSubviews()
+        setNeedsLayout()
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
 
@@ -60,36 +61,45 @@ open class Button: UIControl {
             frame.size = CGSize(width: 30, height: 34)
         }
     }
-    
+
     public let tapGestureRecognizer = UITapGestureRecognizer()
     public var onPress: (() -> Void)? {
         didSet { tapGestureRecognizer.onPress = onPress }
     }
-    
+
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
         tapGestureRecognizer.view = self
         addGestureRecognizer(tapGestureRecognizer)
     }
+
+    private var titles = [UIControlState: String]()
+    private var titleColors = [UIControlState: UIColor]()
+    private var titleShadowColors = [UIControlState: UIColor]()
     
     open override func layoutSubviews() {
-        if let titleForCurrentControlState = titleForControlState[currentControlState] {
+        // Only change subview attributes if a corresponding entry exists in our dictionaries:
+        if let titleForCurrentControlState = titles[state] {
             if titleLabel == nil { titleLabel = UILabel() }
             titleLabel?.text = titleForCurrentControlState
+        } else if titles.isEmpty {
+            titleLabel = nil
         }
-        if let titleColorForCurrentControlState = titleColorForControlState[currentControlState] {
+
+        if let titleColorForCurrentControlState = titleColors[state] {
             titleLabel?.textColor = titleColorForCurrentControlState
         }
-        if let titleShadowColorForCurrentControlState = titleColorForControlState[currentControlState] {
+
+        if let titleShadowColorForCurrentControlState = titleShadowColors[state] {
             titleLabel?.shadowColor = titleShadowColorForCurrentControlState
         }
 
-        titleLabel?.layoutSubviews()
-        
+        titleLabel?.setNeedsLayout()
+
         let imageWidth = imageView?.frame.width ?? 0
         let labelWidth = titleLabel?.frame.width ?? 0
-        
+
         switch contentHorizontalAlignment {
         case .center:
             imageView?.frame.midX = bounds.midX - labelWidth / 2
@@ -101,7 +111,7 @@ open class Button: UIControl {
             imageView?.frame.maxX = bounds.maxX - labelWidth
             titleLabel?.frame.maxX = bounds.maxX
         }
-        
+
         switch contentVerticalAlignment {
         case .center:
             imageView?.frame.midY = bounds.midY
@@ -126,17 +136,17 @@ open class Button: UIControl {
 
 extension Button {
     public func setTitle(_ text: String, for state: UIControlState) {
-        titleForControlState[state] = text
-        layoutSubviews()
+        titles[state] = text
+        setNeedsLayout()
     }
-    
+
     public func setTitleColor(_ color: UIColor, for state: UIControlState) {
-        titleColorForControlState[state] = color
-        layoutSubviews()
+        titleColors[state] = color
+        setNeedsLayout()
     }
-    
+
     public func setTitleShadowColor(_ color: UIColor, for state: UIControlState) {
-        titleShadowColorForControlState[state] = color
-        layoutSubviews()
+        titleShadowColors[state] = color
+        setNeedsLayout()
     }
 }
