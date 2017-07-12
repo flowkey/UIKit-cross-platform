@@ -51,10 +51,15 @@ class ButtonTests: XCTestCase {
 
     func testSetTitle() {
         testButton.setTitle(shortButtonText, for: .normal)
+        testButton.layoutSubviews()
         XCTAssertEqual(testButton.titleLabel?.text, shortButtonText)
+
         testButton.setTitle(mediumButtonText, for: .normal)
+        testButton.layoutSubviews()
         XCTAssertEqual(testButton.titleLabel?.text, mediumButtonText)
+
         testButton.setTitle(longButtonText, for: .normal)
+        testButton.layoutSubviews()
         XCTAssertEqual(testButton.titleLabel?.text, longButtonText)
     }
 
@@ -69,9 +74,9 @@ class ButtonTests: XCTestCase {
         loadCustomFont(name: "Roboto-Medium", fontExtension: "ttf")
         #endif
         testButton.setTitle(shortButtonText, for: .normal)
+        testButton.layoutSubviews()
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
         testButton.sizeToFit()
-        testButton.layoutSubviews()
 
         // move those to UIFontTests
         XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), smallFontLineHeight)
@@ -82,8 +87,8 @@ class ButtonTests: XCTestCase {
         XCTAssertEqualWithAccuracy(testButton.frame.height, frameSizeWithShortLabelText.height, accuracy: 0.5)
 
         testButton.setTitle(mediumButtonText, for: .normal)
+        testButton.layoutSubviews()
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: mediumFontSize)!
-        testButton.titleLabel?.layoutSubviews() // FIX!!
         testButton.sizeToFit()
 
         let frameSizeWithMediumLabelText = UIKit.CGSize(width: 136.5, height: 31.0)
@@ -92,10 +97,9 @@ class ButtonTests: XCTestCase {
         XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), mediumFontLineHeight)
 
         testButton.setTitle(longButtonText, for: .normal)
+        testButton.layoutSubviews()
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: largeFontSize)!
         testButton.sizeToFit()
-        testButton.titleLabel?.sizeToFit()
-        testButton.layoutSubviews()
         
         let frameSizeWithLongLabelText = UIKit.CGSize(width: 307.5, height: 36.0)
         XCTAssertEqualWithAccuracy(testButton.frame.width, frameSizeWithLongLabelText.width, accuracy: 1.5)
