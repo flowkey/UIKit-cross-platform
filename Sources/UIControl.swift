@@ -43,15 +43,15 @@ public struct UIControlState: OptionSet, Hashable {
 
 // current minimal implementation of UIControl for content alignment in Button
 open class UIControl: UIView {
-    public var contentHorizontalAlignment: UIControlContentHorizontalAlignment = .left
-    public var contentVerticalAlignment: UIControlContentVerticalAlignment = .top
+    public var contentHorizontalAlignment: UIControlContentHorizontalAlignment = .center
+    public var contentVerticalAlignment: UIControlContentVerticalAlignment = .center
 
     open var isEnabled = true
     open var isHighlighted = false
     open var isSelected = false
 
     public var state: UIControlState {
-        var controlState = UIControlState() // starts as .normal
+        var controlState: UIControlState = .normal // starts as .normal
         if isHighlighted { controlState.formUnion(.highlighted) }
         if isSelected { controlState.formUnion(.selected) }
         if !isEnabled { controlState.formUnion(.disabled) }
