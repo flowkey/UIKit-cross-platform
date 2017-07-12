@@ -9,9 +9,9 @@
 import XCTest
 
 #if os(iOS)
-import UIKit
+    import UIKit
 #else
-@testable import UIKit
+    @testable import UIKit
 #endif
 
 let shortButtonText = "Short"
@@ -111,9 +111,7 @@ func loadCustomFont(name: String, fontExtension: String) -> Bool {
     }
     return true
 }
-#endif
 
-#if os(iOS)
 public class Button: UIButton {
     var image: UIImage? {
         didSet {
