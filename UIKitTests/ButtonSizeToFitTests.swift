@@ -29,7 +29,7 @@ class ButtonSizeToFitTests: XCTestCase {
     }
 
     func testSizeToFitWithNoLabelAndNoImage () {
-        let defaultSizeForEmptyButton = UIKit.CGSize(width: 30.0, height: 34.0)
+        let defaultSizeForEmptyButton = CGSize(width: 30.0, height: 34.0)
         testButton.sizeToFit()
         XCTAssertEqual(testButton.frame.size, defaultSizeForEmptyButton)
     }
@@ -45,7 +45,7 @@ class ButtonSizeToFitTests: XCTestCase {
         XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), smallFontLineHeight)
         XCTAssertEqual(testButton.titleLabel?.font.fontName, "Roboto-Medium")
 
-        let frameSizeWithShortLabelText = UIKit.CGSize(width: 28.5, height: 26.5)
+        let frameSizeWithShortLabelText = CGSize(width: 28.5, height: 26.5)
         XCTAssertEqualWithAccuracy(testButton.frame.width, frameSizeWithShortLabelText.width, accuracy: 1.5)
         XCTAssertEqualWithAccuracy(testButton.frame.height, frameSizeWithShortLabelText.height, accuracy: 0.5)
     }
@@ -56,7 +56,7 @@ class ButtonSizeToFitTests: XCTestCase {
         testButton.layoutSubviews()
         testButton.sizeToFit()
 
-        let frameSizeWithMediumLabelText = UIKit.CGSize(width: 136.5, height: 31.0)
+        let frameSizeWithMediumLabelText = CGSize(width: 136.5, height: 31.0)
         XCTAssertEqualWithAccuracy(testButton.frame.width, frameSizeWithMediumLabelText.width, accuracy: 0.5)
         XCTAssertEqualWithAccuracy(testButton.frame.height, frameSizeWithMediumLabelText.height, accuracy: 0.1)
         XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), mediumFontLineHeight)
@@ -68,7 +68,7 @@ class ButtonSizeToFitTests: XCTestCase {
         testButton.layoutSubviews()
         testButton.sizeToFit()
 
-        let frameSizeWithLongLabelText = UIKit.CGSize(width: 307.5, height: 36.0)
+        let frameSizeWithLongLabelText = CGSize(width: 307.5, height: 36.0)
         XCTAssertEqualWithAccuracy(testButton.frame.width, frameSizeWithLongLabelText.width, accuracy: 1.5)
         XCTAssertEqualWithAccuracy(testButton.frame.height, frameSizeWithLongLabelText.height, accuracy: 0.1)
         XCTAssertEqual(testButton.titleLabel?.font.lineHeight.rounded(), largeFontLineHeight)

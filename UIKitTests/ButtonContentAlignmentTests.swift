@@ -15,8 +15,8 @@ import XCTest
 
 class ButtonContentAlignmentTests: XCTestCase {
     let testButton = Button(frame: .zero)
-    let buttonFrameSize = UIKit.CGSize(width: 200, height: 100)
-    let testImageSize = UIKit.CGSize(width: 40, height: 40)
+    let buttonFrameSize = CGSize(width: 200, height: 100)
+    let testImageSize = CGSize(width: 40, height: 40)
 
     override func setUp() {
         super.setUp()

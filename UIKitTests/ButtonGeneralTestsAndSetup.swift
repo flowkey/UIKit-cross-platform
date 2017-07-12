@@ -14,22 +14,26 @@ import XCTest
     @testable import UIKit
 #endif
 
+public typealias CGSize = UIKit.CGSize
+public typealias CGFloat = UIKit.CGFloat
+public typealias CGPoint = UIKit.CGPoint
+
 let shortButtonText = "Short"
 let mediumButtonText = "MediumButtonText"
 let longButtonText = "ThisIsALongTextToTestTheButton"
 
-let smallFontSize: UIKit.CGFloat = 12
-let smallFontLineHeight: UIKit.CGFloat = 14
-let mediumFontSize: UIKit.CGFloat = 16 // default
-let mediumFontLineHeight: UIKit.CGFloat = 19
-let largeFontSize: UIKit.CGFloat = 20
-let largeFontLineHeight: UIKit.CGFloat = 23
+let smallFontSize: CGFloat = 12
+let smallFontLineHeight: CGFloat = 14
+let mediumFontSize: CGFloat = 16 // default
+let mediumFontLineHeight: CGFloat = 19
+let largeFontSize: CGFloat = 20
+let largeFontLineHeight: CGFloat = 23
 
-let defaultLabelVerticalPadding: UIKit.CGFloat = 6
+let defaultLabelVerticalPadding: CGFloat = 6
 
-let smallImageSize = UIKit.CGSize(width: 40, height: 40)
-let mediumImageSize = UIKit.CGSize(width: 80, height: 80)
-let largeImageSize = UIKit.CGSize(width: 150, height: 150)
+let smallImageSize = CGSize(width: 40, height: 40)
+let mediumImageSize = CGSize(width: 80, height: 80)
+let largeImageSize = CGSize(width: 150, height: 150)
 
 class ButtonGeneralTestsAndSetup: XCTestCase {
     let testButton = Button(frame: .zero)
@@ -60,7 +64,7 @@ class ButtonGeneralTestsAndSetup: XCTestCase {
     }
 }
 
-func createTestImage(ofSize imageSize: UIKit.CGSize) -> UIImage {
+func createTestImage(ofSize imageSize: CGSize) -> UIImage {
     var testImage: UIImage
     #if os(iOS)
         UIGraphicsBeginImageContext(imageSize)
@@ -74,7 +78,7 @@ func createTestImage(ofSize imageSize: UIKit.CGSize) -> UIImage {
 
 #if !os(iOS)
     extension Texture {
-        convenience init?(size: UIKit.CGSize) {
+        convenience init?(size: CGSize) {
             var gpuImage = GPU_Image()
 
             gpuImage.w = UInt16(size.width)
