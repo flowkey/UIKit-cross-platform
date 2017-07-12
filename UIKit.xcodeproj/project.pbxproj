@@ -52,9 +52,13 @@
 		5CE5C57A1EDDAE5000680154 /* CGPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5791EDDAE5000680154 /* CGPath.swift */; };
 		5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */; };
 		8318D27B1F0695080029816A /* UIControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D27A1F0695080029816A /* UIControl.swift */; };
-		833860B41F0D55BC004DD55E /* ButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTests.swift */; };
+		832A7F021F1632070041916B /* ButtonSizeToFitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */; };
+		832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
+		832A7F0D1F16368D0041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
+		832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */; };
+		833860B41F0D55BC004DD55E /* ButtonGeneralTestsAndSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift */; };
 		8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8378E17D1F05503600E138BD /* UIVisualEffectView.swift */; };
-		83B76ED31F0BCD4C0096736C /* ButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTests.swift */; };
+		83B76ED31F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift */; };
 		83C18F461F0FB491008FEA07 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83C18F3A1F0FB486008FEA07 /* Roboto-Black.ttf */; };
 		83C18F471F0FB491008FEA07 /* Roboto-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83C18F3B1F0FB486008FEA07 /* Roboto-BlackItalic.ttf */; };
 		83C18F481F0FB491008FEA07 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83C18F3C1F0FB486008FEA07 /* Roboto-Bold.ttf */; };
@@ -137,11 +141,13 @@
 		5CE5C5771EDDAD8200680154 /* CGRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGRect.swift; path = Sources/CGRect.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5791EDDAE5000680154 /* CGPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGPath.swift; path = Sources/CGPath.swift; sourceTree = SOURCE_ROOT; };
 		5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontRenderer.swift; sourceTree = "<group>"; };
-		8318D27A1F0695080029816A /* UIControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIControl.swift; sourceTree = "<group>"; };
+		8318D27A1F0695080029816A /* UIControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIControl.swift; path = ../Sources/UIControl.swift; sourceTree = "<group>"; };
+		832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSizeToFitTests.swift; sourceTree = "<group>"; };
+		832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonContentAlignmentTests.swift; sourceTree = "<group>"; };
 		833860AC1F0D55B3004DD55E /* iOSTestTarget.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTestTarget.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		833860B01F0D55B3004DD55E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8378E17D1F05503600E138BD /* UIVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIVisualEffectView.swift; sourceTree = "<group>"; };
-		83B76ED21F0BCD4C0096736C /* ButtonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTests.swift; sourceTree = "<group>"; };
+		8378E17D1F05503600E138BD /* UIVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIVisualEffectView.swift; path = ../Sources/UIVisualEffectView.swift; sourceTree = "<group>"; };
+		83B76ED21F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonGeneralTestsAndSetup.swift; sourceTree = "<group>"; };
 		83C18F3A1F0FB486008FEA07 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Black.ttf"; sourceTree = "<group>"; };
 		83C18F3B1F0FB486008FEA07 /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
 		83C18F3C1F0FB486008FEA07 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
@@ -154,8 +160,6 @@
 		83C18F431F0FB486008FEA07 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		83C18F441F0FB486008FEA07 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		83C18F451F0FB486008FEA07 /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
-		8318D27A1F0695080029816A /* UIControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIControl.swift; path = ../Sources/UIControl.swift; sourceTree = "<group>"; };
-		8378E17D1F05503600E138BD /* UIVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIVisualEffectView.swift; path = ../Sources/UIVisualEffectView.swift; sourceTree = "<group>"; };
 		83E5F7EA1EF8156400279C59 /* Texture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
 		83E5F7EC1EF8157300279C59 /* Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		83E5F7F21EF8188400279C59 /* UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UILabel.swift; path = Sources/UILabel.swift; sourceTree = SOURCE_ROOT; };
@@ -265,7 +269,9 @@
 		5C27E7BB1ECB2F6500F5020D /* UIKitTests */ = {
 			isa = PBXGroup;
 			children = (
-				83B76ED21F0BCD4C0096736C /* ButtonTests.swift */,
+				832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */,
+				832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */,
+				83B76ED21F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift */,
 				5C27E7BE1ECB2F6500F5020D /* Info.plist */,
 				5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */,
 				5C9037201F137FB70058E592 /* CGRectTests.swift */,
@@ -561,7 +567,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
-				83B76ED31F0BCD4C0096736C /* ButtonTests.swift in Sources */,
+				83B76ED31F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift in Sources */,
+				832A7F021F1632070041916B /* ButtonSizeToFitTests.swift in Sources */,
+				832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -569,7 +577,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				833860B41F0D55BC004DD55E /* ButtonTests.swift in Sources */,
+				833860B41F0D55BC004DD55E /* ButtonGeneralTestsAndSetup.swift in Sources */,
+				832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */,
+				832A7F0D1F16368D0041916B /* ButtonContentAlignmentTests.swift in Sources */,
 				5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
