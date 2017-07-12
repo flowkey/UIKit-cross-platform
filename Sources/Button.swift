@@ -142,11 +142,21 @@ open class Button: UIControl {
 extension Button {
     public func setImage(_ image: UIImage?, for state: UIControlState) {
         images[state] = image
+        if images.isEmpty {
+            imageView = nil
+        } else if imageView == nil {
+            imageView = UIImageView()
+        }
         setNeedsLayout()
     }
 
     public func setTitle(_ text: String?, for state: UIControlState) {
         titles[state] = text
+        if titles.isEmpty {
+            titleLabel = nil
+        } else if titleLabel == nil {
+            titleLabel = UILabel()
+        }
         setNeedsLayout()
     }
 
