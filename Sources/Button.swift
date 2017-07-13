@@ -16,17 +16,6 @@ open class Button: UIControl {
             if let imageView = imageView { addSubview(imageView) }
         }
     }
-
-    public var image: UIImage? {
-        get { return imageView?.image }
-        set {
-            guard let image = newValue else { imageView = nil; return }
-
-            if imageView == nil { imageView = UIImageView() }
-            imageView?.image = image
-            imageView?.sizeToFit()
-        }
-    }
     
     public var titleLabel: UILabel? {
         didSet {
@@ -86,9 +75,9 @@ open class Button: UIControl {
         }
 
         if let imageForCurrentControlState = images[state] {
-            image = imageForCurrentControlState
+            imageView?.image = imageForCurrentControlState
         } else if images.isEmpty {
-            image = nil
+            imageView = nil
         }
 
         if let titleColorForCurrentControlState = titleColors[state] {
@@ -145,8 +134,9 @@ extension Button {
         images[state] = image
         if images.isEmpty {
             imageView = nil
-        } else if imageView == nil {
-            imageView = UIImageView()
+        } else {
+            if imageView == nil { imageView = UIImageView() }
+            imageView?.image = image
         }
         setNeedsLayout()
     }
