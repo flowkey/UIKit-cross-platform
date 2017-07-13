@@ -15,10 +15,6 @@ extension Texture {
         gpuImage.w = UInt16(size.width)
         gpuImage.h = UInt16(size.height)
 
-        // TODO: check capacity of 16 or initialize in different way without explizit capacity
-        let gpuImagePointer = UnsafeMutablePointer<GPU_Image>.allocate(capacity: 16)
-        gpuImagePointer.initialize(to: gpuImage)
-
-        self.init(gpuImage: gpuImagePointer)
+        self.init(gpuImage: gpuImage)
     }
 }

@@ -32,8 +32,11 @@ internal final class Texture {
         scaleImage(scale)
     }
 
-    init?(gpuImage: UnsafeMutablePointer<GPU_Image>) {
-        rawPointer = gpuImage
+    init?(gpuImage: GPU_Image) {
+        let gpuImagePointer = UnsafeMutablePointer<GPU_Image>.allocate(capacity: 1)
+        gpuImagePointer.initialize(to: gpuImage)
+
+        rawPointer = gpuImagePointer
     }
     
     private func scaleImage(_ scale: Float) {
