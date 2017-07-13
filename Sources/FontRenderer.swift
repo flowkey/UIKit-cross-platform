@@ -53,6 +53,12 @@ internal class FontRenderer {
         return Int(CGFloat(TTF_FontLineSkip(rawPointer)) / contentScaleFactor)
     }
 
+    func getFontFamilyName() -> String? {
+        guard let cStringFamilyName = TTF_FontFaceFamilyName(rawPointer) else { return nil }
+        let fontFamilyName = String(cString: cStringFamilyName)
+        return fontFamilyName
+    }
+
     func size(of text: String) -> CGSize {
         var width: Int32 = 0
         var height: Int32 = 0

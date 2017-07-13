@@ -43,6 +43,7 @@ open class UIFont {
 
         self.renderer = renderer
         self.fontName = fontFileName
+        self.familyName = renderer.getFontFamilyName()
         self.pointSize = size
         self.lineHeight = CGFloat(renderer.getLineHeight())
     }
