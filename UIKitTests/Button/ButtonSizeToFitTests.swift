@@ -31,14 +31,14 @@ class ButtonSizeToFitTests: XCTestCase {
 
     func testSizeToFitWithSmallLabel() {
         button.setTitle(shortButtonText, for: .normal)
-        button.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
+        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
         button.layoutSubviews()
         button.sizeToFit()
 
 
         // move those to UIFontTests
-        XCTAssertEqual(button.titleLabel?.font.lineHeight.rounded(), smallFontLineHeight)
-        XCTAssertEqual(button.titleLabel?.font.fontName, "Roboto-Medium")
+        XCTAssertEqual(button.titleLabel!.font.lineHeight.rounded(), smallFontLineHeight)
+        XCTAssertEqual(button.titleLabel!.font.fontName, "Roboto-Medium")
 
         let frameSizeWithShortLabelText = CGSize(width: 28.5, height: 26.5)
         XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithShortLabelText.width, accuracy: 1.5)
@@ -47,26 +47,26 @@ class ButtonSizeToFitTests: XCTestCase {
 
     func testSizeToFitWithMediumLabel() {
         button.setTitle(mediumButtonText, for: .normal)
-        button.titleLabel?.font = UIFont(name: "Roboto-Medium", size: mediumFontSize)!
+        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: mediumFontSize)!
         button.layoutSubviews()
         button.sizeToFit()
 
         let frameSizeWithMediumLabelText = CGSize(width: 136.5, height: 31.0)
         XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithMediumLabelText.width, accuracy: 0.5)
         XCTAssertEqualWithAccuracy(button.frame.height, frameSizeWithMediumLabelText.height, accuracy: 0.1)
-        XCTAssertEqual(button.titleLabel?.font.lineHeight.rounded(), mediumFontLineHeight)
+        XCTAssertEqual(button.titleLabel!.font.lineHeight.rounded(), mediumFontLineHeight)
     }
 
     func testSizeToFitWithLargeLabel() {
         button.setTitle(longButtonText, for: .normal)
-        button.titleLabel?.font = UIFont(name: "Roboto-Medium", size: largeFontSize)!
+        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: largeFontSize)!
         button.layoutSubviews()
         button.sizeToFit()
 
         let frameSizeWithLongLabelText = CGSize(width: 307.5, height: 36.0)
         XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithLongLabelText.width, accuracy: 1.5)
         XCTAssertEqualWithAccuracy(button.frame.height, frameSizeWithLongLabelText.height, accuracy: 0.1)
-        XCTAssertEqual(button.titleLabel?.font.lineHeight.rounded(), largeFontLineHeight)
+        XCTAssertEqual(button.titleLabel!.font.lineHeight.rounded(), largeFontLineHeight)
     }
 
     func testSizeToFitWithMediumImage() {

@@ -50,8 +50,8 @@ class ButtonContentAlignmentTests: XCTestCase {
 
         XCTAssertEqual(button.contentHorizontalAlignment, .center)
         XCTAssertEqual(button.contentVerticalAlignment, .center)
-        XCTAssertEqualWithAccuracy(button.titleLabel!.frame.origin.x, buttonSize.width / 2 - button.titleLabel!.frame.width / 2, accuracy: 0.01)
-        XCTAssertEqualWithAccuracy(button.titleLabel!.frame.origin.y, buttonSize.height / 2 - button.titleLabel!.frame.height / 2, accuracy: 0.18)
+        XCTAssertEqual(button.titleLabel!.frame.origin.x, buttonSize.width / 2 - button.titleLabel!.bounds.midX)
+        XCTAssertEqual(button.titleLabel!.frame.origin.y, (buttonSize.height / 2 - button.titleLabel!.bounds.midY).rounded())
     }
 
     func testTopLeftContentAlignmentWithOnlyLabel() {
@@ -127,10 +127,10 @@ class ButtonContentAlignmentTests: XCTestCase {
 
         XCTAssertEqual(button.contentHorizontalAlignment, .center)
         XCTAssertEqual(button.contentVerticalAlignment, .center)
-        XCTAssertEqualWithAccuracy(button.imageView!.frame.origin.x, (buttonSize.width - (testImageSize.width + button.titleLabel!.frame.width)) / 2, accuracy: 0.001)
+        XCTAssertEqualWithAccuracy(button.imageView!.frame.origin.x, (buttonSize.width - (testImageSize.width + button.titleLabel!.frame.width)) / 2, accuracy: 0.0001)
         XCTAssertEqual(button.imageView!.frame.origin.y, buttonSize.height / 2 - testImageSize.height / 2)
-        XCTAssertEqualWithAccuracy(button.titleLabel!.frame.origin.x, (buttonSize.width - button.titleLabel!.frame.width + testImageSize.width) / 2, accuracy: 0.001)
-        XCTAssertEqualWithAccuracy(button.titleLabel!.frame.origin.y, (buttonSize.height - button.titleLabel!.frame.height) / 2, accuracy: 0.17)
+        XCTAssertEqualWithAccuracy(button.titleLabel!.frame.origin.x, (buttonSize.width - button.titleLabel!.frame.width + testImageSize.width) / 2, accuracy: 0.0001)
+        XCTAssertEqual(button.titleLabel!.frame.origin.y, ((buttonSize.height - button.titleLabel!.frame.height) / 2).rounded())
     }
 
     func testTopLeftContentAlignmentWithLabelAndImage() {
@@ -146,7 +146,7 @@ class ButtonContentAlignmentTests: XCTestCase {
 
         XCTAssertEqual(button.imageView!.frame.origin.x, 0.0)
         XCTAssertEqual(button.imageView!.frame.origin.y, 0.0)
-        XCTAssertEqualWithAccuracy(button.titleLabel!.frame.origin.x, testImageSize.width, accuracy: 0.001)
+        XCTAssertEqualWithAccuracy(button.titleLabel!.frame.origin.x, testImageSize.width, accuracy: 0.0001)
         XCTAssertEqual(button.titleLabel!.frame.origin.y, 0.0)
     }
 
@@ -161,7 +161,7 @@ class ButtonContentAlignmentTests: XCTestCase {
         button.contentVerticalAlignment = .bottom
         button.layoutSubviews()
 
-        XCTAssertEqualWithAccuracy(button.imageView!.frame.origin.x, buttonSize.width - button.titleLabel!.frame.width - testImageSize.width, accuracy: 0.1)
+        XCTAssertEqual(button.imageView!.frame.origin.x.rounded(), (buttonSize.width - button.titleLabel!.frame.width - testImageSize.width).rounded())
         XCTAssertEqual(button.imageView!.frame.origin.y, buttonSize.height - testImageSize.height)
         XCTAssertEqual(button.titleLabel!.frame.origin.x, buttonSize.width - button.titleLabel!.frame.width)
         XCTAssertEqual(button.titleLabel!.frame.origin.y, buttonSize.height - button.titleLabel!.frame.height)
