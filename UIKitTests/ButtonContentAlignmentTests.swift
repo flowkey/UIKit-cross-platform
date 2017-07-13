@@ -26,7 +26,6 @@ class ButtonContentAlignmentTests: XCTestCase {
     }
     
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
 
@@ -51,6 +50,7 @@ class ButtonContentAlignmentTests: XCTestCase {
         testButton.contentHorizontalAlignment = .left
         testButton.contentVerticalAlignment = .top
         testButton.layoutSubviews()
+
         XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.left)
         XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.top)
         XCTAssertEqual(testButton.titleLabel?.frame.origin.x, 0.0)
@@ -60,12 +60,15 @@ class ButtonContentAlignmentTests: XCTestCase {
     func testBottomRightContentAlignmentWithOnlyLabel() {
         testButton.setTitle(shortButtonText, for: .normal)
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
+
+        
         testButton.frame = CGRect(origin: testButton.frame.origin, size: buttonFrameSize)
         testButton.layoutSubviews()
 
         testButton.contentHorizontalAlignment = .right
         testButton.contentVerticalAlignment = .bottom
         testButton.layoutSubviews()
+
         XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.right)
         XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.bottom)
         XCTAssertEqual(testButton.titleLabel?.frame.origin.x, buttonFrameSize.width - (testButton.titleLabel?.frame.width)!)

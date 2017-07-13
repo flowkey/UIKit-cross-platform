@@ -42,16 +42,15 @@ open class Button: UIControl {
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
 
-        if let imageView = imageView {
+        if let imageView = imageView, let titleLabel = titleLabel {
+            frame.width += titleLabel.frame.width
+            frame.height = max(imageView.frame.height, titleLabel.frame.height)
+        } else if let imageView = imageView, titleLabel == nil {
             frame.width = imageView.frame.width
             frame.height = imageView.frame.height
-            if let titleLabel = titleLabel {
-                frame.width += titleLabel.frame.width
-                frame.height = max(imageView.frame.height, titleLabel.frame.height)
-            }
-        } else if let titleLabel = titleLabel {
+        } else if let titleLabel = titleLabel, imageView == nil {
             frame.width = titleLabel.frame.width
-            frame.height = titleLabel.frame.height + 2 * defaultLabelVerticalPadding
+            frame.height = titleLabel.frame.height + (2 * defaultLabelVerticalPadding)
         } else {
             frame.size = CGSize(width: 30, height: 34)
         }

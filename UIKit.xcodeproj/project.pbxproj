@@ -79,6 +79,7 @@
 		83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8101EF8316C00279C59 /* CGPoint.swift */; };
 		83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8111EF8316C00279C59 /* CGFloat.swift */; };
 		83E5F8181EF8323500279C59 /* CGAffineTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */; };
+		83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
 		83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */; };
 /* End PBXBuildFile section */
 
@@ -567,6 +568,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
+				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
 				83B76ED31F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift in Sources */,
 				832A7F021F1632070041916B /* ButtonSizeToFitTests.swift in Sources */,
 				832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */,

@@ -97,7 +97,7 @@ func createTestImage(ofSize imageSize: CGSize) -> UIImage {
 func loadCustomFont(name: String, fontExtension: String) -> Bool {
     let fileManager = FileManager.default
 
-    let bundleURL = Bundle.init(for: ButtonTests.self).bundleURL
+    let bundleURL = Bundle.init(for: ButtonGeneralTestsAndSetup.self).bundleURL
 
     do {
         let contents = try fileManager.contentsOfDirectory(at: bundleURL, includingPropertiesForKeys: [], options: .skipsHiddenFiles)
