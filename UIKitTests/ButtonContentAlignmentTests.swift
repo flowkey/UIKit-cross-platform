@@ -45,7 +45,6 @@ class ButtonContentAlignmentTests: XCTestCase {
         testButton.setTitle(shortButtonText, for: .normal)
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
         testButton.frame = CGRect(origin: testButton.frame.origin, size: buttonFrameSize)
-        testButton.layoutSubviews()
 
         testButton.contentHorizontalAlignment = .left
         testButton.contentVerticalAlignment = .top
@@ -54,16 +53,13 @@ class ButtonContentAlignmentTests: XCTestCase {
         XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.left)
         XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.top)
         XCTAssertEqual(testButton.titleLabel?.frame.origin.x, 0.0)
-        XCTAssertEqualWithAccuracy((testButton.titleLabel?.frame.origin.y)!, defaultLabelVerticalPadding, accuracy: 0.001)
+        XCTAssertEqual((testButton.titleLabel?.frame.origin.y)!, 0.0)
     }
 
     func testBottomRightContentAlignmentWithOnlyLabel() {
         testButton.setTitle(shortButtonText, for: .normal)
         testButton.titleLabel?.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
-
-        
         testButton.frame = CGRect(origin: testButton.frame.origin, size: buttonFrameSize)
-        testButton.layoutSubviews()
 
         testButton.contentHorizontalAlignment = .right
         testButton.contentVerticalAlignment = .bottom
@@ -72,7 +68,7 @@ class ButtonContentAlignmentTests: XCTestCase {
         XCTAssertEqual(testButton.contentHorizontalAlignment, UIControlContentHorizontalAlignment.right)
         XCTAssertEqual(testButton.contentVerticalAlignment, UIControlContentVerticalAlignment.bottom)
         XCTAssertEqual(testButton.titleLabel?.frame.origin.x, buttonFrameSize.width - (testButton.titleLabel?.frame.width)!)
-        XCTAssertEqual(testButton.titleLabel?.frame.origin.y, buttonFrameSize.height - (testButton.titleLabel?.frame.height)! - defaultLabelVerticalPadding)
+        XCTAssertEqual(testButton.titleLabel?.frame.origin.y, buttonFrameSize.height - (testButton.titleLabel?.frame.height)!)
     }
 
     func testDefaultContentAlignmentWithOnlyImage() {

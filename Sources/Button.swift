@@ -35,9 +35,11 @@ open class Button: UIControl {
         }
     }
 
-    private let defaultLabelVerticalPadding: CGFloat = 6
+    private var currentLabelVerticalPadding: CGFloat = 0
+    private let labelVerticalPaddingAfterSizeToFit: CGFloat = 6
 
     open func sizeToFit() {
+        currentLabelVerticalPadding = labelVerticalPaddingAfterSizeToFit
         setNeedsLayout()
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
@@ -50,7 +52,7 @@ open class Button: UIControl {
             frame.height = imageView.frame.height
         } else if let titleLabel = titleLabel, imageView == nil {
             frame.width = titleLabel.frame.width
-            frame.height = titleLabel.frame.height + (2 * defaultLabelVerticalPadding)
+            frame.height = titleLabel.frame.height + (2 * labelVerticalPaddingAfterSizeToFit)
         } else {
             frame.size = CGSize(width: 30, height: 34)
         }
@@ -120,14 +122,14 @@ open class Button: UIControl {
             titleLabel?.frame.midY = bounds.midY
         case .top:
             if imageView == nil {
-                titleLabel?.frame.origin.y = defaultLabelVerticalPadding
+                titleLabel?.frame.origin.y = currentLabelVerticalPadding
             } else {
                 titleLabel?.frame.origin.y = 0
                 imageView?.frame.origin.y = 0
             }
         case .bottom:
             if imageView == nil {
-                titleLabel?.frame.maxY = bounds.maxY - defaultLabelVerticalPadding
+                titleLabel?.frame.maxY = bounds.maxY - currentLabelVerticalPadding
             } else {
                 titleLabel?.frame.maxY = bounds.maxY
                 imageView?.frame.maxY = bounds.maxY
