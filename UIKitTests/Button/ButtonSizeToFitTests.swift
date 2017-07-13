@@ -15,7 +15,7 @@ class ButtonSizeToFitTests: XCTestCase {
     override class func setUp() {
         super.setUp()
         #if os(iOS)
-            loadCustomFont(name: "Roboto-Medium", fontExtension: "ttf")
+            loadCustomFont(name: "roboto-medium", fontExtension: "ttf")
         #endif
     }
 
@@ -31,14 +31,14 @@ class ButtonSizeToFitTests: XCTestCase {
 
     func testSizeToFitWithSmallLabel() {
         button.setTitle(shortButtonText, for: .normal)
-        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
+        button.titleLabel!.font = UIFont(name: "roboto-medium", size: smallFontSize)!
         button.layoutSubviews()
         button.sizeToFit()
 
 
         // move those to UIFontTests
         XCTAssertEqual(button.titleLabel!.font.lineHeight.rounded(), smallFontLineHeight)
-        XCTAssertEqual(button.titleLabel!.font.fontName, "Roboto-Medium")
+        XCTAssertEqual(button.titleLabel!.font.fontName, "roboto-medium")
 
         let frameSizeWithShortLabelText = CGSize(width: 28.5, height: 26.5)
         XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithShortLabelText.width, accuracy: 1.5)
@@ -47,7 +47,7 @@ class ButtonSizeToFitTests: XCTestCase {
 
     func testSizeToFitWithMediumLabel() {
         button.setTitle(mediumButtonText, for: .normal)
-        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: mediumFontSize)!
+        button.titleLabel!.font = UIFont(name: "roboto-medium", size: mediumFontSize)!
         button.layoutSubviews()
         button.sizeToFit()
 
@@ -59,7 +59,7 @@ class ButtonSizeToFitTests: XCTestCase {
 
     func testSizeToFitWithLargeLabel() {
         button.setTitle(longButtonText, for: .normal)
-        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: largeFontSize)!
+        button.titleLabel!.font = UIFont(name: "roboto-medium", size: largeFontSize)!
         button.layoutSubviews()
         button.sizeToFit()
 

@@ -17,7 +17,7 @@ class ButtonContentAlignmentTests: XCTestCase {
     override class func setUp() {
         super.setUp()
         #if os(iOS)
-            loadCustomFont(name: "Roboto-Medium", fontExtension: "ttf")
+            loadCustomFont(name: "roboto-medium", fontExtension: "ttf")
         #endif
     }
 
@@ -44,7 +44,7 @@ class ButtonContentAlignmentTests: XCTestCase {
 
     func testDefaultContentAlignmentWithOnlyLabel() {
         button.setTitle(shortButtonText, for: .normal)
-        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
+        button.titleLabel!.font = UIFont(name: "roboto-medium", size: smallFontSize)!
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
         button.layoutSubviews()
 
@@ -56,7 +56,7 @@ class ButtonContentAlignmentTests: XCTestCase {
 
     func testTopLeftContentAlignmentWithOnlyLabel() {
         button.setTitle(shortButtonText, for: .normal)
-        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
+        button.titleLabel!.font = UIFont(name: "roboto-medium", size: smallFontSize)!
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
 
         button.contentHorizontalAlignment = .left
@@ -69,7 +69,7 @@ class ButtonContentAlignmentTests: XCTestCase {
 
     func testBottomRightContentAlignmentWithOnlyLabel() {
         button.setTitle(shortButtonText, for: .normal)
-        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
+        button.titleLabel!.font = UIFont(name: "roboto-medium", size: smallFontSize)!
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
 
         button.contentHorizontalAlignment = .right
@@ -120,7 +120,7 @@ class ButtonContentAlignmentTests: XCTestCase {
 
     func testContentAlignmentWithLabelAndImage() {
         button.setTitle(shortButtonText, for: .normal)
-        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
+        button.titleLabel!.font = UIFont(name: "roboto-medium", size: smallFontSize)!
         button.setImage(.testImage(ofSize: testImageSize), for: .normal)
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
         button.layoutSubviews()
@@ -135,7 +135,7 @@ class ButtonContentAlignmentTests: XCTestCase {
 
     func testTopLeftContentAlignmentWithLabelAndImage() {
         button.setTitle(shortButtonText, for: .normal)
-        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
+        button.titleLabel!.font = UIFont(name: "roboto-medium", size: smallFontSize)!
         button.setImage(.testImage(ofSize: testImageSize), for: .normal)
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
         button.layoutSubviews()
@@ -152,7 +152,7 @@ class ButtonContentAlignmentTests: XCTestCase {
 
     func testBottomRightContentAlignmentWithLabelAndImage() {
         button.setTitle(shortButtonText, for: .normal)
-        button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
+        button.titleLabel!.font = UIFont(name: "roboto-medium", size: smallFontSize)!
         button.setImage(.testImage(ofSize: testImageSize), for: .normal)
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
         button.layoutSubviews()
