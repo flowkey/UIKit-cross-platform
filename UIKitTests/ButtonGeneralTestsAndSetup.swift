@@ -36,31 +36,25 @@ let mediumImageSize = CGSize(width: 80, height: 80)
 let largeImageSize = CGSize(width: 150, height: 150)
 
 class ButtonGeneralTestsAndSetup: XCTestCase {
-    let testButton = Button(frame: .zero)
+    var button = Button(frame: .zero)
 
     override func setUp() {
         super.setUp()
-    }
-
-    override func tearDown() {
-        testButton.setTitle(nil, for: .normal)
-        testButton.setImage(nil, for: .normal)
-        testButton.frame = .zero
-        super.tearDown()
+        button = Button(frame: .zero)
     }
 
     func testSetTitle() {
-        testButton.setTitle(shortButtonText, for: .normal)
-        testButton.layoutSubviews()
-        XCTAssertEqual(testButton.titleLabel?.text, shortButtonText)
+        button.setTitle(shortButtonText, for: .normal)
+        button.layoutSubviews()
+        XCTAssertEqual(button.titleLabel?.text, shortButtonText)
 
-        testButton.setTitle(mediumButtonText, for: .normal)
-        testButton.layoutSubviews()
-        XCTAssertEqual(testButton.titleLabel?.text, mediumButtonText)
+        button.setTitle(mediumButtonText, for: .normal)
+        button.layoutSubviews()
+        XCTAssertEqual(button.titleLabel?.text, mediumButtonText)
 
-        testButton.setTitle(longButtonText, for: .normal)
-        testButton.layoutSubviews()
-        XCTAssertEqual(testButton.titleLabel?.text, longButtonText)
+        button.setTitle(longButtonText, for: .normal)
+        button.layoutSubviews()
+        XCTAssertEqual(button.titleLabel?.text, longButtonText)
     }
 }
 
