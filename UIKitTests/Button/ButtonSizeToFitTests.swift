@@ -7,11 +7,7 @@
 //
 
 import XCTest
-#if os(iOS)
 import UIKit
-#else
-@testable import UIKit
-#endif
 
 class ButtonSizeToFitTests: XCTestCase {
     var button = Button(frame: .zero)
@@ -74,7 +70,7 @@ class ButtonSizeToFitTests: XCTestCase {
     }
 
     func testSizeToFitWithMediumImage() {
-        button.setImage(createTestImage(ofSize: mediumImageSize), for: .normal)
+        button.setImage(.testImage(ofSize: mediumImageSize), for: .normal)
         button.layoutSubviews()
         button.sizeToFit()
         XCTAssertEqual(button.frame.size, mediumImageSize)

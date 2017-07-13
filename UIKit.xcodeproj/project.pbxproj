@@ -56,9 +56,9 @@
 		832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
 		832A7F0D1F16368D0041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
 		832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */; };
-		833860B41F0D55BC004DD55E /* ButtonGeneralTestsAndSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift */; };
+		833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */; };
 		8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8378E17D1F05503600E138BD /* UIVisualEffectView.swift */; };
-		83B76ED31F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift */; };
+		83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */; };
 		83C18F461F0FB491008FEA07 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83C18F3A1F0FB486008FEA07 /* Roboto-Black.ttf */; };
 		83C18F471F0FB491008FEA07 /* Roboto-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83C18F3B1F0FB486008FEA07 /* Roboto-BlackItalic.ttf */; };
 		83C18F481F0FB491008FEA07 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83C18F3C1F0FB486008FEA07 /* Roboto-Bold.ttf */; };
@@ -80,6 +80,13 @@
 		83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8111EF8316C00279C59 /* CGFloat.swift */; };
 		83E5F8181EF8323500279C59 /* CGAffineTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */; };
 		83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
+		83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB01F17988F00347AA8 /* Texture+Size.swift */; };
+		83F02DB41F1798D100347AA8 /* loadCustomFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */; };
+		83F02DB71F1798F200347AA8 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB51F1798ED00347AA8 /* Button.swift */; };
+		83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */; };
+		83F02DBA1F179AE800347AA8 /* UIImage+testImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */; };
+		83F02DBD1F179D1A00347AA8 /* ButtonSetTitleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DBC1F179D1A00347AA8 /* ButtonSetTitleTests.swift */; };
+		83F02DBE1F179D1A00347AA8 /* ButtonSetTitleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DBC1F179D1A00347AA8 /* ButtonSetTitleTests.swift */; };
 		83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */; };
 /* End PBXBuildFile section */
 
@@ -148,7 +155,7 @@
 		833860AC1F0D55B3004DD55E /* iOSTestTarget.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTestTarget.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		833860B01F0D55B3004DD55E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8378E17D1F05503600E138BD /* UIVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIVisualEffectView.swift; path = ../Sources/UIVisualEffectView.swift; sourceTree = "<group>"; };
-		83B76ED21F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonGeneralTestsAndSetup.swift; sourceTree = "<group>"; };
+		83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTestsConstants.swift; sourceTree = "<group>"; };
 		83C18F3A1F0FB486008FEA07 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Black.ttf"; sourceTree = "<group>"; };
 		83C18F3B1F0FB486008FEA07 /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
 		83C18F3C1F0FB486008FEA07 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
@@ -169,6 +176,11 @@
 		83E5F8111EF8316C00279C59 /* CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CGFloat.swift; path = Sources/CGFloat.swift; sourceTree = SOURCE_ROOT; };
 		83E5F8121EF8316C00279C59 /* CGSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CGSize.swift; path = Sources/CGSize.swift; sourceTree = SOURCE_ROOT; };
 		83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CGAffineTransform.swift; path = Sources/CGAffineTransform.swift; sourceTree = SOURCE_ROOT; };
+		83F02DB01F17988F00347AA8 /* Texture+Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Texture+Size.swift"; sourceTree = "<group>"; };
+		83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = loadCustomFont.swift; sourceTree = "<group>"; };
+		83F02DB51F1798ED00347AA8 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+		83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+testImage.swift"; sourceTree = "<group>"; };
+		83F02DBC1F179D1A00347AA8 /* ButtonSetTitleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSetTitleTests.swift; sourceTree = "<group>"; };
 		83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+SDL.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -270,12 +282,13 @@
 		5C27E7BB1ECB2F6500F5020D /* UIKitTests */ = {
 			isa = PBXGroup;
 			children = (
-				832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */,
-				832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */,
-				83B76ED21F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift */,
-				5C27E7BE1ECB2F6500F5020D /* Info.plist */,
-				5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */,
+				83F02DBB1F179B0300347AA8 /* Button */,
 				5C9037201F137FB70058E592 /* CGRectTests.swift */,
+				5C27E7BE1ECB2F6500F5020D /* Info.plist */,
+				83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */,
+				83F02DB01F17988F00347AA8 /* Texture+Size.swift */,
+				83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */,
+				5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */,
 			);
 			path = UIKitTests;
 			sourceTree = "<group>";
@@ -362,6 +375,18 @@
 				5CE5C5771EDDAD8200680154 /* CGRect.swift */,
 			);
 			name = Geometry;
+			sourceTree = "<group>";
+		};
+		83F02DBB1F179B0300347AA8 /* Button */ = {
+			isa = PBXGroup;
+			children = (
+				83F02DB51F1798ED00347AA8 /* Button.swift */,
+				83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */,
+				832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */,
+				832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */,
+				83F02DBC1F179D1A00347AA8 /* ButtonSetTitleTests.swift */,
+			);
+			path = Button;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -567,9 +592,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */,
+				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleTests.swift in Sources */,
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
 				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
-				83B76ED31F0BCD4C0096736C /* ButtonGeneralTestsAndSetup.swift in Sources */,
+				83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */,
+				83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */,
 				832A7F021F1632070041916B /* ButtonSizeToFitTests.swift in Sources */,
 				832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */,
 			);
@@ -579,7 +607,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				833860B41F0D55BC004DD55E /* ButtonGeneralTestsAndSetup.swift in Sources */,
+				83F02DBA1F179AE800347AA8 /* UIImage+testImage.swift in Sources */,
+				83F02DBE1F179D1A00347AA8 /* ButtonSetTitleTests.swift in Sources */,
+				833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */,
+				83F02DB71F1798F200347AA8 /* Button.swift in Sources */,
+				83F02DB41F1798D100347AA8 /* loadCustomFont.swift in Sources */,
 				832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */,
 				832A7F0D1F16368D0041916B /* ButtonContentAlignmentTests.swift in Sources */,
 				5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */,

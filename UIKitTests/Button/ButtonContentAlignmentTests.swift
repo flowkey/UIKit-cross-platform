@@ -7,11 +7,7 @@
 //
 
 import XCTest
-#if os(iOS)
-    import UIKit
-#else
-    @testable import UIKit
-#endif
+import UIKit
 
 class ButtonContentAlignmentTests: XCTestCase {
     var button = Button(frame: .zero)
@@ -85,7 +81,7 @@ class ButtonContentAlignmentTests: XCTestCase {
     }
 
     func testDefaultContentAlignmentWithOnlyImage() {
-        button.setImage(createTestImage(ofSize: testImageSize), for: .normal)
+        button.setImage(.testImage(ofSize: testImageSize), for: .normal)
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
         button.layoutSubviews()
 
@@ -96,7 +92,7 @@ class ButtonContentAlignmentTests: XCTestCase {
     }
 
     func testTopLeftContentAlignmentOnlyWithImage() {
-        button.setImage(createTestImage(ofSize: testImageSize), for: .normal)
+        button.setImage(.testImage(ofSize: testImageSize), for: .normal)
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
         button.layoutSubviews()
 
@@ -109,7 +105,7 @@ class ButtonContentAlignmentTests: XCTestCase {
     }
 
     func testBottomRightContentAlignmentOnlyWithImage() {
-        button.setImage(createTestImage(ofSize: testImageSize), for: .normal)
+        button.setImage(.testImage(ofSize: testImageSize), for: .normal)
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
         button.layoutSubviews()
 
@@ -125,7 +121,7 @@ class ButtonContentAlignmentTests: XCTestCase {
     func testContentAlignmentWithLabelAndImage() {
         button.setTitle(shortButtonText, for: .normal)
         button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
-        button.setImage(createTestImage(ofSize: testImageSize), for: .normal)
+        button.setImage(.testImage(ofSize: testImageSize), for: .normal)
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
         button.layoutSubviews()
 
@@ -140,7 +136,7 @@ class ButtonContentAlignmentTests: XCTestCase {
     func testTopLeftContentAlignmentWithLabelAndImage() {
         button.setTitle(shortButtonText, for: .normal)
         button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
-        button.setImage(createTestImage(ofSize: testImageSize), for: .normal)
+        button.setImage(.testImage(ofSize: testImageSize), for: .normal)
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
         button.layoutSubviews()
 
@@ -157,7 +153,7 @@ class ButtonContentAlignmentTests: XCTestCase {
     func testBottomRightContentAlignmentWithLabelAndImage() {
         button.setTitle(shortButtonText, for: .normal)
         button.titleLabel!.font = UIFont(name: "Roboto-Medium", size: smallFontSize)!
-        button.setImage(createTestImage(ofSize: testImageSize), for: .normal)
+        button.setImage(.testImage(ofSize: testImageSize), for: .normal)
         button.frame = CGRect(origin: button.frame.origin, size: buttonSize)
         button.layoutSubviews()
 
