@@ -60,6 +60,7 @@ open class Button: UIControl {
     }
 
     private var images = [UIControlState: UIImage]()
+    private var attributedTitles = [UIControlState: NSAttributedString]()
     private var titles = [UIControlState: String]()
     private var titleColors = [UIControlState: UIColor]()
     private var titleShadowColors = [UIControlState: UIColor]()
@@ -67,25 +68,28 @@ open class Button: UIControl {
     open override func layoutSubviews() {
         // Only change subview attributes if a corresponding entry exists in our dictionaries:
 
-        if let titleForCurrentControlState = titles[state] {
+        if let attributedTitleForCurrentState = attributedTitles[state] {
             if titleLabel == nil { titleLabel = UILabel() }
-            titleLabel?.text = titleForCurrentControlState
-        } else if titles.isEmpty {
+            titleLabel?.attributedText = attributedTitleForCurrentState
+        } else if let titleForCurrentState = titles[state] {
+            if titleLabel == nil { titleLabel = UILabel() }
+            titleLabel?.text = titleForCurrentState
+        } else if titles.isEmpty && attributedTitles.isEmpty {
             titleLabel = nil
         }
 
-        if let imageForCurrentControlState = images[state] {
-            imageView?.image = imageForCurrentControlState
+        if let imageForCurrentState = images[state] {
+            imageView?.image = imageForCurrentState
         } else if images.isEmpty {
             imageView = nil
         }
 
-        if let titleColorForCurrentControlState = titleColors[state] {
-            titleLabel?.textColor = titleColorForCurrentControlState
+        if let titleColorForCurrentState = titleColors[state] {
+            titleLabel?.textColor = titleColorForCurrentState
         }
 
-        if let titleShadowColorForCurrentControlState = titleShadowColors[state] {
-            titleLabel?.shadowColor = titleShadowColorForCurrentControlState
+        if let titleShadowColorForCurrentState = titleShadowColors[state] {
+            titleLabel?.shadowColor = titleShadowColorForCurrentState
         }
 
         titleLabel?.setNeedsLayout()
@@ -143,11 +147,13 @@ extension Button {
 
     public func setTitle(_ text: String?, for state: UIControlState) {
         titles[state] = text
-        if titles.isEmpty {
-            titleLabel = nil
-        } else if titleLabel == nil {
-            titleLabel = UILabel()
-        }
+        if titleLabel == nil { titleLabel = UILabel() }
+        setNeedsLayout()
+    }
+
+    public func setAttributedTitle(_ attributedText: NSAttributedString?, for state: UIControlState) {
+        attributedTitles[state] = attributedText
+        if titleLabel == nil { titleLabel = UILabel() }
         setNeedsLayout()
     }
 
