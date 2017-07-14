@@ -21,7 +21,7 @@ let smallFontSize: CGFloat = 12
 let mediumFontSize: CGFloat = 16 // default
 let largeFontSize: CGFloat = 20
 
-let defaultLabelVerticalPadding: CGFloat = 6
+let defaultLabelVerticalPaddingAfterSizeToFit: CGFloat = 6
 
 let smallImageSize = CGSize(width: 40, height: 40)
 let mediumImageSize = CGSize(width: 80, height: 80)
