@@ -35,11 +35,6 @@ class ButtonSizeToFitTests: XCTestCase {
         button.layoutSubviews()
         button.sizeToFit()
 
-
-        // move those to UIFontTests
-        XCTAssertEqual(button.titleLabel!.font.lineHeight.rounded(), smallFontLineHeight)
-        XCTAssertEqual(button.titleLabel!.font.fontName, "roboto-medium")
-
         let frameSizeWithShortLabelText = CGSize(width: 28.5, height: 26.5)
         XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithShortLabelText.width, accuracy: 1.5)
         XCTAssertEqualWithAccuracy(button.frame.height, frameSizeWithShortLabelText.height, accuracy: 0.5)
@@ -54,7 +49,6 @@ class ButtonSizeToFitTests: XCTestCase {
         let frameSizeWithMediumLabelText = CGSize(width: 136.5, height: 31.0)
         XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithMediumLabelText.width, accuracy: 0.5)
         XCTAssertEqualWithAccuracy(button.frame.height, frameSizeWithMediumLabelText.height, accuracy: 0.1)
-        XCTAssertEqual(button.titleLabel!.font.lineHeight.rounded(), mediumFontLineHeight)
     }
 
     func testSizeToFitWithLargeLabel() {
@@ -66,7 +60,6 @@ class ButtonSizeToFitTests: XCTestCase {
         let frameSizeWithLongLabelText = CGSize(width: 307.5, height: 36.0)
         XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithLongLabelText.width, accuracy: 1.5)
         XCTAssertEqualWithAccuracy(button.frame.height, frameSizeWithLongLabelText.height, accuracy: 0.1)
-        XCTAssertEqual(button.titleLabel!.font.lineHeight.rounded(), largeFontLineHeight)
     }
 
     func testSizeToFitWithMediumImage() {

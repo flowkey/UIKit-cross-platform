@@ -18,11 +18,8 @@ let mediumButtonText = "MediumButtonText"
 let longButtonText = "ThisIsALongTextToTestTheButton"
 
 let smallFontSize: CGFloat = 12
-let smallFontLineHeight: CGFloat = 14
 let mediumFontSize: CGFloat = 16 // default
-let mediumFontLineHeight: CGFloat = 19
 let largeFontSize: CGFloat = 20
-let largeFontLineHeight: CGFloat = 23
 
 let defaultLabelVerticalPadding: CGFloat = 6
 
