@@ -45,6 +45,8 @@
 		5CA995A21EE8182F007D0456 /* UIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C27E7B11ECB2F6500F5020D /* UIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */; };
 		5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */; };
+		5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */; };
+		5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDB31B61F1CE8050081A605 /* Bundle.swift */; };
 		5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */; };
 		5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */; };
 		5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */; };
@@ -155,6 +157,8 @@
 		5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CABasicAnimation.swift; path = Sources/CABasicAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CAAction.swift; path = Sources/CAAction.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D1D1EE6FD29004C6380 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGDataProvider.swift; sourceTree = "<group>"; };
+		5CDB31B61F1CE8050081A605 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIPanGestureRecognizer.swift; path = Sources/UIPanGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITapGestureRecognizer.swift; path = Sources/UITapGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL+TouchHandling.swift"; sourceTree = "<group>"; };
@@ -336,15 +340,17 @@
 			isa = PBXGroup;
 			children = (
 				83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */,
+				5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */,
 				5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */,
 				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
 				5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */,
 				5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */,
 				83E5F7EA1EF8156400279C59 /* Texture.swift */,
+				5C3716B51F10050600B2C366 /* Timer.swift */,
 				5C27E8051ECB301900F5020D /* UIKit+SDL.swift */,
 				5C361E221ECC348700B3F561 /* UIView+SDL.swift */,
 				83E5F7EC1EF8157300279C59 /* Window.swift */,
-				5C3716B51F10050600B2C366 /* Timer.swift */,
+				5CDB31B61F1CE8050081A605 /* Bundle.swift */,
 			);
 			name = SDL;
 			path = Sources;
@@ -570,7 +576,7 @@
 			files = (
 				5C6AB71E1ED3BECD006F90AC /* UIView.swift in Sources */,
 				5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */,
-				5C391A8F1F13F62500EE012C /* VideoPlayer.swift in Sources */,
+				5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */,
 				5C6AB7181ED3BECD006F90AC /* Button.swift in Sources */,
 				5C6AB71C1ED3BECD006F90AC /* UIImage.swift in Sources */,
 				5C6AB7191ED3BECD006F90AC /* CALayer.swift in Sources */,
@@ -595,6 +601,7 @@
 				5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */,
 				83E5F7EB1EF8156400279C59 /* Texture.swift in Sources */,
 				5C6AB75F1ED575CF006F90AC /* UIScrollView.swift in Sources */,
+				5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */,
 				8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */,
 				5C6AB7651ED5A0C3006F90AC /* UIEvent.swift in Sources */,
 				83E5F8151EF8322800279C59 /* CGSize.swift in Sources */,
@@ -602,6 +609,7 @@
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
 				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
+				5C5AC6DD1F1791D0004A88C0 /* VideoPlayer.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,
 				83E5F7F61EF81AB500279C59 /* UIFont.swift in Sources */,

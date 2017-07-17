@@ -8,6 +8,12 @@
 
 import SDL
 
+#if os(Android)
+let resourcesPath = ""
+#else
+let resourcesPath = String(cString: SDL_GetBasePath())
+#endif
+
 private var shouldQuit = false
 final public class SDL { // XXX: only public for startRunLoop()
     static let rootView = UIWindow()
@@ -47,7 +53,8 @@ final public class SDL { // XXX: only public for startRunLoop()
     }
 
     public static func initialize() {
-        SDL.window.clear() // do something random to ensure that `SDL.shared` exists
+        SDL.window.clear() // do something random to ensure that `SDL.window` exists
+        UIFont.loadSystemFonts()
     }
 
     private static var isRunning = false
