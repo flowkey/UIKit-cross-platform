@@ -34,6 +34,10 @@ open class UIFont {
     public static func systemFont(ofSize fontSize: CGFloat, weight: FontWeight = .UIFontWeightRegular) -> UIFont {
         return UIFont(name: systemFontName + "-" + weight.rawValue, size: fontSize)!
     }
+
+    public static func addCustomFont(name: String, path: String) {
+        FontRenderer.addCustomFont(name: name, path: path)
+    }
     
     public init?(name fontFileName: String, size: CGFloat) {
         guard let renderer = FontRenderer(name: fontFileName, size: Int32(size)) else {
@@ -43,7 +47,7 @@ open class UIFont {
 
         self.renderer = renderer
         self.fontName = fontFileName
-        self.familyName = renderer.getFontFamilyName()
+        self.familyName = renderer.getFontFamilyName() ?? "<unknown>"
         self.pointSize = size
         self.lineHeight = CGFloat(renderer.getLineHeight())
     }

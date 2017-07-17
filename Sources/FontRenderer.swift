@@ -10,14 +10,7 @@ import SDL.ttf
 
 private let contentScaleFactor: CGFloat = 2.0 // TODO: get and add correct contentScaleFactor according to device
 private var loadedFontPointers = [FontPointer]()
-
-#if os(Android)
-private let assetsDir = ""
-#else
-private let UIKitDir = String(#file.characters.dropLast("FontRenderer.swift".characters.count)) + "../"
-private let UIKitResourcesDir = UIKitDir + "Resources/"
-private let assetsDir = UIKitDir + "../../assets/"
-#endif
+private var customFontPaths = [String: String]()
 
 private func initSDL_ttf() -> Bool {
     return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
@@ -70,6 +63,10 @@ internal class FontRenderer {
         )
     }
 
+    public static func addCustomFont(name: String, path: String) {
+        customFontPaths[name] = path
+    }
+
     func render(_ text: String?, color: UIColor, wrapLength: Int = 0) -> Texture? {
         guard let text = text else { return nil }
         let unicode16Text = text.toUTF16()
@@ -92,23 +89,27 @@ private func loadFontPointerFromCacheIfPossible(name: String, size: Int32) -> Op
     return loadedFontPointers.first(where: { $0.size == size })?.rawPointer
 }
 
-
 private func loadFontPointerFromDisk(name: String, size: Int32) -> OpaquePointer? {
     if !initSDL_ttf() { return nil }
 
     let adjustedFontSize = Int32(CGFloat(size) * contentScaleFactor)
+    var pathToFontFile: String
 
-    // Android assets MUST have lowercase filenames:
-    let assetPathToFontFile = (assetsDir + name + ".ttf").lowercased()
-    let internalResourcePathToFontFile = (UIKitResourcesDir + name + ".ttf").lowercased()
-    
-    var font: OpaquePointer
+    #if os(Android)
+        // Android assets MUST have lowercase filenames:
+        pathToFontFile = (androidAssetDir + name + ".ttf").lowercased()
+    #else
+        if let customPath = customFontPaths[name] {
+            pathToFontFile = customPath
+        } else {
+            let UIKitBundle = Bundle.init(for: FontRenderer.self)
+            pathToFontFile = UIKitBundle.path(forResource: name.lowercased(), ofType: ".ttf")!
+        }
+    #endif
 
-    if let rwOpFromAssets = SDL_RWFromFile(assetPathToFontFile, "rb") {
-        font = TTF_OpenFontRW(rwOpFromAssets, 1, adjustedFontSize)
-    } else if let rwOpFromResources = SDL_RWFromFile(internalResourcePathToFontFile, "rb") {
-        font = TTF_OpenFontRW(rwOpFromResources, 1, adjustedFontSize)
-    } else {
+    let rwOp = SDL_RWFromFile(pathToFontFile, "rb")
+
+    guard let font = TTF_OpenFontRW(rwOp, 1, adjustedFontSize) else {
         print("no Font file found for \(name)")
         return nil
     }

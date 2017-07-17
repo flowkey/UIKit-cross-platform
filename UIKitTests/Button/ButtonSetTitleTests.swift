@@ -31,4 +31,12 @@ class ButtonSetTitleTests: XCTestCase {
         button.layoutSubviews()
         XCTAssertEqual(button.titleLabel?.text, longButtonText)
     }
+
+    func testSetAttributedTitle() {
+        let simpleAttributedText = NSAttributedString(string: "attributed Text")
+        button.setAttributedTitle(simpleAttributedText, for: .normal)
+        button.layoutSubviews()
+        XCTAssertEqual(button.titleLabel?.attributedText, simpleAttributedText)
+        XCTAssertEqual(button.titleLabel?.text, simpleAttributedText.string)
+    }
 }

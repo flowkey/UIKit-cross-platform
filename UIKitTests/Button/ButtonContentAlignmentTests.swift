@@ -144,7 +144,7 @@ class ButtonContentAlignmentTests: XCTestCase {
         XCTAssertEqual(button.imageView!.frame.origin.x, buttonSize.width  - testImageSize.width)
         XCTAssertEqual(button.imageView!.frame.origin.y, buttonSize.height - testImageSize.height)
     }
-    
+
     func testContentAlignmentWithLabelAndImage() {
         button.setTitle(shortButtonText, for: .normal)
         button.titleLabel!.font = UIFont(name: "roboto-medium", size: smallFontSize)!
