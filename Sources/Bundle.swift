@@ -25,6 +25,15 @@ struct Bundle {
         closedir(dir)
         return files
     }
+
+    func path(forResource filename: String, ofType ext: String) -> String {
+        if ext.hasPrefix(".") {
+            return filename + ext
+        } else {
+            return filename + "." + ext
+        }
+
+    }
 }
 #endif
 
