@@ -41,7 +41,7 @@ open class UIFont {
     public static func systemFont(ofSize size: CGFloat, weight: FontWeight = .UIFontWeightRegular) -> UIFont {
         return UIFont(name: systemFontName + "-" + weight.rawValue, size: size)!
     }
- 
+
     public init?(name: String, size: CGFloat) {
         let name = name.lowercased()
         guard let fontData = UIFont.availableFontData[name] else {

@@ -27,13 +27,13 @@ extension CALayer {
 
         if let shadowPath = shadowPath, let shadowColor = shadowColor {
             let absoluteShadowOpacity = shadowOpacity * opacity * 0.5 // for "shadow" effect ;)
-            
+
             if absoluteShadowOpacity > 0.01 {
                 let absoluteShadowPath = shadowPath.offsetBy(absoluteFrame.origin)
                 SDL.window.fill(absoluteShadowPath, with: shadowColor.withAlphaComponent(absoluteShadowOpacity), cornerRadius: 2)
             }
         }
-        
+
         if let texture = texture {
             // Later use more advanced blit funcs (with rotation, scale etc)
             SDL.window.blit(texture, to: absoluteFrame.origin)

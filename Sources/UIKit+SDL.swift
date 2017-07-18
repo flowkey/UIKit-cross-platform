@@ -8,12 +8,6 @@
 
 import SDL
 
-#if os(Android)
-let resourcesPath = ""
-#else
-let resourcesPath = String(cString: SDL_GetBasePath())
-#endif
-
 private var shouldQuit = false
 final public class SDL { // XXX: only public for startRunLoop()
     static let rootView = UIWindow()
@@ -43,8 +37,6 @@ final public class SDL { // XXX: only public for startRunLoop()
         return window
     }()
 
-    static var update: (() -> Void)?
-
     public static func startRunLoop() {
         if isRunning == false {
             isRunning = true
@@ -73,8 +65,8 @@ final public class SDL { // XXX: only public for startRunLoop()
 
             let eventWasHandled = handleEventsIfNeeded()
 
-            if let update = update { // update exists when a DisplayLink is active
-                update()
+            if !activeDisplayLinks.isEmpty {
+                activeDisplayLinks.forEach { $0.callback() }
             } else if !eventWasHandled && !firstRender {
                 // We can avoid updating the screen at all unless there is active touch input
                 // or a running animation. We still need to handle the case of animations here!
@@ -98,6 +90,7 @@ final public class SDL { // XXX: only public for startRunLoop()
     private static func handleEventsIfNeeded() -> Bool {
         var eventWasHandled = false
         var e = SDL_Event()
+
         while SDL_PollEvent(&e) == 1 {
             switch SDL_EventType(rawValue: e.type) {
             case SDL_QUIT:
@@ -116,6 +109,19 @@ final public class SDL { // XXX: only public for startRunLoop()
         }
 
         return eventWasHandled
+    }
+}
+
+extension SDL {
+    private static var activeDisplayLinks: [DisplayLink] = []
+    static func add(displayLink: DisplayLink) {
+        if !activeDisplayLinks.contains(where: { $0 === displayLink }) {
+            activeDisplayLinks.append(displayLink)
+        }
+    }
+
+    static func remove(displayLink: DisplayLink) {
+        activeDisplayLinks = activeDisplayLinks.filter { $0 !== displayLink }
     }
 }
 
