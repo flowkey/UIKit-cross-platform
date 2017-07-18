@@ -14,33 +14,25 @@ public struct Bundle {
         let subpath = subpath ?? "."
         var files = [String]()
         let basePath = SDL_GetBasePath()
-        print("subpath", subpath)
         guard let dir = opendir(subpath) else {
             print("opendir failed for subpath", subpath, "returning empty files array", files)
             return files
         }
-        print("dir", dir)
         while let file = readdir(dir) {
-            print("readdir", dir)
             withUnsafePointer(to: &file.pointee.d_name, { pointer in
-                print("pointer", pointer)
                 let filename = pointer.withMemoryRebound(to: CChar.self, capacity: 1024, String.init)
-                print("filename", filename)
                 if ext == nil {
-                    print("filename", filename)
                     files.append(filename)
                 } else if
                     let ext = ext,
-                    String(filename.characters.suffix(ext.characters.count)) == ext
+                    strcmp(String(filename.characters.suffix(ext.characters.count)), ext) == 0
                 {
-                    print("filename", filename)
                     files.append(filename)
                 }
             })
         }
 
         closedir(dir)
-        print("files", files)
         return files
     }
 
