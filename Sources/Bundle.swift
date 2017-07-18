@@ -6,34 +6,43 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-#if os(Android)
+import CJNI
+import JNISwift
+
+//#if os(Android)
+@_silgen_name("Android_JNI_GetActivityClass")
+public func getActivityClass() -> JavaClass
+
+private func listFiles(inDirectory subpath: String) throws -> [String] {
+    let activityClass = getActivityClass()
+    print("Getting context")
+    let context = try callStatic("getContext", on: activityClass, returningObjectType: "android.content.Context")
+    print("Getting asset manager")
+    let assetManager = try call("getAssets", on: context, returningObjectType: "android.content.res.AssetManager")
+
+    print("Listing assets in \(subpath)")
+    return try call("list", on: assetManager, with: [subpath])
+}
+
 public struct Bundle {
     public init(for: Any.Type) {}
 
     public func paths(forResourcesOfType ext: String?, inDirectory subpath: String?) -> [String] {
-        let subpath = subpath ?? "."
-        var files = [String]()
-        let basePath = SDL_GetBasePath()
-        guard let dir = opendir(subpath) else {
-            print("opendir failed for subpath", subpath, "returning empty files array", files)
-            return files
-        }
-        while let file = readdir(dir) {
-            withUnsafePointer(to: &file.pointee.d_name, { pointer in
-                let filename = pointer.withMemoryRebound(to: CChar.self, capacity: 1024, String.init)
-                if ext == nil {
-                    files.append(filename)
-                } else if
-                    let ext = ext,
-                    strcmp(String(filename.characters.suffix(ext.characters.count)), ext) == 0
-                {
-                    files.append(filename)
-                }
-            })
-        }
+        do {
+            let allFiles = try listFiles(inDirectory: subpath ?? "")
+            print("allFiles: \(allFiles)")
+            guard let ext = ext else { return allFiles }
 
-        closedir(dir)
-        return files
+            let filteredFiles = allFiles.filter({ filename -> Bool in
+                let result = strcmp(String(filename.characters.suffix(ext.characters.count)), ext)
+                return result == 0 // 0 is an exact match
+            })
+
+            return filteredFiles
+        } catch {
+            print("Failed to get directory listing aus Gründen:", error)
+            return []
+        }
     }
 
     public func path(forResource filename: String, ofType ext: String) -> String? {
@@ -44,5 +53,4 @@ public struct Bundle {
         }
     }
 }
-#endif
-
+//#endif

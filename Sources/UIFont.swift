@@ -78,7 +78,6 @@ extension UIFont {
     }
 
     internal static func loadSystemFonts() {
-        print("Loading system fonts")
         Bundle(for: UIFont.self).paths(forResourcesOfType: "ttf", inDirectory: nil).forEach { path in
             (try? loadFont(fromPath: path)) ?? print("Couldn't load font from \(path)")
         }
@@ -100,7 +99,6 @@ extension UIFont {
         UIFont.availableFontData[fontName] = dataProvider
     }
 }
-
 
 extension String {
     public func size(with font: UIFont) -> CGSize {
