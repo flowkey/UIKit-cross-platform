@@ -11,18 +11,36 @@ public struct Bundle {
     public init(for: Any.Type) {}
 
     public func paths(forResourcesOfType ext: String?, inDirectory subpath: String?) -> [String] {
-        let subpath = subpath ?? ""
+        let subpath = subpath ?? "."
         var files = [String]()
-        guard let dir = opendir(subpath) else { return files }
+        let basePath = SDL_GetBasePath()
+        print("subpath", subpath)
+        guard let dir = opendir(subpath) else {
+            print("opendir failed for subpath", subpath, "returning empty files array", files)
+            return files
+        }
+        print("dir", dir)
         while let file = readdir(dir) {
+            print("readdir", dir)
             withUnsafePointer(to: &file.pointee.d_name, { pointer in
+                print("pointer", pointer)
                 let filename = pointer.withMemoryRebound(to: CChar.self, capacity: 1024, String.init)
-                if let ext = ext, String(filename.characters.suffix(ext.characters.count)) != ext { return }
-                files.append(filename)
+                print("filename", filename)
+                if ext == nil {
+                    print("filename", filename)
+                    files.append(filename)
+                } else if
+                    let ext = ext,
+                    String(filename.characters.suffix(ext.characters.count)) == ext
+                {
+                    print("filename", filename)
+                    files.append(filename)
+                }
             })
         }
 
         closedir(dir)
+        print("files", files)
         return files
     }
 
@@ -32,7 +50,6 @@ public struct Bundle {
         } else {
             return filename + "." + ext
         }
-
     }
 }
 #endif

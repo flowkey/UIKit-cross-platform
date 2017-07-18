@@ -78,6 +78,7 @@ extension UIFont {
     }
 
     internal static func loadSystemFonts() {
+        print("Loading system fonts")
         Bundle(for: UIFont.self).paths(forResourcesOfType: "ttf", inDirectory: nil).forEach { path in
             (try? loadFont(fromPath: path)) ?? print("Couldn't load font from \(path)")
         }
