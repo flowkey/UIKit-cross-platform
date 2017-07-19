@@ -8,12 +8,6 @@
 
 import SDL
 
-#if os(Android)
-let resourcesPath = ""
-#else
-let resourcesPath = String(cString: SDL_GetBasePath())
-#endif
-
 private var shouldQuit = false
 final public class SDL { // XXX: only public for startRunLoop()
     static let rootView = UIWindow()

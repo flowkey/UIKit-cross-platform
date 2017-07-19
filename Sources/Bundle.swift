@@ -9,7 +9,7 @@
 import CJNI
 import JNISwift
 
-//#if os(Android)
+#if os(Android)
 @_silgen_name("Android_JNI_GetActivityClass")
 public func getActivityClass() -> JavaClass
 
@@ -36,6 +36,7 @@ public struct Bundle {
 
             return filteredFiles
         } catch {
+            print("Failed to get directory listing:", error)
             return []
         }
     }
@@ -48,4 +49,5 @@ public struct Bundle {
         }
     }
 }
-//#endif
+#endif
+

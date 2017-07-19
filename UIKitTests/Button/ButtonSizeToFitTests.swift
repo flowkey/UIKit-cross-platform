@@ -7,7 +7,11 @@
 //
 
 import XCTest
-import UIKit
+#if os(iOS)
+    import UIKit
+#else
+    @testable import UIKit
+#endif
 
 class ButtonSizeToFitTests: XCTestCase {
     var button = Button(frame: .zero)
@@ -16,6 +20,8 @@ class ButtonSizeToFitTests: XCTestCase {
         super.setUp()
         #if os(iOS)
             loadCustomFont(name: "roboto-medium", fontExtension: "ttf")
+        #else
+            UIFont.loadSystemFonts()
         #endif
     }
 
@@ -47,7 +53,7 @@ class ButtonSizeToFitTests: XCTestCase {
         button.sizeToFit()
 
         let frameSizeWithMediumLabelText = CGSize(width: 136.5, height: 31.0)
-        XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithMediumLabelText.width, accuracy: 0.5)
+        XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithMediumLabelText.width, accuracy: 1.5)
         XCTAssertEqualWithAccuracy(button.frame.height, frameSizeWithMediumLabelText.height, accuracy: 0.1)
     }
 
