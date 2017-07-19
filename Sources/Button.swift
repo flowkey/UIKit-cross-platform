@@ -16,17 +16,6 @@ open class Button: UIControl {
             if let imageView = imageView { addSubview(imageView) }
         }
     }
-
-    public var image: UIImage? {
-        get { return imageView?.image }
-        set {
-            guard let image = newValue else { imageView = nil; return }
-
-            if imageView == nil { imageView = UIImageView() }
-            imageView?.image = image
-            imageView?.sizeToFit()
-        }
-    }
     
     public var titleLabel: UILabel? {
         didSet {
@@ -35,20 +24,27 @@ open class Button: UIControl {
         }
     }
 
-    open var contentEdgeInsets = UIEdgeInsets() {
-        didSet { setNeedsLayout() }
-    }
+    private var currentLabelVerticalPadding: CGFloat = 0
+    private let labelVerticalPaddingAfterSizeToFit: CGFloat = 6
 
     open func sizeToFit() {
+        currentLabelVerticalPadding = labelVerticalPaddingAfterSizeToFit
         setNeedsLayout()
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
 
-        let imageSize = imageView?.frame.size ?? .zero
-        let labelSize = titleLabel?.frame.size ?? .zero
-
-        frame.width = imageSize.width + labelSize.width + contentEdgeInsets.left + contentEdgeInsets.right
-        frame.height = max(imageSize.height, labelSize.height) + contentEdgeInsets.top + contentEdgeInsets.bottom
+        if let imageView = imageView, let titleLabel = titleLabel {
+            frame.width += titleLabel.frame.width
+            frame.height = max(imageView.frame.height, titleLabel.frame.height)
+        } else if let imageView = imageView, titleLabel == nil {
+            frame.width = imageView.frame.width
+            frame.height = imageView.frame.height
+        } else if let titleLabel = titleLabel, imageView == nil {
+            frame.width = titleLabel.frame.width
+            frame.height = titleLabel.frame.height + (2 * labelVerticalPaddingAfterSizeToFit)
+        } else {
+            frame.size = CGSize(width: 30, height: 34)
+        }
     }
 
     public let tapGestureRecognizer = UITapGestureRecognizer()
@@ -63,25 +59,37 @@ open class Button: UIControl {
         addGestureRecognizer(tapGestureRecognizer)
     }
 
-    private var titles = [UIControlState: String]()
-    private var titleColors = [UIControlState: UIColor]()
-    private var titleShadowColors = [UIControlState: UIColor]()
+    fileprivate var images = [UIControlState: UIImage]()
+    fileprivate var attributedTitles = [UIControlState: NSAttributedString]()
+    fileprivate var titles = [UIControlState: String]()
+    fileprivate var titleColors = [UIControlState: UIColor]()
+    fileprivate var titleShadowColors = [UIControlState: UIColor]()
     
     open override func layoutSubviews() {
         // Only change subview attributes if a corresponding entry exists in our dictionaries:
-        if let titleForCurrentControlState = titles[state] {
+
+        if let attributedTitleForCurrentState = attributedTitles[state] {
             if titleLabel == nil { titleLabel = UILabel() }
-            titleLabel?.text = titleForCurrentControlState
-        } else if titles.isEmpty {
+            titleLabel?.attributedText = attributedTitleForCurrentState
+        } else if let titleForCurrentState = titles[state] {
+            if titleLabel == nil { titleLabel = UILabel() }
+            titleLabel?.text = titleForCurrentState
+        } else if titles.isEmpty && attributedTitles.isEmpty {
             titleLabel = nil
         }
 
-        if let titleColorForCurrentControlState = titleColors[state] {
-            titleLabel?.textColor = titleColorForCurrentControlState
+        if let imageForCurrentState = images[state] {
+            imageView?.image = imageForCurrentState
+        } else if images.isEmpty {
+            imageView = nil
         }
 
-        if let titleShadowColorForCurrentControlState = titleShadowColors[state] {
-            titleLabel?.shadowColor = titleShadowColorForCurrentControlState
+        if let titleColorForCurrentState = titleColors[state] {
+            titleLabel?.textColor = titleColorForCurrentState
+        }
+
+        if let titleShadowColorForCurrentState = titleShadowColors[state] {
+            titleLabel?.shadowColor = titleShadowColorForCurrentState
         }
 
         titleLabel?.setNeedsLayout()
@@ -94,11 +102,11 @@ open class Button: UIControl {
             imageView?.frame.midX = bounds.midX - labelWidth / 2
             titleLabel?.frame.midX = bounds.midX + imageWidth / 2
         case .left:
-            imageView?.frame.origin.x = contentEdgeInsets.left
-            titleLabel?.frame.origin.x = imageWidth + contentEdgeInsets.left
+            imageView?.frame.origin.x = 0
+            titleLabel?.frame.origin.x = imageWidth
         case .right:
-            imageView?.frame.maxX = bounds.maxX - labelWidth - contentEdgeInsets.right
-            titleLabel?.frame.maxX = bounds.maxX - contentEdgeInsets.right
+            imageView?.frame.maxX = bounds.maxX - labelWidth
+            titleLabel?.frame.maxX = bounds.maxX
         }
 
         switch contentVerticalAlignment {
@@ -106,11 +114,19 @@ open class Button: UIControl {
             imageView?.frame.midY = bounds.midY
             titleLabel?.frame.midY = bounds.midY
         case .top:
-            imageView?.frame.origin.y = contentEdgeInsets.top
-            titleLabel?.frame.origin.y = contentEdgeInsets.top
+            if imageView == nil {
+                titleLabel?.frame.origin.y = currentLabelVerticalPadding
+            } else {
+                titleLabel?.frame.origin.y = 0
+                imageView?.frame.origin.y = 0
+            }
         case .bottom:
-            imageView?.frame.maxY = bounds.maxY - contentEdgeInsets.bottom
-            titleLabel?.frame.maxY = bounds.maxY - contentEdgeInsets.bottom
+            if imageView == nil {
+                titleLabel?.frame.maxY = bounds.maxY - currentLabelVerticalPadding
+            } else {
+                titleLabel?.frame.maxY = bounds.maxY
+                imageView?.frame.maxY = bounds.maxY
+            }
         }
 
         super.layoutSubviews()
@@ -118,8 +134,26 @@ open class Button: UIControl {
 }
 
 extension Button {
-    public func setTitle(_ text: String, for state: UIControlState) {
+    public func setImage(_ image: UIImage?, for state: UIControlState) {
+        images[state] = image
+        if images.isEmpty {
+            imageView = nil
+        } else {
+            if imageView == nil { imageView = UIImageView() }
+            imageView?.image = image
+        }
+        setNeedsLayout()
+    }
+
+    public func setTitle(_ text: String?, for state: UIControlState) {
         titles[state] = text
+        if titleLabel == nil { titleLabel = UILabel() }
+        setNeedsLayout()
+    }
+
+    public func setAttributedTitle(_ attributedText: NSAttributedString?, for state: UIControlState) {
+        attributedTitles[state] = attributedText
+        if titleLabel == nil { titleLabel = UILabel() }
         setNeedsLayout()
     }
 

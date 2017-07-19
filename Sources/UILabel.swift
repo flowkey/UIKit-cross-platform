@@ -21,6 +21,14 @@ open class UILabel: UIView {
         didSet { setNeedsDisplay() }
     }
 
+    public var attributedText: NSAttributedString? {
+        didSet {
+            text = attributedText?.string
+            // TODO: also set textColor etc according to attributes
+            setNeedsDisplay()
+        }
+    }
+
     public var textColor: UIColor = .black {
         didSet { setNeedsDisplay() }
     }

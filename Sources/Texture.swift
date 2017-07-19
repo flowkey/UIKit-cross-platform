@@ -31,6 +31,13 @@ internal final class Texture {
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
         scaleImage(scale)
     }
+
+    init?(gpuImage: GPU_Image) {
+        let gpuImagePointer = UnsafeMutablePointer<GPU_Image>.allocate(capacity: 1)
+        gpuImagePointer.initialize(to: gpuImage)
+
+        rawPointer = gpuImagePointer
+    }
     
     private func scaleImage(_ scale: Float) {
         var image = rawPointer.pointee

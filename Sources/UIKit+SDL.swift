@@ -47,7 +47,8 @@ final public class SDL { // XXX: only public for startRunLoop()
     }
 
     public static func initialize() {
-        SDL.window.clear() // do something random to ensure that `SDL.shared` exists
+        SDL.window.clear() // do something random to ensure that `SDL.window` exists
+        UIFont.loadSystemFonts()
     }
 
     private static var isRunning = false
