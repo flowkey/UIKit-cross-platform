@@ -15,12 +15,9 @@ public func getActivityClass() -> JavaClass
 
 private func listFiles(inDirectory subpath: String) throws -> [String] {
     let activityClass = getActivityClass()
-    print("Getting context")
     let context = try callStatic("getContext", on: activityClass, returningObjectType: "android.content.Context")
-    print("Getting asset manager")
     let assetManager = try call("getAssets", on: context, returningObjectType: "android.content.res.AssetManager")
 
-    print("Listing assets in \(subpath)")
     return try call("list", on: assetManager, with: [subpath])
 }
 
@@ -30,7 +27,6 @@ public struct Bundle {
     public func paths(forResourcesOfType ext: String?, inDirectory subpath: String?) -> [String] {
         do {
             let allFiles = try listFiles(inDirectory: subpath ?? "")
-            print("allFiles: \(allFiles)")
             guard let ext = ext else { return allFiles }
 
             let filteredFiles = allFiles.filter({ filename -> Bool in
@@ -40,7 +36,6 @@ public struct Bundle {
 
             return filteredFiles
         } catch {
-            print("Failed to get directory listing aus Gründen:", error)
             return []
         }
     }
