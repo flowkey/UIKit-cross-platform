@@ -27,24 +27,28 @@ open class Button: UIControl {
     private var currentLabelVerticalPadding: CGFloat = 0
     private let labelVerticalPaddingAfterSizeToFit: CGFloat = 6
 
-    open func sizeToFit() {
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
         currentLabelVerticalPadding = labelVerticalPaddingAfterSizeToFit
         setNeedsLayout()
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
 
+        var newSize = CGSize(width: 0, height: 0)
+
         if let imageView = imageView, let titleLabel = titleLabel {
-            frame.width += titleLabel.frame.width
-            frame.height = max(imageView.frame.height, titleLabel.frame.height)
+            newSize.width = imageView.frame.width + titleLabel.frame.width
+            newSize.height = max(imageView.frame.height, titleLabel.frame.height)
         } else if let imageView = imageView, titleLabel == nil {
-            frame.width = imageView.frame.width
-            frame.height = imageView.frame.height
+            newSize.width = imageView.frame.width
+            newSize.height = imageView.frame.height
         } else if let titleLabel = titleLabel, imageView == nil {
-            frame.width = titleLabel.frame.width
-            frame.height = titleLabel.frame.height + (2 * labelVerticalPaddingAfterSizeToFit)
+            newSize.width = titleLabel.frame.width
+            newSize.height = titleLabel.frame.height + (2 * labelVerticalPaddingAfterSizeToFit)
         } else {
-            frame.size = CGSize(width: 30, height: 34)
+            newSize = CGSize(width: 30, height: 34)
         }
+
+        return newSize
     }
 
     public let tapGestureRecognizer = UITapGestureRecognizer()

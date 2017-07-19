@@ -61,13 +61,12 @@ open class UILabel: UIView {
         layer.addSublayer(textLayer)
     }
 
-    open func sizeToFit() {
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
         // XXX: We should take numberOfLines into account here!
-        guard let text = self.text else { return }
+        guard let text = self.text else { return CGSize(width: 0, height: 0) }
         let previousFrame = self.frame
-        bounds.size = text.size(with: self.font)
         layout(&frame, in: previousFrame) // uses text alignment to adjust self.frame
-        setNeedsLayout()
+        return text.size(with: self.font)
     }
 
     open override func layoutSubviews() {
