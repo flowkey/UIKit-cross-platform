@@ -59,6 +59,7 @@ open class UILabel: UIView {
     override public init(frame: CGRect) {
         super.init(frame: frame)
         layer.addSublayer(textLayer)
+        isUserInteractionEnabled = false
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {

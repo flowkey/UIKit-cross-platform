@@ -95,6 +95,12 @@ extension CGRect {
         offsetCopy.origin = self.origin.offsetBy(point)
         return offsetCopy
     }
+
+    public func offsetBy(dx: CGFloat, dy: CGFloat) -> CGRect {
+        var offsetCopy = self
+        offsetCopy.origin = self.origin.offsetBy(CGPoint(x: dx, y: dy))
+        return offsetCopy
+    }
 }
 
 extension GPU_Rect {
