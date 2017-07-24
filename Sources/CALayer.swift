@@ -39,6 +39,26 @@ open class CALayer {
 
     /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc)
     open var frame: CGRect = .zero {
+        willSet (newFrame) {
+            if UIView.animationDuration > 0 {
+                copySelfToPresentationLayer()
+
+                if newFrame.origin != frame.origin {
+                    let animation = CABasicAnimation(keyPath: "position")
+                    animation.fromValue = frame.origin
+                    animation.toValue = newFrame.origin
+                    self.add(animation, forKey: "position")
+
+                } else if newFrame.size != frame.size {
+                    let animation = CABasicAnimation(keyPath: "size")
+                    animation.fromValue = frame.size
+                    animation.toValue = newFrame.size
+                    self.add(animation, forKey: "size")
+                }
+
+            }
+
+        }
         didSet {
             if bounds.size != frame.size {
                 bounds.size = frame.size
@@ -74,14 +94,6 @@ open class CALayer {
     // Match UIKit by providing this initializer to override
     public init(layer: Any) {}
 
-    open func add(_ animation: CABasicAnimation, forKey key: String) {
-
-    }
-
-    open func removeAnimation(forKey key: String) {
-
-    }
-
     open func action(forKey event: String) -> CAAction? {
         return nil // TODO: Return the default CABasicAnimation of 0.25 seconds of all animatable properties
     }
@@ -93,6 +105,7 @@ open class CALayer {
     }
 
 
+    private var animations: [CABasicAnimation] = []
     private var presentationLayer: CALayer?
 
     open func copySelfToPresentationLayer() {
@@ -105,8 +118,21 @@ open class CALayer {
     open func presentation() -> CALayer? {
         return presentationLayer
     }
-}
 
+    func updatePresentation(frame: CGRect) {
+        presentationLayer?.frame = frame
+    }
+
+    open func add(_ animation: CABasicAnimation, forKey key: String) {
+        animation.keyPath = key
+        animations.append(animation)
+    }
+
+    open func removeAnimation(forKey key: String) {
+        animations = animations.filter { $0.keyPath != key }
+    }
+
+}
 
 extension CALayer: Equatable {
     public static func == (lhs: CALayer, rhs: CALayer) -> Bool {
