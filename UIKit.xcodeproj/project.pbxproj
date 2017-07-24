@@ -192,7 +192,7 @@
 		833860B01F0D55B3004DD55E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8378E17D1F05503600E138BD /* UIVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIVisualEffectView.swift; path = ../Sources/UIVisualEffectView.swift; sourceTree = "<group>"; };
 		83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTestsConstants.swift; sourceTree = "<group>"; };
-		83D961341F2635D5005176DC /* NSMutableAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedString.swift; sourceTree = "<group>"; };
+		83D961341F2635D5005176DC /* NSMutableAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NSMutableAttributedString.swift; path = ../Sources/NSMutableAttributedString.swift; sourceTree = "<group>"; };
 		83E5F7EA1EF8156400279C59 /* Texture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
 		83E5F7EC1EF8157300279C59 /* Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		83E5F7F21EF8188400279C59 /* UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UILabel.swift; path = Sources/UILabel.swift; sourceTree = SOURCE_ROOT; };
