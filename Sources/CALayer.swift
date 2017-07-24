@@ -49,7 +49,7 @@ open class CALayer {
                     animation.fromValue = frame
                     animation.toValue = newFrame
                     animation.duration = CGFloat(UIView.animationDuration)
-                    self.add(animation, forKey: "frame")
+                    self.add(animation, forKey: "frame", addToAnimations: true)
                 }
             }
 
@@ -62,6 +62,21 @@ open class CALayer {
     }
 
     open var bounds: CGRect = .zero {
+        willSet (newBounds) {
+            if UIView.animationDuration > 0 {
+
+                if newBounds != bounds {
+                    if self.presentationLayer == nil { copySelfToPresentationLayer() }
+
+                    let animation = CABasicAnimation(keyPath: "bounds")
+                    animation.fromValue = bounds
+                    animation.toValue = newBounds
+                    animation.duration = CGFloat(UIView.animationDuration)
+                    self.add(animation, forKey: "bounds", addToAnimations: true)
+                }
+            }
+
+        }
         didSet {
             if frame.size != bounds.size {
                 frame.size = bounds.size
@@ -114,6 +129,7 @@ open class CALayer {
         // TODO: is there a nicer way for a copy of self?
         presentationLayer = CALayer()
         presentationLayer?.frame = self.frame
+        presentationLayer?.bounds = self.bounds
         presentationLayer?.opacity = self.opacity
     }
 
@@ -127,22 +143,26 @@ open class CALayer {
         presentationLayer?.frame = frame
     }
 
-    open func add(_ animation: CABasicAnimation, forKey key: String) {
-        animation.keyPath = key
-        if (key == "frame") {
+    open func add(_ animation: CABasicAnimation, forKey key: String, addToAnimations: Bool? = false) {
+        if addToAnimations! {
             animations.append(animation)
         }
     }
 
     open func removeAnimation(forKey key: String) {
-        //animations = animations.filter { $0.keyPath != key }
+        animations = animations.filter { $0.keyPath != key }
     }
 
     func animate() {
         animations.forEach { animation in
+
             switch animation.keyPath {
             case "frame"?:
                 self.presentation()?.frame = animation.toValue as! CGRect
+                removeAnimation(forKey: "frame")
+            case "bounds"?:
+                self.presentation()?.bounds = animation.toValue as! CGRect
+                removeAnimation(forKey: "bounds")
             default: break
             }
         }
