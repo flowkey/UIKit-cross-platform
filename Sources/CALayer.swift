@@ -113,7 +113,6 @@ open class CALayer {
     open func copySelfToPresentationLayer() {
         // TODO: is there a nicer way for a copy of self?
         presentationLayer = CALayer()
-        presentationLayer?.texture = self.texture
         presentationLayer?.frame = self.frame
         presentationLayer?.opacity = self.opacity
     }
