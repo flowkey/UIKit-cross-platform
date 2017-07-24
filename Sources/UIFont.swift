@@ -10,14 +10,15 @@ import SDL
 
 private let systemFontName = "Roboto" // XXX: change this depending on platform?
 
-public enum FontWeight: String {
-    case UIFontWeightThin = "Thin"
-    case UIFontWeightLight = "Light"
-    case UIFontWeightRegular = "Regular"
-    case UIFontWeightMedium = "Medium"
-    case UIFontWeightBold = "Bold"
-    case UIFontWeightBlack = "Black"
-}
+// in iOS UIKit CGFloat: https://developer.apple.com/documentation/uikit/uifontweight
+public typealias UIFontWeight = String
+
+public let UIFontWeightThin: UIFontWeight = "Thin"
+public let UIFontWeightLight: UIFontWeight = "Light"
+public let UIFontWeightRegular: UIFontWeight = "Regular"
+public let UIFontWeightMedium: UIFontWeight = "Medium"
+public let UIFontWeightBold: UIFontWeight = "Bold"
+public let UIFontWeightBlack: UIFontWeight = "Black"
 
 open class UIFont {
     fileprivate static let contentScale: CGFloat = 2.0 // TODO: Get from Window
@@ -35,11 +36,11 @@ open class UIFont {
     // These are the only public initializers for now:
 
     public static func boldSystemFont(ofSize size: CGFloat) -> UIFont {
-        return systemFont(ofSize: size, weight: .UIFontWeightBold)
+        return systemFont(ofSize: size, weight: UIFontWeightBold)
     }
 
-    public static func systemFont(ofSize size: CGFloat, weight: FontWeight = .UIFontWeightRegular) -> UIFont {
-        return UIFont(name: systemFontName + "-" + weight.rawValue, size: size)!
+    public static func systemFont(ofSize size: CGFloat, weight: UIFontWeight = UIFontWeightRegular) -> UIFont {
+        return UIFont(name: systemFontName + "-" + weight, size: size)!
     }
  
     public init?(name: String, size: CGFloat) {
