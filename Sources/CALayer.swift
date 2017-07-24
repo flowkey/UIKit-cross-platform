@@ -41,21 +41,21 @@ open class CALayer {
     open var frame: CGRect = .zero {
         willSet (newFrame) {
             if UIView.animationDuration > 0 {
-                copySelfToPresentationLayer()
 
                 if newFrame.origin != frame.origin {
+                    if self.presentationLayer == nil { copySelfToPresentationLayer() }
                     let animation = CABasicAnimation(keyPath: "position")
                     animation.fromValue = frame.origin
                     animation.toValue = newFrame.origin
                     self.add(animation, forKey: "position")
 
                 } else if newFrame.size != frame.size {
+                    if self.presentationLayer == nil { copySelfToPresentationLayer() }
                     let animation = CABasicAnimation(keyPath: "size")
                     animation.fromValue = frame.size
                     animation.toValue = newFrame.size
                     self.add(animation, forKey: "size")
                 }
-
             }
 
         }
@@ -89,7 +89,9 @@ open class CALayer {
     public var shadowRadius: CGFloat = 0
 
 
-    public init() {}
+    public init() {
+        link.callback = animate
+    }
 
     // Match UIKit by providing this initializer to override
     public init(layer: Any) {}
@@ -105,15 +107,23 @@ open class CALayer {
     }
 
 
-    private var animations: [CABasicAnimation] = []
+    private var animations: [CABasicAnimation] = [] {
+        didSet {
+            link.isPaused = animations.count == 0
+        }
+    }
+
     private var presentationLayer: CALayer?
 
     open func copySelfToPresentationLayer() {
         // TODO: is there a nicer way for a copy of self?
         presentationLayer = CALayer()
+        presentationLayer?.texture = self.texture
         presentationLayer?.frame = self.frame
         presentationLayer?.opacity = self.opacity
     }
+
+    private let link = DisplayLink()
 
     open func presentation() -> CALayer? {
         return presentationLayer
@@ -130,6 +140,18 @@ open class CALayer {
 
     open func removeAnimation(forKey key: String) {
         animations = animations.filter { $0.keyPath != key }
+    }
+
+    func animate() {
+        animations.forEach { animation in
+            switch animation.keyPath {
+            case "position"?:
+                self.presentation()?.frame.origin = animation.toValue as! CGPoint
+            case "size"?:
+                self.presentation()?.frame.size = animation.toValue as! CGSize
+            default: break
+            }
+        }
     }
 
 }
