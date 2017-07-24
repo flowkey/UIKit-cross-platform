@@ -91,6 +91,20 @@ open class CALayer {
         guard let texture = self.texture else { return nil }
         return UIImage(texture: texture)
     }
+
+
+    private var presentationLayer: CALayer?
+
+    open func copySelfToPresentationLayer() {
+        // TODO: is there a nicer way for a copy of self?
+        presentationLayer = CALayer()
+        presentationLayer?.frame = self.frame
+        presentationLayer?.opacity = self.opacity
+    }
+
+    open func presentation() -> CALayer? {
+        return presentationLayer
+    }
 }
 
 
