@@ -10,14 +10,18 @@ import SDL
 
 extension CALayer {
     final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect()) {
+        // UIView.animate updates the animated properties to their final value immediately
+        // presentation() represents the state of the animation
+        let layerForRender = presentation() ?? self
+
         if isHidden || opacity < 0.01 { return } // could be a hidden sublayer of a visible layer
-        let absoluteFrame = frame.offsetBy(parentAbsoluteFrame.origin).offsetBy(bounds.origin)
+        let absoluteFrame = layerForRender.frame.offsetBy(parentAbsoluteFrame.origin).offsetBy(bounds.origin)
         
         // Big performance optimization. Don't render anything that's entirely offscreen:
         if !absoluteFrame.intersects(SDL.rootView.bounds) { return }
 
         if let backgroundColor = backgroundColor {
-            let opacity = self.opacity * backgroundColor.alpha.toNormalisedCGFloat()
+            let opacity = layerForRender.opacity * backgroundColor.alpha.toNormalisedCGFloat()
             SDL.window.fill(absoluteFrame, with: backgroundColor.withAlphaComponent(opacity), cornerRadius: cornerRadius)
         }
 
