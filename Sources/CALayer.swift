@@ -42,19 +42,14 @@ open class CALayer {
         willSet (newFrame) {
             if UIView.animationDuration > 0 {
 
-                if newFrame.origin != frame.origin {
+                if newFrame != frame {
                     if self.presentationLayer == nil { copySelfToPresentationLayer() }
-                    let animation = CABasicAnimation(keyPath: "position")
-                    animation.fromValue = frame.origin
-                    animation.toValue = newFrame.origin
-                    self.add(animation, forKey: "position")
 
-                } else if newFrame.size != frame.size {
-                    if self.presentationLayer == nil { copySelfToPresentationLayer() }
-                    let animation = CABasicAnimation(keyPath: "size")
-                    animation.fromValue = frame.size
-                    animation.toValue = newFrame.size
-                    self.add(animation, forKey: "size")
+                    let animation = CABasicAnimation(keyPath: "frame")
+                    animation.fromValue = frame
+                    animation.toValue = newFrame
+                    animation.duration = CGFloat(UIView.animationDuration)
+                    self.add(animation, forKey: "frame")
                 }
             }
 
@@ -135,20 +130,20 @@ open class CALayer {
 
     open func add(_ animation: CABasicAnimation, forKey key: String) {
         animation.keyPath = key
-        animations.append(animation)
+        if (key == "frame") {
+            animations.append(animation)
+        }
     }
 
     open func removeAnimation(forKey key: String) {
-        animations = animations.filter { $0.keyPath != key }
+        //animations = animations.filter { $0.keyPath != key }
     }
 
     func animate() {
         animations.forEach { animation in
             switch animation.keyPath {
-            case "position"?:
-                self.presentation()?.frame.origin = animation.toValue as! CGPoint
-            case "size"?:
-                self.presentation()?.frame.size = animation.toValue as! CGSize
+            case "frame"?:
+                self.presentation()?.frame = animation.toValue as! CGRect
             default: break
             }
         }
