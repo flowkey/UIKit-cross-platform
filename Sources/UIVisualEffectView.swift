@@ -9,5 +9,7 @@
 open class UIVisualEffectView: UIView {
     public init(effect: UIVisualEffect) {
         super.init(frame: .zero)
+        // mocked to be always of style dark
+        backgroundColor = UIColor.black.withAlphaComponent(0.7)
     }
 }

@@ -9,7 +9,11 @@
 public class UIVisualEffect {}
 
 public class UIBlurEffect: UIVisualEffect {
-    public init(style: UIBlurEffectStyle) {}
+    public let style: UIBlurEffectStyle
+
+    public init(style: UIBlurEffectStyle) {
+        self.style = style
+    }
 }
 
 public enum UIBlurEffectStyle {

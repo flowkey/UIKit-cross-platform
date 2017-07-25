@@ -17,7 +17,15 @@ public class NSMutableAttributedString: NSAttributedString  {
         super.init(string: string)
     }
 
+    public var length: Int {
+        return string.characters.count
+    }
+
     public func append(_ attributedString: NSAttributedString) {
         self.string = self.string + attributedString.string
+    }
+
+    public func addAttributes(_ attrs: [String: Any], range: NSRange) {
+        // to be implemented
     }
 }
