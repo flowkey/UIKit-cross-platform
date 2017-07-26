@@ -79,7 +79,7 @@ open class CALayer {
                     animation.fromValue = opacity
                     animation.toValue = newOpacity
                     animation.duration = CGFloat(UIView.animationDuration)
-                    self.add(animation, forKey: "opacity", addToAnimations: true)
+                    self.add(animation, forKey: animation.keyPath!, addToAnimations: true)
                 }
             }
         }
@@ -119,12 +119,10 @@ open class CALayer {
     private let link = DisplayLink()
 
     private var animations: [CABasicAnimation] = [] {
-        didSet {
+        didSet(oldAnimations) {
             link.isPaused = animations.count == 0
 
-            if oldValue.count == animations.count { return }
-            if animations.count == 0 { // no animations to do
-                link.isPaused = true
+            if animations.count != animations.count && animations.count == 0 {
                 presentationLayer = nil
             }
         }
