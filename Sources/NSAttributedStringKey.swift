@@ -7,6 +7,7 @@
 //
 
 public struct NSAttributedStringKey: Hashable, RawRepresentable {
+    public typealias RawValue = String
     public var rawValue: String
     public var hashValue: Int
 

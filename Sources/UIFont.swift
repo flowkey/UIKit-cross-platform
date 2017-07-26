@@ -6,19 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
-
 private let systemFontName = "Roboto" // XXX: change this depending on platform?
-
-// in iOS UIKit CGFloat: https://developer.apple.com/documentation/uikit/uifontweight
-public typealias UIFontWeight = String
-
-public let UIFontWeightThin: UIFontWeight = "Thin"
-public let UIFontWeightLight: UIFontWeight = "Light"
-public let UIFontWeightRegular: UIFontWeight = "Regular"
-public let UIFontWeightMedium: UIFontWeight = "Medium"
-public let UIFontWeightBold: UIFontWeight = "Bold"
-public let UIFontWeightBlack: UIFontWeight = "Black"
 
 open class UIFont {
     fileprivate static let contentScale: CGFloat = 2.0 // TODO: Get from Window
@@ -33,14 +21,48 @@ open class UIFont {
     public var pointSize: CGFloat
     public let lineHeight: CGFloat
 
-    // These are the only public initializers for now:
+    public struct Weight: RawRepresentable {
+        public typealias RawValue = CGFloat
+        public var rawValue: CGFloat
 
-    public static func boldSystemFont(ofSize size: CGFloat) -> UIFont {
-        return systemFont(ofSize: size, weight: UIFontWeightBold)
+        public init?(rawValue: CGFloat) {
+            switch rawValue {
+            case -1 ..< -0.5: self.rawValue = -0.6
+            case -0.5 ..< -0.2: self.rawValue = -0.4
+            case -0.2 ..< 0.1: self.rawValue = 0.0
+            case 0.1 ..< 0.3: self.rawValue = 0.2
+            case 0.3 ..< 0.5: self.rawValue = 0.4
+            case 0.5 ..< 1.0: self.rawValue = 0.62
+            default: return nil
+            }
+        }
+
+        public static let thin = Weight(rawValue: -0.6)!
+        public static let light = Weight(rawValue: -0.4)!
+        public static let regular = Weight(rawValue: 0.0)!
+        public static let medium = Weight(rawValue: 0.23)!
+        public static let bold = Weight(rawValue: 0.4)!
+        public static let black = Weight(rawValue: 0.62)!
+
+        public func toString() -> String {
+            switch self.rawValue {
+            case -1 ..< -0.5: return "thin"
+            case -0.5 ..< -0.2: return "light"
+            case -0.2 ..< 0.1: return "regular"
+            case 0.1 ..< 0.3: return "medium"
+            case 0.3 ..< 0.5: return "bold"
+            case 0.5 ..< 1.0: return "black"
+            default: return "<unknown>"
+            }
+        }
     }
 
-    public static func systemFont(ofSize size: CGFloat, weight: UIFontWeight = UIFontWeightRegular) -> UIFont {
-        return UIFont(name: systemFontName + "-" + weight, size: size)!
+    public static func boldSystemFont(ofSize size: CGFloat) -> UIFont {
+        return systemFont(ofSize: size, weight: Weight.bold)
+    }
+
+    public static func systemFont(ofSize size: CGFloat, weight: Weight = .regular) -> UIFont {
+        return UIFont(name: systemFontName + "-" + weight.toString(), size: size)!
     }
  
     public init?(name: String, size: CGFloat) {
