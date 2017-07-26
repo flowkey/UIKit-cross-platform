@@ -27,9 +27,7 @@ extension UIView {
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
-        self.animationDuration = duration
         animations()
-        self.animationDuration = 0
         completion?(true)
     }
 
@@ -40,9 +38,22 @@ extension UIView {
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
+        animations()
+        completion?(true)
+    }
+
+    public static func _animate(
+        withDuration duration: Double,
+        delay: Double = 0.0,
+        options: UIViewAnimationOptions = [],
+        animations: () -> Void,
+        completion: ((Bool) -> Void)? = nil
+        ) {
         self.animationDuration = duration
         animations()
         self.animationDuration = 0
         completion?(true)
     }
+
+
 }

@@ -41,18 +41,17 @@ open class CALayer {
     open var frame: CGRect = .zero {
         willSet (newFrame) {
             if UIView.animationDuration > 0 {
-
                 if newFrame != frame {
-                    if self.presentationLayer == nil { copySelfToPresentationLayer() }
+                    ensurePresenTationLayerExists()
 
                     let animation = CABasicAnimation(keyPath: "frame")
                     animation.fromValue = frame
                     animation.toValue = newFrame
                     animation.duration = CGFloat(UIView.animationDuration)
-                    self.add(animation, forKey: "frame", addToAnimations: true)
+
+                    self.add(animation, forKey: animation.keyPath!, addToAnimations: true)
                 }
             }
-
         }
         didSet {
             if bounds.size != frame.size {
@@ -62,21 +61,6 @@ open class CALayer {
     }
 
     open var bounds: CGRect = .zero {
-        willSet (newBounds) {
-            if UIView.animationDuration > 0 {
-
-                if newBounds != bounds {
-                    if self.presentationLayer == nil { copySelfToPresentationLayer() }
-
-                    let animation = CABasicAnimation(keyPath: "bounds")
-                    animation.fromValue = bounds
-                    animation.toValue = newBounds
-                    animation.duration = CGFloat(UIView.animationDuration)
-                    self.add(animation, forKey: "bounds", addToAnimations: true)
-                }
-            }
-
-        }
         didSet {
             if frame.size != bounds.size {
                 frame.size = bounds.size
@@ -85,7 +69,22 @@ open class CALayer {
     }
 
     public var isHidden = false
-    public var opacity: CGFloat = 1
+    public var opacity: CGFloat = 1 {
+        willSet(newOpacity) {
+            if UIView.animationDuration > 0 {
+                if newOpacity != opacity {
+                    ensurePresenTationLayerExists()
+
+                    let animation = CABasicAnimation(keyPath: "opacity")
+                    animation.fromValue = opacity
+                    animation.toValue = newOpacity
+                    animation.duration = CGFloat(UIView.animationDuration)
+                    self.add(animation, forKey: "opacity", addToAnimations: true)
+                }
+            }
+        }
+    }
+
     public var cornerRadius: CGFloat = 0
 
     // TODO: Implement these!
@@ -116,33 +115,29 @@ open class CALayer {
         return UIImage(texture: texture)
     }
 
+    private var presentationLayer: CALayer?
+    private let link = DisplayLink()
 
     private var animations: [CABasicAnimation] = [] {
         didSet {
             link.isPaused = animations.count == 0
+
+            if oldValue.count == animations.count { return }
+            if animations.count == 0 { // no animations to do
+                link.isPaused = true
+                presentationLayer = nil
+            }
         }
     }
+}
 
-    private var presentationLayer: CALayer?
-
-    open func copySelfToPresentationLayer() {
-        // TODO: is there a nicer way for a copy of self?
-        presentationLayer = CALayer()
-        presentationLayer?.frame = self.frame
-        presentationLayer?.bounds = self.bounds
-        presentationLayer?.opacity = self.opacity
+extension CALayer: Equatable {
+    public static func == (lhs: CALayer, rhs: CALayer) -> Bool {
+        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
     }
+}
 
-    private let link = DisplayLink()
-
-    open func presentation() -> CALayer? {
-        return presentationLayer
-    }
-
-    func updatePresentation(frame: CGRect) {
-        presentationLayer?.frame = frame
-    }
-
+extension CALayer { // animations
     open func add(_ animation: CABasicAnimation, forKey key: String, addToAnimations: Bool? = false) {
         if addToAnimations! {
             animations.append(animation)
@@ -153,25 +148,50 @@ open class CALayer {
         animations = animations.filter { $0.keyPath != key }
     }
 
-    func animate() {
+    func updatePresentation(frame: CGRect) {
+        presentationLayer?.frame = frame
+    }
+
+    open func presentation() -> CALayer? {
+        return presentationLayer
+    }
+
+    func ensurePresenTationLayerExists() {
+        guard presentationLayer == nil else { return }
+
+        // TODO: is there a nicer way for a copy of self?
+        presentationLayer = CALayer()
+        presentationLayer?.frame = self.frame
+        presentationLayer?.opacity = self.opacity
+    }
+
+    private func animate() {
         animations.forEach { animation in
+            if (animation.duration <= 0) { return }
 
             switch animation.keyPath {
             case "frame"?:
-                self.presentation()?.frame = animation.toValue as! CGRect
-                removeAnimation(forKey: "frame")
-            case "bounds"?:
-                self.presentation()?.bounds = animation.toValue as! CGRect
-                removeAnimation(forKey: "bounds")
+                let endFrame = animation.toValue as! CGRect
+                let startFrame = animation.fromValue as! CGRect
+
+                let xDiff = (endFrame.origin.x - startFrame.origin.x) * animation.multiplier
+                let yDiff = (endFrame.origin.y - startFrame.origin.y) * animation.multiplier
+
+                presentation()?.frame.origin = CGPoint(x: startFrame.origin.x + xDiff, y: startFrame.origin.y + yDiff)
+
+            case "opacity"?:
+                let endOpacity = animation.toValue as! CGFloat
+                let startOpacity = animation.fromValue as! CGFloat
+
+                let opacityDiff = (endOpacity - startOpacity) * animation.multiplier
+                presentation()?.opacity = startOpacity + opacityDiff
+
             default: break
             }
+
+            if animation.multiplier == 1 && animation.isRemovedOnCompletion {
+                removeAnimation(forKey: animation.keyPath!)
+            }
         }
-    }
-
-}
-
-extension CALayer: Equatable {
-    public static func == (lhs: CALayer, rhs: CALayer) -> Bool {
-        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
     }
 }

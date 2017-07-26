@@ -19,4 +19,10 @@ public class CABasicAnimation {
     public var duration: CGFloat = 0
     public var fromValue: Any?
     public var toValue: Any?
+
+    internal var timer = Timer()
+
+    internal var multiplier: CGFloat {
+        return min(CGFloat(timer.getElapsedTimeInMilliseconds()) / (duration * 1000), 1)
+    }
 }
