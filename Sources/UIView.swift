@@ -195,7 +195,7 @@ open class UIView: UIResponder {
     }
 
     open func sizeToFit() {
-        self.frame.size = sizeThatFits(self.frame.size)
+        self.bounds.size = sizeThatFits(self.bounds.size)
         setNeedsLayout()
     }
 

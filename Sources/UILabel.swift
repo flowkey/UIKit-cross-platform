@@ -66,7 +66,6 @@ open class UILabel: UIView {
         // XXX: We should take numberOfLines into account here!
         guard let text = self.text else { return .zero }
         let previousFrame = self.frame
-        layout(&frame, in: previousFrame) // uses text alignment to adjust self.frame
         return text.size(with: self.font)
     }
 
