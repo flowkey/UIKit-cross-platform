@@ -33,22 +33,21 @@ open class Button: UIControl {
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
 
-        var newSize = CGSize(width: 0, height: 0)
-
         if let imageView = imageView, let titleLabel = titleLabel {
-            newSize.width = imageView.frame.width + titleLabel.frame.width
-            newSize.height = max(imageView.frame.height, titleLabel.frame.height)
+            return CGSize(
+                width: imageView.frame.width + titleLabel.frame.width,
+                height: max(imageView.frame.height, titleLabel.frame.height)
+            )
         } else if let imageView = imageView, titleLabel == nil {
-            newSize.width = imageView.frame.width
-            newSize.height = imageView.frame.height
+            return CGSize(width: imageView.frame.width, height: imageView.frame.height)
         } else if let titleLabel = titleLabel, imageView == nil {
-            newSize.width = titleLabel.frame.width
-            newSize.height = titleLabel.frame.height + (2 * labelVerticalPaddingAfterSizeToFit)
+            return CGSize(
+                width: titleLabel.frame.width,
+                height: titleLabel.frame.height + (2 * labelVerticalPaddingAfterSizeToFit)
+            )
         } else {
-            newSize = CGSize(width: 30, height: 34)
+            return CGSize(width: 30, height: 34)
         }
-
-        return newSize
     }
 
     public let tapGestureRecognizer = UITapGestureRecognizer()

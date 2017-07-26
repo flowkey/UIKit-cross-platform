@@ -64,7 +64,7 @@ open class UILabel: UIView {
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         // XXX: We should take numberOfLines into account here!
-        guard let text = self.text else { return CGSize(width: 0, height: 0) }
+        guard let text = self.text else { return .zero }
         let previousFrame = self.frame
         layout(&frame, in: previousFrame) // uses text alignment to adjust self.frame
         return text.size(with: self.font)

@@ -191,12 +191,7 @@ open class UIView: UIResponder {
     }
 
     open func sizeThatFits(_ size: CGSize) -> CGSize {
-        var newSize = CGSize(width: 0, height: 0)
-        subviews.forEach { view in
-            newSize.width += view.frame.width
-            newSize.height += view.frame.height
-        }
-        return newSize
+        return size
     }
 
     open func sizeToFit() {
