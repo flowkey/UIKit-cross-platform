@@ -12,7 +12,7 @@ extension CALayer {
     final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect()) {
         // UIView.animate updates the animated properties to their final value immediately
         // presentation() represents the state of the animation
-        let layerForRender = presentation() ?? self
+        let layerForRender = presentation ?? self
 
         if isHidden || opacity < 0.01 { return } // could be a hidden sublayer of a visible layer
         let absoluteFrame = layerForRender.frame.offsetBy(parentAbsoluteFrame.origin).offsetBy(bounds.origin)

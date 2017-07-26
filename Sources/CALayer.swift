@@ -73,7 +73,7 @@ open class CALayer {
         willSet(newOpacity) {
             if UIView.animationDuration > 0 {
                 if newOpacity != opacity {
-                    ensurePresenTationLayerExists()
+                    ensurePresenTationExists()
 
                     let animation = CABasicAnimation(keyPath: "opacity")
                     animation.fromValue = opacity
@@ -115,7 +115,7 @@ open class CALayer {
         return UIImage(texture: texture)
     }
 
-    private var presentationLayer: CALayer?
+    var presentation: CALayer?
     private let link = DisplayLink()
 
     private var animations = [String: CABasicAnimation]() {
@@ -125,9 +125,9 @@ open class CALayer {
             guard animations.count != animations.count else { return }
 
             if animations.count != 0 {
-                ensurePresenTationLayerExists()
+                ensurePresenTationExists()
             } else {
-                presentationLayer = nil
+                presentation = nil
             }
         }
     }
@@ -150,17 +150,13 @@ extension CALayer { // animations
         animations.removeValue(forKey: key)
     }
 
-    func presentation() -> CALayer? {
-        return presentationLayer
-    }
-
-    private func ensurePresenTationLayerExists() {
-        guard presentationLayer == nil else { return }
+    private func ensurePresenTationExists() {
+        guard presentation == nil else { return }
 
         // TODO: is there a nicer way for a copy of self?
-        presentationLayer = CALayer()
-        presentationLayer?.frame = self.frame
-        presentationLayer?.opacity = self.opacity
+        presentation = CALayer()
+        presentation?.frame = self.frame
+        presentation?.opacity = self.opacity
     }
 
     private func animate() {
@@ -179,15 +175,15 @@ extension CALayer { // animations
                 let heightDiff = (endFrame.height - startFrame.height) * animation.multiplier
 
 
-                presentation()?.frame.origin = CGPoint(x: startFrame.origin.x + xDiff, y: startFrame.origin.y + yDiff)
-                presentation()?.frame.size = CGSize(width: startFrame.width + widthDiff, height: startFrame.height + heightDiff)
+                presentation?.frame.origin = CGPoint(x: startFrame.origin.x + xDiff, y: startFrame.origin.y + yDiff)
+                presentation?.frame.size = CGSize(width: startFrame.width + widthDiff, height: startFrame.height + heightDiff)
 
             case "opacity"?:
                 let endOpacity = animation.toValue as! CGFloat
                 let startOpacity = animation.fromValue as! CGFloat
 
                 let opacityDiff = (endOpacity - startOpacity) * animation.multiplier
-                presentation()?.opacity = startOpacity + opacityDiff
+                presentation?.opacity = startOpacity + opacityDiff
 
             default: break
             }
