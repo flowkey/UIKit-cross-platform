@@ -40,9 +40,9 @@ open class CALayer {
     /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc)
     open var frame: CGRect = .zero {
         willSet (newFrame) {
+
             if UIView.animationDuration > 0 {
                 if newFrame != frame {
-                    ensurePresenTationLayerExists()
 
                     let animation = CABasicAnimation(keyPath: "frame")
                     animation.fromValue = frame
@@ -118,11 +118,15 @@ open class CALayer {
     private var presentationLayer: CALayer?
     private let link = DisplayLink()
 
-    private var animations: [CABasicAnimation] = [] {
+    private var animations = [String: CABasicAnimation]() {
         didSet(oldAnimations) {
             link.isPaused = animations.count == 0
 
-            if animations.count != animations.count && animations.count == 0 {
+            guard animations.count != animations.count else { return }
+
+            if animations.count != 0 {
+                ensurePresenTationLayerExists()
+            } else {
                 presentationLayer = nil
             }
         }
@@ -138,23 +142,19 @@ extension CALayer: Equatable {
 extension CALayer { // animations
     open func add(_ animation: CABasicAnimation, forKey key: String, addToAnimations: Bool? = false) {
         if addToAnimations! {
-            animations.append(animation)
+            animations[key] = animation
         }
     }
 
     open func removeAnimation(forKey key: String) {
-        animations = animations.filter { $0.keyPath != key }
+        animations.removeValue(forKey: key)
     }
 
-    func updatePresentation(frame: CGRect) {
-        presentationLayer?.frame = frame
-    }
-
-    open func presentation() -> CALayer? {
+    func presentation() -> CALayer? {
         return presentationLayer
     }
 
-    func ensurePresenTationLayerExists() {
+    private func ensurePresenTationLayerExists() {
         guard presentationLayer == nil else { return }
 
         // TODO: is there a nicer way for a copy of self?
@@ -164,7 +164,7 @@ extension CALayer { // animations
     }
 
     private func animate() {
-        animations.forEach { animation in
+        animations.forEach { _, animation in
             if (animation.duration <= 0) { return }
 
             switch animation.keyPath {
@@ -175,7 +175,12 @@ extension CALayer { // animations
                 let xDiff = (endFrame.origin.x - startFrame.origin.x) * animation.multiplier
                 let yDiff = (endFrame.origin.y - startFrame.origin.y) * animation.multiplier
 
+                let widthDiff = (endFrame.width - startFrame.width) * animation.multiplier
+                let heightDiff = (endFrame.height - startFrame.height) * animation.multiplier
+
+
                 presentation()?.frame.origin = CGPoint(x: startFrame.origin.x + xDiff, y: startFrame.origin.y + yDiff)
+                presentation()?.frame.size = CGSize(width: startFrame.width + widthDiff, height: startFrame.height + heightDiff)
 
             case "opacity"?:
                 let endOpacity = animation.toValue as! CGFloat
