@@ -25,7 +25,7 @@ public class NSMutableAttributedString: NSAttributedString  {
         self.string = self.string + attributedString.string
     }
 
-    public func addAttributes(_ attrs: [String: Any], range: NSRange) {
+    public func addAttributes(_ attrs: [NSAttributedStringKey: Any], range: NSRange) {
         // to be implemented
     }
 }
