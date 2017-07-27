@@ -82,8 +82,8 @@
 		83F02DB71F1798F200347AA8 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB51F1798ED00347AA8 /* Button.swift */; };
 		83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */; };
 		83F02DBA1F179AE800347AA8 /* UIImage+testImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */; };
-		83F02DBD1F179D1A00347AA8 /* ButtonSetTitleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DBC1F179D1A00347AA8 /* ButtonSetTitleTests.swift */; };
-		83F02DBE1F179D1A00347AA8 /* ButtonSetTitleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DBC1F179D1A00347AA8 /* ButtonSetTitleTests.swift */; };
+		83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DBC1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift */; };
+		83F02DBE1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DBC1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift */; };
 		83F02DCB1F18F17600347AA8 /* roboto-black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F02DC31F17D84000347AA8 /* roboto-black.ttf */; };
 		83F02DCC1F18F17600347AA8 /* roboto-blackitalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F02DC81F17D84000347AA8 /* roboto-blackitalic.ttf */; };
 		83F02DCD1F18F17600347AA8 /* roboto-bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F02DC01F17D84000347AA8 /* roboto-bold.ttf */; };
@@ -211,7 +211,7 @@
 		83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = loadCustomFont.swift; sourceTree = "<group>"; };
 		83F02DB51F1798ED00347AA8 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+testImage.swift"; sourceTree = "<group>"; };
-		83F02DBC1F179D1A00347AA8 /* ButtonSetTitleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSetTitleTests.swift; sourceTree = "<group>"; };
+		83F02DBC1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSetTitleForStateTests.swift; sourceTree = "<group>"; };
 		83F02DBF1F17D84000347AA8 /* roboto-bolditalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "roboto-bolditalic.ttf"; sourceTree = "<group>"; };
 		83F02DC01F17D84000347AA8 /* roboto-bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "roboto-bold.ttf"; sourceTree = "<group>"; };
 		83F02DC11F17D84000347AA8 /* roboto-regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "roboto-regular.ttf"; sourceTree = "<group>"; };
@@ -446,7 +446,7 @@
 				83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */,
 				832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */,
 				832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */,
-				83F02DBC1F179D1A00347AA8 /* ButtonSetTitleTests.swift */,
+				83F02DBC1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift */,
 			);
 			path = Button;
 			sourceTree = "<group>";
@@ -697,7 +697,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */,
-				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleTests.swift in Sources */,
+				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
 				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
 				83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */,
@@ -712,7 +712,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83F02DBA1F179AE800347AA8 /* UIImage+testImage.swift in Sources */,
-				83F02DBE1F179D1A00347AA8 /* ButtonSetTitleTests.swift in Sources */,
+				83F02DBE1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */,
 				83F02DB71F1798F200347AA8 /* Button.swift in Sources */,
 				83F02DB41F1798D100347AA8 /* loadCustomFont.swift in Sources */,
