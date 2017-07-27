@@ -29,9 +29,10 @@ open class Button: UIControl {
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         currentLabelVerticalPadding = labelVerticalPaddingAfterSizeToFit
-        setNeedsLayout()
+        updateLabelAndImageForCurrentState()
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
+        setNeedsLayout()
 
         if let imageView = imageView, let titleLabel = titleLabel {
             return CGSize(
@@ -52,7 +53,8 @@ open class Button: UIControl {
 
     public let tapGestureRecognizer = UITapGestureRecognizer()
     public var onPress: (() -> Void)? {
-        didSet { tapGestureRecognizer.onPress = onPress }
+        get { return tapGestureRecognizer.onPress }
+        set { tapGestureRecognizer.onPress = newValue }
     }
 
     public override init(frame: CGRect) {
@@ -71,21 +73,7 @@ open class Button: UIControl {
     open override func layoutSubviews() {
         // Only change subview attributes if a corresponding entry exists in our dictionaries:
 
-        if let attributedTitleForCurrentState = attributedTitles[state] {
-            if titleLabel == nil { titleLabel = UILabel() }
-            titleLabel?.attributedText = attributedTitleForCurrentState
-        } else if let titleForCurrentState = titles[state] {
-            if titleLabel == nil { titleLabel = UILabel() }
-            titleLabel?.text = titleForCurrentState
-        } else if titles.isEmpty && attributedTitles.isEmpty {
-            titleLabel = nil
-        }
-
-        if let imageForCurrentState = images[state] {
-            imageView?.image = imageForCurrentState
-        } else if images.isEmpty {
-            imageView = nil
-        }
+        updateLabelAndImageForCurrentState()
 
         if let titleColorForCurrentState = titleColors[state] {
             titleLabel?.textColor = titleColorForCurrentState
@@ -133,6 +121,26 @@ open class Button: UIControl {
         }
 
         super.layoutSubviews()
+    }
+}
+
+extension Button {
+    private func updateLabelAndImageForCurrentState() {
+        if let attributedTitleForCurrentState = attributedTitles[state] {
+            if titleLabel == nil { titleLabel = UILabel() }
+            titleLabel?.attributedText = attributedTitleForCurrentState
+        } else if let titleForCurrentState = titles[state] {
+            if titleLabel == nil { titleLabel = UILabel() }
+            titleLabel?.text = titleForCurrentState
+        } else if titles.isEmpty && attributedTitles.isEmpty {
+            titleLabel = nil
+        }
+
+        if let imageForCurrentState = images[state] {
+            imageView?.image = imageForCurrentState
+        } else if images.isEmpty {
+            imageView = nil
+        }
     }
 }
 
