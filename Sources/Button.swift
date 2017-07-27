@@ -132,12 +132,20 @@ extension Button {
         } else if let titleForCurrentState = titles[state] {
             if titleLabel == nil { titleLabel = UILabel() }
             titleLabel?.text = titleForCurrentState
+        } else if let attributedTitleForNormalState = attributedTitles[.normal] {
+            if titleLabel == nil { titleLabel = UILabel() }
+            titleLabel?.attributedText = attributedTitleForNormalState
+        } else if let titleForNormalState = titles[.normal] {
+            if titleLabel == nil { titleLabel = UILabel() }
+            titleLabel?.text = titleForNormalState
         } else if titles.isEmpty && attributedTitles.isEmpty {
             titleLabel = nil
         }
 
         if let imageForCurrentState = images[state] {
             imageView?.image = imageForCurrentState
+        } else if let imageForNormalState = images[.normal] {
+            imageView?.image = imageForNormalState
         } else if images.isEmpty {
             imageView = nil
         }
