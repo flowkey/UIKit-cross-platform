@@ -23,7 +23,7 @@ open class UIFont {
 
     public struct Weight: RawRepresentable {
         public typealias RawValue = CGFloat
-        public var rawValue: CGFloat
+        public let rawValue: CGFloat
 
         public init?(rawValue: CGFloat) {
             switch rawValue {
@@ -52,7 +52,7 @@ open class UIFont {
             case 0.1 ..< 0.3: return "medium"
             case 0.3 ..< 0.5: return "bold"
             case 0.5 ..< 1.0: return "black"
-            default: return "<unknown>"
+            default: preconditionFailure()
             }
         }
     }

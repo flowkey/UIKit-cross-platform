@@ -30,7 +30,7 @@ public class UIImageView: UIView {
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
-        guard let image = image else { return CGSize(width: 0, height: 0) }
+        guard let image = image else { return .zero }
         return CGSize(width: image.size.width, height: image.size.height)
     }
 

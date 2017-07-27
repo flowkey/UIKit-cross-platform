@@ -9,6 +9,8 @@
 // Note: we deliberately don't wrap UIButton.
 // This allows us to have a somewhat custom API free of objc selectors etc.
 
+fileprivate let labelVerticalPadding: CGFloat = 6
+
 open class Button: UIControl {
     public var imageView: UIImageView? {
         didSet {
@@ -24,11 +26,10 @@ open class Button: UIControl {
         }
     }
 
-    private var currentLabelVerticalPadding: CGFloat = 0
-    private let labelVerticalPaddingAfterSizeToFit: CGFloat = 6
+    private var sizeToFitWasCalled = false
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
-        currentLabelVerticalPadding = labelVerticalPaddingAfterSizeToFit
+        sizeToFitWasCalled = true
         updateLabelAndImageForCurrentState()
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
@@ -44,7 +45,7 @@ open class Button: UIControl {
         } else if let titleLabel = titleLabel, imageView == nil {
             return CGSize(
                 width: titleLabel.frame.width,
-                height: titleLabel.frame.height + (2 * labelVerticalPaddingAfterSizeToFit)
+                height: titleLabel.frame.height + (2 * labelVerticalPadding)
             )
         } else {
             return CGSize(width: 30, height: 34)
@@ -71,8 +72,6 @@ open class Button: UIControl {
     fileprivate var titleShadowColors = [UIControlState: UIColor]()
     
     open override func layoutSubviews() {
-        // Only change subview attributes if a corresponding entry exists in our dictionaries:
-
         updateLabelAndImageForCurrentState()
 
         if let titleColorForCurrentState = titleColors[state] {
@@ -106,14 +105,14 @@ open class Button: UIControl {
             titleLabel?.frame.midY = bounds.midY
         case .top:
             if imageView == nil {
-                titleLabel?.frame.origin.y = currentLabelVerticalPadding
+                titleLabel?.frame.origin.y = sizeToFitWasCalled ? labelVerticalPadding : 0
             } else {
                 titleLabel?.frame.origin.y = 0
                 imageView?.frame.origin.y = 0
             }
         case .bottom:
             if imageView == nil {
-                titleLabel?.frame.maxY = bounds.maxY - currentLabelVerticalPadding
+                titleLabel?.frame.maxY = bounds.maxY - (sizeToFitWasCalled ? labelVerticalPadding : 0)
             } else {
                 titleLabel?.frame.maxY = bounds.maxY
                 imageView?.frame.maxY = bounds.maxY
@@ -127,27 +126,19 @@ open class Button: UIControl {
 extension Button {
     fileprivate func updateLabelAndImageForCurrentState() {
         if let attributedTitleForCurrentState = attributedTitles[state] {
-            if titleLabel == nil { titleLabel = UILabel() }
             titleLabel?.attributedText = attributedTitleForCurrentState
         } else if let titleForCurrentState = titles[state] {
-            if titleLabel == nil { titleLabel = UILabel() }
             titleLabel?.text = titleForCurrentState
         } else if let attributedTitleForNormalState = attributedTitles[.normal] {
-            if titleLabel == nil { titleLabel = UILabel() }
             titleLabel?.attributedText = attributedTitleForNormalState
         } else if let titleForNormalState = titles[.normal] {
-            if titleLabel == nil { titleLabel = UILabel() }
             titleLabel?.text = titleForNormalState
-        } else if titles.isEmpty && attributedTitles.isEmpty {
-            titleLabel = nil
         }
 
         if let imageForCurrentState = images[state] {
             imageView?.image = imageForCurrentState
         } else if let imageForNormalState = images[.normal] {
             imageView?.image = imageForNormalState
-        } else if images.isEmpty {
-            imageView = nil
         }
     }
 }
