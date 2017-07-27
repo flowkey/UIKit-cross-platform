@@ -125,7 +125,7 @@ open class Button: UIControl {
 }
 
 extension Button {
-    private func updateLabelAndImageForCurrentState() {
+    fileprivate func updateLabelAndImageForCurrentState() {
         if let attributedTitleForCurrentState = attributedTitles[state] {
             if titleLabel == nil { titleLabel = UILabel() }
             titleLabel?.attributedText = attributedTitleForCurrentState
