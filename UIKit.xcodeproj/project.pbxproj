@@ -106,18 +106,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5C2714701F278E4E0026BBA9 /* PBXContainerItemProxy */ = {
+		5C2714B41F2B86240026BBA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNISwift.xcodeproj */;
+			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = "JNISwift::JNISwift::Product";
-			remoteInfo = JNISwift;
+			remoteGlobalIDString = "JNI::JNI::Product";
+			remoteInfo = JNI;
 		};
-		5C2714721F278E4E0026BBA9 /* PBXContainerItemProxy */ = {
+		5C2714B61F2B86240026BBA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNISwift.xcodeproj */;
+			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = "JNISwift::CJNI::Product";
+			remoteGlobalIDString = "JNI::CJNI::Product";
 			remoteInfo = CJNI;
 		};
 		5C27E7B91ECB2F6500F5020D /* PBXContainerItemProxy */ = {
@@ -130,7 +130,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		5C1D2F2B1F1E277A0006682E /* JNISwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNISwift.xcodeproj; path = "swift-jni/JNISwift.xcodeproj"; sourceTree = "<group>"; };
+		5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNI.xcodeproj; path = "swift-jni/JNI.xcodeproj"; sourceTree = "<group>"; };
 		5C27E7AE1ECB2F6500F5020D /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C27E7B11ECB2F6500F5020D /* UIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIKit.h; sourceTree = "<group>"; };
 		5C27E7B21ECB2F6500F5020D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -253,11 +253,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5C27146C1F278E4E0026BBA9 /* Products */ = {
+		5C2714B01F2B86240026BBA9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5C2714711F278E4E0026BBA9 /* JNISwift.framework */,
-				5C2714731F278E4E0026BBA9 /* CJNI.framework */,
+				5C2714B51F2B86240026BBA9 /* JNI.framework */,
+				5C2714B71F2B86240026BBA9 /* CJNI.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -265,7 +265,7 @@
 		5C27E7A41ECB2F6500F5020D = {
 			isa = PBXGroup;
 			children = (
-				5C1D2F2B1F1E277A0006682E /* JNISwift.xcodeproj */,
+				5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */,
 				833860AD1F0D55B3004DD55E /* iOSTestTarget */,
 				5C27E7D11ECB2F9100F5020D /* Frameworks */,
 				5C27E7AF1ECB2F6500F5020D /* Products */,
@@ -542,8 +542,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 5C27146C1F278E4E0026BBA9 /* Products */;
-					ProjectRef = 5C1D2F2B1F1E277A0006682E /* JNISwift.xcodeproj */;
+					ProductGroup = 5C2714B01F2B86240026BBA9 /* Products */;
+					ProjectRef = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -556,18 +556,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		5C2714711F278E4E0026BBA9 /* JNISwift.framework */ = {
+		5C2714B51F2B86240026BBA9 /* JNI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = JNISwift.framework;
-			remoteRef = 5C2714701F278E4E0026BBA9 /* PBXContainerItemProxy */;
+			path = JNI.framework;
+			remoteRef = 5C2714B41F2B86240026BBA9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		5C2714731F278E4E0026BBA9 /* CJNI.framework */ = {
+		5C2714B71F2B86240026BBA9 /* CJNI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = CJNI.framework;
-			remoteRef = 5C2714721F278E4E0026BBA9 /* PBXContainerItemProxy */;
+			remoteRef = 5C2714B61F2B86240026BBA9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -835,7 +835,7 @@
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/UIKit",
-					"$(PROJECT_DIR)/../SDL/SDL2/include",
+					"$(PROJECT_DIR)/SDL/SDL2/include",
 				);
 				INFOPLIST_FILE = UIKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -843,7 +843,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/Packages/SDL/ $(PROJECT_DIR)/Packages/swift-jni/Sources/CJNI/include";
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/SDL/ $(PROJECT_DIR)/swift-jni/Sources/CJNI/include";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -860,7 +860,7 @@
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/UIKit",
-					"$(PROJECT_DIR)/../SDL/SDL2/include",
+					"$(PROJECT_DIR)/SDL/SDL2/include",
 				);
 				INFOPLIST_FILE = UIKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -868,7 +868,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/Packages/SDL/ $(PROJECT_DIR)/Packages/swift-jni/Sources/CJNI/include";
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/SDL/ $(PROJECT_DIR)/swift-jni/Sources/CJNI/include";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
