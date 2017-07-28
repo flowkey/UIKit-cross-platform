@@ -32,6 +32,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     }
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        if !isEnabled { state = .cancelled; return }
         guard let firstTouch = touches.first else { return }
         state = .began
         trackedTouch = firstTouch

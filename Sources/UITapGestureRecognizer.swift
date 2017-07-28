@@ -17,6 +17,7 @@ open class UITapGestureRecognizer: UIGestureRecognizer {
     var trackedTouch: UITouch?
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        if !isEnabled { state = .cancelled; return }
         trackedTouch = touches.first
         self.state = .began
     }

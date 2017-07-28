@@ -21,6 +21,8 @@ public enum UIGestureRecognizerState {
 open class UIGestureRecognizer {
     public var minimumNumberOfTouches = 0
     public var maximumNumberOfTouches = 0
+    public var isEnabled = true
+    public var delegate: UIGestureRecognizerDelegate?
     public var state: UIGestureRecognizerState = .possible {
         didSet {
             if state == oldValue { return }
