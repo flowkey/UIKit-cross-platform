@@ -6,7 +6,18 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import JNI
+import SDL.gpu
+
 open class VideoPlayer: UIView {
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        let texture = Texture(width: 1920, height: 1080, format: GPU_FORMAT_YCbCr422)
+        self.layer.texture = texture
+
+        try jni.call("createVideoPlayer", on: getActivityClass(), parameters: [JavaInt(texture.glesHandle)])
+    }
     private let timer = VideoTimer()
     open func play() {
         // Java Video call here

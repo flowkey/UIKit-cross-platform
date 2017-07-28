@@ -6,24 +6,42 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import JNI
+
 #if os(Android)
-struct Bundle {
-    init(for: Any.Type) {}
+private func listFiles(inDirectory subpath: String) throws -> [String] {
+    let context = try jni.callStatic("getContext", on: getActivityClass(), returningObjectType: "android.content.Context")
+    let assetManager = try jni.call("getAssets", on: context, returningObjectType: "android.content.res.AssetManager")
 
-    func paths(forResourcesOfType ext: String?, inDirectory subpath: String?) -> [String] {
-        let subpath = subpath ?? ""
-        var files = [String]()
-        guard let dir = opendir(subpath) else { return files }
-        while let file = readdir(dir) {
-            withUnsafePointer(to: &file.pointee.d_name, { pointer in
-                let filename = pointer.withMemoryRebound(to: CChar.self, capacity: Int(file.pointee.d_namlen), String.init)
-                if let ext = ext, !filename.hasSuffix(ext) { return }
-                files.append(filename)
+    return try jni.call("list", on: assetManager, with: [subpath])
+}
+
+public struct Bundle {
+    public init(for: Any.Type) {}
+
+    public func paths(forResourcesOfType ext: String?, inDirectory subpath: String?) -> [String] {
+        do {
+            let allFiles = try listFiles(inDirectory: subpath ?? "")
+            guard let ext = ext else { return allFiles }
+
+            let filteredFiles = allFiles.filter({ filename -> Bool in
+                let result = strcmp(String(filename.characters.suffix(ext.characters.count)), ext)
+                return result == 0 // 0 is an exact match
             })
-        }
 
-        closedir(dir)
-        return files
+            return filteredFiles
+        } catch {
+            print("Failed to get directory listing:", error)
+            return []
+        }
+    }
+
+    public func path(forResource filename: String, ofType ext: String) -> String? {
+        if ext.characters.first  == "." {
+            return filename + ext
+        } else {
+            return filename + "." + ext
+        }
     }
 }
 #endif

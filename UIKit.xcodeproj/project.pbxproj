@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C27149E1F2A3CC40026BBA9 /* JNI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27149D1F2A3CC40026BBA9 /* JNI.framework */; };
+		5C27149F1F2A3D580026BBA9 /* VideoPlayer+Android.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C391A8E1F13F62500EE012C /* VideoPlayer+Android.swift */; };
+		5C2714A21F2A3FC50026BBA9 /* SDL+JNIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */; };
 		5C27E7B81ECB2F6500F5020D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7AE1ECB2F6500F5020D /* UIKit.framework */; };
 		5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D21ECB2F9100F5020D /* Cocoa.framework */; };
 		5C27E7DD1ECB2F9100F5020D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D31ECB2F9100F5020D /* AudioToolbox.framework */; };
@@ -22,7 +25,6 @@
 		5C27E8181ECB301900F5020D /* UIKit+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27E8051ECB301900F5020D /* UIKit+SDL.swift */; };
 		5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C361E221ECC348700B3F561 /* UIView+SDL.swift */; };
 		5C3716B61F10050600B2C366 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3716B51F10050600B2C366 /* Timer.swift */; };
-		5C5AC6DD1F1791D0004A88C0 /* VideoPlayer+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5AC6DC1F1791D0004A88C0 /* VideoPlayer+Mac.swift */; };
 		5C6AB7181ED3BECD006F90AC /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7101ED3BECD006F90AC /* Button.swift */; };
 		5C6AB7191ED3BECD006F90AC /* CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7111ED3BECD006F90AC /* CALayer.swift */; };
 		5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7131ED3BECD006F90AC /* UIColor.swift */; };
@@ -59,6 +61,7 @@
 		832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
 		832A7F0D1F16368D0041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
 		832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */; };
+		8333B2C01F1D11B800D98662 /* NSAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8333B2BF1F1D11B800D98662 /* NSAttributedString.swift */; };
 		833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */; };
 		8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8378E17D1F05503600E138BD /* UIVisualEffectView.swift */; };
 		83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */; };
@@ -106,6 +109,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		5C2714931F2A38E70026BBA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "JNISwift::CJNI::Product";
+			remoteInfo = CJNI;
+		};
+		5C27149C1F2A3CC40026BBA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "JNI::JNI::Product";
+			remoteInfo = JNI;
+		};
 		5C27E7B91ECB2F6500F5020D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5C27E7A51ECB2F6500F5020D /* Project object */;
@@ -116,6 +133,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNI.xcodeproj; path = "swift-jni/JNI.xcodeproj"; sourceTree = "<group>"; };
+		5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SDL+JNIExtensions.swift"; sourceTree = "<group>"; };
 		5C27E7AE1ECB2F6500F5020D /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C27E7B11ECB2F6500F5020D /* UIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIKit.h; sourceTree = "<group>"; };
 		5C27E7B21ECB2F6500F5020D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -135,7 +154,7 @@
 		5C27E8051ECB301900F5020D /* UIKit+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+SDL.swift"; sourceTree = "<group>"; };
 		5C361E221ECC348700B3F561 /* UIView+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SDL.swift"; sourceTree = "<group>"; };
 		5C3716B51F10050600B2C366 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
-		5C391A8E1F13F62500EE012C /* VideoPlayer+Dummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "VideoPlayer+Dummy.swift"; path = "Sources/VideoPlayer+Dummy.swift"; sourceTree = SOURCE_ROOT; };
+		5C391A8E1F13F62500EE012C /* VideoPlayer+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "VideoPlayer+Android.swift"; path = "Sources/VideoPlayer+Android.swift"; sourceTree = SOURCE_ROOT; };
 		5C5AC6DC1F1791D0004A88C0 /* VideoPlayer+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "VideoPlayer+Mac.swift"; path = "Sources/VideoPlayer+Mac.swift"; sourceTree = SOURCE_ROOT; };
 		5C6AB7101ED3BECD006F90AC /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Button.swift; path = Sources/Button.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB7111ED3BECD006F90AC /* CALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CALayer.swift; path = Sources/CALayer.swift; sourceTree = SOURCE_ROOT; };
@@ -159,7 +178,6 @@
 		5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "AVPlayerLayer+Mac.swift"; path = "Sources/AVPlayerLayer+Mac.swift"; sourceTree = SOURCE_ROOT; };
 		5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CABasicAnimation.swift; path = Sources/CABasicAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CAAction.swift; path = Sources/CAAction.swift; sourceTree = SOURCE_ROOT; };
-		5CAF2D1D1EE6FD29004C6380 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGDataProvider.swift; sourceTree = "<group>"; };
 		5CDB31B61F1CE8050081A605 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIPanGestureRecognizer.swift; path = Sources/UIPanGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
@@ -171,6 +189,7 @@
 		8318D27A1F0695080029816A /* UIControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIControl.swift; path = ../Sources/UIControl.swift; sourceTree = "<group>"; };
 		832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSizeToFitTests.swift; sourceTree = "<group>"; };
 		832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonContentAlignmentTests.swift; sourceTree = "<group>"; };
+		8333B2BF1F1D11B800D98662 /* NSAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NSAttributedString.swift; path = Sources/NSAttributedString.swift; sourceTree = SOURCE_ROOT; };
 		833860AC1F0D55B3004DD55E /* iOSTestTarget.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTestTarget.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		833860B01F0D55B3004DD55E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8378E17D1F05503600E138BD /* UIVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIVisualEffectView.swift; path = ../Sources/UIVisualEffectView.swift; sourceTree = "<group>"; };
@@ -208,6 +227,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C27149E1F2A3CC40026BBA9 /* JNI.framework in Frameworks */,
 				5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */,
 				5C27E7DD1ECB2F9100F5020D /* AudioToolbox.framework in Frameworks */,
 				5C27E7DE1ECB2F9100F5020D /* ForceFeedback.framework in Frameworks */,
@@ -239,9 +259,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C27148D1F2A38E70026BBA9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5C27149D1F2A3CC40026BBA9 /* JNI.framework */,
+				5C2714941F2A38E70026BBA9 /* CJNI.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5C27E7A41ECB2F6500F5020D = {
 			isa = PBXGroup;
 			children = (
+				5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */,
 				833860AD1F0D55B3004DD55E /* iOSTestTarget */,
 				5C27E7D11ECB2F9100F5020D /* Frameworks */,
 				5C27E7AF1ECB2F6500F5020D /* Products */,
@@ -293,9 +323,10 @@
 				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
 				5C6AB7171ED3BECD006F90AC /* UIWindow.swift */,
 				5C9037241F138B8A0058E592 /* MeteringView.swift */,
-				5C391A8E1F13F62500EE012C /* VideoPlayer+Dummy.swift */,
 				5C5AC6DC1F1791D0004A88C0 /* VideoPlayer+Mac.swift */,
 				5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */,
+				5C391A8E1F13F62500EE012C /* VideoPlayer+Android.swift */,
+				8333B2BF1F1D11B800D98662 /* NSAttributedString.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -347,7 +378,6 @@
 				83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */,
 				5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */,
 				5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */,
-				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
 				5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */,
 				5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */,
 				83E5F7EA1EF8156400279C59 /* Texture.swift */,
@@ -356,6 +386,7 @@
 				5C361E221ECC348700B3F561 /* UIView+SDL.swift */,
 				83E5F7EC1EF8157300279C59 /* Window.swift */,
 				5CDB31B61F1CE8050081A605 /* Bundle.swift */,
+				5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */,
 			);
 			name = SDL;
 			path = Sources;
@@ -517,6 +548,12 @@
 			mainGroup = 5C27E7A41ECB2F6500F5020D;
 			productRefGroup = 5C27E7AF1ECB2F6500F5020D /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 5C27148D1F2A38E70026BBA9 /* Products */;
+					ProjectRef = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				5C27E7AD1ECB2F6500F5020D /* UIKit */,
@@ -525,6 +562,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		5C2714941F2A38E70026BBA9 /* CJNI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CJNI.framework;
+			remoteRef = 5C2714931F2A38E70026BBA9 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		5C27149D1F2A3CC40026BBA9 /* JNI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = JNI.framework;
+			remoteRef = 5C27149C1F2A3CC40026BBA9 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		5C27E7AC1ECB2F6500F5020D /* Resources */ = {
@@ -582,6 +636,7 @@
 				5C6AB71E1ED3BECD006F90AC /* UIView.swift in Sources */,
 				5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */,
 				5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */,
+				8333B2C01F1D11B800D98662 /* NSAttributedString.swift in Sources */,
 				5C6AB7181ED3BECD006F90AC /* Button.swift in Sources */,
 				5C6AB71C1ED3BECD006F90AC /* UIImage.swift in Sources */,
 				5C6AB7191ED3BECD006F90AC /* CALayer.swift in Sources */,
@@ -610,12 +665,12 @@
 				8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */,
 				5C6AB7651ED5A0C3006F90AC /* UIEvent.swift in Sources */,
 				83E5F8151EF8322800279C59 /* CGSize.swift in Sources */,
+				5C27149F1F2A3D580026BBA9 /* VideoPlayer+Android.swift in Sources */,
 				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
 				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
 				5CADAF7B1F1D147600897FC1 /* AVPlayerLayer+Mac.swift in Sources */,
-				5C5AC6DD1F1791D0004A88C0 /* VideoPlayer+Mac.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,
 				83E5F7F61EF81AB500279C59 /* UIFont.swift in Sources */,
@@ -623,6 +678,7 @@
 				5C3716B61F10050600B2C366 /* Timer.swift in Sources */,
 				5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
+				5C2714A21F2A3FC50026BBA9 /* SDL+JNIExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -788,8 +844,8 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/SDL/SDL2/include",
 					"$(PROJECT_DIR)/UIKit",
-					"$(PROJECT_DIR)/../SDL/SDL2/include",
 				);
 				INFOPLIST_FILE = UIKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -797,7 +853,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/..";
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/SDL/ $(PROJECT_DIR)/swift-jni/Sources/CJNI/include";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -813,8 +869,8 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/SDL/SDL2/include",
 					"$(PROJECT_DIR)/UIKit",
-					"$(PROJECT_DIR)/../SDL/SDL2/include",
 				);
 				INFOPLIST_FILE = UIKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -822,7 +878,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/..";
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/SDL/ $(PROJECT_DIR)/swift-jni/Sources/CJNI/include";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;

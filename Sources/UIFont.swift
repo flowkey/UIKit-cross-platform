@@ -22,7 +22,7 @@ public enum FontWeight: String {
 open class UIFont {
     fileprivate static let contentScale: CGFloat = 2.0 // TODO: Get from Window
 
-    private static var availableFontData: [String: CGDataProvider] = [:]
+    fileprivate static var availableFontData: [String: CGDataProvider] = [:]
     static public var availableFonts: [String] {
         return Array(availableFontData.keys)
     }
@@ -99,7 +99,6 @@ extension UIFont {
         UIFont.availableFontData[fontName] = dataProvider
     }
 }
-
 
 extension String {
     public func size(with font: UIFont) -> CGSize {

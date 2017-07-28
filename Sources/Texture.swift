@@ -11,7 +11,10 @@ import SDL
 internal final class Texture {
     let rawPointer: UnsafeMutablePointer<GPU_Image>
 
-    var scale: Float = 2 // TODO: get from window
+    let scale: Float = 2 // TODO: get from window
+    var glesHandle: Int {
+        
+    }
 
     var size: CGSize {
         return CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))

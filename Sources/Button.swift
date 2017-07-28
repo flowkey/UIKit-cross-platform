@@ -59,11 +59,11 @@ open class Button: UIControl {
         addGestureRecognizer(tapGestureRecognizer)
     }
 
-    private var images = [UIControlState: UIImage]()
-    private var attributedTitles = [UIControlState: NSAttributedString]()
-    private var titles = [UIControlState: String]()
-    private var titleColors = [UIControlState: UIColor]()
-    private var titleShadowColors = [UIControlState: UIColor]()
+    fileprivate var images = [UIControlState: UIImage]()
+    fileprivate var attributedTitles = [UIControlState: NSAttributedString]()
+    fileprivate var titles = [UIControlState: String]()
+    fileprivate var titleColors = [UIControlState: UIColor]()
+    fileprivate var titleShadowColors = [UIControlState: UIColor]()
     
     open override func layoutSubviews() {
         // Only change subview attributes if a corresponding entry exists in our dictionaries:

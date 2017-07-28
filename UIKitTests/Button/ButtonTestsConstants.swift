@@ -12,6 +12,7 @@ import UIKit
 public typealias CGSize = UIKit.CGSize
 public typealias CGFloat = UIKit.CGFloat
 public typealias CGPoint = UIKit.CGPoint
+public typealias NSAttributedString = UIKit.NSAttributedString
 
 let shortButtonText = "Short"
 let mediumButtonText = "MediumButtonText"
