@@ -20,9 +20,9 @@ open class DisplayLink {
 
     private func updateActiveDisplayLinks() {
         if isPaused || callback == nil {
-            SDL.remove(displayLink: self)
+            SDL.removeDisplayLink(self)
         } else {
-            SDL.add(displayLink: self)
+            SDL.addDisplayLink(self)
         }
     }
 

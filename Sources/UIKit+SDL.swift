@@ -114,13 +114,13 @@ final public class SDL { // XXX: only public for startRunLoop()
 
 extension SDL {
     private static var activeDisplayLinks: [DisplayLink] = []
-    static func add(displayLink: DisplayLink) {
+    static func addDisplayLink(_ displayLink: DisplayLink) {
         if !activeDisplayLinks.contains(where: { $0 === displayLink }) {
             activeDisplayLinks.append(displayLink)
         }
     }
 
-    static func remove(displayLink: DisplayLink) {
+    static func removeDisplayLink(_ displayLink: DisplayLink) {
         activeDisplayLinks = activeDisplayLinks.filter { $0 !== displayLink }
     }
 }
