@@ -21,42 +21,6 @@ open class UIFont {
     public var pointSize: CGFloat
     public let lineHeight: CGFloat
 
-    public struct Weight: RawRepresentable {
-        public typealias RawValue = CGFloat
-        public let rawValue: CGFloat
-
-        public init?(rawValue: CGFloat) {
-            switch rawValue {
-            case -1 ..< -0.5: self.rawValue = -0.6
-            case -0.5 ..< -0.2: self.rawValue = -0.4
-            case -0.2 ..< 0.1: self.rawValue = 0.0
-            case 0.1 ..< 0.3: self.rawValue = 0.2
-            case 0.3 ..< 0.5: self.rawValue = 0.4
-            case 0.5 ..< 1.0: self.rawValue = 0.62
-            default: return nil
-            }
-        }
-
-        public static let thin = Weight(rawValue: -0.6)!
-        public static let light = Weight(rawValue: -0.4)!
-        public static let regular = Weight(rawValue: 0.0)!
-        public static let medium = Weight(rawValue: 0.23)!
-        public static let bold = Weight(rawValue: 0.4)!
-        public static let black = Weight(rawValue: 0.62)!
-
-        public func toString() -> String {
-            switch self.rawValue {
-            case -1 ..< -0.5: return "thin"
-            case -0.5 ..< -0.2: return "light"
-            case -0.2 ..< 0.1: return "regular"
-            case 0.1 ..< 0.3: return "medium"
-            case 0.3 ..< 0.5: return "bold"
-            case 0.5 ..< 1.0: return "black"
-            default: preconditionFailure()
-            }
-        }
-    }
-
     public static func boldSystemFont(ofSize size: CGFloat) -> UIFont {
         return systemFont(ofSize: size, weight: Weight.bold)
     }
@@ -92,6 +56,44 @@ open class UIFont {
 
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> Texture? {
         return renderer.render(text, color: color, wrapLength: Int(wrapLength))
+    }
+}
+
+extension UIFont {
+    public struct Weight: RawRepresentable {
+        public typealias RawValue = CGFloat
+        public let rawValue: CGFloat
+
+        public init?(rawValue: CGFloat) {
+            switch rawValue {
+            case -1 ..< -0.5: self.rawValue = -0.6
+            case -0.5 ..< -0.2: self.rawValue = -0.4
+            case -0.2 ..< 0.1: self.rawValue = 0.0
+            case 0.1 ..< 0.3: self.rawValue = 0.2
+            case 0.3 ..< 0.5: self.rawValue = 0.4
+            case 0.5 ..< 1.0: self.rawValue = 0.62
+            default: return nil
+            }
+        }
+
+        public static let thin = Weight(rawValue: -0.6)!
+        public static let light = Weight(rawValue: -0.4)!
+        public static let regular = Weight(rawValue: 0.0)!
+        public static let medium = Weight(rawValue: 0.23)!
+        public static let bold = Weight(rawValue: 0.4)!
+        public static let black = Weight(rawValue: 0.62)!
+
+        public func toString() -> String {
+            switch self.rawValue {
+            case -1 ..< -0.5: return "thin"
+            case -0.5 ..< -0.2: return "light"
+            case -0.2 ..< 0.1: return "regular"
+            case 0.1 ..< 0.3: return "medium"
+            case 0.3 ..< 0.5: return "bold"
+            case 0.5 ..< 1.0: return "black"
+            default: preconditionFailure()
+            }
+        }
     }
 }
 
