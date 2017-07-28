@@ -125,6 +125,13 @@
 			remoteGlobalIDString = "JNI::CJNI::Product";
 			remoteInfo = CJNI;
 		};
+		5C2714DF1F2B9FB90026BBA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = "JNI::JNI";
+			remoteInfo = JNI;
+		};
 		5C27E7B91ECB2F6500F5020D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5C27E7A51ECB2F6500F5020D /* Project object */;
@@ -478,6 +485,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				5C2714E01F2B9FB90026BBA9 /* PBXTargetDependency */,
 			);
 			name = UIKit;
 			productName = UIKit;
@@ -727,6 +735,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		5C2714E01F2B9FB90026BBA9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = JNI;
+			targetProxy = 5C2714DF1F2B9FB90026BBA9 /* PBXContainerItemProxy */;
+		};
 		5C27E7BA1ECB2F6500F5020D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5C27E7AD1ECB2F6500F5020D /* UIKit */;
