@@ -22,9 +22,9 @@ open class DisplayLink {
 
     private func updateActiveDisplayLinks() {
         if isPaused || callback == nil {
-            DisplayLink.activeDisplayLinks.insert(self)
-        } else {
             DisplayLink.activeDisplayLinks.remove(self)
+        } else {
+            DisplayLink.activeDisplayLinks.insert(self)
         }
     }
 
