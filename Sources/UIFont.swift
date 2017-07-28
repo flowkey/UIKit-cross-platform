@@ -83,7 +83,7 @@ extension UIFont {
             case 0.1 ..< 0.3: return "medium"
             case 0.3 ..< 0.5: return "bold"
             case 0.5 ..< 1.0: return "black"
-            default: preconditionFailure()
+            default: preconditionFailure("Invalid font weight. Value has to be between -1 and 1")
             }
         }
     }
