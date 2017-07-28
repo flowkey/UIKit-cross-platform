@@ -8,6 +8,11 @@
 
 open class VideoPlayer: UIView {
     private let timer = VideoTimer()
+
+    public init(url: String) {
+        super.init(frame: .zero)
+    }
+
     open func play() {
         // Java Video call here
         timer.start()
