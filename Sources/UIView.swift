@@ -9,6 +9,10 @@
 import SDL
 
 open class UIView: UIResponder {
+    open class var layerClass: CALayer.Type {
+        return CALayer.self
+    }
+
     open let layer: CALayer
 
     open var frame: CGRect {
@@ -79,7 +83,7 @@ open class UIView: UIResponder {
     }
 
     public init(frame: CGRect) {
-        self.layer = CALayer() //type(of: self).layerClass.init()
+        self.layer = type(of: self).layerClass.init()
         self.frame = frame
     }
 

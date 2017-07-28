@@ -39,7 +39,10 @@ open class UILabel: UIView {
 
     public let textLayer = CALayer()
     
-    public var shadowColor: UIColor?
+    public var shadowColor: UIColor? {
+        get { return textLayer.shadowColor }
+        set { textLayer.shadowColor = newValue?.cgColor }
+    }
 
     public var font: UIFont = .systemFont(ofSize: 16) {
         didSet { setNeedsDisplay() }
@@ -50,10 +53,10 @@ open class UILabel: UIView {
     }
 
     open override func draw() {
+        super.draw()
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
         textLayer.texture = font.render(text, color: textColor, wrapLength: wrapLength)
-        textLayer.shadowColor = shadowColor?.cgColor
-        setNeedsLayout()
+        setNeedsLayout() // to realign text if needed
     }
 
     override public init(frame: CGRect) {

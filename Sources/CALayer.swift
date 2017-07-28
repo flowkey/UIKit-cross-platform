@@ -69,7 +69,7 @@ open class CALayer {
     public var shadowRadius: CGFloat = 0
 
 
-    public init() {}
+    public required init() {}
 
     // Match UIKit by providing this initializer to override
     public init(layer: Any) {}
