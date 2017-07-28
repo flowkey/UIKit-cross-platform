@@ -7,6 +7,8 @@
 //
 
 open class DisplayLink {
+    static var activeDisplayLinks: Set<DisplayLink> = []
+
     public init() {}
 
     public var isPaused = true {
@@ -20,25 +22,14 @@ open class DisplayLink {
 
     private func updateActiveDisplayLinks() {
         if isPaused || callback == nil {
-            DisplayLink.removeDisplayLink(self)
+            DisplayLink.activeDisplayLinks.insert(self)
         } else {
-            DisplayLink.addDisplayLink(self)
+            DisplayLink.activeDisplayLinks.remove(self)
         }
     }
 
     public func invalidate() {
         callback = nil
-    }
-}
-
-extension DisplayLink {
-    static var activeDisplayLinks: Set<DisplayLink> = []
-    static func addDisplayLink(_ displayLink: DisplayLink) {
-        activeDisplayLinks.insert(displayLink)
-    }
-
-    static func removeDisplayLink(_ displayLink: DisplayLink) {
-        activeDisplayLinks.remove(displayLink)
     }
 }
 
