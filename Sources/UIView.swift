@@ -191,7 +191,7 @@ open class UIView: UIResponder {
     }
 
     open func sizeThatFits(_ size: CGSize) -> CGSize {
-        return size
+        return bounds.size
     }
 
     open func sizeToFit() {
