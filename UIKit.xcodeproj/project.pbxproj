@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5C1D2F371F1E28240006682E /* JNISwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C1D2F321F1E277B0006682E /* JNISwift.framework */; };
-		5C1D2F381F1E28240006682E /* CJNI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C1D2F341F1E277B0006682E /* CJNI.framework */; };
 		5C27E7B81ECB2F6500F5020D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7AE1ECB2F6500F5020D /* UIKit.framework */; };
 		5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D21ECB2F9100F5020D /* Cocoa.framework */; };
 		5C27E7DD1ECB2F9100F5020D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D31ECB2F9100F5020D /* AudioToolbox.framework */; };
@@ -114,18 +112,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5C1D2F311F1E277B0006682E /* PBXContainerItemProxy */ = {
+		5C2714B41F2B86240026BBA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNISwift.xcodeproj */;
+			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = "JNISwift::JNISwift::Product";
-			remoteInfo = JNISwift;
+			remoteGlobalIDString = "JNI::JNI::Product";
+			remoteInfo = JNI;
 		};
-		5C1D2F331F1E277B0006682E /* PBXContainerItemProxy */ = {
+		5C2714B61F2B86240026BBA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNISwift.xcodeproj */;
+			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = "JNISwift::CJNI::Product";
+			remoteGlobalIDString = "JNI::CJNI::Product";
 			remoteInfo = CJNI;
 		};
 		5C27E7B91ECB2F6500F5020D /* PBXContainerItemProxy */ = {
@@ -138,7 +136,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		5C1D2F2B1F1E277A0006682E /* JNISwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNISwift.xcodeproj; path = "Packages/swift-jni/JNISwift.xcodeproj"; sourceTree = "<group>"; };
+		5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNI.xcodeproj; path = "swift-jni/JNI.xcodeproj"; sourceTree = "<group>"; };
 		5C27E7AE1ECB2F6500F5020D /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C27E7B11ECB2F6500F5020D /* UIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIKit.h; sourceTree = "<group>"; };
 		5C27E7B21ECB2F6500F5020D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -239,8 +237,6 @@
 				5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */,
 				5C27E7DD1ECB2F9100F5020D /* AudioToolbox.framework in Frameworks */,
 				5C27E7DE1ECB2F9100F5020D /* ForceFeedback.framework in Frameworks */,
-				5C1D2F371F1E28240006682E /* JNISwift.framework in Frameworks */,
-				5C1D2F381F1E28240006682E /* CJNI.framework in Frameworks */,
 				5C27E7DF1ECB2F9100F5020D /* Carbon.framework in Frameworks */,
 				5C27E7E01ECB2F9100F5020D /* CoreFoundation.framework in Frameworks */,
 				5C27E7E11ECB2F9100F5020D /* IOKit.framework in Frameworks */,
@@ -269,11 +265,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5C1D2F2C1F1E277A0006682E /* Products */ = {
+		5C2714B01F2B86240026BBA9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5C1D2F321F1E277B0006682E /* JNISwift.framework */,
-				5C1D2F341F1E277B0006682E /* CJNI.framework */,
+				5C2714B51F2B86240026BBA9 /* JNI.framework */,
+				5C2714B71F2B86240026BBA9 /* CJNI.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -281,7 +277,7 @@
 		5C27E7A41ECB2F6500F5020D = {
 			isa = PBXGroup;
 			children = (
-				5C1D2F2B1F1E277A0006682E /* JNISwift.xcodeproj */,
+				5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */,
 				833860AD1F0D55B3004DD55E /* iOSTestTarget */,
 				5C27E7D11ECB2F9100F5020D /* Frameworks */,
 				5C27E7AF1ECB2F6500F5020D /* Products */,
@@ -564,8 +560,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 5C1D2F2C1F1E277A0006682E /* Products */;
-					ProjectRef = 5C1D2F2B1F1E277A0006682E /* JNISwift.xcodeproj */;
+					ProductGroup = 5C2714B01F2B86240026BBA9 /* Products */;
+					ProjectRef = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -578,18 +574,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		5C1D2F321F1E277B0006682E /* JNISwift.framework */ = {
+		5C2714B51F2B86240026BBA9 /* JNI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = JNISwift.framework;
-			remoteRef = 5C1D2F311F1E277B0006682E /* PBXContainerItemProxy */;
+			path = JNI.framework;
+			remoteRef = 5C2714B41F2B86240026BBA9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		5C1D2F341F1E277B0006682E /* CJNI.framework */ = {
+		5C2714B71F2B86240026BBA9 /* CJNI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = CJNI.framework;
-			remoteRef = 5C1D2F331F1E277B0006682E /* PBXContainerItemProxy */;
+			remoteRef = 5C2714B61F2B86240026BBA9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -863,7 +859,7 @@
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/UIKit",
-					"$(PROJECT_DIR)/../SDL/SDL2/include",
+					"$(PROJECT_DIR)/SDL/SDL2/include",
 				);
 				INFOPLIST_FILE = UIKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -871,7 +867,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/Packages/SDL/ $(PROJECT_DIR)/Packages/swift-jni/Sources/CJNI/include";
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/SDL/ $(PROJECT_DIR)/swift-jni/Sources/CJNI/include";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -888,7 +884,7 @@
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/UIKit",
-					"$(PROJECT_DIR)/../SDL/SDL2/include",
+					"$(PROJECT_DIR)/SDL/SDL2/include",
 				);
 				INFOPLIST_FILE = UIKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -896,7 +892,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/Packages/SDL/ $(PROJECT_DIR)/Packages/swift-jni/Sources/CJNI/include";
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/SDL/ $(PROJECT_DIR)/swift-jni/Sources/CJNI/include";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
