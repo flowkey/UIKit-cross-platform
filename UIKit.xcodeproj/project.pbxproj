@@ -67,6 +67,8 @@
 		838545721F26536200B64986 /* NSAttributedStringKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838545711F26536200B64986 /* NSAttributedStringKey.swift */; };
 		83AB7B481F2B504300C7997D /* UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AB7B471F2B504300C7997D /* UIAlertController.swift */; };
 		83AB7B4C1F2B515B00C7997D /* UIAlertAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AB7B4B1F2B515B00C7997D /* UIAlertAction.swift */; };
+		83AB7B5A1F2B679600C7997D /* UIPinchGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AB7B591F2B679600C7997D /* UIPinchGestureRecognizer.swift */; };
+		83AB7B5C1F2B6A2000C7997D /* UIGestureRecognizerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AB7B5B1F2B6A2000C7997D /* UIGestureRecognizerDelegate.swift */; };
 		83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */; };
 		83CC3CD11F275DB600144E85 /* NSRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CC3CD01F275DB600144E85 /* NSRange.swift */; };
 		83D961351F2635D5005176DC /* NSMutableAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D961341F2635D5005176DC /* NSMutableAttributedString.swift */; };
@@ -200,6 +202,8 @@
 		838545711F26536200B64986 /* NSAttributedStringKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NSAttributedStringKey.swift; path = Sources/NSAttributedStringKey.swift; sourceTree = SOURCE_ROOT; };
 		83AB7B471F2B504300C7997D /* UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIAlertController.swift; path = Sources/UIAlertController.swift; sourceTree = SOURCE_ROOT; };
 		83AB7B4B1F2B515B00C7997D /* UIAlertAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIAlertAction.swift; path = Sources/UIAlertAction.swift; sourceTree = SOURCE_ROOT; };
+		83AB7B591F2B679600C7997D /* UIPinchGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIPinchGestureRecognizer.swift; path = Sources/UIPinchGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
+		83AB7B5B1F2B6A2000C7997D /* UIGestureRecognizerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIGestureRecognizerDelegate.swift; path = Sources/UIGestureRecognizerDelegate.swift; sourceTree = SOURCE_ROOT; };
 		83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTestsConstants.swift; sourceTree = "<group>"; };
 		83CC3CD01F275DB600144E85 /* NSRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NSRange.swift; path = Sources/NSRange.swift; sourceTree = SOURCE_ROOT; };
 		83D961341F2635D5005176DC /* NSMutableAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NSMutableAttributedString.swift; path = ../Sources/NSMutableAttributedString.swift; sourceTree = "<group>"; };
@@ -341,6 +345,8 @@
 				83CC3CD01F275DB600144E85 /* NSRange.swift */,
 				83AB7B471F2B504300C7997D /* UIAlertController.swift */,
 				83AB7B4B1F2B515B00C7997D /* UIAlertAction.swift */,
+				83AB7B591F2B679600C7997D /* UIPinchGestureRecognizer.swift */,
+				83AB7B5B1F2B6A2000C7997D /* UIGestureRecognizerDelegate.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -663,6 +669,7 @@
 				5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */,
 				83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */,
 				5C6AB71D1ED3BECD006F90AC /* UIImageView.swift in Sources */,
+				83AB7B5C1F2B6A2000C7997D /* UIGestureRecognizerDelegate.swift in Sources */,
 				838545721F26536200B64986 /* NSAttributedStringKey.swift in Sources */,
 				5C6AB7611ED5762A006F90AC /* UIEdgeInsets.swift in Sources */,
 				83AB7B4C1F2B515B00C7997D /* UIAlertAction.swift in Sources */,
@@ -697,6 +704,7 @@
 				5C3716B61F10050600B2C366 /* Timer.swift in Sources */,
 				5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
+				83AB7B5A1F2B679600C7997D /* UIPinchGestureRecognizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
