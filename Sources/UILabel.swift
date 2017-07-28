@@ -56,8 +56,7 @@ open class UILabel: UIView {
         super.draw()
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
         textLayer.texture = font.render(text, color: textColor, wrapLength: wrapLength)
-        needsDisplay = false
-        setNeedsLayout()
+        setNeedsLayout() // to realign text if needed
     }
 
     override public init(frame: CGRect) {
