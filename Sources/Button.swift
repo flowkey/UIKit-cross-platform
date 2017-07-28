@@ -146,25 +146,36 @@ extension Button {
 extension Button {
     public func setImage(_ image: UIImage?, for state: UIControlState) {
         images[state] = image
-        if images.isEmpty {
-            imageView = nil
-        } else {
-            if imageView == nil { imageView = UIImageView() }
-            imageView?.image = image
-        }
+        createOrRemoveImageViewIfNeeded()
         setNeedsLayout()
     }
 
     public func setTitle(_ text: String?, for state: UIControlState) {
         titles[state] = text
-        if titleLabel == nil { titleLabel = UILabel() }
+        createOrRemoveLabelIfNeeded()
         setNeedsLayout()
     }
 
     public func setAttributedTitle(_ attributedText: NSAttributedString?, for state: UIControlState) {
         attributedTitles[state] = attributedText
-        if titleLabel == nil { titleLabel = UILabel() }
+        createOrRemoveLabelIfNeeded()
         setNeedsLayout()
+    }
+
+    private func createOrRemoveLabelIfNeeded() {
+        if attributedTitles.isEmpty && titles.isEmpty {
+            titleLabel = nil
+        } else if titleLabel == nil {
+            titleLabel = UILabel()
+        }
+    }
+
+    private func createOrRemoveImageViewIfNeeded() {
+        if images.isEmpty {
+            imageView = nil
+        } else if imageView == nil {
+            imageView = UIImageView()
+        }
     }
 
     public func setTitleColor(_ color: UIColor, for state: UIControlState) {
