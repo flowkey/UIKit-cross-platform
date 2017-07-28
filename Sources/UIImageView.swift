@@ -29,9 +29,9 @@ public class UIImageView: UIView {
         didSet { updateTextureFromImage() }
     }
 
-    open func sizeToFit() {
-        guard let image = image else { return }
-        frame.size = CGSize(width: image.size.width, height: image.size.height)
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        guard let image = image else { return .zero }
+        return CGSize(width: image.size.width, height: image.size.height)
     }
 
     open var contentMode: UIContentMode = .stretch // XXX: Not sure this is true. In any case it's not implemented yet.

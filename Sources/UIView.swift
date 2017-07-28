@@ -190,7 +190,15 @@ open class UIView: UIResponder {
         return bounds.contains(point)
     }
 
-    
+    open func sizeThatFits(_ size: CGSize) -> CGSize {
+        return bounds.size
+    }
+
+    open func sizeToFit() {
+        self.bounds.size = sizeThatFits(self.bounds.size)
+        setNeedsLayout()
+    }
+
     // MARK: UIResponder conformance:
 
     open func next() -> UIResponder? {

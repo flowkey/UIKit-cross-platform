@@ -9,6 +9,8 @@
 // Note: we deliberately don't wrap UIButton.
 // This allows us to have a somewhat custom API free of objc selectors etc.
 
+fileprivate let labelVerticalPadding: CGFloat = 6
+
 open class Button: UIControl {
     public var imageView: UIImageView? {
         didSet {
@@ -24,32 +26,36 @@ open class Button: UIControl {
         }
     }
 
-    private var currentLabelVerticalPadding: CGFloat = 0
-    private let labelVerticalPaddingAfterSizeToFit: CGFloat = 6
+    private var sizeToFitWasCalled = false
 
-    open func sizeToFit() {
-        currentLabelVerticalPadding = labelVerticalPaddingAfterSizeToFit
-        setNeedsLayout()
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        sizeToFitWasCalled = true
+        updateLabelAndImageForCurrentState()
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
+        setNeedsLayout()
 
         if let imageView = imageView, let titleLabel = titleLabel {
-            frame.width += titleLabel.frame.width
-            frame.height = max(imageView.frame.height, titleLabel.frame.height)
+            return CGSize(
+                width: imageView.frame.width + titleLabel.frame.width,
+                height: max(imageView.frame.height, titleLabel.frame.height)
+            )
         } else if let imageView = imageView, titleLabel == nil {
-            frame.width = imageView.frame.width
-            frame.height = imageView.frame.height
+            return CGSize(width: imageView.frame.width, height: imageView.frame.height)
         } else if let titleLabel = titleLabel, imageView == nil {
-            frame.width = titleLabel.frame.width
-            frame.height = titleLabel.frame.height + (2 * labelVerticalPaddingAfterSizeToFit)
+            return CGSize(
+                width: titleLabel.frame.width,
+                height: titleLabel.frame.height + (2 * labelVerticalPadding)
+            )
         } else {
-            frame.size = CGSize(width: 30, height: 34)
+            return CGSize(width: 30, height: 34)
         }
     }
 
     public let tapGestureRecognizer = UITapGestureRecognizer()
     public var onPress: (() -> Void)? {
-        didSet { tapGestureRecognizer.onPress = onPress }
+        get { return tapGestureRecognizer.onPress }
+        set { tapGestureRecognizer.onPress = newValue }
     }
 
     public override init(frame: CGRect) {
@@ -66,23 +72,7 @@ open class Button: UIControl {
     fileprivate var titleShadowColors = [UIControlState: UIColor]()
     
     open override func layoutSubviews() {
-        // Only change subview attributes if a corresponding entry exists in our dictionaries:
-
-        if let attributedTitleForCurrentState = attributedTitles[state] {
-            if titleLabel == nil { titleLabel = UILabel() }
-            titleLabel?.attributedText = attributedTitleForCurrentState
-        } else if let titleForCurrentState = titles[state] {
-            if titleLabel == nil { titleLabel = UILabel() }
-            titleLabel?.text = titleForCurrentState
-        } else if titles.isEmpty && attributedTitles.isEmpty {
-            titleLabel = nil
-        }
-
-        if let imageForCurrentState = images[state] {
-            imageView?.image = imageForCurrentState
-        } else if images.isEmpty {
-            imageView = nil
-        }
+        updateLabelAndImageForCurrentState()
 
         if let titleColorForCurrentState = titleColors[state] {
             titleLabel?.textColor = titleColorForCurrentState
@@ -115,14 +105,14 @@ open class Button: UIControl {
             titleLabel?.frame.midY = bounds.midY
         case .top:
             if imageView == nil {
-                titleLabel?.frame.origin.y = currentLabelVerticalPadding
+                titleLabel?.frame.origin.y = sizeToFitWasCalled ? labelVerticalPadding : 0
             } else {
                 titleLabel?.frame.origin.y = 0
                 imageView?.frame.origin.y = 0
             }
         case .bottom:
             if imageView == nil {
-                titleLabel?.frame.maxY = bounds.maxY - currentLabelVerticalPadding
+                titleLabel?.frame.maxY = bounds.maxY - (sizeToFitWasCalled ? labelVerticalPadding : 0)
             } else {
                 titleLabel?.frame.maxY = bounds.maxY
                 imageView?.frame.maxY = bounds.maxY
@@ -134,27 +124,58 @@ open class Button: UIControl {
 }
 
 extension Button {
+    fileprivate func updateLabelAndImageForCurrentState() {
+        if let attributedTitleForCurrentState = attributedTitles[state] {
+            titleLabel?.attributedText = attributedTitleForCurrentState
+        } else if let titleForCurrentState = titles[state] {
+            titleLabel?.text = titleForCurrentState
+        } else if let attributedTitleForNormalState = attributedTitles[.normal] {
+            titleLabel?.attributedText = attributedTitleForNormalState
+        } else if let titleForNormalState = titles[.normal] {
+            titleLabel?.text = titleForNormalState
+        }
+
+        if let imageForCurrentState = images[state] {
+            imageView?.image = imageForCurrentState
+        } else if let imageForNormalState = images[.normal] {
+            imageView?.image = imageForNormalState
+        }
+    }
+}
+
+extension Button {
     public func setImage(_ image: UIImage?, for state: UIControlState) {
         images[state] = image
-        if images.isEmpty {
-            imageView = nil
-        } else {
-            if imageView == nil { imageView = UIImageView() }
-            imageView?.image = image
-        }
+        createOrRemoveImageViewIfNeeded()
         setNeedsLayout()
     }
 
     public func setTitle(_ text: String?, for state: UIControlState) {
         titles[state] = text
-        if titleLabel == nil { titleLabel = UILabel() }
+        createOrRemoveLabelIfNeeded()
         setNeedsLayout()
     }
 
     public func setAttributedTitle(_ attributedText: NSAttributedString?, for state: UIControlState) {
         attributedTitles[state] = attributedText
-        if titleLabel == nil { titleLabel = UILabel() }
+        createOrRemoveLabelIfNeeded()
         setNeedsLayout()
+    }
+
+    private func createOrRemoveLabelIfNeeded() {
+        if attributedTitles.isEmpty && titles.isEmpty {
+            titleLabel = nil
+        } else if titleLabel == nil {
+            titleLabel = UILabel()
+        }
+    }
+
+    private func createOrRemoveImageViewIfNeeded() {
+        if images.isEmpty {
+            imageView = nil
+        } else if imageView == nil {
+            imageView = UIImageView()
+        }
     }
 
     public func setTitleColor(_ color: UIColor, for state: UIControlState) {
