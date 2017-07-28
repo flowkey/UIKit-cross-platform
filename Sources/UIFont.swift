@@ -6,23 +6,12 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
-
 private let systemFontName = "Roboto" // XXX: change this depending on platform?
-
-public enum FontWeight: String {
-    case UIFontWeightThin = "Thin"
-    case UIFontWeightLight = "Light"
-    case UIFontWeightRegular = "Regular"
-    case UIFontWeightMedium = "Medium"
-    case UIFontWeightBold = "Bold"
-    case UIFontWeightBlack = "Black"
-}
 
 open class UIFont {
     fileprivate static let contentScale: CGFloat = 2.0 // TODO: Get from Window
 
-    private static var availableFontData: [String: CGDataProvider] = [:]
+    fileprivate static var availableFontData: [String: CGDataProvider] = [:]
     static public var availableFonts: [String] {
         return Array(availableFontData.keys)
     }
@@ -32,14 +21,12 @@ open class UIFont {
     public var pointSize: CGFloat
     public let lineHeight: CGFloat
 
-    // These are the only public initializers for now:
-
     public static func boldSystemFont(ofSize size: CGFloat) -> UIFont {
-        return systemFont(ofSize: size, weight: .UIFontWeightBold)
+        return systemFont(ofSize: size, weight: Weight.bold)
     }
 
-    public static func systemFont(ofSize size: CGFloat, weight: FontWeight = .UIFontWeightRegular) -> UIFont {
-        return UIFont(name: systemFontName + "-" + weight.rawValue, size: size)!
+    public static func systemFont(ofSize size: CGFloat, weight: Weight = .regular) -> UIFont {
+        return UIFont(name: systemFontName + "-" + weight.toString(), size: size)!
     }
 
     public init?(name: String, size: CGFloat) {
@@ -73,6 +60,36 @@ open class UIFont {
 }
 
 extension UIFont {
+    public struct Weight: RawRepresentable {
+        public typealias RawValue = CGFloat
+        public let rawValue: CGFloat
+
+        public init?(rawValue: CGFloat) {
+            self.rawValue = rawValue
+        }
+
+        public static let thin = Weight(rawValue: -0.6)!
+        public static let light = Weight(rawValue: -0.4)!
+        public static let regular = Weight(rawValue: 0.0)!
+        public static let medium = Weight(rawValue: 0.23)!
+        public static let bold = Weight(rawValue: 0.4)!
+        public static let black = Weight(rawValue: 0.62)!
+
+        public func toString() -> String {
+            switch self.rawValue {
+            case -1 ..< -0.5: return "thin"
+            case -0.5 ..< -0.2: return "light"
+            case -0.2 ..< 0.1: return "regular"
+            case 0.1 ..< 0.3: return "medium"
+            case 0.3 ..< 0.5: return "bold"
+            case 0.5 ..< 1.0: return "black"
+            default: preconditionFailure("Invalid font weight. Value has to be between -1 and 1")
+            }
+        }
+    }
+}
+
+extension UIFont {
     public enum LoadingError: Error {
         case couldNotOpenDataFile, couldNotDecodeFont
     }
@@ -99,7 +116,6 @@ extension UIFont {
         UIFont.availableFontData[fontName] = dataProvider
     }
 }
-
 
 extension String {
     public func size(with font: UIFont) -> CGSize {
