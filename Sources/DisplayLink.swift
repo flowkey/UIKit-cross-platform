@@ -20,13 +20,34 @@ open class DisplayLink {
 
     private func updateActiveDisplayLinks() {
         if isPaused || callback == nil {
-            SDL.removeDisplayLink(self)
+            DisplayLink.removeDisplayLink(self)
         } else {
-            SDL.addDisplayLink(self)
+            DisplayLink.addDisplayLink(self)
         }
     }
 
     public func invalidate() {
         callback = nil
+    }
+}
+
+extension DisplayLink {
+    static var activeDisplayLinks: Set<DisplayLink> = []
+    static func addDisplayLink(_ displayLink: DisplayLink) {
+        activeDisplayLinks.insert(displayLink)
+    }
+
+    static func removeDisplayLink(_ displayLink: DisplayLink) {
+        activeDisplayLinks.remove(displayLink)
+    }
+}
+
+extension DisplayLink: Hashable {
+    public var hashValue: Int {
+        return ObjectIdentifier(self).hashValue
+    }
+
+    public static func == (lhs: DisplayLink, rhs: DisplayLink) -> Bool {
+        return lhs === rhs
     }
 }
