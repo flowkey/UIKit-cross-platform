@@ -65,15 +65,7 @@ extension UIFont {
         public let rawValue: CGFloat
 
         public init?(rawValue: CGFloat) {
-            switch rawValue {
-            case -1 ..< -0.5: self.rawValue = -0.6
-            case -0.5 ..< -0.2: self.rawValue = -0.4
-            case -0.2 ..< 0.1: self.rawValue = 0.0
-            case 0.1 ..< 0.3: self.rawValue = 0.2
-            case 0.3 ..< 0.5: self.rawValue = 0.4
-            case 0.5 ..< 1.0: self.rawValue = 0.62
-            default: return nil
-            }
+            self.rawValue = rawValue
         }
 
         public static let thin = Weight(rawValue: -0.6)!
