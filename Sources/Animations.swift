@@ -9,33 +9,33 @@
 extension CALayer {
 
     func onWillSet(_ newOpacity: CGFloat) {
-        if UIView.animationDuration > 0 {
-            if newOpacity != opacity {
-                
-                let animation = CABasicAnimation(keyPath: .opacity)
-                animation.fromValue = opacity
-                animation.toValue = newOpacity
-                animation.duration = CGFloat(UIView.animationDuration)
+        if UIView.animationDuration > 0 && newOpacity != opacity {
+            let animation = CABasicAnimation(keyPath: .opacity)
+            animation.fromValue = opacity
+            animation.toValue = newOpacity
+            animation.duration = CGFloat(UIView.animationDuration)
 
-                self.add(animation, forKey: "opacity")
-            }
+            self.add(animation, forKey: "opacity")
         }
     }
 
     func onWillSet(_ newFrame: CGRect) {
-        if UIView.animationDuration > 0 {
-            if newFrame != frame {
-                let animation = CABasicAnimation(keyPath: .frame)
-                animation.fromValue = frame
-                animation.toValue = newFrame
-                animation.duration = CGFloat(UIView.animationDuration)
+        if UIView.animationDuration > 0 && newFrame != frame {
+            let animation = CABasicAnimation(keyPath: .frame)
+            animation.fromValue = frame
+            animation.toValue = newFrame
+            animation.duration = CGFloat(UIView.animationDuration)
 
-                self.add(animation, forKey: "frame")
-            }
+            self.add(animation, forKey: "frame")
         }
     }
 
     open func add(_ animation: CABasicAnimation, forKey key: String) {
+        // use previous fromValue when animation already exists
+        // this is necessary when onWillSet is called multiple times for one animation
+        if let fromValue = animations[key]?.fromValue {
+            animation.fromValue = fromValue
+        }
         animations[key] = animation
     }
 
@@ -54,10 +54,12 @@ extension CALayer {
 
     func animate() {
         animations.forEach { key, animation in
+
             if (animation.duration <= 0) { return }
 
             switch animation.keyPath as CABasicAnimation.AnimationProperty! {
             case .frame:
+
                 let endFrame = animation.toValue as! CGRect
                 let startFrame = animation.fromValue as! CGRect
 
