@@ -65,8 +65,8 @@ final public class SDL { // XXX: only public for startRunLoop()
 
             let eventWasHandled = handleEventsIfNeeded()
 
-            if !activeDisplayLinks.isEmpty {
-                activeDisplayLinks.forEach { $0.callback() }
+            if !DisplayLink.activeDisplayLinks.isEmpty {
+                DisplayLink.activeDisplayLinks.forEach { $0.callback() }
             } else if !eventWasHandled && !firstRender {
                 // We can avoid updating the screen at all unless there is active touch input
                 // or a running animation. We still need to handle the case of animations here!
@@ -111,20 +111,6 @@ final public class SDL { // XXX: only public for startRunLoop()
         return eventWasHandled
     }
 }
-
-extension SDL {
-    private static var activeDisplayLinks: [DisplayLink] = []
-    static func add(displayLink: DisplayLink) {
-        if !activeDisplayLinks.contains(where: { $0 === displayLink }) {
-            activeDisplayLinks.append(displayLink)
-        }
-    }
-
-    static func remove(displayLink: DisplayLink) {
-        activeDisplayLinks = activeDisplayLinks.filter { $0 !== displayLink }
-    }
-}
-
 
 private func measure(_ function: @autoclosure () -> Void) -> Double {
     let timer = Timer()

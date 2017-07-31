@@ -38,7 +38,20 @@ internal final class Texture {
 
         rawPointer = gpuImagePointer
     }
-    
+
+    init(width: Int, height: Int, format: GPU_FormatEnum) {
+        let scale = 1
+        let image = GPU_CreateImage(UInt16(width), UInt16(height), format)
+        rawPointer = image!
+        GPU_SetAnchor(rawPointer, 0, 0)
+        self.scale = Float(scale)
+    }
+
+    func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
+        var rect = GPU_Rect(x: 0, y: 0, w: Float(rawPointer.pointee.w), h: Float(rawPointer.pointee.h))
+        GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * Int32(bytesPerPixel))
+    }
+
     private func scaleImage(_ scale: Float) {
         var image = rawPointer.pointee
         let scale = UInt16(2) // XXX: get this from image path
@@ -51,10 +64,12 @@ internal final class Texture {
         image.texture_w /= scale
         image.base_h /= scale
         image.base_w /= scale
-        
+
         rawPointer.pointee = image
         GPU_SetAnchor(rawPointer, 0, 0)
     }
 
-    deinit { GPU_FreeImage(rawPointer) }
+    deinit {
+        GPU_FreeImage(rawPointer)
+    }
 }

@@ -6,19 +6,14 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import CJNI
-import JNISwift
+import JNI
 
 #if os(Android)
-@_silgen_name("Android_JNI_GetActivityClass")
-public func getActivityClass() -> JavaClass
-
 private func listFiles(inDirectory subpath: String) throws -> [String] {
-    let activityClass = getActivityClass()
-    let context = try callStatic("getContext", on: activityClass, returningObjectType: "android.content.Context")
-    let assetManager = try call("getAssets", on: context, returningObjectType: "android.content.res.AssetManager")
+    let context = try jni.callStatic("getContext", on: getActivityClass(), returningObjectType: "android.content.Context")
+    let assetManager = try jni.call("getAssets", on: context, returningObjectType: "android.content.res.AssetManager")
 
-    return try call("list", on: assetManager, with: [subpath])
+    return try jni.call("list", on: assetManager, with: [subpath])
 }
 
 public struct Bundle {
