@@ -12,14 +12,14 @@
 fileprivate let labelVerticalPadding: CGFloat = 6
 
 open class Button: UIControl {
-    public var imageView: UIImageView? {
+    internal (set) public var imageView: UIImageView? {
         didSet {
             oldValue?.removeFromSuperview()
             if let imageView = imageView { addSubview(imageView) }
         }
     }
     
-    public var titleLabel: UILabel? {
+    internal (set) public var titleLabel: UILabel? {
         didSet {
             oldValue?.removeFromSuperview()
             if let titleLabel = titleLabel { addSubview(titleLabel) }
@@ -35,17 +35,20 @@ open class Button: UIControl {
         imageView?.sizeToFit()
         setNeedsLayout()
 
-        if let imageView = imageView, let titleLabel = titleLabel {
+        let imageViewIsVisible = !(imageView?.isHidden ?? true)
+        let titleLabelIsVisible = !(titleLabel?.isHidden ?? true)
+
+        if imageViewIsVisible, titleLabelIsVisible {
             return CGSize(
-                width: imageView.frame.width + titleLabel.frame.width,
-                height: max(imageView.frame.height, titleLabel.frame.height)
+                width: imageView!.frame.width + titleLabel!.frame.width,
+                height: max(imageView!.frame.height, titleLabel!.frame.height)
             )
-        } else if let imageView = imageView, titleLabel == nil {
-            return CGSize(width: imageView.frame.width, height: imageView.frame.height)
-        } else if let titleLabel = titleLabel, imageView == nil {
+        } else if imageViewIsVisible, !titleLabelIsVisible {
+            return CGSize(width: imageView!.frame.width, height: imageView!.frame.height)
+        } else if titleLabelIsVisible, !imageViewIsVisible {
             return CGSize(
-                width: titleLabel.frame.width,
-                height: titleLabel.frame.height + (2 * labelVerticalPadding)
+                width: titleLabel!.frame.width,
+                height: titleLabel!.frame.height + (2 * labelVerticalPadding)
             )
         } else {
             return CGSize(width: 30, height: 34)
@@ -60,6 +63,12 @@ open class Button: UIControl {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
+
+        titleLabel = UILabel()
+        titleLabel?.isHidden = true
+
+        imageView = UIImageView()
+        imageView?.isHidden = true
         
         tapGestureRecognizer.view = self
         addGestureRecognizer(tapGestureRecognizer)
@@ -152,36 +161,20 @@ extension Button {
 extension Button {
     public func setImage(_ image: UIImage?, for state: UIControlState) {
         images[state] = image
-        createOrRemoveImageViewIfNeeded()
+        imageView?.isHidden = (image == nil)
         setNeedsLayout()
     }
 
     public func setTitle(_ text: String?, for state: UIControlState) {
         titles[state] = text
-        createOrRemoveLabelIfNeeded()
+        titleLabel?.isHidden = (text == nil)
         setNeedsLayout()
     }
 
     public func setAttributedTitle(_ attributedText: NSAttributedString?, for state: UIControlState) {
         attributedTitles[state] = attributedText
-        createOrRemoveLabelIfNeeded()
+        titleLabel?.isHidden = (attributedText == nil)
         setNeedsLayout()
-    }
-
-    private func createOrRemoveLabelIfNeeded() {
-        if attributedTitles.isEmpty && titles.isEmpty {
-            titleLabel = nil
-        } else if titleLabel == nil {
-            titleLabel = UILabel()
-        }
-    }
-
-    private func createOrRemoveImageViewIfNeeded() {
-        if images.isEmpty {
-            imageView = nil
-        } else if imageView == nil {
-            imageView = UIImageView()
-        }
     }
 
     public func setTitleColor(_ color: UIColor, for state: UIControlState) {
