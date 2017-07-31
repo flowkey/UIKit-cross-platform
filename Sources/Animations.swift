@@ -46,7 +46,6 @@ extension CALayer {
     func ensurePresenTationExists() {
         guard presentation == nil else { return }
 
-        // TODO: is there a nicer way for a copy of self?
         presentation = CALayer()
         presentation?.frame = self.frame
         presentation?.opacity = self.opacity
@@ -54,10 +53,8 @@ extension CALayer {
 
     func animate() {
         animations.forEach { key, animation in
-
-            if (animation.duration <= 0) { return }
-
-            switch animation.keyPath as CABasicAnimation.AnimationProperty! {
+            guard let keypath = animation.keyPath, animation.duration > 0 else { return }
+            switch keypath as CABasicAnimation.AnimationProperty {
             case .frame:
 
                 let endFrame = animation.toValue as! CGRect
@@ -74,9 +71,6 @@ extension CALayer {
 
                 let opacityDiff = (endOpacity - startOpacity) * animation.progress
                 presentation?.opacity = startOpacity + opacityDiff
-
-            case .unknown:
-                print("unknown") // TODO: switch does not have to be exhaustive
 
             default: break
             }

@@ -77,7 +77,9 @@ open class CALayer {
     public var shadowRadius: CGFloat = 0
 
 
-    public required init() {}
+    public required init() {
+        link.callback = animate
+    }
 
     // Match UIKit by providing this initializer to override
     public init(layer: Any) {}
