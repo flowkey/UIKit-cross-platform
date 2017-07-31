@@ -28,6 +28,10 @@ public struct UIColor {
         self.alpha = alpha.normalisedToUInt8()
     }
 
+    public func isEqual(_ color: UIColor) -> Bool {
+        return (self.red == color.red) && (self.green == color.green) && (self.blue == color.blue)
+    }
+
     // Initialise from a color struct from e.g. renderer.getDrawColor()
     init(_ tuple: (r: UInt8, g: UInt8, b: UInt8, a: UInt8)) {
         red = tuple.r; green = tuple.g; blue = tuple.b; alpha = tuple.a
