@@ -40,18 +40,7 @@ open class CALayer {
     /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc)
     open var frame: CGRect = .zero {
         willSet (newFrame) {
-
-            if UIView.animationDuration > 0 {
-                if newFrame != frame {
-
-                    let animation = CABasicAnimation(keyPath: "frame")
-                    animation.fromValue = frame
-                    animation.toValue = newFrame
-                    animation.duration = CGFloat(UIView.animationDuration)
-
-                    self.add(animation, forKey: animation.keyPath!, addToAnimations: true)
-                }
-            }
+            onWillSet(newFrame)
         }
         didSet {
             if bounds.size != frame.size {
@@ -71,17 +60,7 @@ open class CALayer {
     public var isHidden = false
     public var opacity: CGFloat = 1 {
         willSet(newOpacity) {
-            if UIView.animationDuration > 0 {
-                if newOpacity != opacity {
-                    ensurePresenTationExists()
-
-                    let animation = CABasicAnimation(keyPath: "opacity")
-                    animation.fromValue = opacity
-                    animation.toValue = newOpacity
-                    animation.duration = CGFloat(UIView.animationDuration)
-                    self.add(animation, forKey: animation.keyPath!, addToAnimations: true)
-                }
-            }
+            self.onWillSet(newOpacity)
         }
     }
 
@@ -118,17 +97,17 @@ open class CALayer {
     var presentation: CALayer?
     private let link = DisplayLink()
 
-    private var animations = [String: CABasicAnimation]() {
+    var animations = [String: CABasicAnimation]() {
         didSet(oldAnimations) {
-            link.isPaused = animations.count == 0
-
-            guard animations.count != animations.count else { return }
+            guard animations.count != oldAnimations.count else { return }
 
             if animations.count != 0 {
                 ensurePresenTationExists()
             } else {
                 presentation = nil
             }
+
+            link.isPaused = animations.count == 0
         }
     }
 }
@@ -139,58 +118,3 @@ extension CALayer: Equatable {
     }
 }
 
-extension CALayer { // animations
-    open func add(_ animation: CABasicAnimation, forKey key: String, addToAnimations: Bool? = false) {
-        if addToAnimations! {
-            animations[key] = animation
-        }
-    }
-
-    open func removeAnimation(forKey key: String) {
-        animations.removeValue(forKey: key)
-    }
-
-    private func ensurePresenTationExists() {
-        guard presentation == nil else { return }
-
-        // TODO: is there a nicer way for a copy of self?
-        presentation = CALayer()
-        presentation?.frame = self.frame
-        presentation?.opacity = self.opacity
-    }
-
-    private func animate() {
-        animations.forEach { _, animation in
-            if (animation.duration <= 0) { return }
-
-            switch animation.keyPath {
-            case "frame"?:
-                let endFrame = animation.toValue as! CGRect
-                let startFrame = animation.fromValue as! CGRect
-
-                let xDiff = (endFrame.origin.x - startFrame.origin.x) * animation.multiplier
-                let yDiff = (endFrame.origin.y - startFrame.origin.y) * animation.multiplier
-
-                let widthDiff = (endFrame.width - startFrame.width) * animation.multiplier
-                let heightDiff = (endFrame.height - startFrame.height) * animation.multiplier
-
-
-                presentation?.frame.origin = CGPoint(x: startFrame.origin.x + xDiff, y: startFrame.origin.y + yDiff)
-                presentation?.frame.size = CGSize(width: startFrame.width + widthDiff, height: startFrame.height + heightDiff)
-
-            case "opacity"?:
-                let endOpacity = animation.toValue as! CGFloat
-                let startOpacity = animation.fromValue as! CGFloat
-
-                let opacityDiff = (endOpacity - startOpacity) * animation.multiplier
-                presentation?.opacity = startOpacity + opacityDiff
-
-            default: break
-            }
-
-            if animation.multiplier == 1 && animation.isRemovedOnCompletion {
-                removeAnimation(forKey: animation.keyPath!)
-            }
-        }
-    }
-}
