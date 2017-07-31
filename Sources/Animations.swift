@@ -50,6 +50,9 @@ extension CALayer {
         presentation?.frame = self.frame
         presentation?.opacity = self.opacity
         presentation?.backgroundColor = self.backgroundColor
+        presentation?.isHidden = self.isHidden
+        presentation?.borderWidth = self.borderWidth
+        presentation?.borderColor = self.borderColor
         presentation?.shadowColor = self.shadowColor
         presentation?.shadowRadius = self.shadowRadius
         presentation?.shadowOpacity = self.shadowOpacity
