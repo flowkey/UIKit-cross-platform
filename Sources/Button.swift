@@ -74,12 +74,18 @@ open class Button: UIControl {
     open override func layoutSubviews() {
         updateLabelAndImageForCurrentState()
 
-        if let titleColor = titleColors[state], titleLabel?.attributedText == nil {
-            titleLabel?.textColor = titleColor
-        }
-
-        if let titleShadowColor = titleShadowColors[state], titleLabel?.attributedText == nil{
-            titleLabel?.shadowColor = titleShadowColor
+        // titleColor and titleShadowColor for state only affects non-attributed text
+        if titleLabel?.attributedText == nil {
+            if let titleColorForCurrentState = titleColors[state] {
+                titleLabel?.textColor = titleColorForCurrentState
+            } else if let titleColorForNormalState = titleColors[.normal] {
+                titleLabel?.textColor = titleColorForNormalState
+            }
+            if let titleShadowColorForCurrentState = titleShadowColors[state] {
+                titleLabel?.shadowColor = titleShadowColorForCurrentState
+            } else if let titleShadowColorForNormalState = titleShadowColors[.normal] {
+                titleLabel?.shadowColor = titleShadowColorForNormalState
+            }
         }
 
         titleLabel?.setNeedsLayout()
