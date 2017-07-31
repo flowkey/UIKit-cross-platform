@@ -88,11 +88,12 @@ extension CALayer {
 
 fileprivate extension CGRect {
     func diff(_ otherRect: CGRect) -> CGRect {
-        let xDiff = (otherRect.origin.x - self.origin.x)
-        let yDiff = (otherRect.origin.y - self.origin.y)
-        let widthDiff = (otherRect.width - self.width)
-        let heightDiff = (otherRect.height - self.height)
-        return CGRect(x: xDiff, y: yDiff, width: widthDiff, height: heightDiff)
+        return CGRect(
+            x: otherRect.origin.x - self.origin.x,
+            y: otherRect.origin.y - self.origin.y,
+            width: otherRect.width - self.width,
+            height: otherRect.height - self.height
+        )
     }
 
     func multiply(_ multiplier: CGFloat) -> CGRect {
