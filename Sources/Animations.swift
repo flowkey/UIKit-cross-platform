@@ -49,6 +49,10 @@ extension CALayer {
         presentation = CALayer()
         presentation?.frame = self.frame
         presentation?.opacity = self.opacity
+        presentation?.backgroundColor = self.backgroundColor
+        presentation?.shadowColor = self.shadowColor
+        presentation?.shadowRadius = self.shadowRadius
+        presentation?.shadowOpacity = self.shadowOpacity
     }
 
     func animate() {
