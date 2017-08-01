@@ -14,6 +14,7 @@ private func initSDL_ttf() -> Bool {
 
 internal class FontRenderer {
     private let rawPointer: OpaquePointer // TTF_Font
+    deinit { TTF_CloseFont(rawPointer) }
 
     init?(_ source: CGDataProvider, size: Int32) {
         if !initSDL_ttf() { return nil }
@@ -59,8 +60,7 @@ internal class FontRenderer {
             return nil
         }
 
-        defer { SDL_free(surface) }
-
+        defer { surface.pointee.free() }
         return Texture(surface: surface)
     }
 }

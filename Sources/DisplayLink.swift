@@ -6,25 +6,39 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-
-/// This is just a cheap wrapper for now that will break any previous instances upon setting `callback`!
 open class DisplayLink {
+    static var activeDisplayLinks: Set<DisplayLink> = []
+
     public init() {}
 
     public var isPaused = true {
-        didSet {
-            SDL.update = isPaused ? nil : callback
-        }
+        didSet { updateActiveDisplayLinks() }
     }
 
-    public var callback: (() -> Void)? {
-        didSet {
-            let wasPaused = isPaused
-            isPaused = wasPaused // set or remove `SDL.update`
+    // You'd have to call displayLink.callback() yourself to crash the program by this being nil
+    public var callback: (() -> Void)! {
+        didSet { updateActiveDisplayLinks() }
+    }
+
+    private func updateActiveDisplayLinks() {
+        if isPaused || callback == nil {
+            DisplayLink.activeDisplayLinks.remove(self)
+        } else {
+            DisplayLink.activeDisplayLinks.insert(self)
         }
     }
 
     public func invalidate() {
         callback = nil
+    }
+}
+
+extension DisplayLink: Hashable {
+    public var hashValue: Int {
+        return ObjectIdentifier(self).hashValue
+    }
+
+    public static func == (lhs: DisplayLink, rhs: DisplayLink) -> Bool {
+        return lhs === rhs
     }
 }
