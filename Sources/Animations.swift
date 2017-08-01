@@ -13,6 +13,17 @@ extension CALayer {
         if let fromValue = animations[key]?.fromValue {
             animation.fromValue = fromValue
         }
+
+        if animation.fromValue == nil, let keypath = animation.keyPath {
+            switch keypath as CABasicAnimation.AnimationProperty  {
+            case .frame:
+                animation.fromValue = animation.fromValue ?? frame
+            case .opacity:
+                animation.fromValue = animation.fromValue ?? opacity
+            case .unknown: return
+            }
+        }
+
         animations[key] = animation
     }
 
