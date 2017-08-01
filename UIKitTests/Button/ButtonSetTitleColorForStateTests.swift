@@ -33,6 +33,21 @@ class ButtonSetTitleColorForStateTests: XCTestCase {
         XCTAssertTrue(button.titleLabel!.textColor.isEqual(UIColor.blue))
     }
 
+    func testNoTitleShadowColorWithoutTitleForNormalState() {
+        button.setTitleShadowColor(.white, for: .normal)
+        button.layoutSubviews()
+
+        XCTAssertNil(button.titleLabel!.shadowColor)
+    }
+
+    func testExistingTitleShadowColorWithTitleForNormalState() {
+        button.setTitleShadowColor(.white, for: .normal)
+        button.setTitle(shortButtonText, for: .normal)
+        button.layoutSubviews()
+
+        XCTAssertTrue(button.titleLabel!.shadowColor!.isEqual(UIColor.white))
+    }
+
     func testSetTitleColorForSelectedState() {
         button.setTitleColor(.red, for: .selected)
         button.setTitle(shortButtonText, for: .selected)

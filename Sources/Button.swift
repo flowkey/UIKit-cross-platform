@@ -83,8 +83,10 @@ open class Button: UIControl {
     open override func layoutSubviews() {
         updateLabelAndImageForCurrentState()
 
+        let titleLabelIsVisible = !(titleLabel?.isHidden ?? true)
+
         // titleColor and titleShadowColor for state only affects non-attributed text
-        if titleLabel?.attributedText == nil {
+        if titleLabelIsVisible, titleLabel?.attributedText == nil {
             if let titleColorForCurrentState = titleColors[state] {
                 titleLabel?.textColor = titleColorForCurrentState
             } else if let titleColorForNormalState = titleColors[.normal] {
