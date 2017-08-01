@@ -61,6 +61,7 @@
 		832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */; };
 		8333B2C01F1D11B800D98662 /* NSAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8333B2BF1F1D11B800D98662 /* NSAttributedString.swift */; };
 		833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */; };
+		8376FAA91F30E37B00F4F432 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8376FAA81F30E37B00F4F432 /* UIViewController.swift */; };
 		8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8378E17D1F05503600E138BD /* UIVisualEffectView.swift */; };
 		838545631F26458100B64986 /* UIVisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838545621F26458100B64986 /* UIVisualEffect.swift */; };
 		838545721F26536200B64986 /* NSAttributedStringKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838545711F26536200B64986 /* NSAttributedStringKey.swift */; };
@@ -204,6 +205,7 @@
 		8333B2BF1F1D11B800D98662 /* NSAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NSAttributedString.swift; path = Sources/NSAttributedString.swift; sourceTree = SOURCE_ROOT; };
 		833860AC1F0D55B3004DD55E /* iOSTestTarget.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTestTarget.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		833860B01F0D55B3004DD55E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8376FAA81F30E37B00F4F432 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
 		8378E17D1F05503600E138BD /* UIVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIVisualEffectView.swift; path = ../Sources/UIVisualEffectView.swift; sourceTree = "<group>"; };
 		838545621F26458100B64986 /* UIVisualEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIVisualEffect.swift; path = Sources/UIVisualEffect.swift; sourceTree = SOURCE_ROOT; };
 		838545711F26536200B64986 /* NSAttributedStringKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NSAttributedStringKey.swift; path = Sources/NSAttributedStringKey.swift; sourceTree = SOURCE_ROOT; };
@@ -339,6 +341,7 @@
 				5C6AB7811EDC18BA006F90AC /* UITouch.swift */,
 				5C6AB7161ED3BECD006F90AC /* UIView.swift */,
 				5C6AB76A1ED5A648006F90AC /* UIView+animate.swift */,
+				8376FAA81F30E37B00F4F432 /* UIViewController.swift */,
 				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
 				838545621F26458100B64986 /* UIVisualEffect.swift */,
 				5C6AB7171ED3BECD006F90AC /* UIWindow.swift */,
@@ -662,6 +665,7 @@
 			files = (
 				5C6AB71E1ED3BECD006F90AC /* UIView.swift in Sources */,
 				5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */,
+				8376FAA91F30E37B00F4F432 /* UIViewController.swift in Sources */,
 				5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */,
 				8333B2C01F1D11B800D98662 /* NSAttributedString.swift in Sources */,
 				838545631F26458100B64986 /* UIVisualEffect.swift in Sources */,
