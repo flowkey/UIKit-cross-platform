@@ -32,6 +32,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     }
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        super.touchesBegan(touches, with: event)
         guard let firstTouch = touches.first else { return }
         state = .began
         trackedTouch = firstTouch
@@ -39,6 +40,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     }
 
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+        super.touchesMoved(touches, with: event)
         guard let trackedTouch = trackedTouch, touches.first == trackedTouch else {
             state = .failed
             return
@@ -61,12 +63,14 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     }
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        super.touchesEnded(touches, with: event)
         guard let trackedTouch = trackedTouch, touches.contains(trackedTouch) else { return }
         state = .ended
         reset()
     }
 
     open override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+        super.touchesCancelled(touches, with: event)
         reset()
     }
 
