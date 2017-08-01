@@ -98,8 +98,8 @@ open class CALayer {
     let link = DisplayLink()
 
     var animations = [String: CABasicAnimation]() {
-        didSet(oldAnimations) {
-            onDidSet(oldAnimations)
+        didSet {
+            onDidSetAnimations()
         }
     }
 }

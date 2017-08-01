@@ -56,8 +56,8 @@ extension CALayer {
         }
     }
 
-    func onDidSet(_ oldAnimations: [String: CABasicAnimation]) {
-        if oldAnimations.count != 0 {
+    func onDidSetAnimations() {
+        if animations.count != 0 {
             presentation = presentation ?? self.clone()
         } else {
             presentation = nil
@@ -103,11 +103,15 @@ extension CALayer {
         clone.opacity = self.opacity
         clone.backgroundColor = self.backgroundColor
         clone.isHidden = self.isHidden
+        clone.cornerRadius = self.cornerRadius
         clone.borderWidth = self.borderWidth
         clone.borderColor = self.borderColor
         clone.shadowColor = self.shadowColor
         clone.shadowRadius = self.shadowRadius
         clone.shadowOpacity = self.shadowOpacity
+
+        //clone.backgroundColor = UIColor.init(red: 255, green: 0, blue: 255, alpha: 0.1)
+
         return clone
     }
 }
