@@ -17,12 +17,13 @@ open class UITapGestureRecognizer: UIGestureRecognizer {
     var trackedTouch: UITouch?
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        if !isEnabled { state = .cancelled; return }
+        super.touchesBegan(touches, with: event)
         trackedTouch = touches.first
         self.state = .began
     }
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        super.touchesEnded(touches, with: event)
         if let trackedTouch = trackedTouch, touches.first == trackedTouch {
             if let view = self.view, view.bounds.contains(trackedTouch.location(in: view)) {
                 self.state = .recognized
