@@ -14,13 +14,14 @@ extension CALayer {
             animation.fromValue = fromValue
         }
 
+        // fallback if fromValue is not provided
         if animation.fromValue == nil, let keypath = animation.keyPath {
             switch keypath as CABasicAnimation.AnimationProperty  {
             case .frame:
                 animation.fromValue = animation.fromValue ?? frame
             case .opacity:
                 animation.fromValue = animation.fromValue ?? opacity
-            case .unknown: return
+            case .unknown: break
             }
         }
 
