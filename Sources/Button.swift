@@ -121,14 +121,14 @@ open class Button: UIControl {
             imageView?.frame.midY = bounds.midY
             titleLabel?.frame.midY = bounds.midY
         case .top:
-            if imageView == nil {
+            if (imageView?.isHidden ?? true) {
                 titleLabel?.frame.origin.y = sizeToFitWasCalled ? labelVerticalPadding : 0
             } else {
                 titleLabel?.frame.origin.y = 0
                 imageView?.frame.origin.y = 0
             }
         case .bottom:
-            if imageView == nil {
+            if (imageView?.isHidden ?? true) {
                 titleLabel?.frame.maxY = bounds.maxY - (sizeToFitWasCalled ? labelVerticalPadding : 0)
             } else {
                 titleLabel?.frame.maxY = bounds.maxY
