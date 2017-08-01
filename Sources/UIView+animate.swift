@@ -18,7 +18,8 @@ public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
 
 extension UIView {
 
-    static var animationDuration: Double = 0.0
+    static var animationDuration = 0.0
+    static var animationDelay = 0.0
 
     public static func animate(
         withDuration duration: Double,
@@ -28,8 +29,10 @@ extension UIView {
         completion: ((Bool) -> Void)? = nil
     ) {
         self.animationDuration = duration
+        self.animationDelay = delay
         animations()
         self.animationDuration = 0
+        self.animationDelay = 0
         completion?(true)
     }
 

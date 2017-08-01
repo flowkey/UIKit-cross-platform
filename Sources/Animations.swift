@@ -37,6 +37,7 @@ extension CALayer {
             animation.fromValue = opacity
             animation.toValue = newOpacity
             animation.duration = CGFloat(UIView.animationDuration)
+            animation.delay = CGFloat(UIView.animationDelay)
 
             self.add(animation, forKey: "opacity")
         }
@@ -48,6 +49,7 @@ extension CALayer {
             animation.fromValue = frame
             animation.toValue = newFrame
             animation.duration = CGFloat(UIView.animationDuration)
+            animation.delay = CGFloat(UIView.animationDelay)
 
             self.add(animation, forKey: "frame")
         }

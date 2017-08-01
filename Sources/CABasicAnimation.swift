@@ -18,12 +18,14 @@ public class CABasicAnimation {
     public var fillMode: String?
     public var isRemovedOnCompletion = true
     public var duration: CGFloat = 0
+    public var delay: CGFloat = 0
     public var fromValue: Any?
     public var toValue: Any?
 
     internal var timer = Timer()
     internal var progress: CGFloat { // always between 0 and 1
-        return min(CGFloat(timer.getElapsedTimeInMilliseconds()) / (duration * 1000), 1)
+        let elapsedTime = max(CGFloat(timer.getElapsedTimeInMilliseconds()) - (delay * 1000), 0)
+        return min(elapsedTime / (duration * 1000), 1)
     }
 
     public enum AnimationProperty: ExpressibleByStringLiteral {
