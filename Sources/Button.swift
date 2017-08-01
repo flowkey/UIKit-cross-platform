@@ -66,9 +66,11 @@ open class Button: UIControl {
 
         titleLabel = UILabel()
         titleLabel?.isHidden = true
+        addSubview(titleLabel!) // titleLabel has to exist since we just defined it 2 lines above
 
         imageView = UIImageView()
         imageView?.isHidden = true
+        addSubview(imageView!) // imageView has to exist since we just defined it 2 lines above
         
         tapGestureRecognizer.view = self
         addGestureRecognizer(tapGestureRecognizer)
