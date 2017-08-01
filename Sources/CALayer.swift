@@ -95,19 +95,11 @@ open class CALayer {
     }
 
     var presentation: CALayer?
-    private let link = DisplayLink()
+    let link = DisplayLink()
 
     var animations = [String: CABasicAnimation]() {
         didSet(oldAnimations) {
-            guard animations.count != oldAnimations.count else { return }
-
-            if animations.count != 0 {
-                ensurePresenTationExists()
-            } else {
-                presentation = nil
-            }
-
-            link.isPaused = animations.count == 0
+            onDidSet(oldAnimations)
         }
     }
 }

@@ -10,7 +10,6 @@ import SDL
 
 extension CALayer {
     final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect()) {
-
         if isHidden || opacity < 0.01 { return } // could be a hidden sublayer of a visible layer
         let absoluteFrame = frame.offsetBy(parentAbsoluteFrame.origin).offsetBy(bounds.origin)
         
