@@ -8,11 +8,6 @@
 
 extension CALayer {
     open func add(_ animation: CABasicAnimation, forKey key: String) {
-        // use previous fromValue when animation already exists
-        // this is necessary when onWillSet is called multiple times for one animation
-        if let fromValue = animations[key]?.fromValue {
-            animation.fromValue = fromValue
-        }
 
         // fallback if fromValue is not provided
         if animation.fromValue == nil, let keypath = animation.keyPath {
@@ -35,7 +30,7 @@ extension CALayer {
     func onWillSet(_ newOpacity: CGFloat) {
         if UIView.animationDuration > 0 && newOpacity != opacity {
             let animation = CABasicAnimation(keyPath: .opacity)
-            animation.fromValue = opacity
+            animation.fromValue = (presentation ?? self).opacity
             animation.toValue = newOpacity
             animation.duration = CGFloat(UIView.animationDuration)
             animation.delay = CGFloat(UIView.animationDelay)
@@ -47,7 +42,7 @@ extension CALayer {
     func onWillSet(_ newFrame: CGRect) {
         if UIView.animationDuration > 0 && newFrame != frame {
             let animation = CABasicAnimation(keyPath: .frame)
-            animation.fromValue = frame
+            animation.fromValue = (presentation ?? self).frame
             animation.toValue = newFrame
             animation.duration = CGFloat(UIView.animationDuration)
             animation.delay = CGFloat(UIView.animationDelay)
