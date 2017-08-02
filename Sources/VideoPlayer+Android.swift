@@ -9,58 +9,54 @@
 import JNI
 import SDL.gpu
 
+
 open class VideoPlayer: UIView {
+    fileprivate let javaVideo: JavaVideo
+
     public init(url: String) {
         super.init(frame: .zero)
         print(url)
-
-//        try jni.call("createVideoPlayer", on: getActivityClass(), parameters: [])
+        javaVideo = JavaVideo(url: url)!
     }
-    private let timer = VideoTimer()
+
     open func play() {
-        // Java Video call here
-        timer.start()
+        javaVideo.play()
     }
 
     open func pause() {
-        // Java Video call here
-        timer.pause()
+        javaVideo.pause()
     }
 
     public func getCurrentTime() -> Double {
-        return timer.getCurrentTime()
+        return javaVideo.getCurrentTime()
     }
 
     public func seek(to newTime: Double) {
-        timer.update(to: newTime)
+        javaVideo.seek(to: newTime)
     }
 
     open var isMuted: Bool = false
     open var rate: Double = 1
 }
 
-private class VideoTimer {
-    var timeWhenLastPaused: Double = 0.0 // milliseconds
-    var runningTimer: Timer?
+private class JavaVideo: JNIObject {
+    convenience init?(url: String) {
+        self.init("com.flowkey.nativeplayersdl.SDLVideo", arguments: [url])
+    }
 
-    func start() {
-        guard runningTimer == nil else { return }
-        runningTimer = Timer(startingAt: timeWhenLastPaused)
+    func play() {
+        try! call(methodName: "play")
     }
 
     func pause() {
-        guard let runningTimer = runningTimer else { return }
-        timeWhenLastPaused = Double(runningTimer.getElapsedTimeInMilliseconds())
-        self.runningTimer = nil
+        try! call(methodName: "pause")
     }
 
-    /// Current clock time in milliseconds
     func getCurrentTime() -> Double {
-        guard let runningTimer = runningTimer else { return timeWhenLastPaused / 1000 }
-        return round(Double(runningTimer.getElapsedTimeInMilliseconds()))
+        return try! call(methodName: "getCurrentTimeInMilliseconds")
     }
 
-    func update(to videoTime: Double) { // videoTime is in milliseconds
-        timeWhenLastPaused = videoTime
+    func seek(to timeInMilliseconds: Double) {
+        try! call(methodName: "seekToTimeInMilliseconds", arguments: [timeInMilliseconds])
     }
 }

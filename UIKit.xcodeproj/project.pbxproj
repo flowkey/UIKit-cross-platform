@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F06AE1F3210F200EFF087 /* UIViewController.swift */; };
+		5C1F06BE1F323CA100EFF087 /* VideoPlayer+Android.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C391A8E1F13F62500EE012C /* VideoPlayer+Android.swift */; };
 		5C27149E1F2A3CC40026BBA9 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		5C2714A21F2A3FC50026BBA9 /* SDL+JNIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */; };
 		5C27E7B81ECB2F6500F5020D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7AE1ECB2F6500F5020D /* UIKit.framework */; };
@@ -680,6 +681,7 @@
 				5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */,
 				5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */,
 				5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */,
+				5C1F06BE1F323CA100EFF087 /* VideoPlayer+Android.swift in Sources */,
 				8333B2C01F1D11B800D98662 /* NSAttributedString.swift in Sources */,
 				838545631F26458100B64986 /* UIVisualEffect.swift in Sources */,
 				5C6AB7181ED3BECD006F90AC /* Button.swift in Sources */,
