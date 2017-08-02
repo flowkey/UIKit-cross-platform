@@ -29,7 +29,7 @@ public struct UIColor: Equatable {
         self.alpha = alpha.normalisedToUInt8()
     }
     
-    public static func ==(lhs: UIColor, rhs: UIColor) -> Bool {
+    public static func == (lhs: UIColor, rhs: UIColor) -> Bool {
         return (lhs.red == rhs.red) && (lhs.green == rhs.green) && (lhs.blue == rhs.blue)
     }
 

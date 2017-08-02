@@ -99,8 +99,8 @@ open class Button: UIControl {
 
         let titleLabelIsVisible = !titleLabel.isHidden
 
-        // titleColor and titleShadowColor for state only affects non-attributed text
         if titleLabelIsVisible, titleLabel.attributedText == nil {
+            // titleColor/titleShadowColor only affect non-attributed text
             if let titleColorForCurrentState = titleColors[state] {
                 titleLabel.textColor = titleColorForCurrentState
             } else if let titleColorForNormalState = titleColors[.normal] {
@@ -120,8 +120,8 @@ open class Button: UIControl {
 
         switch contentHorizontalAlignment {
         case .center:
-            imageView.frame.midX = bounds.midX - labelWidth / 2
-            titleLabel.frame.midX = bounds.midX + imageWidth / 2
+            imageView.frame.midX = bounds.midX - (labelWidth / 2)
+            titleLabel.frame.midX = bounds.midX + (imageWidth / 2)
         case .left:
             imageView.frame.origin.x = 0
             titleLabel.frame.origin.x = imageWidth
