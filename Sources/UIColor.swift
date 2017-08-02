@@ -8,7 +8,8 @@
 
 import SDL
 
-public struct UIColor {
+public struct UIColor: Equatable {
+
     let red: UInt8
     let green: UInt8
     let blue: UInt8
@@ -27,9 +28,9 @@ public struct UIColor {
         self.blue = blue.normalisedToUInt8()
         self.alpha = alpha.normalisedToUInt8()
     }
-
-    public func isEqual(_ color: UIColor) -> Bool {
-        return (self.red == color.red) && (self.green == color.green) && (self.blue == color.blue)
+    
+    public static func ==(lhs: UIColor, rhs: UIColor) -> Bool {
+        return (lhs.red == rhs.red) && (lhs.green == rhs.green) && (lhs.blue == rhs.blue)
     }
 
     // Initialise from a color struct from e.g. renderer.getDrawColor()
