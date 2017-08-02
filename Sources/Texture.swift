@@ -11,10 +11,7 @@ import SDL
 internal final class Texture {
     let rawPointer: UnsafeMutablePointer<GPU_Image>
 
-    let scale: Float = 2 // TODO: get from window
-    var glesHandle: Int {
-        
-    }
+    var scale: Float = 2 // TODO: get from window
 
     var size: CGSize {
         return CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
@@ -58,7 +55,6 @@ internal final class Texture {
     private func scaleImage(_ scale: Float) {
         var image = rawPointer.pointee
         let scale = UInt16(2) // XXX: get this from image path
-        self.scale = Float(scale)
         
         // Setting the scale here allows the texture to render at the expected size automatically
         image.h /= scale

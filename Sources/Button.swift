@@ -9,51 +9,75 @@
 // Note: we deliberately don't wrap UIButton.
 // This allows us to have a somewhat custom API free of objc selectors etc.
 
+fileprivate let labelVerticalPadding: CGFloat = 6
+
 open class Button: UIControl {
-    public var imageView: UIImageView? {
+    internal (set) public var imageView: UIImageView? {
         didSet {
             oldValue?.removeFromSuperview()
             if let imageView = imageView { addSubview(imageView) }
         }
     }
     
-    public var titleLabel: UILabel? {
+    internal (set) public var titleLabel: UILabel? {
         didSet {
             oldValue?.removeFromSuperview()
             if let titleLabel = titleLabel { addSubview(titleLabel) }
         }
     }
 
-    private var currentLabelVerticalPadding: CGFloat = 0
-    private let labelVerticalPaddingAfterSizeToFit: CGFloat = 6
+    private var sizeToFitWasCalled = false
 
-    open func sizeToFit() {
-        currentLabelVerticalPadding = labelVerticalPaddingAfterSizeToFit
-        setNeedsLayout()
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        sizeToFitWasCalled = true
+        updateLabelAndImageForCurrentState()
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
+        setNeedsLayout()
 
-        if let imageView = imageView, let titleLabel = titleLabel {
-            frame.width += titleLabel.frame.width
-            frame.height = max(imageView.frame.height, titleLabel.frame.height)
-        } else if let imageView = imageView, titleLabel == nil {
-            frame.width = imageView.frame.width
-            frame.height = imageView.frame.height
-        } else if let titleLabel = titleLabel, imageView == nil {
-            frame.width = titleLabel.frame.width
-            frame.height = titleLabel.frame.height + (2 * labelVerticalPaddingAfterSizeToFit)
+        guard let titleLabel = titleLabel, let imageView = imageView else {
+            assertionFailure("titleLabel or imageView should always exist in UIKit-SDL Button")
+            return size
+        }
+
+        let imageViewIsVisible = !imageView.isHidden
+        let titleLabelIsVisible = !titleLabel.isHidden
+
+        if imageViewIsVisible, titleLabelIsVisible {
+            return CGSize(
+                width: imageView.frame.width + titleLabel.frame.width,
+                height: max(imageView.frame.height, titleLabel.frame.height)
+            )
+        } else if imageViewIsVisible, !titleLabelIsVisible {
+            return CGSize(width: imageView.frame.width, height: imageView.frame.height)
+        } else if titleLabelIsVisible, !imageViewIsVisible {
+            return CGSize(
+                width: titleLabel.frame.width,
+                height: titleLabel.frame.height + (2 * labelVerticalPadding)
+            )
         } else {
-            frame.size = CGSize(width: 30, height: 34)
+            return CGSize(width: 30, height: 34)
         }
     }
 
     public let tapGestureRecognizer = UITapGestureRecognizer()
     public var onPress: (() -> Void)? {
-        didSet { tapGestureRecognizer.onPress = onPress }
+        get { return tapGestureRecognizer.onPress }
+        set { tapGestureRecognizer.onPress = newValue }
     }
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
+
+        let titleLabel = UILabel()
+        titleLabel.isHidden = true
+        addSubview(titleLabel)
+        self.titleLabel = titleLabel
+
+        let imageView = UIImageView()
+        imageView.isHidden = true
+        addSubview(imageView)
+        self.imageView = imageView
         
         tapGestureRecognizer.view = self
         addGestureRecognizer(tapGestureRecognizer)
@@ -66,66 +90,63 @@ open class Button: UIControl {
     fileprivate var titleShadowColors = [UIControlState: UIColor]()
     
     open override func layoutSubviews() {
-        // Only change subview attributes if a corresponding entry exists in our dictionaries:
+        updateLabelAndImageForCurrentState()
 
-        if let attributedTitleForCurrentState = attributedTitles[state] {
-            if titleLabel == nil { titleLabel = UILabel() }
-            titleLabel?.attributedText = attributedTitleForCurrentState
-        } else if let titleForCurrentState = titles[state] {
-            if titleLabel == nil { titleLabel = UILabel() }
-            titleLabel?.text = titleForCurrentState
-        } else if titles.isEmpty && attributedTitles.isEmpty {
-            titleLabel = nil
+        guard let titleLabel = titleLabel, let imageView = imageView else {
+            assertionFailure("titleLabel or imageView should always exist in UIKit-SDL Button")
+            return
         }
 
-        if let imageForCurrentState = images[state] {
-            imageView?.image = imageForCurrentState
-        } else if images.isEmpty {
-            imageView = nil
+        let titleLabelIsVisible = !titleLabel.isHidden
+
+        if titleLabelIsVisible, titleLabel.attributedText == nil {
+            // titleColor/titleShadowColor only affect non-attributed text
+            if let titleColorForCurrentState = titleColors[state] {
+                titleLabel.textColor = titleColorForCurrentState
+            } else if let titleColorForNormalState = titleColors[.normal] {
+                titleLabel.textColor = titleColorForNormalState
+            }
+            if let titleShadowColorForCurrentState = titleShadowColors[state] {
+                titleLabel.shadowColor = titleShadowColorForCurrentState
+            } else if let titleShadowColorForNormalState = titleShadowColors[.normal] {
+                titleLabel.shadowColor = titleShadowColorForNormalState
+            }
         }
 
-        if let titleColorForCurrentState = titleColors[state] {
-            titleLabel?.textColor = titleColorForCurrentState
-        }
+        titleLabel.setNeedsLayout()
 
-        if let titleShadowColorForCurrentState = titleShadowColors[state] {
-            titleLabel?.shadowColor = titleShadowColorForCurrentState
-        }
-
-        titleLabel?.setNeedsLayout()
-
-        let imageWidth = imageView?.frame.width ?? 0
-        let labelWidth = titleLabel?.frame.width ?? 0
+        let imageWidth = imageView.frame.width
+        let labelWidth = titleLabel.frame.width
 
         switch contentHorizontalAlignment {
         case .center:
-            imageView?.frame.midX = bounds.midX - labelWidth / 2
-            titleLabel?.frame.midX = bounds.midX + imageWidth / 2
+            imageView.frame.midX = bounds.midX - (labelWidth / 2)
+            titleLabel.frame.midX = bounds.midX + (imageWidth / 2)
         case .left:
-            imageView?.frame.origin.x = 0
-            titleLabel?.frame.origin.x = imageWidth
+            imageView.frame.origin.x = 0
+            titleLabel.frame.origin.x = imageWidth
         case .right:
-            imageView?.frame.maxX = bounds.maxX - labelWidth
-            titleLabel?.frame.maxX = bounds.maxX
+            imageView.frame.maxX = bounds.maxX - labelWidth
+            titleLabel.frame.maxX = bounds.maxX
         }
 
         switch contentVerticalAlignment {
         case .center:
-            imageView?.frame.midY = bounds.midY
-            titleLabel?.frame.midY = bounds.midY
+            imageView.frame.midY = bounds.midY
+            titleLabel.frame.midY = bounds.midY
         case .top:
-            if imageView == nil {
-                titleLabel?.frame.origin.y = currentLabelVerticalPadding
+            if imageView.isHidden {
+                titleLabel.frame.origin.y = sizeToFitWasCalled ? labelVerticalPadding : 0
             } else {
-                titleLabel?.frame.origin.y = 0
-                imageView?.frame.origin.y = 0
+                titleLabel.frame.origin.y = 0
+                imageView.frame.origin.y = 0
             }
         case .bottom:
-            if imageView == nil {
-                titleLabel?.frame.maxY = bounds.maxY - currentLabelVerticalPadding
+            if imageView.isHidden {
+                titleLabel.frame.maxY = bounds.maxY - (sizeToFitWasCalled ? labelVerticalPadding : 0)
             } else {
-                titleLabel?.frame.maxY = bounds.maxY
-                imageView?.frame.maxY = bounds.maxY
+                titleLabel.frame.maxY = bounds.maxY
+                imageView.frame.maxY = bounds.maxY
             }
         }
 
@@ -134,26 +155,41 @@ open class Button: UIControl {
 }
 
 extension Button {
+    fileprivate func updateLabelAndImageForCurrentState() {
+        if let attributedTitleForCurrentState = attributedTitles[state] {
+            titleLabel?.attributedText = attributedTitleForCurrentState
+        } else if let titleForCurrentState = titles[state] {
+            titleLabel?.text = titleForCurrentState
+        } else if let attributedTitleForNormalState = attributedTitles[.normal] {
+            titleLabel?.attributedText = attributedTitleForNormalState
+        } else if let titleForNormalState = titles[.normal] {
+            titleLabel?.text = titleForNormalState
+        }
+
+        if let imageForCurrentState = images[state] {
+            imageView?.image = imageForCurrentState
+        } else if let imageForNormalState = images[.normal] {
+            imageView?.image = imageForNormalState
+        }
+    }
+}
+
+extension Button {
     public func setImage(_ image: UIImage?, for state: UIControlState) {
         images[state] = image
-        if images.isEmpty {
-            imageView = nil
-        } else {
-            if imageView == nil { imageView = UIImageView() }
-            imageView?.image = image
-        }
+        imageView?.isHidden = (image == nil)
         setNeedsLayout()
     }
 
     public func setTitle(_ text: String?, for state: UIControlState) {
         titles[state] = text
-        if titleLabel == nil { titleLabel = UILabel() }
+        titleLabel?.isHidden = (text == nil)
         setNeedsLayout()
     }
 
     public func setAttributedTitle(_ attributedText: NSAttributedString?, for state: UIControlState) {
         attributedTitles[state] = attributedText
-        if titleLabel == nil { titleLabel = UILabel() }
+        titleLabel?.isHidden = (attributedText == nil)
         setNeedsLayout()
     }
 

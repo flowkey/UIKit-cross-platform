@@ -15,6 +15,9 @@ open class UIView: UIResponder {
 
     open let layer: CALayer
 
+    // mocked for parentViewController.present function in AlertContainer
+    open let parentViewController: UIViewController? = UIViewController()
+
     open var frame: CGRect {
         get { return layer.frame }
         set { layer.frame = newValue }
@@ -84,7 +87,6 @@ open class UIView: UIResponder {
 
     public init(frame: CGRect) {
         self.layer = type(of: self).layerClass.init()
-        //self.layer = CALayer()
         self.frame = frame
     }
 
@@ -195,7 +197,15 @@ open class UIView: UIResponder {
         return bounds.contains(point)
     }
 
-    
+    open func sizeThatFits(_ size: CGSize) -> CGSize {
+        return bounds.size
+    }
+
+    open func sizeToFit() {
+        self.bounds.size = sizeThatFits(self.bounds.size)
+        setNeedsLayout()
+    }
+
     // MARK: UIResponder conformance:
 
     open func next() -> UIResponder? {

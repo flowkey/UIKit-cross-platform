@@ -18,15 +18,6 @@ class ButtonContentAlignmentTests: XCTestCase {
     let buttonSize = CGSize(width: 200, height: 100)
     let testImageSize = CGSize(width: 40, height: 40)
 
-    override class func setUp() {
-        super.setUp()
-        #if os(iOS)
-            loadCustomFont(name: "roboto-medium", fontExtension: "ttf")
-        #else
-            UIFont.loadSystemFonts()
-        #endif
-    }
-
     override func setUp() {
         button = Button(frame: .zero)
     }
@@ -57,7 +48,7 @@ class ButtonContentAlignmentTests: XCTestCase {
         XCTAssertEqual(button.contentHorizontalAlignment, .center)
         XCTAssertEqual(button.contentVerticalAlignment, .center)
         XCTAssertEqual(button.titleLabel!.frame.origin.x, buttonSize.width / 2 - button.titleLabel!.bounds.midX)
-        XCTAssertEqual(button.titleLabel!.frame.origin.y, (buttonSize.height / 2 - button.titleLabel!.bounds.midY).rounded())
+        XCTAssertEqual(button.titleLabel!.frame.origin.y.rounded(), (buttonSize.height / 2 - button.titleLabel!.bounds.midY).rounded())
     }
 
     func testTopLeftContentAlignmentWithOnlyLabel() {
@@ -163,7 +154,7 @@ class ButtonContentAlignmentTests: XCTestCase {
         XCTAssertEqualWithAccuracy(button.imageView!.frame.origin.x, (buttonSize.width - (testImageSize.width + button.titleLabel!.frame.width)) / 2, accuracy: 0.0001)
         XCTAssertEqual(button.imageView!.frame.origin.y, buttonSize.height / 2 - testImageSize.height / 2)
         XCTAssertEqualWithAccuracy(button.titleLabel!.frame.origin.x, (buttonSize.width - button.titleLabel!.frame.width + testImageSize.width) / 2, accuracy: 0.0001)
-        XCTAssertEqual(button.titleLabel!.frame.origin.y, ((buttonSize.height - button.titleLabel!.frame.height) / 2).rounded())
+        XCTAssertEqual(button.titleLabel!.frame.origin.y.rounded(), ((buttonSize.height - button.titleLabel!.frame.height) / 2).rounded())
     }
 
     func testTopLeftContentAlignmentWithLabelAndImage() {

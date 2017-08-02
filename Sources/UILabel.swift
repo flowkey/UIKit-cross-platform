@@ -56,22 +56,19 @@ open class UILabel: UIView {
         super.draw()
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
         textLayer.texture = font.render(text, color: textColor, wrapLength: wrapLength)
-        needsDisplay = false
-        setNeedsLayout()
+        setNeedsLayout() // to realign text if needed
     }
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
         layer.addSublayer(textLayer)
+        isUserInteractionEnabled = false
     }
 
-    open func sizeToFit() {
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
         // XXX: We should take numberOfLines into account here!
-        guard let text = self.text else { return }
-        let previousFrame = self.frame
-        bounds.size = text.size(with: self.font)
-        layout(&frame, in: previousFrame) // uses text alignment to adjust self.frame
-        setNeedsLayout()
+        guard let text = self.text else { return .zero }
+        return text.size(with: self.font)
     }
 
     open override func layoutSubviews() {

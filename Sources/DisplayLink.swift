@@ -7,6 +7,8 @@
 //
 
 open class DisplayLink {
+    static var activeDisplayLinks: Set<DisplayLink> = []
+
     public init() {}
 
     public var isPaused = true {
@@ -20,13 +22,23 @@ open class DisplayLink {
 
     private func updateActiveDisplayLinks() {
         if isPaused || callback == nil {
-            SDL.remove(displayLink: self)
+            DisplayLink.activeDisplayLinks.remove(self)
         } else {
-            SDL.add(displayLink: self)
+            DisplayLink.activeDisplayLinks.insert(self)
         }
     }
 
     public func invalidate() {
         callback = nil
+    }
+}
+
+extension DisplayLink: Hashable {
+    public var hashValue: Int {
+        return ObjectIdentifier(self).hashValue
+    }
+
+    public static func == (lhs: DisplayLink, rhs: DisplayLink) -> Bool {
+        return lhs === rhs
     }
 }

@@ -10,13 +10,11 @@ import JNI
 import SDL.gpu
 
 open class VideoPlayer: UIView {
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+    public init(url: String) {
+        super.init(frame: .zero)
+        print(url)
 
-        let texture = Texture(width: 1920, height: 1080, format: GPU_FORMAT_YCbCr422)
-        self.layer.texture = texture
-
-        try jni.call("createVideoPlayer", on: getActivityClass(), parameters: [JavaInt(texture.glesHandle)])
+//        try jni.call("createVideoPlayer", on: getActivityClass(), parameters: [])
     }
     private let timer = VideoTimer()
     open func play() {
