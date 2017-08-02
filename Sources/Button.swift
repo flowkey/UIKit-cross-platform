@@ -35,20 +35,25 @@ open class Button: UIControl {
         imageView?.sizeToFit()
         setNeedsLayout()
 
-        let imageViewIsVisible = !(imageView?.isHidden ?? true)
-        let titleLabelIsVisible = !(titleLabel?.isHidden ?? true)
+        guard let titleLabel = titleLabel, let imageView = imageView else {
+            assertionFailure("titleLabel or imageView should always exist in UIKit-SDL Button")
+            return size
+        }
+
+        let imageViewIsVisible = !imageView.isHidden
+        let titleLabelIsVisible = !titleLabel.isHidden
 
         if imageViewIsVisible, titleLabelIsVisible {
             return CGSize(
-                width: imageView!.frame.width + titleLabel!.frame.width,
-                height: max(imageView!.frame.height, titleLabel!.frame.height)
+                width: imageView.frame.width + titleLabel.frame.width,
+                height: max(imageView.frame.height, titleLabel.frame.height)
             )
         } else if imageViewIsVisible, !titleLabelIsVisible {
-            return CGSize(width: imageView!.frame.width, height: imageView!.frame.height)
+            return CGSize(width: imageView.frame.width, height: imageView.frame.height)
         } else if titleLabelIsVisible, !imageViewIsVisible {
             return CGSize(
-                width: titleLabel!.frame.width,
-                height: titleLabel!.frame.height + (2 * labelVerticalPadding)
+                width: titleLabel.frame.width,
+                height: titleLabel.frame.height + (2 * labelVerticalPadding)
             )
         } else {
             return CGSize(width: 30, height: 34)
@@ -64,13 +69,15 @@ open class Button: UIControl {
     public override init(frame: CGRect) {
         super.init(frame: frame)
 
-        titleLabel = UILabel()
-        titleLabel?.isHidden = true
-        addSubview(titleLabel!) // titleLabel has to exist since we just defined it 2 lines above
+        let titleLabel = UILabel()
+        titleLabel.isHidden = true
+        addSubview(titleLabel)
+        self.titleLabel = titleLabel
 
-        imageView = UIImageView()
-        imageView?.isHidden = true
-        addSubview(imageView!) // imageView has to exist since we just defined it 2 lines above
+        let imageView = UIImageView()
+        imageView.isHidden = true
+        addSubview(imageView)
+        self.imageView = imageView
         
         tapGestureRecognizer.view = self
         addGestureRecognizer(tapGestureRecognizer)
@@ -85,56 +92,61 @@ open class Button: UIControl {
     open override func layoutSubviews() {
         updateLabelAndImageForCurrentState()
 
-        let titleLabelIsVisible = !(titleLabel?.isHidden ?? true)
+        guard let titleLabel = titleLabel, let imageView = imageView else {
+            assertionFailure("titleLabel or imageView should always exist in UIKit-SDL Button")
+            return
+        }
+
+        let titleLabelIsVisible = !titleLabel.isHidden
 
         // titleColor and titleShadowColor for state only affects non-attributed text
-        if titleLabelIsVisible, titleLabel?.attributedText == nil {
+        if titleLabelIsVisible, titleLabel.attributedText == nil {
             if let titleColorForCurrentState = titleColors[state] {
-                titleLabel?.textColor = titleColorForCurrentState
+                titleLabel.textColor = titleColorForCurrentState
             } else if let titleColorForNormalState = titleColors[.normal] {
-                titleLabel?.textColor = titleColorForNormalState
+                titleLabel.textColor = titleColorForNormalState
             }
             if let titleShadowColorForCurrentState = titleShadowColors[state] {
-                titleLabel?.shadowColor = titleShadowColorForCurrentState
+                titleLabel.shadowColor = titleShadowColorForCurrentState
             } else if let titleShadowColorForNormalState = titleShadowColors[.normal] {
-                titleLabel?.shadowColor = titleShadowColorForNormalState
+                titleLabel.shadowColor = titleShadowColorForNormalState
             }
         }
 
-        titleLabel?.setNeedsLayout()
+        titleLabel.setNeedsLayout()
 
-        let imageWidth = imageView?.frame.width ?? 0
-        let labelWidth = titleLabel?.frame.width ?? 0
+        let imageWidth = imageView.frame.width
+        let labelWidth = titleLabel.frame.width
 
         switch contentHorizontalAlignment {
         case .center:
-            imageView?.frame.midX = bounds.midX - labelWidth / 2
-            titleLabel?.frame.midX = bounds.midX + imageWidth / 2
+            imageView.frame.midX = bounds.midX - labelWidth / 2
+            titleLabel.frame.midX = bounds.midX + imageWidth / 2
         case .left:
-            imageView?.frame.origin.x = 0
-            titleLabel?.frame.origin.x = imageWidth
+            imageView.frame.origin.x = 0
+            titleLabel.frame.origin.x = imageWidth
         case .right:
-            imageView?.frame.maxX = bounds.maxX - labelWidth
-            titleLabel?.frame.maxX = bounds.maxX
+            imageView.frame.maxX = bounds.maxX - labelWidth
+            titleLabel.frame.maxX = bounds.maxX
         }
 
         switch contentVerticalAlignment {
         case .center:
-            imageView?.frame.midY = bounds.midY
-            titleLabel?.frame.midY = bounds.midY
+            imageView.frame.midY = bounds.midY
+            titleLabel.frame.midY = bounds.midY
         case .top:
-            if (imageView?.isHidden ?? true) {
-                titleLabel?.frame.origin.y = sizeToFitWasCalled ? labelVerticalPadding : 0
+            if imageView.isHidden {
+                titleLabel.frame.origin.y = sizeToFitWasCalled ? labelVerticalPadding : 0
             } else {
-                titleLabel?.frame.origin.y = 0
-                imageView?.frame.origin.y = 0
+                titleLabel.frame.origin.y = 0
+                imageView.frame.origin.y = 0
             }
         case .bottom:
-            if (imageView?.isHidden ?? true) {
-                titleLabel?.frame.maxY = bounds.maxY - (sizeToFitWasCalled ? labelVerticalPadding : 0)
+            if imageView.isHidden {
+                titleLabel.frame.maxY = bounds.maxY - (sizeToFitWasCalled ? labelVerticalPadding : 0)
             } else {
-                titleLabel?.frame.maxY = bounds.maxY
-                imageView?.frame.maxY = bounds.maxY
+                titleLabel.frame.maxY = bounds.maxY
+                imageView.frame.maxY = bounds.maxY
             }
         }
 
