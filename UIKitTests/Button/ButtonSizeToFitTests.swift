@@ -7,11 +7,7 @@
 //
 
 import XCTest
-#if os(iOS)
-    import UIKit
-#else
-    @testable import UIKit
-#endif
+import UIKit
 
 private let frameSizeWithShortLabelText = CGSize(width: 28.5, height: 26.5)
 private let frameSizeWithMediumLabelText = CGSize(width: 137, height: 31.0)
@@ -19,15 +15,6 @@ private let frameSizeWithLongLabelText = CGSize(width: 307.5, height: 36.0)
 
 class ButtonSizeToFitTests: XCTestCase {
     var button = Button(frame: .zero)
-
-    override class func setUp() {
-        super.setUp()
-        #if os(iOS)
-            loadCustomFont(name: "roboto-medium", fontExtension: "ttf")
-        #else
-            UIFont.loadSystemFonts()
-        #endif
-    }
 
     override func setUp() {
         button = Button(frame: .zero)
