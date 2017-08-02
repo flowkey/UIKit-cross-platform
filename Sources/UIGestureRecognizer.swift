@@ -22,7 +22,7 @@ open class UIGestureRecognizer {
     public var minimumNumberOfTouches = 0
     public var maximumNumberOfTouches = 0
     public var isEnabled = true {
-        didSet { state = .cancelled }
+        didSet { if !isEnabled { state = .cancelled } }
     }
     public var delegate: UIGestureRecognizerDelegate?
     public var state: UIGestureRecognizerState = .possible {
