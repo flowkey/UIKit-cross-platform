@@ -21,6 +21,10 @@ public enum UIGestureRecognizerState {
 open class UIGestureRecognizer {
     public var minimumNumberOfTouches = 0
     public var maximumNumberOfTouches = 0
+    public var isEnabled = true {
+        didSet { state = .cancelled }
+    }
+    public var delegate: UIGestureRecognizerDelegate?
     public var state: UIGestureRecognizerState = .possible {
         didSet {
             if state == oldValue { return }
@@ -46,7 +50,9 @@ open class UIGestureRecognizer {
     public var delaysTouchesBegan = false
     public var delaysTouchesEnded = true
 
-    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {}
+    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        if !isEnabled { state = .cancelled; return }
+    }
     open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {}
     open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {}
 

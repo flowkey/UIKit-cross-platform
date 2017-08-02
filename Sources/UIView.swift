@@ -15,6 +15,9 @@ open class UIView: UIResponder {
 
     open let layer: CALayer
 
+    // mocked for parentViewController.present function in AlertContainer
+    open let parentViewController: UIViewController? = UIViewController()
+
     open var frame: CGRect {
         get { return layer.frame }
         set { layer.frame = newValue }
