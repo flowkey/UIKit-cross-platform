@@ -94,8 +94,9 @@ open class CALayer {
         return UIImage(texture: texture)
     }
 
-    var presentation: CALayer?
     let link = DisplayLink()
+    var presentation: CALayer?
+    var shouldAnimate = true
 
     var animations = [String: CABasicAnimation]() {
         didSet {

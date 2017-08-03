@@ -28,24 +28,31 @@ extension CALayer {
     }
 
     func onWillSet(_ newOpacity: CGFloat) {
-        if UIView.animationDuration > 0 && newOpacity != opacity {
+        if shouldAnimate && UIView.animationDuration > 0 && newOpacity != opacity {
+
             let animation = CABasicAnimation(keyPath: .opacity)
             animation.fromValue = (presentation ?? self).opacity
             animation.toValue = newOpacity
             animation.duration = CGFloat(UIView.animationDuration)
             animation.delay = CGFloat(UIView.animationDelay)
+            animation.isRemovedOnCompletion = true
+
+            animation.timer = UIView.timer
 
             self.add(animation, forKey: "opacity")
         }
     }
 
     func onWillSet(_ newFrame: CGRect) {
-        if UIView.animationDuration > 0 && newFrame != frame {
+        if shouldAnimate && UIView.animationDuration > 0 && newFrame != frame {
             let animation = CABasicAnimation(keyPath: .frame)
             animation.fromValue = (presentation ?? self).frame
             animation.toValue = newFrame
             animation.duration = CGFloat(UIView.animationDuration)
             animation.delay = CGFloat(UIView.animationDelay)
+            animation.isRemovedOnCompletion = true
+
+            animation.timer = UIView.timer
 
             self.add(animation, forKey: "frame")
         }
@@ -91,24 +98,6 @@ extension CALayer {
             }
         }
     }
-
-    fileprivate func clone() -> CALayer {
-        let clone = CALayer()
-        clone.frame = self.frame
-        clone.opacity = self.opacity
-        clone.backgroundColor = self.backgroundColor
-        clone.isHidden = self.isHidden
-        clone.cornerRadius = self.cornerRadius
-        clone.borderWidth = self.borderWidth
-        clone.borderColor = self.borderColor
-        clone.shadowColor = self.shadowColor
-        clone.shadowRadius = self.shadowRadius
-        clone.shadowOpacity = self.shadowOpacity
-
-        //clone.backgroundColor = UIColor.init(red: 255, green: 0, blue: 255, alpha: 0.1)
-
-        return clone
-    }
 }
 
 
@@ -138,5 +127,38 @@ fileprivate extension CGRect {
             width: lhs.width + rhs.width,
             height: lhs.height + rhs.height
         )
+    }
+}
+
+
+fileprivate extension CALayer {
+    fileprivate func clone() -> CALayerWithoutAnimation {
+        let clone = CALayerWithoutAnimation()
+
+        clone.frame = self.frame
+        clone.opacity = self.opacity
+        clone.backgroundColor = self.backgroundColor
+        clone.isHidden = self.isHidden
+        clone.cornerRadius = self.cornerRadius
+        clone.borderWidth = self.borderWidth
+        clone.borderColor = self.borderColor
+        clone.shadowColor = self.shadowColor
+        clone.shadowRadius = self.shadowRadius
+        clone.shadowOpacity = self.shadowOpacity
+        clone.texture = self.texture
+        clone.sublayers = self.sublayers
+
+        //clone.backgroundColor = UIColor.init(red: 255, green: 0, blue: 255, alpha: 0.1)
+
+        return clone
+    }
+}
+
+fileprivate class CALayerWithoutAnimation: CALayer {
+    public required init() {
+        super.init()
+        shouldAnimate = false
+        link.isPaused = true
+        link.callback = nil
     }
 }

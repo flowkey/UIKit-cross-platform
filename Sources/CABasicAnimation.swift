@@ -22,9 +22,9 @@ public class CABasicAnimation {
     public var fromValue: Any?
     public var toValue: Any?
 
-    internal var timer = Timer()
+    internal var timer: Timer?
     internal var progress: CGFloat { // always between 0 and 1
-        let elapsedTime = max(CGFloat(timer.getElapsedTimeInMilliseconds()) - (delay * 1000), 0)
+        let elapsedTime = max(CGFloat(timer?.getElapsedTimeInMilliseconds() ?? 0) - (delay * 1000), 0)
         return min(elapsedTime / (duration * 1000), 1)
     }
 

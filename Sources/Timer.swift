@@ -12,7 +12,7 @@ import Glibc
 import Darwin.C
 #endif
 
-struct Timer {
+class Timer {
     let startTime: timeval
     init(startingAt startingTimeInMilliseconds: Double = 0.0) {
         var startTime = timeval()
