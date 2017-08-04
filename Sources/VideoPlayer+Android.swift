@@ -14,9 +14,9 @@ open class VideoPlayer: UIView {
     fileprivate let javaVideo: JavaVideo
 
     public init(url: String) {
-        super.init(frame: .zero)
         print(url)
         javaVideo = JavaVideo(url: url)!
+        super.init(frame: .zero)
     }
 
     open func play() {
