@@ -145,7 +145,7 @@ fileprivate extension CALayer {
         clone.shadowColor = self.shadowColor
         clone.shadowRadius = self.shadowRadius
         clone.shadowOpacity = self.shadowOpacity
-        clone.texture = self.texture
+        //clone.texture = self.texture // macht komische sachen
         clone.sublayers = self.sublayers
 
         //clone.backgroundColor = UIColor.init(red: 255, green: 0, blue: 255, alpha: 0.1)
