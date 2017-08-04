@@ -30,13 +30,16 @@ extension UIView {
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
-        self.animationDuration = 0
+        self.timer = Timer()
+        self.animationDuration = duration
         self.animationDelay = delay
-        self.completion = completion
+
         animations()
-        self.animationDuration = 0
-        self.animationDelay = 0
-        self.completion = nil
+
+        if let completion = completion, let timer = timer {
+            run(completion: completion, after: duration + delay, timer: timer)
+        }
+        clearAnimationProperties()
     }
 
     public static func animate(
@@ -46,51 +49,35 @@ extension UIView {
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
-//        self.animationDuration = 0
-//        self.animationDelay = delay
-//        self.completion = completion
-//        animations()
-//        self.animationDuration = 0
-//        self.animationDelay = 0
-//        self.completion = nil
-
-
-        UIView._animate(withDuration: duration, animations: animations)
-    }
-
-    public static func _animate(
-        withDuration duration: Double,
-        delay: Double = 0.0,
-        options: UIViewAnimationOptions = [],
-        animations: () -> Void,
-        completion: ((Bool) -> Void)? = nil
-        ) {
-
         self.timer = Timer()
         self.animationDuration = duration
         self.animationDelay = delay
 
+        animations()
 
-        let totalTime = duration + delay
+        if let completion = completion, let timer = timer {
+            run(completion: completion, after: duration + delay, timer: timer)
+        }
+        clearAnimationProperties()
+    }
 
-
+    static func run(completion: @escaping (Bool) -> Void, after time: Double, timer: Timer) {
         var link: DisplayLink? = DisplayLink()
         link?.callback = {
-            let finished = totalTime * 1000 - (timer?.getElapsedTimeInMilliseconds() ?? 0) <= 0
+            let finished = time * 1000 - (timer.getElapsedTimeInMilliseconds()) <= 0
             if finished {
-                completion?(true)
+                completion(true)
                 link?.isPaused = true
                 link = nil
             }
         }
         link?.isPaused = false
+    }
 
-
-        self.completion = completion
-        animations()
+    static func clearAnimationProperties() {
         self.animationDuration = 0
         self.animationDelay = 0
-        self.completion = nil
+        self.timer = nil
     }
 
 }
