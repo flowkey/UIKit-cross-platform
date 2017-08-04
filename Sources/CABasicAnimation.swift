@@ -29,11 +29,12 @@ public class CABasicAnimation {
     }
 
     public enum AnimationProperty: ExpressibleByStringLiteral {
-        case frame, opacity, unknown
+        case frame, opacity, bounds, unknown
         public init(stringLiteral value: String) {
             switch value {
             case "frame": self = .frame
             case "opacity": self = .opacity
+            case "bounds": self = .bounds
             default: self = .unknown
             }
         }

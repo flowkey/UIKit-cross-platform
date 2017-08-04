@@ -16,6 +16,8 @@ extension CALayer {
                 animation.fromValue = animation.fromValue ?? frame
             case .opacity:
                 animation.fromValue = animation.fromValue ?? opacity
+            case .bounds:
+                animation.fromValue = animation.fromValue ?? bounds
             case .unknown: break
             }
         }
@@ -58,6 +60,21 @@ extension CALayer {
         }
     }
 
+    func onWillSet(newBounds: CGRect) {
+        if shouldAnimate && UIView.animationDuration > 0 && newBounds != bounds {
+            let animation = CABasicAnimation(keyPath: .bounds)
+            animation.fromValue = (presentation ?? self).bounds
+            animation.toValue = newBounds
+            animation.duration = CGFloat(UIView.animationDuration)
+            animation.delay = CGFloat(UIView.animationDelay)
+            animation.isRemovedOnCompletion = true
+
+            animation.timer = UIView.timer
+
+            self.add(animation, forKey: "bounds")
+        }
+    }
+
     func onDidSetAnimations() {
         if animations.count != 0 {
             presentation = presentation ?? self.clone()
@@ -80,6 +97,16 @@ extension CALayer {
                     else { return }
 
                 presentation?.frame = startFrame + startFrame.diff(endFrame).multiply(animation.progress)
+
+            case .bounds: // animate origin only, because bounds.size updates frame.size
+                guard
+                    let startBounds = animation.fromValue as? CGRect,
+                    let endBounds = animation.toValue as? CGRect
+                    else { return }
+
+                print("animate bounds")
+                presentation?.bounds.origin = (startBounds + startBounds.diff(endBounds).multiply(animation.progress)).origin
+
 
             case .opacity:
                 guard
@@ -136,6 +163,7 @@ fileprivate extension CALayer {
         let clone = CALayerWithoutAnimation()
 
         clone.frame = self.frame
+        clone.bounds = self.bounds
         clone.opacity = self.opacity
         clone.backgroundColor = self.backgroundColor
         clone.isHidden = self.isHidden

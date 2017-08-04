@@ -50,6 +50,11 @@ open class CALayer {
     }
 
     open var bounds: CGRect = .zero {
+        willSet(newBounds) {
+            if (bounds.origin != newBounds.origin) { // prevents crazy recursion, because bounds.size updates frame.size
+                onWillSet(newBounds: newBounds)
+            }
+        }
         didSet {
             if frame.size != bounds.size {
                 frame.size = bounds.size
