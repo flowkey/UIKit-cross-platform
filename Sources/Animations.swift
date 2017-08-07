@@ -104,9 +104,7 @@ extension CALayer {
                     let endBounds = animation.toValue as? CGRect
                     else { return }
 
-                print("animate bounds")
                 presentation?.bounds.origin = (startBounds + startBounds.diff(endBounds).multiply(animation.progress)).origin
-
 
             case .opacity:
                 guard
