@@ -43,8 +43,10 @@ extension UIView {
     }
 
     public static func animate(
-        withSpringDuration duration: Double,
-        delay: Double = 0.0,
+        withDuration duration: Double,
+        delay: Double,
+        usingSpringWithDamping: CGFloat,
+        initialSpringVelocity: CGFloat,
         options: UIViewAnimationOptions = [],
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
@@ -60,6 +62,8 @@ extension UIView {
         }
         clearAnimationProperties()
     }
+
+
 
     static func run(completion: @escaping (Bool) -> Void, after time: Double, timer: Timer) {
         var link: DisplayLink? = DisplayLink()
@@ -80,4 +84,12 @@ extension UIView {
         self.timer = nil
     }
 
+}
+
+
+extension UIView {
+    open static func animate(withSpringDuration duration: Double, delay: Double = 0, damping: CGFloat = 0.9, initialVelocity: CGFloat = 0.7, options: UIViewAnimationOptions = [], animations: @escaping (() -> Void), completion: ((Bool) -> Void)? = nil) {
+
+        animate(withDuration: duration, delay: delay, usingSpringWithDamping: damping, initialSpringVelocity: initialVelocity, options: options, animations: animations, completion: completion)
+    }
 }
