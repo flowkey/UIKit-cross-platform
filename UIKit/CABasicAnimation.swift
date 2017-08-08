@@ -14,6 +14,12 @@ public class CABasicAnimation {
         self.keyPath = keyPath
     }
 
+    init(keyPath: AnimationProperty, protoType: CABasicAnimationPrototype) {
+        self.keyPath = keyPath
+        self.delay = protoType.delay
+        self.duration = protoType.duration
+    }
+
     public var keyPath: AnimationProperty?
     public var fillMode: String?
     public var isRemovedOnCompletion = true
@@ -22,22 +28,10 @@ public class CABasicAnimation {
     public var fromValue: Any?
     public var toValue: Any?
 
-    internal var timer: Timer?
+    internal var timer = Timer()
     internal var progress: CGFloat { // always between 0 and 1
-        let elapsedTime = max(CGFloat(timer?.getElapsedTimeInMilliseconds() ?? 0) - (delay * 1000), 0)
+        let elapsedTime = max(CGFloat(timer.getElapsedTimeInMilliseconds()) - (delay * 1000), 0)
         return min(elapsedTime / (duration * 1000), 1)
-    }
-
-    public enum AnimationProperty: ExpressibleByStringLiteral {
-        case frame, opacity, bounds, unknown
-        public init(stringLiteral value: String) {
-            switch value {
-            case "frame": self = .frame
-            case "opacity": self = .opacity
-            case "bounds": self = .bounds
-            default: self = .unknown
-            }
-        }
     }
 
 }

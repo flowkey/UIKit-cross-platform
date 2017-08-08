@@ -17,10 +17,8 @@ public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
 }
 
 extension UIView {
-
-    static var animationDuration = 0.0
-    static var animationDelay = 0.0
     static var completion: ((Bool) -> Void)?
+    static var animationPrototype: AnimationPrototype?
     static var timer: Timer?
 
     public static func animate(
@@ -31,14 +29,18 @@ extension UIView {
         completion: ((Bool) -> Void)? = nil
     ) {
         self.timer = Timer()
-        self.animationDuration = duration
-        self.animationDelay = delay
+        self.animationPrototype = CABasicAnimationPrototype(
+            delay: CGFloat(delay),
+            duration: CGFloat(duration),
+            options: options
+        )
 
         animations()
 
         if let completion = completion, let timer = timer {
             run(completion: completion, after: duration + delay, timer: timer)
         }
+
         clearAnimationProperties()
     }
 
@@ -52,8 +54,13 @@ extension UIView {
         completion: ((Bool) -> Void)? = nil
     ) {
         self.timer = Timer()
-        self.animationDuration = duration
-        self.animationDelay = delay
+        self.animationPrototype = CASpringAnimationPrototype(
+            delay: CGFloat(delay),
+            duration: CGFloat(duration),
+            damping: usingSpringWithDamping,
+            initialSpringVelocity: initialSpringVelocity,
+            options: options
+        )
 
         animations()
 
@@ -79,13 +86,11 @@ extension UIView {
     }
 
     static func clearAnimationProperties() {
-        self.animationDuration = 0
-        self.animationDelay = 0
+        self.animationPrototype = nil
         self.timer = nil
     }
 
 }
-
 
 extension UIView {
     open static func animate(withSpringDuration duration: Double, delay: Double = 0, damping: CGFloat = 0.9, initialVelocity: CGFloat = 0.7, options: UIViewAnimationOptions = [], animations: @escaping (() -> Void), completion: ((Bool) -> Void)? = nil) {
