@@ -71,8 +71,11 @@ open class UIView: UIResponder {
         set { layer.opacity = newValue }
     }
 
-    public var isOpaque: Bool = false // mocked, has no effect so far
+    public var isOpaque: Bool = false // mocked, no effect so far
     // TODO: implement with relation to drawing system: https://developer.apple.com/documentation/uikit/uiview/1622622-isopaque
+
+    public var clipsToBounds: Bool = false // mocked, no effect so far
+    // TODO: implement according to: https://developer.apple.com/documentation/uikit/uiview/1622415-clipstobounds
 
     public internal(set) var superview: UIView? {
         didSet { if superview != nil { didMoveToSuperview() } }
