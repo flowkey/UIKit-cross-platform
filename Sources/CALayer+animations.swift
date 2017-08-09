@@ -26,6 +26,7 @@ extension CALayer {
             currentAnimationGroup.queuedAnimations += 1
         }
 
+        animations[key]?.stop(finished: false)
         animations[key] = animation
     }
 
@@ -39,7 +40,7 @@ extension CALayer {
             animation.fromValue = (presentation ?? self).opacity
             animation.toValue = newOpacity
 
-            self.add(animation, forKey: "opacity")
+            add(animation, forKey: "opacity")
         }
     }
 
@@ -49,7 +50,7 @@ extension CALayer {
             animation.fromValue = (presentation ?? self).frame
             animation.toValue = newFrame
 
-            self.add(animation, forKey: "frame")
+            add(animation, forKey: "frame")
         }
     }
 
@@ -59,7 +60,7 @@ extension CALayer {
             animation.fromValue = (presentation ?? self).bounds
             animation.toValue = newBounds
 
-            self.add(animation, forKey: "bounds")
+            add(animation, forKey: "bounds")
         }
     }
 
