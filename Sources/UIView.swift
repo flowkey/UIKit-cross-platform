@@ -223,6 +223,7 @@ open class UIView: UIResponder {
     open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {}
     open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {}
     open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {}
+    open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {}
 }
 
 

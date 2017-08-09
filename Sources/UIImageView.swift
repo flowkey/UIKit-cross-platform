@@ -20,6 +20,10 @@ open class UIImageView: UIView {
         isUserInteractionEnabled = false
     }
 
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+
     private func updateTextureFromImage() {
         guard let image = image else { return }
         layer.texture = image.texture
