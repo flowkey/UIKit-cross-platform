@@ -17,9 +17,8 @@ public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
 }
 
 extension UIView {
-    static var completion: ((Bool) -> Void)?
-    static var animationPrototype: AnimationPrototype?
     static var animationGroups = [UIViewAnimationGroup]()
+    static var animationPrototype: AnimationPrototype?
 
     public static func animate(
         withDuration duration: Double,
