@@ -65,8 +65,6 @@ final public class SDL { // XXX: only public for startRunLoop()
 
             let eventWasHandled = handleEventsIfNeeded()
 
-            UIView.animateIfNeeded()
-
             if !DisplayLink.activeDisplayLinks.isEmpty {
                 DisplayLink.activeDisplayLinks.forEach { $0.callback() }
 
@@ -79,6 +77,8 @@ final public class SDL { // XXX: only public for startRunLoop()
                 sleepFor(milliseconds: (1000.0 / 60.0) - frameTimer.getElapsedTimeInMilliseconds())
                 continue
             }
+
+            UIView.animateIfNeeded()
 
             window.clear()
             rootView.sdlRender()

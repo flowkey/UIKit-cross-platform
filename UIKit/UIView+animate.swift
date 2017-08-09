@@ -25,16 +25,14 @@ extension UIView {
         return animationGroups.count > 0
     }
 
-    public static func _animate(
+    public static func animate(
         withDuration duration: Double,
         delay: Double = 0.0,
         options: UIViewAnimationOptions = [],
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
-        let newGroup = UIViewAnimationGroup(completion: completion)
-        animationGroups.append(newGroup)
-
+        animationGroups.append(UIViewAnimationGroup(completion: completion))
         animationPrototype = CABasicAnimationPrototype(
             delay: CGFloat(delay),
             duration: CGFloat(duration),
@@ -42,19 +40,7 @@ extension UIView {
         )
 
         animations()
-
-        clearAnimationProperties()
-    }
-
-
-    public static func animate(
-        withDuration duration: Double,
-        delay: Double = 0.0,
-        options: UIViewAnimationOptions = [],
-        animations: () -> Void,
-        completion: ((Bool) -> Void)? = nil
-        ) {
-
+        animationPrototype = nil
     }
 
     public static func animate(
@@ -65,7 +51,7 @@ extension UIView {
         options: UIViewAnimationOptions = [],
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
-        ) {
+    ) {
         animationGroups.append(UIViewAnimationGroup(completion: completion))
         animationPrototype = CASpringAnimationPrototype(
             delay: CGFloat(delay),
@@ -76,19 +62,11 @@ extension UIView {
         )
 
         animations()
-
-        clearAnimationProperties()
-    }
-
-
-    static func clearAnimationProperties() {
         animationPrototype = nil
     }
 
     static func animateIfNeeded() {
-        if animationsArePending {
-            animationGroups.forEach({ $0.layers.forEach({ $0.animate() }) })
-        }
+        animationGroups.forEach({ $0.layersWithAnimations.forEach({ $0.animate() }) })
     }
 
 }

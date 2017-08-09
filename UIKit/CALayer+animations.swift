@@ -1,5 +1,5 @@
 //
-//  Animations.swift
+//  CALayer+animations.swift
 //  UIKit
 //
 //  Created by Michael Knoch on 31.07.17.
@@ -23,11 +23,6 @@ extension CALayer {
         }
 
         if let currentAnimationGroup = UIView.animationGroups.last {
-            animation.delegate = currentAnimationGroup
-
-            if !currentAnimationGroup.layers.contains(self) {
-                currentAnimationGroup.layers.append(self)
-            }
             currentAnimationGroup.queuedAnimations += 1
         }
 
@@ -35,7 +30,6 @@ extension CALayer {
     }
 
     open func removeAnimation(forKey key: String) {
-//        UIView.animationGroups.last?.layers = (UIView.animationGroups.last?.layers.filter({ $0 != self}))!
         animations.removeValue(forKey: key)
     }
 
@@ -72,8 +66,13 @@ extension CALayer {
     func onDidSetAnimations() {
         if animations.count > 0 {
             presentation = presentation ?? self.clone()
+            UIView.animationGroups.last?.layersWithAnimations.insert(self)
+
         } else {
             presentation = nil
+            UIView.animationGroups.forEach {
+                $0.layersWithAnimations.remove(self)
+            }
         }
     }
 
@@ -111,8 +110,8 @@ extension CALayer {
             }
 
             if animation.progress == 1 && animation.isRemovedOnCompletion {
-                removeAnimation(forKey: key)
                 animation.stop(finished: true)
+                removeAnimation(forKey: key)
             }
         }
     }

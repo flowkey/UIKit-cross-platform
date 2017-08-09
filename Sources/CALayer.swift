@@ -107,7 +107,11 @@ open class CALayer {
     }
 }
 
-extension CALayer: Equatable {
+extension CALayer: Hashable, Equatable {
+    public var hashValue: Int {
+        return ObjectIdentifier(self).hashValue
+    }
+
     public static func == (lhs: CALayer, rhs: CALayer) -> Bool {
         return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
     }

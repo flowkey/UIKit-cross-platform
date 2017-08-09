@@ -10,7 +10,7 @@ class UIViewAnimationGroup: CABasicAnimationDelegate {
 
     var completion: ((Bool) -> ())?
     var queuedAnimations = 0
-    var layers = [CALayer]()
+    var layersWithAnimations = Set<CALayer>()
 
     func didStop(finished: Bool) {
         queuedAnimations -= 1

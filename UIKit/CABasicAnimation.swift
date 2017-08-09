@@ -39,5 +39,4 @@ public class CABasicAnimation {
     func stop(finished: Bool) {
         delegate?.didStop(finished: finished)
     }
-
 }
