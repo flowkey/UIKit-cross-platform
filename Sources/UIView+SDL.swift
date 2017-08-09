@@ -10,7 +10,9 @@
 
 extension UIView {
     final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect()) {
-        if isHidden || alpha < 0.01 { return }
+
+        let visibleLayer = (layer.presentation ?? layer)
+        if visibleLayer.isHidden || visibleLayer.opacity < 0.01 { return }
 
         if needsDisplay {
             draw()
@@ -22,7 +24,6 @@ extension UIView {
             needsLayout = false
         }
 
-        let visibleLayer = (layer.presentation ?? layer)
         let absoluteFrame = visibleLayer.frame.offsetBy(parentAbsoluteFrame.origin).offsetBy(visibleLayer.bounds.origin)
 
         // Render layer and all sublayers
