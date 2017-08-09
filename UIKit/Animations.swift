@@ -23,6 +23,8 @@ extension CALayer {
         }
 
         if let currentAnimationGroup = UIView.animationGroups.last {
+            animation.delegate = currentAnimationGroup
+
             if !currentAnimationGroup.layers.contains(self) {
                 currentAnimationGroup.layers.append(self)
             }
@@ -110,7 +112,7 @@ extension CALayer {
 
             if animation.progress == 1 && animation.isRemovedOnCompletion {
                 removeAnimation(forKey: key)
-                animation.stopAnimation?(true)
+                animation.stop(finished: true)
             }
         }
     }

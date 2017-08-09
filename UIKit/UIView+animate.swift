@@ -38,8 +38,7 @@ extension UIView {
         animationPrototype = CABasicAnimationPrototype(
             delay: CGFloat(delay),
             duration: CGFloat(duration),
-            options: options,
-            stopAnimation: newGroup.didStopAnimation
+            options: options
         )
 
         animations()
@@ -73,8 +72,7 @@ extension UIView {
             duration: CGFloat(duration),
             damping: usingSpringWithDamping,
             initialSpringVelocity: initialSpringVelocity,
-            options: options,
-            stopAnimation: {_ in }
+            options: options
         )
 
         animations()

@@ -17,13 +17,11 @@ class CABasicAnimationPrototype: AnimationPrototype {
     let delay: CGFloat
     let duration: CGFloat
     let options: UIViewAnimationOptions
-    var stopAnimation: (Bool) -> Void
 
-    init(delay: CGFloat, duration: CGFloat, options: UIViewAnimationOptions, stopAnimation: @escaping (Bool) -> Void) {
+    init(delay: CGFloat, duration: CGFloat, options: UIViewAnimationOptions) {
         self.delay = delay
         self.duration = duration
         self.options = options
-        self.stopAnimation = stopAnimation
     }
 
     func createAnimation(keyPath: AnimationProperty) -> CABasicAnimation {
@@ -35,17 +33,10 @@ class CASpringAnimationPrototype: CABasicAnimationPrototype {
     let damping: CGFloat
     let initialSpringVelocity: CGFloat
 
-    init(
-        delay: CGFloat,
-        duration: CGFloat,
-        damping: CGFloat,
-        initialSpringVelocity: CGFloat,
-        options: UIViewAnimationOptions,
-        stopAnimation: @escaping (Bool) -> Void)
-    {
+    init(delay: CGFloat, duration: CGFloat, damping: CGFloat, initialSpringVelocity: CGFloat, options: UIViewAnimationOptions) {
         self.damping = damping
         self.initialSpringVelocity = initialSpringVelocity
-        super.init(delay: delay, duration: duration, options: options, stopAnimation: stopAnimation)
+        super.init(delay: delay, duration: duration, options: options)
     }
 
     override func createAnimation(keyPath: AnimationProperty) -> CABasicAnimation {

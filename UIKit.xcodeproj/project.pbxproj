@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B4D293B1F3B4A0D0030A1A6 /* CABasicAnimationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4D293A1F3B4A0D0030A1A6 /* CABasicAnimationDelegate.swift */; };
 		5B4F43CC1F39BB8200FB4AB9 /* AnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CB1F39BB8200FB4AB9 /* AnimationPrototype.swift */; };
 		5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */; };
 		5B6AC4571F2F73A90029AC0C /* Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AC4561F2F73A90029AC0C /* Animations.swift */; };
@@ -147,6 +148,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5B4D293A1F3B4A0D0030A1A6 /* CABasicAnimationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CABasicAnimationDelegate.swift; path = Sources/CABasicAnimationDelegate.swift; sourceTree = SOURCE_ROOT; };
 		5B4F43CB1F39BB8200FB4AB9 /* AnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimationPrototype.swift; path = UIKit/AnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
 		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = UIKit/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5B6AC4561F2F73A90029AC0C /* Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Animations.swift; path = UIKit/Animations.swift; sourceTree = SOURCE_ROOT; };
@@ -290,6 +292,7 @@
 				5B6AC4561F2F73A90029AC0C /* Animations.swift */,
 				5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */,
 				5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */,
+				5B4D293A1F3B4A0D0030A1A6 /* CABasicAnimationDelegate.swift */,
 			);
 			name = Animations;
 			sourceTree = "<group>";
@@ -684,6 +687,7 @@
 				5C6AB7711ED680BC006F90AC /* UIResponder.swift in Sources */,
 				83E5F8181EF8323500279C59 /* CGAffineTransform.swift in Sources */,
 				5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */,
+				5B4D293B1F3B4A0D0030A1A6 /* CABasicAnimationDelegate.swift in Sources */,
 				5CE5C57A1EDDAE5000680154 /* CGPath.swift in Sources */,
 				5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */,
 				83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */,

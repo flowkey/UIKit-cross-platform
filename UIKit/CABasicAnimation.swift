@@ -10,6 +10,8 @@ public let kCAFillModeForwards = "kCAFillModeForwards"
 
 public class CABasicAnimation {
 
+    weak var delegate: CABasicAnimationDelegate? = UIView.animationGroups.last
+
     public init(keyPath: AnimationProperty) {
         self.keyPath = keyPath
     }
@@ -18,7 +20,6 @@ public class CABasicAnimation {
         self.keyPath = keyPath
         self.delay = protoType.delay
         self.duration = protoType.duration
-        self.stopAnimation = protoType.stopAnimation
     }
 
     public var keyPath: AnimationProperty?
@@ -29,12 +30,14 @@ public class CABasicAnimation {
     public var fromValue: Any?
     public var toValue: Any?
 
-    var stopAnimation: ((Bool) -> Void)?
-
     var timer = Timer()
     var progress: CGFloat { // always between 0 and 1
         let elapsedTime = max(CGFloat(timer.getElapsedTimeInMilliseconds()) - (delay * 1000), 0)
         return min(elapsedTime / (duration * 1000), 1)
+    }
+
+    func stop(finished: Bool) {
+        delegate?.didStop(finished: finished)
     }
 
 }
