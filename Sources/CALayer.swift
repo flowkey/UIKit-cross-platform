@@ -82,9 +82,7 @@ open class CALayer {
     public var shadowRadius: CGFloat = 0
 
 
-    public required init() {
-        link.callback = animate
-    }
+    public required init() {}
 
     // Match UIKit by providing this initializer to override
     public init(layer: Any) {}
@@ -99,7 +97,6 @@ open class CALayer {
         return UIImage(texture: texture)
     }
 
-    let link = DisplayLink()
     var presentation: CALayer?
     var shouldAnimate = true
 

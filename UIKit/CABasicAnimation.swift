@@ -18,6 +18,7 @@ public class CABasicAnimation {
         self.keyPath = keyPath
         self.delay = protoType.delay
         self.duration = protoType.duration
+        self.stopAnimation = protoType.stopAnimation
     }
 
     public var keyPath: AnimationProperty?
@@ -28,8 +29,10 @@ public class CABasicAnimation {
     public var fromValue: Any?
     public var toValue: Any?
 
-    internal var timer = Timer()
-    internal var progress: CGFloat { // always between 0 and 1
+    var stopAnimation: ((Bool) -> Void)?
+
+    var timer = Timer()
+    var progress: CGFloat { // always between 0 and 1
         let elapsedTime = max(CGFloat(timer.getElapsedTimeInMilliseconds()) - (delay * 1000), 0)
         return min(elapsedTime / (duration * 1000), 1)
     }

@@ -22,10 +22,18 @@ extension CALayer {
             }
         }
 
+        if let currentAnimationGroup = UIView.animationGroups.last {
+            if !currentAnimationGroup.layers.contains(self) {
+                currentAnimationGroup.layers.append(self)
+            }
+            currentAnimationGroup.queuedAnimations += 1
+        }
+
         animations[key] = animation
     }
 
     open func removeAnimation(forKey key: String) {
+//        UIView.animationGroups.last?.layers = (UIView.animationGroups.last?.layers.filter({ $0 != self}))!
         animations.removeValue(forKey: key)
     }
 
@@ -60,13 +68,11 @@ extension CALayer {
     }
 
     func onDidSetAnimations() {
-        if animations.count != 0 {
+        if animations.count > 0 {
             presentation = presentation ?? self.clone()
         } else {
             presentation = nil
         }
-
-        link.isPaused = animations.count == 0
     }
 
     func animate() {
@@ -104,6 +110,7 @@ extension CALayer {
 
             if animation.progress == 1 && animation.isRemovedOnCompletion {
                 removeAnimation(forKey: key)
+                animation.stopAnimation?(true)
             }
         }
     }
@@ -120,8 +127,6 @@ fileprivate class CALayerWithoutAnimation: CALayer {
         self.init()
 
         shouldAnimate = false
-        link.isPaused = true
-        link.callback = nil
 
         frame = layer.frame
         bounds = layer.bounds

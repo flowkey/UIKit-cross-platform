@@ -9,12 +9,14 @@
 class UIViewAnimationGroup {
 
     var completion: ((Bool) -> ())?
-    var animations = [CABasicAnimation]()
+    var queuedAnimations = 0
+    var layers = [CALayer]()
 
-    func didStopAnimation(animation: CABAsicAnimation, finished: Bool) {
-        animations = animations.filter({ $0 != animation })
-        if animations.isEmpty {
-            completion(finished)
+    func didStopAnimation(finished: Bool) {
+        queuedAnimations -= 1
+
+        if queuedAnimations == 0 {
+            completion?(finished)
         }
     }
 

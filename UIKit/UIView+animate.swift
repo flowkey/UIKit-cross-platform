@@ -19,7 +19,34 @@ public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
 extension UIView {
     static var completion: ((Bool) -> Void)?
     static var animationPrototype: AnimationPrototype?
-    static var timer: Timer?
+
+    static var animationGroups = [UIViewAnimationGroup]()
+    static var animationsArePending: Bool {
+        return animationGroups.count > 0
+    }
+
+    public static func _animate(
+        withDuration duration: Double,
+        delay: Double = 0.0,
+        options: UIViewAnimationOptions = [],
+        animations: () -> Void,
+        completion: ((Bool) -> Void)? = nil
+    ) {
+        let newGroup = UIViewAnimationGroup(completion: completion)
+        animationGroups.append(newGroup)
+
+        animationPrototype = CABasicAnimationPrototype(
+            delay: CGFloat(delay),
+            duration: CGFloat(duration),
+            options: options,
+            stopAnimation: newGroup.didStopAnimation
+        )
+
+        animations()
+
+        clearAnimationProperties()
+    }
+
 
     public static func animate(
         withDuration duration: Double,
@@ -27,21 +54,8 @@ extension UIView {
         options: UIViewAnimationOptions = [],
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
-    ) {
-        self.timer = Timer()
-        self.animationPrototype = CABasicAnimationPrototype(
-            delay: CGFloat(delay),
-            duration: CGFloat(duration),
-            options: options
-        )
+        ) {
 
-        animations()
-
-        if let completion = completion, let timer = timer {
-            run(completion: completion, after: duration + delay, timer: timer)
-        }
-
-        clearAnimationProperties()
     }
 
     public static func animate(
@@ -52,42 +66,31 @@ extension UIView {
         options: UIViewAnimationOptions = [],
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
-    ) {
-        self.timer = Timer()
-        self.animationPrototype = CASpringAnimationPrototype(
+        ) {
+        animationGroups.append(UIViewAnimationGroup(completion: completion))
+        animationPrototype = CASpringAnimationPrototype(
             delay: CGFloat(delay),
             duration: CGFloat(duration),
             damping: usingSpringWithDamping,
             initialSpringVelocity: initialSpringVelocity,
-            options: options
+            options: options,
+            stopAnimation: {_ in }
         )
 
         animations()
 
-        if let completion = completion, let timer = timer {
-            run(completion: completion, after: duration + delay, timer: timer)
-        }
         clearAnimationProperties()
     }
 
 
-
-    static func run(completion: @escaping (Bool) -> Void, after time: Double, timer: Timer) {
-        var link: DisplayLink? = DisplayLink()
-        link?.callback = {
-            let finished = time * 1000 - (timer.getElapsedTimeInMilliseconds()) <= 0
-            if finished {
-                completion(true)
-                link?.isPaused = true
-                link = nil
-            }
-        }
-        link?.isPaused = false
+    static func clearAnimationProperties() {
+        animationPrototype = nil
     }
 
-    static func clearAnimationProperties() {
-        self.animationPrototype = nil
-        self.timer = nil
+    static func animateIfNeeded() {
+        if animationsArePending {
+            animationGroups.forEach({ $0.layers.forEach({ $0.animate() }) })
+        }
     }
 
 }
