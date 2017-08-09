@@ -22,6 +22,8 @@ open class UIImageView: UIView {
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
+
+        isUserInteractionEnabled = false
     }
 
     private func updateTextureFromImage() {
