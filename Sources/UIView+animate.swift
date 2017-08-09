@@ -19,11 +19,7 @@ public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
 extension UIView {
     static var completion: ((Bool) -> Void)?
     static var animationPrototype: AnimationPrototype?
-
     static var animationGroups = [UIViewAnimationGroup]()
-    static var animationsArePending: Bool {
-        return animationGroups.count > 0
-    }
 
     public static func animate(
         withDuration duration: Double,
@@ -66,6 +62,7 @@ extension UIView {
     }
 
     static func animateIfNeeded() {
+        if animationGroups.isEmpty { return }
         animationGroups.forEach({ $0.layersWithAnimations.forEach({ $0.animate() }) })
     }
 
