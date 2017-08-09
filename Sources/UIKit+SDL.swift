@@ -67,7 +67,6 @@ final public class SDL { // XXX: only public for startRunLoop()
 
             if !DisplayLink.activeDisplayLinks.isEmpty {
                 DisplayLink.activeDisplayLinks.forEach { $0.callback() }
-
             } else if !eventWasHandled && !firstRender {
                 // We can avoid updating the screen at all unless there is active touch input
                 // or a running animation. We still need to handle the case of animations here!
