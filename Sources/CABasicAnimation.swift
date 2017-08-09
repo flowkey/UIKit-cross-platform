@@ -40,3 +40,7 @@ public class CABasicAnimation {
         delegate?.didStop(finished: finished)
     }
 }
+
+protocol CABasicAnimationDelegate: class {
+    func didStop(finished: Bool)
+}
