@@ -103,7 +103,10 @@ open class UIView: UIResponder {
 
     open func insertSubview(_ view: UIView, at index: Int) {
         view.removeFromSuperview()
-        subviews.insert(view, at: index)
+
+        subviews.insert(view, at: min(index, subviews.endIndex))
+        // min ensures no array out of bounds if view is removed from superview
+        
         view.superview = self
     }
 
