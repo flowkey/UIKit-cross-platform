@@ -35,7 +35,7 @@ extension CALayer {
     }
 
     func onWillSet(_ newOpacity: CGFloat) {
-        if let prototype = UIView.animationPrototype, shouldAnimate, newOpacity != opacity {
+        if let prototype = UIView.animationPrototype, shouldAnimate {
             let animation = prototype.createAnimation(keyPath: .opacity)
             animation.fromValue = (presentation ?? self).opacity
             animation.toValue = newOpacity
@@ -45,7 +45,7 @@ extension CALayer {
     }
 
     func onWillSet(_ newFrame: CGRect) {
-        if let prototype = UIView.animationPrototype, shouldAnimate, newFrame != frame {
+        if let prototype = UIView.animationPrototype, shouldAnimate {
             let animation = prototype.createAnimation(keyPath: .frame)
             animation.fromValue = (presentation ?? self).frame
             animation.toValue = newFrame
@@ -55,7 +55,7 @@ extension CALayer {
     }
 
     func onWillSet(newBounds: CGRect) {
-        if let prototype = UIView.animationPrototype, shouldAnimate, newBounds != bounds {
+        if let prototype = UIView.animationPrototype, shouldAnimate {
             let animation =  prototype.createAnimation(keyPath: .bounds)
             animation.fromValue = (presentation ?? self).bounds
             animation.toValue = newBounds
@@ -79,7 +79,9 @@ extension CALayer {
 
     func animate(at currentTime: Timer) {
         animations.forEach { key, animation in
-            guard let keypath = animation.keyPath, animation.duration > 0 else { return }
+            guard let keypath = animation.keyPath else { return }
+
+            let animationProgress = animation.progress(at: currentTime)
 
             switch keypath as AnimationProperty {
             case .frame:
@@ -88,7 +90,7 @@ extension CALayer {
                     let endFrame = animation.toValue as? CGRect
                     else { return }
 
-                presentation?.frame = startFrame + (endFrame - startFrame).multiply(animation.progress(at: currentTime))
+                presentation?.frame = startFrame + (endFrame - startFrame).multiply(animationProgress)
 
             case .bounds: // animate origin only, because bounds.size updates frame.size
                 guard
@@ -96,7 +98,7 @@ extension CALayer {
                     let endBounds = animation.toValue as? CGRect
                     else { return }
 
-                presentation?.bounds.origin = (startBounds + (endBounds - startBounds).multiply(animation.progress(at: currentTime))).origin
+                presentation?.bounds.origin = (startBounds + (endBounds - startBounds).multiply(animationProgress)).origin
 
             case .opacity:
                 guard
@@ -104,15 +106,17 @@ extension CALayer {
                     let endOpacity = animation.toValue as? CGFloat
                     else { return }
 
-                let opacityDiff = (endOpacity - startOpacity) * animation.progress(at: currentTime)
+                let opacityDiff = (endOpacity - startOpacity) * animationProgress
                 presentation?.opacity = startOpacity + opacityDiff
 
             case .unknown: print("unknown animation property")
             }
 
-            if animation.progress(at: currentTime) == 1 && animation.isRemovedOnCompletion {
+            if animationProgress == 1 {
                 animation.stop(finished: true)
-                removeAnimation(forKey: key)
+                if animation.isRemovedOnCompletion {
+                    removeAnimation(forKey: key)
+                }
             }
         }
     }

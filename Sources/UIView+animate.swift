@@ -62,8 +62,17 @@ extension UIView {
 
     static func animateIfNeeded(at currentTime: Timer) {
         if animationGroups.isEmpty { return }
-        animationGroups.forEach {
-            $0.layersWithAnimations.forEach { $0.animate(at: currentTime) }
+
+        animationGroups.forEach { animationGroup in
+            animationGroup.layersWithAnimations.forEach { $0.animate(at: currentTime) }
+
+            // removes empty animationGroups
+            // this is necessary when trying to animate properties which are not implemented as animatable
+            // or when calling UIView.animate with empty animation closure
+            if animationGroup.layersWithAnimations.isEmpty {
+                animationGroup.remove()
+            }
+
         }
     }
 
