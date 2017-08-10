@@ -43,3 +43,10 @@ func sleepFor(milliseconds ms: Double) {
     var time = timespec(tv_sec: seconds, tv_nsec: Int(remainingMilliseconds * 1_000_000))
     nanosleep(&time, nil)
 }
+
+extension Timer {
+    static func -(lhs: Timer, rhs: Timer) -> Double {
+        return lhs.startTime.inMilliseconds() - rhs.startTime.inMilliseconds()
+    }
+}
+

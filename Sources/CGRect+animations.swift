@@ -7,12 +7,12 @@
 //
 
 extension CGRect {
-    static func -(rhs: CGRect, lhs: CGRect) -> CGRect {
+    static func -(lhs: CGRect, rhs: CGRect) -> CGRect {
         return CGRect(
-            x: rhs.origin.x - lhs.origin.x,
-            y: rhs.origin.y - lhs.origin.y,
-            width: rhs.width - lhs.width,
-            height: rhs.height - lhs.height
+            x: lhs.origin.x - rhs.origin.x,
+            y: lhs.origin.y - rhs.origin.y,
+            width: lhs.width - rhs.width,
+            height: lhs.height - rhs.height
         )
     }
 

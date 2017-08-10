@@ -77,7 +77,7 @@ final public class SDL { // XXX: only public for startRunLoop()
                 continue
             }
 
-            UIView.animateIfNeeded()
+            UIView.animateIfNeeded(at: frameTimer)
 
             window.clear()
             rootView.sdlRender()

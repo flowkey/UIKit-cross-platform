@@ -60,9 +60,11 @@ extension UIView {
         animationPrototype = nil
     }
 
-    static func animateIfNeeded() {
+    static func animateIfNeeded(at currentTime: Timer) {
         if animationGroups.isEmpty { return }
-        animationGroups.forEach({ $0.layersWithAnimations.forEach({ $0.animate() }) })
+        animationGroups.forEach {
+            $0.layersWithAnimations.forEach { $0.animate(at: currentTime) }
+        }
     }
 
 }

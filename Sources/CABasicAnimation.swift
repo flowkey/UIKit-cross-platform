@@ -31,8 +31,8 @@ public class CABasicAnimation {
     public var toValue: Any?
 
     var timer = Timer()
-    var progress: CGFloat { // always between 0 and 1
-        let elapsedTime = max(CGFloat(timer.getElapsedTimeInMilliseconds()) - (delay * 1000), 0)
+    func progress(at currentTime: Timer) -> CGFloat { // always between 0 and 1
+        let elapsedTime = max(CGFloat(currentTime - self.timer) - (delay * 1000), 0)
         return min(elapsedTime / (duration * 1000), 1)
     }
 
