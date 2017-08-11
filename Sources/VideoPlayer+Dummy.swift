@@ -41,7 +41,7 @@ private class VideoTimer {
 
     func start() {
         guard runningTimer == nil else { return }
-        runningTimer = Timer(startingAt: timeWhenLastPaused)
+        runningTimer = Timer(startingAt: -timeWhenLastPaused)
     }
 
     func pause() {

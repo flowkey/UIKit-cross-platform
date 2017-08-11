@@ -18,7 +18,7 @@ struct Timer {
         var startTime = timeval()
         gettimeofday(&startTime, nil)
         if !startingTimeInMilliseconds.isZero {
-            startTime.tv_usec -= type(of: startTime.tv_usec).init(startingTimeInMilliseconds * 1000)
+            startTime.tv_usec += type(of: startTime.tv_usec).init(startingTimeInMilliseconds * 1000)
         }
         self.startTime = startTime
     }
