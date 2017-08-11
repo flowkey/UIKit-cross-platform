@@ -7,7 +7,6 @@
 //
 
 extension CALayer {
-
     open func add(_ animation: CABasicAnimation, forKey key: String) {
         ensureFromValueIsDefined(animation)
 
