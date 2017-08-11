@@ -10,7 +10,9 @@ public let kCAFillModeForwards = "kCAFillModeForwards"
 
 public class CABasicAnimation {
 
-    weak var delegate: CABasicAnimationDelegate? = UIView.animationGroups.last
+    // != nil means animating in UIView.animate closure
+    // == nil means animation was manually instantiated
+    weak var delegate: CABasicAnimationDelegate? = UIView.currentAnimationGroup
 
     public init(keyPath: AnimationProperty) {
         self.keyPath = keyPath

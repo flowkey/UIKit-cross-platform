@@ -17,7 +17,17 @@ public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
 }
 
 extension UIView {
-    static var animationGroups = [UIViewAnimationGroup]()
+    static var layersWithAnimations = Set<CALayer>()
+
+    static var animationGroups = Set<UIViewAnimationGroup>()
+    static var currentAnimationGroup: UIViewAnimationGroup? {
+        didSet {
+            if let newGroup = currentAnimationGroup {
+                animationGroups.insert(newGroup)
+            }
+        }
+    }
+
     static var animationPrototype: AnimationPrototype?
 
     public static func animate(
@@ -27,7 +37,7 @@ extension UIView {
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
-        animationGroups.append(UIViewAnimationGroup(completion: completion))
+        currentAnimationGroup = UIViewAnimationGroup(completion: completion)
         animationPrototype = CABasicAnimationPrototype(
             delay: CGFloat(delay),
             duration: CGFloat(duration),
@@ -35,6 +45,7 @@ extension UIView {
         )
 
         animations()
+        currentAnimationGroup = nil
         animationPrototype = nil
     }
 
@@ -47,7 +58,7 @@ extension UIView {
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
-        animationGroups.append(UIViewAnimationGroup(completion: completion))
+        currentAnimationGroup = UIViewAnimationGroup(completion: completion)
         animationPrototype = CASpringAnimationPrototype(
             delay: CGFloat(delay),
             duration: CGFloat(duration),
@@ -57,25 +68,14 @@ extension UIView {
         )
 
         animations()
+        currentAnimationGroup = nil
         animationPrototype = nil
     }
 
     static func animateIfNeeded(at currentTime: Timer) {
-        if animationGroups.isEmpty { return }
-
-        animationGroups.forEach { animationGroup in
-            animationGroup.layersWithAnimations.forEach { $0.animate(at: currentTime) }
-
-            // removes empty animationGroups
-            // this is necessary when trying to animate properties which are not implemented as animatable
-            // or when calling UIView.animate with empty animation closure
-            if animationGroup.layersWithAnimations.isEmpty {
-                animationGroup.remove()
-            }
-
-        }
+        if layersWithAnimations.isEmpty { return }
+        layersWithAnimations.forEach { $0.animate(at: currentTime) }
     }
-
 }
 
 extension UIView {

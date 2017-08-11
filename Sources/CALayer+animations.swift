@@ -7,22 +7,11 @@
 //
 
 extension CALayer {
+
     open func add(_ animation: CABasicAnimation, forKey key: String) {
+        ensureFromValueIsDefined(animation)
 
-        // fallback if fromValue is not provided
-        if animation.fromValue == nil, let keypath = animation.keyPath {
-            switch keypath as AnimationProperty  {
-            case .frame:
-                animation.fromValue = animation.fromValue ?? frame
-            case .opacity:
-                animation.fromValue = animation.fromValue ?? opacity
-            case .bounds:
-                animation.fromValue = animation.fromValue ?? bounds
-            case .unknown: break
-            }
-        }
-
-        if let currentAnimationGroup = UIView.animationGroups.last {
+        if let currentAnimationGroup = UIView.currentAnimationGroup {
             currentAnimationGroup.queuedAnimations += 1
         }
 
@@ -67,13 +56,10 @@ extension CALayer {
     func onDidSetAnimations() {
         if animations.count > 0 {
             presentation = presentation ?? self.clone()
-            UIView.animationGroups.last?.layersWithAnimations.insert(self)
-
+            UIView.layersWithAnimations.insert(self)
         } else {
             presentation = nil
-            UIView.animationGroups.forEach {
-                $0.layersWithAnimations.remove(self)
-            }
+            UIView.layersWithAnimations.remove(self)
         }
     }
 
@@ -125,6 +111,20 @@ extension CALayer {
 fileprivate extension CALayer {
     func clone() -> CALayerWithoutAnimation {
         return CALayerWithoutAnimation(layer: self)
+    }
+
+    private func ensureFromValueIsDefined(_ animation: CABasicAnimation) {
+        if animation.fromValue == nil, let keypath = animation.keyPath {
+            switch keypath as AnimationProperty  {
+            case .frame:
+                animation.fromValue = animation.fromValue ?? frame
+            case .opacity:
+                animation.fromValue = animation.fromValue ?? opacity
+            case .bounds:
+                animation.fromValue = animation.fromValue ?? bounds
+            case .unknown: break
+            }
+        }
     }
 }
 

@@ -9,7 +9,6 @@
 class UIViewAnimationGroup: CABasicAnimationDelegate {
     var completion: ((Bool) -> ())?
     var queuedAnimations = 0
-    var layersWithAnimations = Set<CALayer>()
 
     init(completion: ((Bool) -> Void)?) {
         self.completion = completion
@@ -19,17 +18,17 @@ class UIViewAnimationGroup: CABasicAnimationDelegate {
         queuedAnimations -= 1
         if queuedAnimations == 0 {
             completion?(finished)
-            remove()
+            UIView.animationGroups.remove(self)
         }
     }
 }
 
-extension UIViewAnimationGroup: Equatable {
-    static func ==(lhs: UIViewAnimationGroup, rhs: UIViewAnimationGroup) -> Bool {
-        return ObjectIdentifier(lhs).hashValue == ObjectIdentifier(rhs).hashValue
+extension UIViewAnimationGroup: Hashable {
+    var hashValue: Int {
+        return ObjectIdentifier(self).hashValue
     }
 
-    func remove() {
-        UIView.animationGroups = UIView.animationGroups.filter { $0 != self }
+    static func ==(lhs: UIViewAnimationGroup, rhs: UIViewAnimationGroup) -> Bool {
+        return lhs.hashValue == rhs.hashValue
     }
 }
