@@ -380,7 +380,6 @@
 				5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */,
 				5C6AB7811EDC18BA006F90AC /* UITouch.swift */,
 				5C6AB7161ED3BECD006F90AC /* UIView.swift */,
-				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
 				5C6AB76A1ED5A648006F90AC /* UIView+animate.swift */,
 				5C1F06AE1F3210F200EFF087 /* UIViewController.swift */,
 				838545621F26458100B64986 /* UIVisualEffect.swift */,
