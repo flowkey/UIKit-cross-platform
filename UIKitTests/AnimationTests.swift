@@ -10,6 +10,13 @@ import XCTest
 @testable import UIKit
 
 class AnimationTests: XCTestCase {
+
+    override func tearDown() {
+        // reset animation state
+        UIView.layersWithAnimations = Set<UIKit.CALayer>()
+        UIView.animationGroups = Set<UIViewAnimationGroup>()
+    }
+
     func testCanAnimateFrame() {
         let view = UIView()
 
@@ -109,10 +116,10 @@ class AnimationTests: XCTestCase {
 }
 
 fileprivate extension AnimationTests {
-    func assertCGRectsEqual(_ expression1: CGRect, _ expression2: CGRect, accuracy: CGFloat) {
-        XCTAssertEqual(expression1.height, expression2.height, accuracy: accuracy)
-        XCTAssertEqual(expression1.width, expression2.width, accuracy: accuracy)
-        XCTAssertEqual(expression1.origin.x, expression2.origin.x, accuracy: accuracy)
-        XCTAssertEqual(expression1.origin.y, expression2.origin.y, accuracy: accuracy)
+    func assertCGRectsEqual(_ rect1: CGRect, _ rect2: CGRect, accuracy: CGFloat) {
+        XCTAssertEqual(rect1.height, rect2.height, accuracy: accuracy)
+        XCTAssertEqual(rect1.width, rect2.width, accuracy: accuracy)
+        XCTAssertEqual(rect1.origin.x, rect2.origin.x, accuracy: accuracy)
+        XCTAssertEqual(rect1.origin.y, rect2.origin.y, accuracy: accuracy)
     }
 }
