@@ -7,25 +7,12 @@
 //
 
 import XCTest
-#if os(iOS)
 import UIKit
-#else
-@testable import UIKit
-#endif
 
 class ButtonContentAlignmentTests: XCTestCase {
     var button = Button(frame: .zero)
     let buttonSize = CGSize(width: 200, height: 100)
     let testImageSize = CGSize(width: 40, height: 40)
-
-    override class func setUp() {
-        super.setUp()
-        #if os(iOS)
-            loadCustomFont(name: "roboto-medium", fontExtension: "ttf")
-        #else
-            UIFont.loadSystemFonts()
-        #endif
-    }
 
     override func setUp() {
         button = Button(frame: .zero)
