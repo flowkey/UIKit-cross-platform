@@ -49,17 +49,23 @@ class AnimationTests: XCTestCase {
         XCTAssertEqual(Double(view.layer.presentation!.opacity), 0.6, accuracy: 0.01)
     }
 
-    func testAnimationCompletion() {
+    func testDelay() {
+        let view = UIView()
+
+        UIView.animate(withDuration: 2, delay: 2, options: [], animations: {
+            view.alpha = 0
+        })
+
+        UIView.animateIfNeeded(at: Timer(startingAt: 3000))
+        XCTAssertEqual(Double(view.layer.presentation!.opacity), 0.5, accuracy: 0.01)
+    }
+
+    func testCompletion() {
         let view = UIView()
         var animationDidFinish = false
 
-        let frameToStartFrom = CGRect(x: 10, y: 10, width: 10, height: 10)
-        let expectedFrame = CGRect(x: 20, y: 20, width: 20, height: 20)
-
-        view.frame = frameToStartFrom
-
         UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
-            view.frame = expectedFrame
+            view.frame = CGRect(x: 20, y: 20, width: 20, height: 20)
             view.alpha = 0.3
             view.bounds.origin.x += 10
         }, completion: {
@@ -68,6 +74,52 @@ class AnimationTests: XCTestCase {
 
         UIView.animateIfNeeded(at: Timer(startingAt: 5000))
         XCTAssertTrue(animationDidFinish)
+    }
+
+    func testCompletionWhenCancelingAnimations() {
+        let view = UIView()
+        var firstAnimationDidFinish: Bool?
+        var secondAnimationDidFinish: Bool?
+
+        UIView.animate(withDuration: 1, delay: 0, options: [], animations: {
+            view.alpha = 0.3
+        }, completion: {
+            firstAnimationDidFinish = $0
+        })
+
+        UIView.animate(withDuration: 1, delay: 0.2, options: [], animations: {
+            view.alpha = 0
+        }, completion: {
+            secondAnimationDidFinish = $0
+        })
+
+        UIView.animateIfNeeded(at: Timer(startingAt: 5000))
+
+        XCTAssertFalse(firstAnimationDidFinish!)
+        XCTAssertTrue(secondAnimationDidFinish!)
+    }
+
+    func testCompletionWhenQueingAnimationsOfSameType() {
+        let view = UIView()
+        var firstAnimationDidFinish: Bool?
+        var secondAnimationDidFinish: Bool?
+
+        UIView.animate(withDuration: 1, delay: 0, options: [], animations: {
+            view.alpha = 0.3
+        }, completion: {
+            firstAnimationDidFinish = $0
+        })
+
+        UIView.animate(withDuration: 1, delay: 2, options: [], animations: {
+            view.alpha = 0
+        }, completion: {
+            secondAnimationDidFinish = $0
+        })
+
+        UIView.animateIfNeeded(at: Timer(startingAt: 5000))
+
+        XCTAssertTrue(firstAnimationDidFinish!)
+        XCTAssertTrue(secondAnimationDidFinish!)
     }
 
     func testPresentationLayerIsSet() {
