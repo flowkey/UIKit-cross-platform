@@ -14,7 +14,6 @@ class AnimationTests: XCTestCase {
     override func tearDown() {
         // reset animation state
         UIView.layersWithAnimations = Set<UIKit.CALayer>()
-        UIView.animationGroups = Set<UIViewAnimationGroup>()
     }
 
     func testCanAnimateFrame() {
@@ -177,39 +176,6 @@ class AnimationTests: XCTestCase {
         // finish second animation
         UIView.animateIfNeeded(at: Timer(startingAt: 15000))
         XCTAssertEqual(UIView.layersWithAnimations.count, 0)
-    }
-
-    func testAnimationGroups() {
-        let firstView = UIView()
-        let secondView = UIView()
-        let thirdView = UIView()
-
-        var finishedFirstAnimation = false
-        var finishedSecondAnimation = false
-
-        UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
-            firstView.frame.origin.x += 10
-            firstView.alpha = 0.1
-        }, completion: { finishedFirstAnimation = $0 })
-
-        XCTAssertEqual(UIView.animationGroups.count, 1)
-
-        UIView.animate(withDuration: 15, delay: 0, options: [], animations: {
-            secondView.alpha = 0.5
-            thirdView.alpha = 0.3
-        }, completion: { finishedSecondAnimation = $0 })
-
-        XCTAssertEqual(UIView.animationGroups.count, 2)
-
-        // finish first animation
-        UIView.animateIfNeeded(at: Timer(startingAt: 10000))
-        XCTAssertEqual(UIView.animationGroups.count, 1)
-        XCTAssertTrue(finishedFirstAnimation)
-
-        // finish second animation
-        UIView.animateIfNeeded(at: Timer(startingAt: 15000))
-        XCTAssertEqual(UIView.animationGroups.count, 0)
-        XCTAssertTrue(finishedSecondAnimation)
     }
 }
 

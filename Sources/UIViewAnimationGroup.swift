@@ -18,7 +18,6 @@ class UIViewAnimationGroup: CABasicAnimationDelegate {
         queuedAnimations -= 1
         if queuedAnimations == 0 {
             completion?(finished)
-            UIView.animationGroups.remove(self)
         }
     }
 }

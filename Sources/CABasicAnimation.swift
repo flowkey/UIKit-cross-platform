@@ -12,7 +12,7 @@ public class CABasicAnimation {
 
     // != nil means animating in UIView.animate closure
     // == nil means animation was manually instantiated
-    weak var delegate: CABasicAnimationDelegate? = UIView.currentAnimationGroup
+    var animationGroup = UIView.currentAnimationGroup
 
     public init(keyPath: AnimationProperty) {
         self.keyPath = keyPath
@@ -39,7 +39,7 @@ public class CABasicAnimation {
     }
 
     func stop(finished: Bool) {
-        delegate?.didStop(finished: finished)
+        animationGroup?.didStop(finished: finished)
     }
 }
 

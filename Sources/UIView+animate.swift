@@ -18,16 +18,7 @@ public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
 
 extension UIView {
     static var layersWithAnimations = Set<CALayer>()
-
-    static var animationGroups = Set<UIViewAnimationGroup>()
-    static var currentAnimationGroup: UIViewAnimationGroup? {
-        didSet {
-            if let newGroup = currentAnimationGroup {
-                animationGroups.insert(newGroup)
-            }
-        }
-    }
-
+    static var currentAnimationGroup: UIViewAnimationGroup?
     static var animationPrototype: AnimationPrototype?
 
     public static func animate(
