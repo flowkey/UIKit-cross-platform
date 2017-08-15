@@ -7,7 +7,6 @@
 //
 
 class CASpringAnimation: CABasicAnimation {
-
     var damping: CGFloat
     var initialSpringVelocity: CGFloat
 

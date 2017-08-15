@@ -29,10 +29,10 @@ public class CABasicAnimation {
     public var isRemovedOnCompletion = true
     public var duration: CGFloat = 0
     public var delay: CGFloat = 0
-    public var fromValue: Any?
-    public var toValue: Any?
+    public var fromValue: AnimatableProperty?
+    public var toValue: AnimatableProperty?
 
-    var timer = Timer()
+    private var timer = Timer()
     func progress(at currentTime: Timer) -> CGFloat { // always between 0 and 1
         let elapsedTime = max(CGFloat(currentTime - self.timer) - (delay * 1000), 0)
         return min(elapsedTime / (duration * 1000), 1)
@@ -43,6 +43,21 @@ public class CABasicAnimation {
     }
 }
 
+public enum AnimationProperty: ExpressibleByStringLiteral {
+    case frame, opacity, bounds, unknown
+    public init(stringLiteral value: String) {
+        switch value {
+        case "frame": self = .frame
+        case "opacity": self = .opacity
+        case "bounds": self = .bounds
+        default: self = .unknown
+        }
+    }
+}
+
+public protocol AnimatableProperty {}
+
 protocol CABasicAnimationDelegate: class {
     func didStop(finished: Bool)
 }
+

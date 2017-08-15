@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-extension CGRect {
+extension CGRect: AnimatableProperty {
     static func -(lhs: CGRect, rhs: CGRect) -> CGRect {
         return CGRect(
             x: lhs.origin.x - rhs.origin.x,
