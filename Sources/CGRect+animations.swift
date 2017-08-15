@@ -25,12 +25,12 @@ extension CGRect: AnimatableProperty {
         )
     }
 
-    func multiply(_ multiplier: CGFloat) -> CGRect {
+    static func *(lhs: CGRect, rhs: CGFloat) -> CGRect {
         return CGRect(
-            x: self.origin.x * multiplier,
-            y: self.origin.y * multiplier,
-            width: self.width * multiplier,
-            height: self.height * multiplier
+            x: lhs.origin.x * rhs,
+            y: lhs.origin.y * rhs,
+            width: lhs.width * rhs,
+            height: lhs.height * rhs
         )
     }
 }

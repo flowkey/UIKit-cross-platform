@@ -75,15 +75,16 @@ extension CALayer {
                     let endFrame = animation.toValue as? CGRect
                     else { return }
 
-                presentation?.frame = startFrame + (endFrame - startFrame).multiply(animationProgress)
+                presentation?.frame = startFrame + (endFrame - startFrame) * animationProgress
 
-            case .bounds: // animate origin only, because bounds.size updates frame.size
+            case .bounds:
                 guard
                     let startBounds = animation.fromValue as? CGRect,
                     let endBounds = animation.toValue as? CGRect
                     else { return }
 
-                presentation?.bounds.origin = (startBounds + (endBounds - startBounds).multiply(animationProgress)).origin
+                // animate origin only, because setting bounds.size updates frame.size
+                presentation?.bounds.origin = (startBounds + (endBounds - startBounds) * animationProgress).origin
 
             case .opacity:
                 guard
@@ -91,8 +92,7 @@ extension CALayer {
                     let endOpacity = animation.toValue as? CGFloat
                     else { return }
 
-                let opacityDiff = (endOpacity - startOpacity) * animationProgress
-                presentation?.opacity = startOpacity + opacityDiff
+                presentation?.opacity = startOpacity + ((endOpacity - startOpacity) * animationProgress)
 
             case .unknown: print("unknown animation property")
             }
