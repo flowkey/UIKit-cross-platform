@@ -28,11 +28,15 @@ class AnimationTests: XCTestCase {
             view.frame = expectedFrame
         })
 
-        // update frame immediately
         XCTAssertEqual(view.frame, expectedFrame)
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
-        assertCGRectsEqual(view.layer.presentation!.frame, CGRect(x: 15, y: 15, width: 15, height: 15), accuracy: 0.01)
+
+        if let presentation = view.layer.presentation {
+            assertEqual(presentation.frame, CGRect(x: 15, y: 15, width: 15, height: 15), accuracy: 0.01)
+        } else {
+            XCTFail("presentation must be defined")
+        }
     }
 
     func testCanAnimateOpacity() {
@@ -45,7 +49,11 @@ class AnimationTests: XCTestCase {
         XCTAssertEqual(view.alpha, 0.2)
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
-        XCTAssertEqual(Double(view.layer.presentation!.opacity), 0.6, accuracy: 0.01)
+        if let presentation = view.layer.presentation {
+            XCTAssertEqual(presentation.opacity, 0.6, accuracy: 0.01)
+        } else {
+            XCTFail("presentation must be defined")
+        }
     }
 
     func testDelay() {
@@ -56,7 +64,11 @@ class AnimationTests: XCTestCase {
         })
 
         UIView.animateIfNeeded(at: Timer(startingAt: 3000))
-        XCTAssertEqual(Double(view.layer.presentation!.opacity), 0.5, accuracy: 0.01)
+        if let presentation = view.layer.presentation {
+            XCTAssertEqual(Double(presentation.opacity), 0.5, accuracy: 0.01)
+        } else {
+            XCTFail("presentation must be defined")
+        }
     }
 
     func testCompletion() {
@@ -94,8 +106,14 @@ class AnimationTests: XCTestCase {
 
         UIView.animateIfNeeded(at: Timer(startingAt: 5000))
 
-        XCTAssertFalse(firstAnimationDidFinish!)
-        XCTAssertTrue(secondAnimationDidFinish!)
+        if
+            let firstAnimationDidFinish = firstAnimationDidFinish,
+            let secondAnimationDidFinish = secondAnimationDidFinish {
+            XCTAssertFalse(firstAnimationDidFinish)
+            XCTAssertTrue(secondAnimationDidFinish)
+        } else {
+            XCTFail("completion callback never called")
+        }
     }
 
     func testCompletionWhenQueingAnimationsOfSameType() {
@@ -117,8 +135,14 @@ class AnimationTests: XCTestCase {
 
         UIView.animateIfNeeded(at: Timer(startingAt: 5000))
 
-        XCTAssertTrue(firstAnimationDidFinish!)
-        XCTAssertTrue(secondAnimationDidFinish!)
+        if
+            let firstAnimationDidFinish = firstAnimationDidFinish,
+            let secondAnimationDidFinish = secondAnimationDidFinish {
+            XCTAssertTrue(firstAnimationDidFinish)
+            XCTAssertTrue(secondAnimationDidFinish)
+        } else {
+            XCTFail("completion callback never called")
+        }
     }
 
     func testPresentationLayerIsSet() {
@@ -180,7 +204,7 @@ class AnimationTests: XCTestCase {
 }
 
 fileprivate extension AnimationTests {
-    func assertCGRectsEqual(_ rect1: CGRect, _ rect2: CGRect, accuracy: CGFloat) {
+    func assertEqual(_ rect1: CGRect, _ rect2: CGRect, accuracy: CGFloat) {
         XCTAssertEqual(rect1.height, rect2.height, accuracy: accuracy)
         XCTAssertEqual(rect1.width, rect2.width, accuracy: accuracy)
         XCTAssertEqual(rect1.origin.x, rect2.origin.x, accuracy: accuracy)
