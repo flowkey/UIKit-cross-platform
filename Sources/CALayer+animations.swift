@@ -66,7 +66,7 @@ extension CALayer {
         animations.forEach { key, animation in
             guard let keypath = animation.keyPath else { return }
 
-            let animationProgress = animation.progress(at: currentTime)
+            let y = animation.x(at: currentTime)
 
             switch keypath as AnimationProperty {
             case .frame:
@@ -75,7 +75,7 @@ extension CALayer {
                     let endFrame = animation.toValue as? CGRect
                     else { return }
 
-                presentation?.frame = startFrame + (endFrame - startFrame).multiply(animationProgress)
+                presentation?.frame = startFrame + (endFrame - startFrame).multiply(y)
 
             case .bounds: // animate origin only, because bounds.size updates frame.size
                 guard
@@ -83,7 +83,7 @@ extension CALayer {
                     let endBounds = animation.toValue as? CGRect
                     else { return }
 
-                presentation?.bounds.origin = (startBounds + (endBounds - startBounds).multiply(animationProgress)).origin
+                presentation?.bounds.origin = (startBounds + (endBounds - startBounds).multiply(y)).origin
 
             case .opacity:
                 guard
@@ -91,13 +91,13 @@ extension CALayer {
                     let endOpacity = animation.toValue as? CGFloat
                     else { return }
 
-                let opacityDiff = (endOpacity - startOpacity) * animationProgress
-                presentation?.opacity = startOpacity + opacityDiff
+                presentation?.opacity = startOpacity + (endOpacity - startOpacity) * y
 
-            case .unknown: print("unknown animation property")
+            case .unknown:
+                print("unknown animation property")
             }
 
-            if animationProgress == 1 {
+            if animation.progress(at: currentTime) == 1 {
                 animation.stop(finished: true)
                 if animation.isRemovedOnCompletion {
                     removeAnimation(forKey: key)

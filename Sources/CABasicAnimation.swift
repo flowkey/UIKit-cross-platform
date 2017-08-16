@@ -14,14 +14,16 @@ public class CABasicAnimation {
     // == nil means animation was manually instantiated
     var animationGroup = UIView.currentAnimationGroup
 
-    public init(keyPath: AnimationProperty) {
+    public init(keyPath: AnimationProperty, options: UIViewAnimationOptions = []) {
         self.keyPath = keyPath
+        self.options = options
     }
 
     init(keyPath: AnimationProperty, protoType: CABasicAnimationPrototype) {
         self.keyPath = keyPath
         self.delay = protoType.delay
         self.duration = protoType.duration
+        self.options = protoType.options
     }
 
     public var keyPath: AnimationProperty?
@@ -31,17 +33,29 @@ public class CABasicAnimation {
     public var delay: CGFloat = 0
     public var fromValue: AnimatableProperty?
     public var toValue: AnimatableProperty?
+    let options: UIViewAnimationOptions
 
     private var timer = Timer()
-    func progress(at currentTime: Timer) -> CGFloat { // always between 0 and 1
+
+    final func progress(at currentTime: Timer) -> CGFloat { // always between 0 and 1
         let elapsedTime = max(CGFloat(currentTime - self.timer) - (delay * 1000), 0)
         return min(elapsedTime / (duration * 1000), 1)
+    }
+
+    func x(at timer: Timer) -> CGFloat {
+        if options.contains(.curveEaseIn) {
+            return easeInQuad(at: progress(at: timer))
+        }
+        return progress(at: timer)
     }
 
     func stop(finished: Bool) {
         animationGroup?.didStop(finished: finished)
     }
 }
+
+fileprivate func easeInQuad(at x: CGFloat) -> CGFloat { return pow(x, 2) }
+fileprivate func easeInCubic(at x: CGFloat) -> CGFloat { return pow(x, 3) }
 
 public enum AnimationProperty: ExpressibleByStringLiteral {
     case frame, opacity, bounds, unknown
