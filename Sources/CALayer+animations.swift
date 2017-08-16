@@ -103,26 +103,20 @@ extension CALayer {
     }
 
     func animate(at currentTime: Timer) {
-        var propertyDidAnimate: [AnimationProperty: Bool] = [
-            .frame: false,
-            .bounds: false,
-            .opacity: false
-        ]
+        var propertiesDidAnimate = PropertiesDidAnimate()
 
         animations.forEach { (_, animation) in
             guard let keyPath = animation.keyPath, animation.updateProgress(to: currentTime) > 0 else { return }
 
             if
-                let alreadyAnimatedPropertyDuringCurrentFrame = propertyDidAnimate[keyPath],
-                alreadyAnimatedPropertyDuringCurrentFrame,
-
+                propertiesDidAnimate[keyPath],
                 let firstAnimationForKeyPath = animations.getFirstElement(for: keyPath)
             {
                 removeAndCallCompletion(animation: firstAnimationForKeyPath)
             }
 
             updatePresentation(for: animation, at: currentTime)
-            propertyDidAnimate[keyPath] = true
+            propertiesDidAnimate[keyPath] = true
 
             if animation.isComplete && animation.isRemovedOnCompletion {
                 removeAndCallCompletion(animation: animation)
@@ -131,10 +125,29 @@ extension CALayer {
     }
 }
 
-struct FrameState {
-    var updatedFrame = false
-    var updatedBounds = false
-    var updatetOpacity = false
+fileprivate struct PropertiesDidAnimate {
+    var frame = false
+    var bounds = false
+    var opacity = false
+
+    subscript(animationProperty: AnimationProperty) -> Bool {
+        get {
+            switch animationProperty {
+            case .bounds: return self.bounds
+            case .frame: return self.frame
+            case .opacity: return self.opacity
+            case .unknown: return false // throw error?
+            }
+        }
+        set {
+            switch animationProperty {
+            case .bounds: self.bounds = newValue
+            case .frame: self.frame  = newValue
+            case .opacity: self.opacity = newValue
+            case .unknown: break
+            }
+        }
+    }
 }
 
 fileprivate extension CALayer {
