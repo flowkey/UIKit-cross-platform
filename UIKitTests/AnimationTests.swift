@@ -104,6 +104,7 @@ class AnimationTests: XCTestCase {
             secondAnimationDidFinish = $0
         })
 
+        UIView.animateIfNeeded(at: Timer(startingAt: 200))
         UIView.animateIfNeeded(at: Timer(startingAt: 5000))
 
         if

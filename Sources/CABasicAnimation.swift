@@ -34,11 +34,12 @@ public class CABasicAnimation {
 
     private var timer = Timer()
     var progress: CGFloat = 0
-
-    var hasStartedAnimating: Bool {
+    var hasStarted: Bool {
         return progress > 0
     }
-
+    var isComplete: Bool {
+        return progress == 1
+    }
     func updateProgress(to currentTime: Timer) -> CGFloat {
         let elapsedTime = max(CGFloat(currentTime - self.timer) - (delay * 1000), 0)
         progress = min(elapsedTime / (duration * 1000), 1)
@@ -60,3 +61,8 @@ public enum AnimationProperty: ExpressibleByStringLiteral {
 
 public protocol AnimatableProperty {}
 
+extension CABasicAnimation: Equatable {
+    public static func ==(lhs: CABasicAnimation, rhs: CABasicAnimation) -> Bool {
+        return ObjectIdentifier(lhs).hashValue == ObjectIdentifier(rhs).hashValue
+    }
+}

@@ -7,3 +7,4 @@
 //
 
 extension CGFloat: AnimatableProperty {}
+extension Int: AnimatableProperty {}
