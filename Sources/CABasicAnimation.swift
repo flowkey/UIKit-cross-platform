@@ -12,7 +12,7 @@ public class CABasicAnimation {
 
     // != nil means animating in UIView.animate closure
     // == nil means animation was manually instantiated
-    var animationGroup = UIView.currentAnimationGroup
+    var animationGroup: UIViewAnimationGroup? = UIView.currentAnimationGroup
 
     public init(keyPath: AnimationProperty) {
         self.keyPath = keyPath
@@ -33,13 +33,16 @@ public class CABasicAnimation {
     public var toValue: AnimatableProperty?
 
     private var timer = Timer()
-    func progress(at currentTime: Timer) -> CGFloat { // always between 0 and 1
-        let elapsedTime = max(CGFloat(currentTime - self.timer) - (delay * 1000), 0)
-        return min(elapsedTime / (duration * 1000), 1)
+    var progress: CGFloat = 0
+
+    var hasStartedAnimating: Bool {
+        return progress > 0
     }
 
-    func stop(finished: Bool) {
-        animationGroup?.didStop(finished: finished)
+    func updateProgress(to currentTime: Timer) -> CGFloat {
+        let elapsedTime = max(CGFloat(currentTime - self.timer) - (delay * 1000), 0)
+        progress = min(elapsedTime / (duration * 1000), 1)
+        return progress
     }
 }
 
@@ -56,8 +59,4 @@ public enum AnimationProperty: ExpressibleByStringLiteral {
 }
 
 public protocol AnimatableProperty {}
-
-protocol CABasicAnimationDelegate: class {
-    func didStop(finished: Bool)
-}
 

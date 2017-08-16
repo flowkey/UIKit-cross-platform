@@ -14,7 +14,7 @@ extension CALayer {
             currentAnimationGroup.queuedAnimations += 1
         }
 
-        animations[key]?.stop(finished: false)
+        animations[key]?.animationGroup?.animationDidStop(finished: false)
         animations[key] = animation
     }
 
@@ -62,43 +62,47 @@ extension CALayer {
         }
     }
 
+    func updatePresentation(for animation: CABasicAnimation, at currentTime: Timer) {
+        guard let keypath = animation.keyPath, let presentation = presentation else { return }
+
+        switch keypath as AnimationProperty {
+        case .frame:
+            guard
+                let startFrame = animation.fromValue as? CGRect,
+                let endFrame = animation.toValue as? CGRect
+                else { return }
+
+            presentation.frame = startFrame + (endFrame - startFrame) * animation.progress
+
+        case .bounds:
+            guard
+                let startBounds = animation.fromValue as? CGRect,
+                let endBounds = animation.toValue as? CGRect
+                else { return }
+
+            // animate origin only, because setting bounds.size updates frame.size
+            presentation.bounds.origin = (startBounds + (endBounds - startBounds) * animation.progress).origin
+
+        case .opacity:
+            guard
+                let startOpacity = animation.fromValue as? CGFloat,
+                let endOpacity = animation.toValue as? CGFloat
+                else { return }
+
+            presentation.opacity = startOpacity + ((endOpacity - startOpacity) * animation.progress)
+
+        case .unknown: print("unknown animation property")
+        }
+    }
+
     func animate(at currentTime: Timer) {
         animations.forEach { key, animation in
-            guard let keypath = animation.keyPath else { return }
+            if animation.updateProgress(to: currentTime) == 0 { return }
 
-            let animationProgress = animation.progress(at: currentTime)
+            updatePresentation(for: animation, at: currentTime)
 
-            switch keypath as AnimationProperty {
-            case .frame:
-                guard
-                    let startFrame = animation.fromValue as? CGRect,
-                    let endFrame = animation.toValue as? CGRect
-                    else { return }
-
-                presentation?.frame = startFrame + (endFrame - startFrame) * animationProgress
-
-            case .bounds:
-                guard
-                    let startBounds = animation.fromValue as? CGRect,
-                    let endBounds = animation.toValue as? CGRect
-                    else { return }
-
-                // animate origin only, because setting bounds.size updates frame.size
-                presentation?.bounds.origin = (startBounds + (endBounds - startBounds) * animationProgress).origin
-
-            case .opacity:
-                guard
-                    let startOpacity = animation.fromValue as? CGFloat,
-                    let endOpacity = animation.toValue as? CGFloat
-                    else { return }
-
-                presentation?.opacity = startOpacity + ((endOpacity - startOpacity) * animationProgress)
-
-            case .unknown: print("unknown animation property")
-            }
-
-            if animationProgress == 1 {
-                animation.stop(finished: true)
+            if animation.progress == 1 {
+                animation.animationGroup?.animationDidStop(finished: true)
                 if animation.isRemovedOnCompletion {
                     removeAnimation(forKey: key)
                 }
