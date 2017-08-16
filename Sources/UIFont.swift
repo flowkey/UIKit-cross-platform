@@ -8,7 +8,11 @@
 
 private let systemFontName = "Roboto" // XXX: change this depending on platform?
 
-open class UIFont {
+open class UIFont: Equatable {
+    public static func == (lhs: UIFont, rhs: UIFont) -> Bool {
+        return lhs.fontName == rhs.fontName && lhs.pointSize == rhs.pointSize
+    }
+
     fileprivate static let contentScale: CGFloat = 2.0 // TODO: Get from Window
 
     fileprivate static var availableFontData: [String: CGDataProvider] = [:]

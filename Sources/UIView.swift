@@ -71,6 +71,14 @@ open class UIView: UIResponder {
         set { layer.opacity = newValue }
     }
 
+    public var tintColor: UIColor! // mocked
+
+    public var isOpaque: Bool = false // mocked
+    // TODO: implement with relation to drawing system: https://developer.apple.com/documentation/uikit/uiview/1622622-isopaque
+
+    public var clipsToBounds: Bool = false // mocked
+    // TODO: implement according to: https://developer.apple.com/documentation/uikit/uiview/1622415-clipstobounds
+
     public internal(set) var superview: UIView? {
         didSet { if superview != nil { didMoveToSuperview() } }
     }
@@ -95,7 +103,10 @@ open class UIView: UIResponder {
 
     open func insertSubview(_ view: UIView, at index: Int) {
         view.removeFromSuperview()
-        subviews.insert(view, at: index)
+
+        subviews.insert(view, at: min(index, subviews.endIndex))
+        // min ensures no array out of bounds if view is removed from superview
+        
         view.superview = self
     }
 
@@ -215,6 +226,7 @@ open class UIView: UIResponder {
     open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {}
     open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {}
     open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {}
+    open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {}
 }
 
 
