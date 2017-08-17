@@ -71,6 +71,9 @@ extension CALayer {
     func updatePresentation(for animation: CABasicAnimation, at currentTime: Timer) {
         guard let keyPath = animation.keyPath, let presentation = presentation else { return }
 
+        let y = animation.compute(at: currentTime)
+        let isSpring = animation is CASpringAnimation
+
         switch keyPath as AnimationProperty {
         case .frame:
             guard
@@ -78,7 +81,8 @@ extension CALayer {
                 let endFrame = animation.toValue as? CGRect
                 else { return }
 
-            presentation.frame = startFrame + (endFrame - startFrame) * animation.progress
+            if isSpring { presentation.frame = endFrame - (endFrame - startFrame) * y }
+            else { presentation.frame = startFrame + (endFrame - startFrame) * y }
 
         case .bounds:
             guard
@@ -87,7 +91,8 @@ extension CALayer {
                 else { return }
 
             // animate origin only, because setting bounds.size updates frame.size
-            presentation.bounds.origin = (startBounds + (endBounds - startBounds) * animation.progress).origin
+            if isSpring { presentation.bounds.origin = (endBounds - (endBounds - startBounds) * y).origin }
+            else { presentation.bounds.origin = (startBounds + (endBounds - startBounds) * y).origin }
 
         case .opacity:
             guard
@@ -95,7 +100,8 @@ extension CALayer {
                 let endOpacity = animation.toValue as? CGFloat
                 else { return }
 
-            presentation.opacity = startOpacity + ((endOpacity - startOpacity) * animation.progress)
+            if isSpring { presentation.opacity = endOpacity - ((endOpacity - startOpacity) * y) }
+            else { presentation.opacity = startOpacity + ((endOpacity - startOpacity) * y) }
 
         case .unknown: print("unknown animation property")
         }
@@ -167,7 +173,7 @@ fileprivate extension CALayer {
     }
 }
 
-fileprivate extension Array where Iterator.Element == (key: String?, animation: CABasicAnimation) {
+extension Array where Iterator.Element == (key: String?, animation: CABasicAnimation) {
     func getFirstElement(for keyPath: AnimationProperty) -> CABasicAnimation? {
          return self.filter({ $0.animation.keyPath == keyPath }).first?.animation
     }
