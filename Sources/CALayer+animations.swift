@@ -12,18 +12,18 @@ extension CALayer {
         animations.append((key, animation))
     }
 
-    func add(_ animation: CABasicAnimation) {
+    open func removeAnimation(forKey key: String) {
+        animations = animations.filter { $0.key == key }
+    }
+
+    private func add(_ animation: CABasicAnimation) {
         ensureFromValueIsDefined(animation)
 
         UIView.currentAnimationGroup?.queuedAnimations += 1
         animations.append((nil, animation))
     }
 
-    open func removeAnimation(forKey key: String) {
-        animations = animations.filter { $0.key == key }
-    }
-
-    open func removeAndCallCompletion(animation: CABasicAnimation) {
+    private func removeAnimationAndRunCompletion(animation: CABasicAnimation) {
         animation.animationGroup?.animationDidStop(finished: animation.isComplete)
         animations = animations.filter { $0.animation != animation }
     }
@@ -60,7 +60,7 @@ extension CALayer {
 
     func onDidSetAnimations() {
         if animations.count > 0 {
-            presentation = presentation ?? self.clone()
+            presentation = presentation ?? self.createNonAnimatingCopy()
             UIView.layersWithAnimations.insert(self)
         } else {
             presentation = nil
@@ -103,58 +103,55 @@ extension CALayer {
     }
 
     func animate(at currentTime: Timer) {
-        var propertiesDidAnimate = PropertiesDidAnimate()
+        // reset state on each animationLoop
+        var propertiesDidAnimate = AnimationLoopState()
 
         animations.forEach { (_, animation) in
             guard let keyPath = animation.keyPath, animation.updateProgress(to: currentTime) > 0 else { return }
 
-            if
+            if // if a property will animate twice during one animationLoop, cancel first animation
                 propertiesDidAnimate[keyPath],
                 let firstAnimationForKeyPath = animations.getFirstElement(for: keyPath)
             {
-                removeAndCallCompletion(animation: firstAnimationForKeyPath)
+                removeAnimationAndRunCompletion(animation: firstAnimationForKeyPath)
             }
 
             updatePresentation(for: animation, at: currentTime)
             propertiesDidAnimate[keyPath] = true
 
             if animation.isComplete && animation.isRemovedOnCompletion {
-                removeAndCallCompletion(animation: animation)
-            }
-        }
-    }
-}
-
-fileprivate struct PropertiesDidAnimate {
-    var frame = false
-    var bounds = false
-    var opacity = false
-
-    subscript(animationProperty: AnimationProperty) -> Bool {
-        get {
-            switch animationProperty {
-            case .bounds: return self.bounds
-            case .frame: return self.frame
-            case .opacity: return self.opacity
-            case .unknown: return false // throw error?
-            }
-        }
-        set {
-            switch animationProperty {
-            case .bounds: self.bounds = newValue
-            case .frame: self.frame  = newValue
-            case .opacity: self.opacity = newValue
-            case .unknown: break
+                removeAnimationAndRunCompletion(animation: animation)
             }
         }
     }
 }
 
 fileprivate extension CALayer {
-    func clone() -> CALayerWithoutAnimation {
-        return CALayerWithoutAnimation(layer: self)
+    func createNonAnimatingCopy() -> CALayer {
+        return CALayer(layer: self, shouldAnimate: false)
     }
 
+    convenience init(layer: CALayer, shouldAnimate: Bool) {
+        self.init()
+        frame = layer.frame
+        bounds = layer.bounds
+        opacity = layer.opacity
+        backgroundColor = layer.backgroundColor
+        isHidden = layer.isHidden
+        cornerRadius = layer.cornerRadius
+        borderWidth = layer.borderWidth
+        borderColor = layer.borderColor
+        shadowColor = layer.shadowColor
+        shadowRadius = layer.shadowRadius
+        shadowOpacity = layer.shadowOpacity
+        //clone.texture = self.texture // macht komische sachen
+        sublayers = layer.sublayers
+
+        self.shouldAnimate = shouldAnimate
+    }
+}
+
+fileprivate extension CALayer {
     private func ensureFromValueIsDefined(_ animation: CABasicAnimation) {
         if animation.fromValue == nil, let keypath = animation.keyPath {
             switch keypath as AnimationProperty  {
@@ -170,29 +167,7 @@ fileprivate extension CALayer {
     }
 }
 
-fileprivate class CALayerWithoutAnimation: CALayer {
-    convenience init(layer: CALayer) {
-        self.init()
-
-        shouldAnimate = false
-
-        frame = layer.frame
-        bounds = layer.bounds
-        opacity = layer.opacity
-        backgroundColor = layer.backgroundColor
-        isHidden = layer.isHidden
-        cornerRadius = layer.cornerRadius
-        borderWidth = layer.borderWidth
-        borderColor = layer.borderColor
-        shadowColor = layer.shadowColor
-        shadowRadius = layer.shadowRadius
-        shadowOpacity = layer.shadowOpacity
-        //clone.texture = self.texture // macht komische sachen
-        sublayers = layer.sublayers
-    }
-}
-
-extension Array where Iterator.Element == (key: String?, animation: CABasicAnimation) {
+fileprivate extension Array where Iterator.Element == (key: String?, animation: CABasicAnimation) {
     func getFirstElement(for keyPath: AnimationProperty) -> CABasicAnimation? {
          return self.filter({ $0.animation.keyPath == keyPath }).first?.animation
     }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B2D46271F458E5000096D48 /* AnimationLoopState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B2D46261F458E5000096D48 /* AnimationLoopState.swift */; };
 		5B4F43CC1F39BB8200FB4AB9 /* AnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CB1F39BB8200FB4AB9 /* AnimationPrototype.swift */; };
 		5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */; };
 		5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */; };
@@ -159,6 +160,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5B2D46261F458E5000096D48 /* AnimationLoopState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimationLoopState.swift; path = Sources/AnimationLoopState.swift; sourceTree = SOURCE_ROOT; };
 		5B4F43CB1F39BB8200FB4AB9 /* AnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimationPrototype.swift; path = Sources/AnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
 		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = Sources/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CALayer+animations.swift"; path = "Sources/CALayer+animations.swift"; sourceTree = SOURCE_ROOT; };
@@ -311,6 +313,7 @@
 				5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */,
 				5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */,
 				5B840BB61F42FCBC0010AC95 /* CGFloat+animations.swift */,
+				5B2D46261F458E5000096D48 /* AnimationLoopState.swift */,
 			);
 			name = Animations;
 			sourceTree = "<group>";
@@ -749,6 +752,7 @@
 				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
 				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
+				5B2D46271F458E5000096D48 /* AnimationLoopState.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
 				5CADAF7B1F1D147600897FC1 /* AVPlayerLayer+Mac.swift in Sources */,
 				5C5AC6DD1F1791D0004A88C0 /* VideoPlayer+Mac.swift in Sources */,
