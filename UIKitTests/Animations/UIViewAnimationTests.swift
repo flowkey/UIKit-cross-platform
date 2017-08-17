@@ -1,5 +1,5 @@
 //
-//  AnimationTests.swift
+//  UIViewAnimationTests.swift
 //  UIKitTests
 //
 //  Created by Michael Knoch on 11.08.17.
@@ -9,7 +9,7 @@
 import XCTest
 @testable import UIKit
 
-class AnimationTests: XCTestCase {
+class UIViewAnimationTests: XCTestCase {
 
     override func tearDown() {
         // reset animation state
@@ -204,7 +204,7 @@ class AnimationTests: XCTestCase {
     }
 }
 
-fileprivate extension AnimationTests {
+fileprivate extension UIViewAnimationTests {
     func assertEqual(_ rect1: CGRect, _ rect2: CGRect, accuracy: CGFloat) {
         XCTAssertEqual(rect1.height, rect2.height, accuracy: accuracy)
         XCTAssertEqual(rect1.width, rect2.width, accuracy: accuracy)

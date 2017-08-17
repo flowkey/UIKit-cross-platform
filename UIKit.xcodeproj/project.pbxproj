@@ -13,9 +13,11 @@
 		5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */; };
 		5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */; };
 		5B840BB71F42FCBD0010AC95 /* CGFloat+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B840BB61F42FCBC0010AC95 /* CGFloat+animations.swift */; };
+		5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */; };
+		5BA7B40E1F45A6E10040CB58 /* CABasicAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */; };
 		5BBEECA51F39E7A6006E3416 /* CGRect+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */; };
-		5BDE15E01F3DF7A1005620AA /* AnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDE15DF1F3DF703005620AA /* AnimationTests.swift */; };
-		5BDE15E11F3DF7AE005620AA /* AnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDE15DF1F3DF703005620AA /* AnimationTests.swift */; };
+		5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */; };
+		5BDE15E11F3DF7AE005620AA /* UIViewAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */; };
 		5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F06AE1F3210F200EFF087 /* UIViewController.swift */; };
 		5C27E7B81ECB2F6500F5020D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7AE1ECB2F6500F5020D /* UIKit.framework */; };
 		5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D21ECB2F9100F5020D /* Cocoa.framework */; };
@@ -166,8 +168,9 @@
 		5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CALayer+animations.swift"; path = "Sources/CALayer+animations.swift"; sourceTree = SOURCE_ROOT; };
 		5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewAnimationGroup.swift; path = Sources/UIViewAnimationGroup.swift; sourceTree = SOURCE_ROOT; };
 		5B840BB61F42FCBC0010AC95 /* CGFloat+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CGFloat+animations.swift"; path = "Sources/CGFloat+animations.swift"; sourceTree = SOURCE_ROOT; };
+		5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABasicAnimationTests.swift; sourceTree = "<group>"; };
 		5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CGRect+animations.swift"; path = "Sources/CGRect+animations.swift"; sourceTree = SOURCE_ROOT; };
-		5BDE15DF1F3DF703005620AA /* AnimationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationTests.swift; sourceTree = "<group>"; };
+		5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewAnimationTests.swift; sourceTree = "<group>"; };
 		5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNI.xcodeproj; path = "swift-jni/JNI.xcodeproj"; sourceTree = "<group>"; };
 		5C1F06AE1F3210F200EFF087 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewController.swift; path = Sources/UIViewController.swift; sourceTree = SOURCE_ROOT; };
 		5C27E7AE1ECB2F6500F5020D /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -303,6 +306,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5BA7B40D1F45A6C30040CB58 /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */,
+				5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */,
+			);
+			path = Animations;
+			sourceTree = "<group>";
+		};
 		5BBEECA21F39E770006E3416 /* Animations */ = {
 			isa = PBXGroup;
 			children = (
@@ -403,7 +415,7 @@
 			isa = PBXGroup;
 			children = (
 				83F02DBB1F179B0300347AA8 /* Button */,
-				5BDE15DF1F3DF703005620AA /* AnimationTests.swift */,
+				5BA7B40D1F45A6C30040CB58 /* Animations */,
 				5C9037201F137FB70058E592 /* CGRectTests.swift */,
 				5C27E7BE1ECB2F6500F5020D /* Info.plist */,
 				83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */,
@@ -775,8 +787,9 @@
 				83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */,
 				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
+				5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */,
 				8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */,
-				5BDE15E01F3DF7A1005620AA /* AnimationTests.swift in Sources */,
+				5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */,
 				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
 				83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */,
 				83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */,
@@ -793,8 +806,9 @@
 				83F02DBA1F179AE800347AA8 /* UIImage+testImage.swift in Sources */,
 				83F02DBE1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */,
+				5BA7B40E1F45A6E10040CB58 /* CABasicAnimationTests.swift in Sources */,
 				8323F2821F2FA42A00C121BB /* TestSetup.swift in Sources */,
-				5BDE15E11F3DF7AE005620AA /* AnimationTests.swift in Sources */,
+				5BDE15E11F3DF7AE005620AA /* UIViewAnimationTests.swift in Sources */,
 				83F02DB71F1798F200347AA8 /* Button.swift in Sources */,
 				83F02DB41F1798D100347AA8 /* loadCustomFont.swift in Sources */,
 				832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */,
