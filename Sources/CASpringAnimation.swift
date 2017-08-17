@@ -16,7 +16,8 @@ class CASpringAnimation: CABasicAnimation {
     init(keyPath: AnimationProperty, protoType: CASpringAnimationPrototype) {
         self.damping = protoType.damping
         self.initialSpringVelocity = protoType.initialSpringVelocity
-        self.spring = springFactory(halfCycles: 6, damping: Double(damping), initialPosition: 1, initialVelocity: Double(initialSpringVelocity))
+        // number of halfCycles to animate is hard coded, we should figure out how this is behaving in original UIKit
+        self.spring = springFactory(halfCycles: 2, damping: Double(damping), initialPosition: 1, initialVelocity: Double(initialSpringVelocity))
 
         super.init(keyPath: keyPath, protoType: protoType)
     }
@@ -27,26 +28,7 @@ class CASpringAnimation: CABasicAnimation {
     }
 }
 
-//
-//fileprivate func springFactory
-//(cycles: Double, damping: Double, initialPosition: Double, initialVelocity: Double) -> (Double) -> Double {
-//
-//    let A = initialPosition
-//    let B = initialVelocity
-//    let zeta = damping
-//
-//    let k = cycles
-//    let omega = (-tan(A/B) + .pi * k) / (2 * .pi * sqrt(1 - pow(zeta, 2)))
-//
-//    return { fractionCompleted in
-//        let arg1 = 2 * .pi * omega * fractionCompleted
-//        let arg2 = sqrt(1 - pow(zeta, 2)) * arg1
-//
-//        return exp(-zeta * arg1) * (A * cos(arg2) + B * sin(arg2))
-//    }
-//}
-
-
+// https://medium.com/analytic-animations/the-spring-factory-4c3d988e7129
 fileprivate func springFactory
 (halfCycles: Int, damping: Double, initialPosition: Double, initialVelocity: Double) -> (Double) -> Double {
     let A = initialPosition
@@ -56,7 +38,7 @@ fileprivate func springFactory
 //    if initialVelocity == 0.0 {
     B = damping * A / sqrt(1 - pow(damping, 2))
     omega = (-tan(A/B) + .pi * Double(halfCycles)) / (2 * .pi * sqrt(1 - pow(damping, 2))) * 2 * .pi
-//    } else { /* ToDo: numerically solve omega */ }
+//    } else { /* ToDo: numerically solve B, then omega */ }
 
     let omega_d = omega * sqrt(1 - pow(damping, 2))
 
