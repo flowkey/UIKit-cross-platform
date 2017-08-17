@@ -319,12 +319,12 @@
 			isa = PBXGroup;
 			children = (
 				5B4F43CB1F39BB8200FB4AB9 /* AnimationPrototype.swift */,
+				5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */,
 				5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */,
 				5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */,
 				5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */,
 				5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */,
 				5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */,
-				5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */,
 				5B2D46261F458E5000096D48 /* AnimationLoopState.swift */,
 			);
 			name = Animations;

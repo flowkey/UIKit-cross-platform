@@ -8,6 +8,7 @@
 
 public protocol AnimatableProperty {}
 
+extension CGRect: AnimatableProperty {}
 extension CGFloat: AnimatableProperty {}
 extension Int: AnimatableProperty {}
 extension Double: AnimatableProperty {}
