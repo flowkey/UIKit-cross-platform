@@ -6,14 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-protocol AnimationPrototype {
-    var delay: CGFloat { get }
-    var duration: CGFloat { get }
-    var options: UIViewAnimationOptions { get }
-    func createAnimation(keyPath: AnimationProperty) -> CABasicAnimation
-}
-
-class CABasicAnimationPrototype: AnimationPrototype {
+class CABasicAnimationPrototype {
     let delay: CGFloat
     let duration: CGFloat
     let options: UIViewAnimationOptions

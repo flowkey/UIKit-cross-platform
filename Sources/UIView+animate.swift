@@ -19,7 +19,7 @@ public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
 extension UIView {
     static var layersWithAnimations = Set<CALayer>()
     static var currentAnimationGroup: UIViewAnimationGroup?
-    static var animationPrototype: AnimationPrototype?
+    static var animationPrototype: CABasicAnimationPrototype?
 
     public static func animate(
         withDuration duration: Double,
