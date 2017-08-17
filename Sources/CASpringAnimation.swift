@@ -36,13 +36,11 @@ fileprivate func springFactory
     let zeta = damping
     let omega = Double(cycles)
 
-    let springEasing: (Double) -> Double = { fractionCompleted in
+    return { fractionCompleted in
         let x = 2 * .pi * omega * fractionCompleted
         let x_damped = sqrt(1 - pow(zeta, 2)) * x
 
         return exp(-zeta * x) * (A * cos(x_damped) + B * sin(x_damped))
     }
-
-    return springEasing
 }
 
