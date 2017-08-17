@@ -21,8 +21,8 @@ class CASpringAnimation: CABasicAnimation {
         super.init(keyPath: keyPath, protoType: protoType)
     }
 
-    override func x(at timer: Timer) -> CGFloat {
-        let fraction = Double(progress(at: timer))
+    override func compute(at timer: Timer) -> CGFloat {
+        let fraction = Double(updateProgress(to: timer))
         return CGFloat(spring(fraction))
     }
 }

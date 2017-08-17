@@ -12,7 +12,7 @@ public class CABasicAnimation {
 
     // != nil means animating in UIView.animate closure
     // == nil means animation was manually instantiated
-    var animationGroup = UIView.currentAnimationGroup
+    var animationGroup: UIViewAnimationGroup? = UIView.currentAnimationGroup
 
     public init(keyPath: AnimationProperty, options: UIViewAnimationOptions = []) {
         self.keyPath = keyPath
@@ -36,26 +36,32 @@ public class CABasicAnimation {
     let options: UIViewAnimationOptions
 
     private var timer = Timer()
-
-    final func progress(at currentTime: Timer) -> CGFloat { // always between 0 and 1
+    var progress: CGFloat = 0
+    var hasStarted: Bool {
+        return progress > 0
+    }
+    var isComplete: Bool {
+        return progress == 1
+    }
+    func updateProgress(to currentTime: Timer) -> CGFloat {
         let elapsedTime = max(CGFloat(currentTime - self.timer) - (delay * 1000), 0)
-        return min(elapsedTime / (duration * 1000), 1)
+        progress = min(elapsedTime / (duration * 1000), 1)
+        return progress
     }
 
-    func x(at timer: Timer) -> CGFloat {
-        if options.contains(.curveEaseIn) {
-            return easeInQuad(at: progress(at: timer))
-        }
-        return progress(at: timer)
-    }
-
-    func stop(finished: Bool) {
-        animationGroup?.didStop(finished: finished)
+    func compute(at timer: Timer) -> CGFloat {
+        if options.contains(.curveEaseIn) { return easeInQuad(at: updateProgress(to: timer)) }
+        if options.contains(.curveEaseOut) { return easeOutQuad(at: updateProgress(to: timer)) }
+        if options.contains(.curveEaseInOut) { return easeInOutCubic(at: updateProgress(to: timer)) }
+        return updateProgress(to: timer)
     }
 }
 
 fileprivate func easeInQuad(at x: CGFloat) -> CGFloat { return pow(x, 2) }
 fileprivate func easeInCubic(at x: CGFloat) -> CGFloat { return pow(x, 3) }
+fileprivate func easeOutQuad(at x: CGFloat) -> CGFloat { return x * (2-x) }
+fileprivate func easeOutCubic(at x: CGFloat) -> CGFloat { return x * (2-x) }
+fileprivate func easeInOutCubic(at x: CGFloat) -> CGFloat { return x < 0.5 ? 4*pow(x,3) : (x-1)*(2*x-2)*(2*x-2)+1 }
 
 public enum AnimationProperty: ExpressibleByStringLiteral {
     case frame, opacity, bounds, unknown
@@ -71,7 +77,8 @@ public enum AnimationProperty: ExpressibleByStringLiteral {
 
 public protocol AnimatableProperty {}
 
-protocol CABasicAnimationDelegate: class {
-    func didStop(finished: Bool)
+extension CABasicAnimation: Equatable {
+    public static func ==(lhs: CABasicAnimation, rhs: CABasicAnimation) -> Bool {
+        return ObjectIdentifier(lhs).hashValue == ObjectIdentifier(rhs).hashValue
+    }
 }
-

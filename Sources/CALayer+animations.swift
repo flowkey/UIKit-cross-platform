@@ -9,17 +9,23 @@
 extension CALayer {
     open func add(_ animation: CABasicAnimation, forKey key: String) {
         ensureFromValueIsDefined(animation)
+        animations.append((key, animation))
+    }
 
-        if let currentAnimationGroup = UIView.currentAnimationGroup {
-            currentAnimationGroup.queuedAnimations += 1
-        }
+    func add(_ animation: CABasicAnimation) {
+        ensureFromValueIsDefined(animation)
 
-        animations[key]?.stop(finished: false)
-        animations[key] = animation
+        UIView.currentAnimationGroup?.queuedAnimations += 1
+        animations.append((nil, animation))
     }
 
     open func removeAnimation(forKey key: String) {
-        animations.removeValue(forKey: key)
+        animations = animations.filter { $0.key == key }
+    }
+
+    open func removeAndCallCompletion(animation: CABasicAnimation) {
+        animation.animationGroup?.animationDidStop(finished: animation.isComplete)
+        animations = animations.filter { $0.animation != animation }
     }
 
     func onWillSet(_ newOpacity: CGFloat) {
@@ -28,7 +34,7 @@ extension CALayer {
             animation.fromValue = (presentation ?? self).opacity
             animation.toValue = newOpacity
 
-            add(animation, forKey: "opacity")
+            add(animation)
         }
     }
 
@@ -38,7 +44,7 @@ extension CALayer {
             animation.fromValue = (presentation ?? self).frame
             animation.toValue = newFrame
 
-            add(animation, forKey: "frame")
+            add(animation)
         }
     }
 
@@ -48,7 +54,7 @@ extension CALayer {
             animation.fromValue = (presentation ?? self).bounds
             animation.toValue = newBounds
 
-            add(animation, forKey: "bounds")
+            add(animation)
         }
     }
 
@@ -62,46 +68,89 @@ extension CALayer {
         }
     }
 
+    func updatePresentation(for animation: CABasicAnimation, at currentTime: Timer) {
+        guard let keyPath = animation.keyPath, let presentation = presentation else { return }
+
+        let y = animation.compute(at: currentTime)
+        let isSpring = animation is CASpringAnimation
+
+        switch keyPath as AnimationProperty {
+        case .frame:
+            guard
+                let startFrame = animation.fromValue as? CGRect,
+                let endFrame = animation.toValue as? CGRect
+                else { return }
+
+            if isSpring { presentation.frame = endFrame - (endFrame - startFrame) * y }
+            else { presentation.frame = startFrame + (endFrame - startFrame) * y }
+
+        case .bounds:
+            guard
+                let startBounds = animation.fromValue as? CGRect,
+                let endBounds = animation.toValue as? CGRect
+                else { return }
+
+            // animate origin only, because setting bounds.size updates frame.size
+            if isSpring { presentation.bounds.origin = (endBounds - (endBounds - startBounds) * y).origin }
+            else { presentation.bounds.origin = (startBounds + (endBounds - startBounds) * y).origin }
+
+        case .opacity:
+            guard
+                let startOpacity = animation.fromValue as? CGFloat,
+                let endOpacity = animation.toValue as? CGFloat
+                else { return }
+
+            if isSpring { presentation.opacity = endOpacity - ((endOpacity - startOpacity) * y) }
+            else { presentation.opacity = startOpacity + ((endOpacity - startOpacity) * y) }
+
+        case .unknown: print("unknown animation property")
+        }
+
+    }
+
     func animate(at currentTime: Timer) {
-        animations.forEach { key, animation in
-            guard let keypath = animation.keyPath else { return }
+        var propertiesDidAnimate = PropertiesDidAnimate()
 
-            let y = animation.x(at: currentTime)
+        animations.forEach { (_, animation) in
+            guard let keyPath = animation.keyPath, animation.updateProgress(to: currentTime) > 0 else { return }
 
-            switch keypath as AnimationProperty {
-            case .frame:
-                guard
-                    let startFrame = animation.fromValue as? CGRect,
-                    let endFrame = animation.toValue as? CGRect
-                    else { return }
-
-                presentation?.frame = startFrame + (endFrame - startFrame).multiply(y)
-
-            case .bounds: // animate origin only, because bounds.size updates frame.size
-                guard
-                    let startBounds = animation.fromValue as? CGRect,
-                    let endBounds = animation.toValue as? CGRect
-                    else { return }
-
-                presentation?.bounds.origin = (startBounds + (endBounds - startBounds).multiply(y)).origin
-
-            case .opacity:
-                guard
-                    let startOpacity = animation.fromValue as? CGFloat,
-                    let endOpacity = animation.toValue as? CGFloat
-                    else { return }
-
-                presentation?.opacity = startOpacity + (endOpacity - startOpacity) * y
-
-            case .unknown:
-                print("unknown animation property")
+            if
+                propertiesDidAnimate[keyPath],
+                let firstAnimationForKeyPath = animations.getFirstElement(for: keyPath)
+            {
+                removeAndCallCompletion(animation: firstAnimationForKeyPath)
             }
 
-            if animation.progress(at: currentTime) == 1 {
-                animation.stop(finished: true)
-                if animation.isRemovedOnCompletion {
-                    removeAnimation(forKey: key)
-                }
+            updatePresentation(for: animation, at: currentTime)
+            propertiesDidAnimate[keyPath] = true
+
+            if animation.isComplete && animation.isRemovedOnCompletion {
+                removeAndCallCompletion(animation: animation)
+            }
+        }
+    }
+}
+
+fileprivate struct PropertiesDidAnimate {
+    var frame = false
+    var bounds = false
+    var opacity = false
+
+    subscript(animationProperty: AnimationProperty) -> Bool {
+        get {
+            switch animationProperty {
+            case .bounds: return self.bounds
+            case .frame: return self.frame
+            case .opacity: return self.opacity
+            case .unknown: return false // throw error?
+            }
+        }
+        set {
+            switch animationProperty {
+            case .bounds: self.bounds = newValue
+            case .frame: self.frame  = newValue
+            case .opacity: self.opacity = newValue
+            case .unknown: break
             }
         }
     }
@@ -146,5 +195,11 @@ fileprivate class CALayerWithoutAnimation: CALayer {
         shadowOpacity = layer.shadowOpacity
         //clone.texture = self.texture // macht komische sachen
         sublayers = layer.sublayers
+    }
+}
+
+extension Array where Iterator.Element == (key: String?, animation: CABasicAnimation) {
+    func getFirstElement(for keyPath: AnimationProperty) -> CABasicAnimation? {
+         return self.filter({ $0.animation.keyPath == keyPath }).first?.animation
     }
 }

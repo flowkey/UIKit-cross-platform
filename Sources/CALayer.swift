@@ -100,7 +100,7 @@ open class CALayer {
     var presentation: CALayer?
     var shouldAnimate = true
 
-    var animations = [String: CABasicAnimation]() {
+    var animations = [(key: String?, animation: CABasicAnimation)]() {
         didSet {
             onDidSetAnimations()
         }

@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-class UIViewAnimationGroup: CABasicAnimationDelegate {
+class UIViewAnimationGroup {
     var completion: ((Bool) -> ())?
     var queuedAnimations = 0
 
@@ -14,7 +14,7 @@ class UIViewAnimationGroup: CABasicAnimationDelegate {
         self.completion = completion
     }
 
-    func didStop(finished: Bool) {
+    func animationDidStop(finished: Bool) {
         queuedAnimations -= 1
         if queuedAnimations == 0 {
             completion?(finished)
