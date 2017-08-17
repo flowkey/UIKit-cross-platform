@@ -9,6 +9,7 @@
 extension CALayer {
     open func add(_ animation: CABasicAnimation, forKey key: String) {
         ensureFromValueIsDefined(animation)
+        animation.timer = Timer()
         animations.append((key, animation))
     }
 
@@ -71,7 +72,7 @@ extension CALayer {
     func updatePresentation(for animation: CABasicAnimation, at currentTime: Timer) {
         guard let keyPath = animation.keyPath, let presentation = presentation else { return }
 
-        switch keyPath as AnimationProperty {
+        switch keyPath {
         case .frame:
             guard
                 let startFrame = animation.fromValue as? CGRect,
@@ -90,6 +91,7 @@ extension CALayer {
             presentation.bounds.origin = (startBounds + (endBounds - startBounds) * animation.progress).origin
 
         case .opacity:
+
             guard
                 let startOpacity = animation.fromValue as? CGFloat,
                 let endOpacity = animation.toValue as? CGFloat

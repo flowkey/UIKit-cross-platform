@@ -29,10 +29,24 @@ public class CABasicAnimation {
     public var isRemovedOnCompletion = true
     public var duration: CGFloat = 0
     public var delay: CGFloat = 0
-    public var fromValue: AnimatableProperty?
-    public var toValue: AnimatableProperty?
 
-    private var timer = Timer()
+    public var fromValue: AnimatableProperty? {
+        didSet {
+            if let value = fromValue as? NSNumber {
+                fromValue = CGFloat(truncating: value)
+            }
+        }
+    }
+
+    public var toValue: AnimatableProperty? {
+        didSet {
+            if let value = toValue as? NSNumber {
+                toValue = CGFloat(truncating: value)
+            }
+        }
+    }
+
+    var timer = Timer()
     var progress: CGFloat = 0
 
     func updateProgress(to currentTime: Timer) -> CGFloat {
@@ -48,6 +62,7 @@ public class CABasicAnimation {
     var isComplete: Bool {
         return progress == 1
     }
+
 }
 
 public enum AnimationProperty: ExpressibleByStringLiteral {
@@ -61,8 +76,6 @@ public enum AnimationProperty: ExpressibleByStringLiteral {
         }
     }
 }
-
-public protocol AnimatableProperty {}
 
 extension CABasicAnimation: Equatable {
     public static func ==(lhs: CABasicAnimation, rhs: CABasicAnimation) -> Bool {
