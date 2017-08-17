@@ -157,7 +157,7 @@ class UIViewAnimationTests: XCTestCase {
             view.alpha = 0.1
         })
 
-        UIView.animateIfNeeded(at: Timer(startingAt: 1))
+        UIView.animateIfNeeded(at: Timer(startingAt: 2500))
         XCTAssertNotNil(view.layer.presentation)
     }
 

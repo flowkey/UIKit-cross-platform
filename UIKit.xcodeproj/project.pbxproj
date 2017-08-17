@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5B2D46271F458E5000096D48 /* AnimationLoopState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B2D46261F458E5000096D48 /* AnimationLoopState.swift */; };
-		5B4F43CC1F39BB8200FB4AB9 /* AnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CB1F39BB8200FB4AB9 /* AnimationPrototype.swift */; };
 		5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */; };
 		5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */; };
 		5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */; };
@@ -163,7 +162,6 @@
 
 /* Begin PBXFileReference section */
 		5B2D46261F458E5000096D48 /* AnimationLoopState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimationLoopState.swift; path = Sources/AnimationLoopState.swift; sourceTree = SOURCE_ROOT; };
-		5B4F43CB1F39BB8200FB4AB9 /* AnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimationPrototype.swift; path = Sources/AnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
 		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = Sources/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CALayer+animations.swift"; path = "Sources/CALayer+animations.swift"; sourceTree = SOURCE_ROOT; };
 		5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewAnimationGroup.swift; path = Sources/UIViewAnimationGroup.swift; sourceTree = SOURCE_ROOT; };
@@ -318,7 +316,6 @@
 		5BBEECA21F39E770006E3416 /* Animations */ = {
 			isa = PBXGroup;
 			children = (
-				5B4F43CB1F39BB8200FB4AB9 /* AnimationPrototype.swift */,
 				5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */,
 				5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */,
 				5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */,
@@ -751,7 +748,6 @@
 				5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */,
 				5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */,
 				5C6AB76E1ED5B8DB006F90AC /* UIGestureRecognizer.swift in Sources */,
-				5B4F43CC1F39BB8200FB4AB9 /* AnimationPrototype.swift in Sources */,
 				8318D27B1F0695080029816A /* UIControl.swift in Sources */,
 				5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */,
 				83AB7B481F2B504300C7997D /* UIAlertController.swift in Sources */,

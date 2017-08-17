@@ -18,10 +18,25 @@ public class CABasicAnimation {
         self.keyPath = keyPath
     }
 
-    init(keyPath: AnimationProperty, protoType: CABasicAnimationPrototype) {
-        self.keyPath = keyPath
-        self.delay = protoType.delay
-        self.duration = protoType.duration
+    init(duration: CGFloat, delay: CGFloat, options: UIViewAnimationOptions) {
+        self.duration = duration
+        self.delay = delay
+        self.options = options
+    }
+
+    init(prototype: CABasicAnimation, keyPath: AnimationProperty? = nil) {
+        self.keyPath = keyPath ?? prototype.keyPath
+        self.duration = prototype.duration
+        self.delay = prototype.delay
+        self.options = prototype.options
+    }
+
+    func copy() -> CABasicAnimation {
+        return CABasicAnimation(prototype: self)
+    }
+
+    func createAnimation(keyPath: AnimationProperty) -> CABasicAnimation {
+        return CABasicAnimation(prototype: self, keyPath: keyPath)
     }
 
     public var keyPath: AnimationProperty?
@@ -29,6 +44,7 @@ public class CABasicAnimation {
     public var isRemovedOnCompletion = true
     public var duration: CGFloat = 0
     public var delay: CGFloat = 0
+    public var options: UIViewAnimationOptions = []
 
     public var fromValue: AnimatableProperty? {
         didSet {
