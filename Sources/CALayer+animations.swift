@@ -20,8 +20,6 @@ extension CALayer {
     }
 
     private func add(_ animation: CABasicAnimation) {
-        ensureFromValueIsDefined(animation)
-
         UIView.currentAnimationGroup?.queuedAnimations += 1
         animations.append((nil, animation))
     }
@@ -34,7 +32,8 @@ extension CALayer {
     func onWillSet(_ newOpacity: CGFloat) {
         if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
             let animation = prototype.createAnimation(keyPath: .opacity)
-            animation.fromValue = (presentation ?? self).opacity
+
+            animation.fromValue = getCurrentState(for: animation.options).opacity
             animation.toValue = newOpacity
 
             add(animation)
@@ -44,7 +43,7 @@ extension CALayer {
     func onWillSet(_ newFrame: CGRect) {
         if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
             let animation = prototype.createAnimation(keyPath: .frame)
-            animation.fromValue = (presentation ?? self).frame
+            animation.fromValue = getCurrentState(for: animation.options).frame
             animation.toValue = newFrame
 
             add(animation)
@@ -54,11 +53,15 @@ extension CALayer {
     func onWillSet(newBounds: CGRect) {
         if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
             let animation =  prototype.createAnimation(keyPath: .bounds)
-            animation.fromValue = (presentation ?? self).bounds
+            animation.fromValue = getCurrentState(for: animation.options).bounds
             animation.toValue = newBounds
 
             add(animation)
         }
+    }
+
+    private func getCurrentState(for options: UIViewAnimationOptions) -> CALayer {
+        return options.contains(.beginFromCurrentState) ? (presentation ?? self) : self
     }
 
     func onDidSetAnimations() {
