@@ -21,22 +21,19 @@ class CASpringAnimation: CABasicAnimation {
         self.initialSpringVelocity = initialSpringVelocity
         super.init(duration: duration, delay: delay, options: options)
     }
+}
 
-    init(from animation: CASpringAnimation) {
+extension CASpringAnimation {
+    convenience init(from animation: CASpringAnimation) {
+        self.init(
+            duration: animation.duration,
+            delay: animation.delay,
+            damping: animation.damping,
+            initialSpringVelocity: animation.initialSpringVelocity,
+            options: animation.options
+        )
+
         damping = animation.damping
         initialSpringVelocity = animation.initialSpringVelocity
-
-        super.init(from: animation)
-    }
-
-    init(prototype: CASpringAnimationPrototype,
-         keyPath: AnimationProperty,
-         fromValue: AnimatableProperty,
-         toValue: AnimatableProperty
-    ) {
-        self.damping = prototype.damping
-        self.initialSpringVelocity = prototype.initialSpringVelocity
-        
-        super.init(prototype: prototype, keyPath: keyPath, fromValue: fromValue, toValue: toValue)
     }
 }
