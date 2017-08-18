@@ -29,6 +29,13 @@ public class CABasicAnimation {
         self.duration = animation.duration
         self.delay = animation.delay
         self.options = animation.options
+
+        self.timer = animation.timer
+        self.isRemovedOnCompletion = animation.isRemovedOnCompletion
+        self.progress = animation.progress
+        self.fillMode = animation.fillMode
+        self.fromValue = animation.fromValue
+        self.toValue = animation.toValue
     }
 
     func copy() -> CABasicAnimation {

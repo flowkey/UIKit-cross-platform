@@ -10,7 +10,9 @@ extension CALayer {
     open func add(_ animation: CABasicAnimation, forKey key: String) {
         ensureFromValueIsDefined(animation)
         animation.timer = Timer()
-        animations.append((key, animation))
+
+        let copy = CABasicAnimation(from: animation)
+        animations.append((key, copy))
     }
 
     open func removeAnimation(forKey key: String) {
