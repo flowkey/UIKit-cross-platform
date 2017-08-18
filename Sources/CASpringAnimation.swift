@@ -22,18 +22,18 @@ class CASpringAnimation: CABasicAnimation {
         super.init(duration: duration, delay: delay, options: options)
     }
 
-    init(prototype: CASpringAnimation, keyPath: AnimationProperty) {
-        damping = prototype.damping
-        initialSpringVelocity = prototype.initialSpringVelocity
+    init(from animation: CASpringAnimation, keyPath: AnimationProperty) {
+        damping = animation.damping
+        initialSpringVelocity = animation.initialSpringVelocity
 
         super.init(keyPath: keyPath)
 
-        duration = prototype.duration
-        delay = prototype.delay
-        options = prototype.options
+        duration = animation.duration
+        delay = animation.delay
+        options = animation.options
     }
 
     override func createAnimation(keyPath: AnimationProperty) -> CASpringAnimation {
-        return CASpringAnimation(prototype: self, keyPath: keyPath)
+        return CASpringAnimation(from: self, keyPath: keyPath)
     }
 }

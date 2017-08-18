@@ -24,19 +24,19 @@ public class CABasicAnimation {
         self.options = options
     }
 
-    init(prototype: CABasicAnimation, keyPath: AnimationProperty? = nil) {
-        self.keyPath = keyPath ?? prototype.keyPath
-        self.duration = prototype.duration
-        self.delay = prototype.delay
-        self.options = prototype.options
+    init(from animation: CABasicAnimation, keyPath: AnimationProperty? = nil) {
+        self.keyPath = keyPath ?? animation.keyPath
+        self.duration = animation.duration
+        self.delay = animation.delay
+        self.options = animation.options
     }
 
     func copy() -> CABasicAnimation {
-        return CABasicAnimation(prototype: self)
+        return CABasicAnimation(from: self)
     }
 
     func createAnimation(keyPath: AnimationProperty) -> CABasicAnimation {
-        return CABasicAnimation(prototype: self, keyPath: keyPath)
+        return CABasicAnimation(from: self, keyPath: keyPath)
     }
 
     public var keyPath: AnimationProperty?
