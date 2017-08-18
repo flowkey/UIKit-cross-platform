@@ -100,7 +100,6 @@ extension CALayer {
             presentation.bounds.origin = (startBounds + (endBounds - startBounds) * animation.progress).origin
 
         case .opacity:
-
             guard
                 let startOpacity = animation.fromValue as? CGFloat,
                 let endOpacity = animation.toValue as? CGFloat

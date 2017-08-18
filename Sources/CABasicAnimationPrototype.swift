@@ -33,28 +33,10 @@ fileprivate extension CABasicAnimation {
         fromValue: AnimatableProperty,
         toValue: AnimatableProperty
     ) {
-        self.init(duration: prototype.duration, delay: prototype.duration, options: prototype.options)
+        self.init(duration: prototype.duration, delay: prototype.delay, options: prototype.options)
         self.fromValue = fromValue
         self.toValue = toValue
         self.keyPath = keyPath
     }
 }
 
-class CASpringAnimationPrototype: CABasicAnimationPrototype {
-    let damping: CGFloat
-    let initialSpringVelocity: CGFloat
-
-    init(duration: CGFloat, delay: CGFloat, damping: CGFloat, initialSpringVelocity: CGFloat, options: UIViewAnimationOptions) {
-        self.damping = damping
-        self.initialSpringVelocity = initialSpringVelocity
-        super.init(duration: duration, delay: delay, options: options)
-    }
-
-    override func createAnimation(
-        keyPath: AnimationProperty,
-        fromValue: AnimatableProperty,
-        toValue: AnimatableProperty
-    ) -> CABasicAnimation {
-        return CASpringAnimation(prototype: self, keyPath: keyPath, fromValue: fromValue, toValue: toValue)
-    }
-}

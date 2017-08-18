@@ -24,39 +24,6 @@ public class CABasicAnimation {
         self.options = options
     }
 
-    init(from animation: CABasicAnimation) {
-        self.keyPath = animation.keyPath
-        self.duration = animation.duration
-        self.delay = animation.delay
-        self.options = animation.options
-        self.timer = animation.timer
-        self.progress = animation.progress
-        self.fillMode = animation.fillMode
-        self.fromValue = animation.fromValue
-        self.toValue = animation.toValue
-        self.animationGroup = animation.animationGroup
-        self.isRemovedOnCompletion = animation.isRemovedOnCompletion
-    }
-
-    func copy() -> CABasicAnimation {
-        return CABasicAnimation(from: self)
-    }
-
-    init(
-        prototype: CABasicAnimationPrototype,
-        keyPath: AnimationProperty,
-        fromValue: AnimatableProperty,
-        toValue: AnimatableProperty
-    ) {
-        delay = prototype.delay
-        duration = prototype.duration
-        options = prototype.options
-
-        self.fromValue = fromValue
-        self.toValue = toValue
-        self.keyPath = keyPath
-    }
-
     public var keyPath: AnimationProperty?
     public var fillMode: String?
     public var isRemovedOnCompletion = true
@@ -114,6 +81,24 @@ public enum AnimationProperty: ExpressibleByStringLiteral {
 extension CABasicAnimation: Equatable {
     public static func ==(lhs: CABasicAnimation, rhs: CABasicAnimation) -> Bool {
         return ObjectIdentifier(lhs).hashValue == ObjectIdentifier(rhs).hashValue
+    }
+}
+
+extension CABasicAnimation {
+    func copy() -> CABasicAnimation {
+        return CABasicAnimation(from: self)
+    }
+
+    convenience init(from animation: CABasicAnimation) {
+        self.init(duration: animation.duration, delay: animation.delay, options: animation.options)
+        keyPath = animation.keyPath
+        timer = animation.timer
+        progress = animation.progress
+        fillMode = animation.fillMode
+        fromValue = animation.fromValue
+        toValue = animation.toValue
+        animationGroup = animation.animationGroup
+        isRemovedOnCompletion = animation.isRemovedOnCompletion
     }
 }
 
