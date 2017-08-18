@@ -10,10 +10,30 @@ class CASpringAnimation: CABasicAnimation {
     var damping: CGFloat
     var initialSpringVelocity: CGFloat
 
-    init(keyPath: AnimationProperty, protoType: CASpringAnimationPrototype) {
-        self.damping = protoType.damping
-        self.initialSpringVelocity = protoType.initialSpringVelocity
+    init(
+        delay: CGFloat,
+        duration: CGFloat,
+        damping: CGFloat,
+        initialSpringVelocity: CGFloat,
+        options: UIViewAnimationOptions
+    ) {
+        self.damping = damping
+        self.initialSpringVelocity = initialSpringVelocity
+        super.init(duration: duration, delay: delay, options: options)
+    }
 
-        super.init(keyPath: keyPath, protoType: protoType)
+    init(from animation: CASpringAnimation, keyPath: AnimationProperty) {
+        damping = animation.damping
+        initialSpringVelocity = animation.initialSpringVelocity
+
+        super.init(keyPath: keyPath)
+
+        duration = animation.duration
+        delay = animation.delay
+        options = animation.options
+    }
+
+    override func createAnimation(keyPath: AnimationProperty) -> CASpringAnimation {
+        return CASpringAnimation(from: self, keyPath: keyPath)
     }
 }

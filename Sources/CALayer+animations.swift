@@ -30,7 +30,7 @@ extension CALayer {
     }
 
     func onWillSet(_ newOpacity: CGFloat) {
-        if let prototype = UIView.animationPrototype, shouldAnimate {
+        if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
             let animation = prototype.createAnimation(keyPath: .opacity)
             animation.fromValue = (presentation ?? self).opacity
             animation.toValue = newOpacity
@@ -40,7 +40,7 @@ extension CALayer {
     }
 
     func onWillSet(_ newFrame: CGRect) {
-        if let prototype = UIView.animationPrototype, shouldAnimate {
+        if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
             let animation = prototype.createAnimation(keyPath: .frame)
             animation.fromValue = (presentation ?? self).frame
             animation.toValue = newFrame
@@ -50,7 +50,7 @@ extension CALayer {
     }
 
     func onWillSet(newBounds: CGRect) {
-        if let prototype = UIView.animationPrototype, shouldAnimate {
+        if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
             let animation =  prototype.createAnimation(keyPath: .bounds)
             animation.fromValue = (presentation ?? self).bounds
             animation.toValue = newBounds
