@@ -31,6 +31,16 @@ class CABasicAnimationTests: XCTestCase {
         }
     }
 
+    func testAddingAnimationsToLayerCreatesCopy() {
+        let firstLayer = CALayer()
+        let secondLayer = CALayer()
+        let animation = CABasicAnimation(keyPath: "opacity")
+
+        firstLayer.add(animation, forKey: "fadeOut")
+        secondLayer.add(animation, forKey: "fadeOut")
+
+        XCTAssertNotEqual(firstLayer.animations.first?.animation, secondLayer.animations.first?.animation)
+    }
 }
 
 
