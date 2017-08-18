@@ -7,20 +7,8 @@
 //
 
 class CASpringAnimation: CABasicAnimation {
-    var damping: CGFloat
-    var initialSpringVelocity: CGFloat
-
-    init(
-        duration: CGFloat,
-        delay: CGFloat,
-        damping: CGFloat,
-        initialSpringVelocity: CGFloat,
-        options: UIViewAnimationOptions
-    ) {
-        self.damping = damping
-        self.initialSpringVelocity = initialSpringVelocity
-        super.init(duration: duration, delay: delay, options: options)
-    }
+    var damping: CGFloat?
+    var initialSpringVelocity: CGFloat?
 
     init(from animation: CASpringAnimation) {
         damping = animation.damping

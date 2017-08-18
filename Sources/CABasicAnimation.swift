@@ -18,12 +18,6 @@ public class CABasicAnimation {
         self.keyPath = keyPath
     }
 
-    init(duration: CGFloat, delay: CGFloat, options: UIViewAnimationOptions) {
-        self.duration = duration
-        self.delay = delay
-        self.options = options
-    }
-
     init(from animation: CABasicAnimation) {
         self.keyPath = animation.keyPath
         self.duration = animation.duration
