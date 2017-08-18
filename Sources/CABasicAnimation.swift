@@ -24,26 +24,37 @@ public class CABasicAnimation {
         self.options = options
     }
 
-    init(from animation: CABasicAnimation, keyPath: AnimationProperty? = nil) {
-        self.keyPath = keyPath ?? animation.keyPath
+    init(from animation: CABasicAnimation) {
+        self.keyPath = animation.keyPath
         self.duration = animation.duration
         self.delay = animation.delay
         self.options = animation.options
-
         self.timer = animation.timer
-        self.isRemovedOnCompletion = animation.isRemovedOnCompletion
         self.progress = animation.progress
         self.fillMode = animation.fillMode
         self.fromValue = animation.fromValue
         self.toValue = animation.toValue
+        self.animationGroup = animation.animationGroup
+        self.isRemovedOnCompletion = animation.isRemovedOnCompletion
     }
 
     func copy() -> CABasicAnimation {
         return CABasicAnimation(from: self)
     }
 
-    func createAnimation(keyPath: AnimationProperty) -> CABasicAnimation {
-        return CABasicAnimation(from: self, keyPath: keyPath)
+    init(
+        prototype: CABasicAnimationPrototype,
+        keyPath: AnimationProperty,
+        fromValue: AnimatableProperty,
+        toValue: AnimatableProperty
+    ) {
+        delay = prototype.delay
+        duration = prototype.duration
+        options = prototype.options
+
+        self.fromValue = fromValue
+        self.toValue = toValue
+        self.keyPath = keyPath
     }
 
     public var keyPath: AnimationProperty?
@@ -105,3 +116,4 @@ extension CABasicAnimation: Equatable {
         return ObjectIdentifier(lhs).hashValue == ObjectIdentifier(rhs).hashValue
     }
 }
+

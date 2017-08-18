@@ -19,7 +19,7 @@ public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
 extension UIView {
     static var layersWithAnimations = Set<CALayer>()
     static var currentAnimationGroup: UIViewAnimationGroup?
-    static var currentAnimationPrototype: CABasicAnimation?
+    static var currentAnimationPrototype: CABasicAnimationPrototype?
 
     public static func animate(
         withDuration duration: Double,
@@ -29,7 +29,7 @@ extension UIView {
         completion: ((Bool) -> Void)? = nil
     ) {
         currentAnimationGroup = UIViewAnimationGroup(completion: completion)
-        currentAnimationPrototype = CABasicAnimation(
+        currentAnimationPrototype = CABasicAnimationPrototype(
             duration: CGFloat(duration),
             delay: CGFloat(delay),
             options: options
@@ -50,9 +50,9 @@ extension UIView {
         completion: ((Bool) -> Void)? = nil
     ) {
         currentAnimationGroup = UIViewAnimationGroup(completion: completion)
-        currentAnimationPrototype = CASpringAnimation(
-            delay: CGFloat(delay),
+        currentAnimationPrototype = CASpringAnimationPrototype(
             duration: CGFloat(duration),
+            delay: CGFloat(delay),
             damping: usingSpringWithDamping,
             initialSpringVelocity: initialSpringVelocity,
             options: options

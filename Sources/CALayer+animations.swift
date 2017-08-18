@@ -31,10 +31,11 @@ extension CALayer {
 
     func onWillSet(_ newOpacity: CGFloat) {
         if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
-            let animation = prototype.createAnimation(keyPath: .opacity)
-
-            animation.fromValue = getCurrentState(for: animation.options).opacity
-            animation.toValue = newOpacity
+            let animation = prototype.createAnimation(
+                keyPath: .opacity,
+                fromValue: getCurrentState(for: prototype.options).opacity,
+                toValue: newOpacity
+            )
 
             add(animation)
         }
@@ -42,9 +43,11 @@ extension CALayer {
 
     func onWillSet(_ newFrame: CGRect) {
         if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
-            let animation = prototype.createAnimation(keyPath: .frame)
-            animation.fromValue = getCurrentState(for: animation.options).frame
-            animation.toValue = newFrame
+            let animation = prototype.createAnimation(
+                keyPath: .frame,
+                fromValue: getCurrentState(for: prototype.options).frame,
+                toValue: newFrame
+            )
 
             add(animation)
         }
@@ -52,9 +55,10 @@ extension CALayer {
 
     func onWillSet(newBounds: CGRect) {
         if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
-            let animation =  prototype.createAnimation(keyPath: .bounds)
-            animation.fromValue = getCurrentState(for: animation.options).bounds
-            animation.toValue = newBounds
+            let animation =  prototype.createAnimation(keyPath: .bounds,
+                fromValue: getCurrentState(for: prototype.options).bounds,
+                toValue: newBounds
+            )
 
             add(animation)
         }

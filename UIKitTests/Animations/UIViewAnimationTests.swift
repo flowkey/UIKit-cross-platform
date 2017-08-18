@@ -209,22 +209,13 @@ class UIViewAnimationTests: XCTestCase {
         UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
             view.frame.origin.x = 10
         })
-
-        XCTAssertNotNil(view.layer.presentation)
         UIView.animateIfNeeded(at: Timer(startingAt: 5000))
-
         UIView.animate(withDuration: 10, delay: 5, options: [.beginFromCurrentState], animations: {
             view.frame.origin.x = 20
         })
 
-        XCTAssertEqual(view.layer.animations.count, 2)
-
         let fromValue = view.layer.animations[1].animation.fromValue as? CGRect
         XCTAssertEqual(fromValue?.origin.x ?? -1, CGFloat(5), accuracy: 0.01)
-
-
-        UIView.animateIfNeeded(at: Timer(startingAt: 15000))
-
     }
 }
 
