@@ -41,6 +41,23 @@ class CABasicAnimationTests: XCTestCase {
 
         XCTAssertNotEqual(firstLayer.animations.first?.animation, secondLayer.animations.first?.animation)
     }
+
+    func testDoNotRemoveOnCompletion() {
+        let layer = CALayer()
+
+        let animation = CABasicAnimation(keyPath: "fadeOut")
+        animation.duration = 0.5
+        animation.keyPath = "opacity"
+        animation.fromValue = 1
+        animation.toValue = 0
+        animation.isRemovedOnCompletion = false
+        layer.add(animation, forKey: "")
+
+        UIView.animateIfNeeded(at: Timer(startingAt: 2000))
+
+        XCTAssertNotNil(layer.presentation)
+        XCTAssertEqual(layer.presentation?.opacity, 0)
+    }
 }
 
 

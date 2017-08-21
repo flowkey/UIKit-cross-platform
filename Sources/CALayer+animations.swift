@@ -24,7 +24,7 @@ extension CALayer {
         animations.append((nil, animation))
     }
 
-    private func removeAnimationAndRunCompletion(animation: CABasicAnimation) {
+    private func removeAnimationAndNotifyGroup(animation: CABasicAnimation) {
         animation.animationGroup?.animationDidStop(finished: animation.isComplete)
         animations = animations.filter { $0.animation != animation }
     }
@@ -124,14 +124,14 @@ extension CALayer {
                 propertiesDidAnimate[keyPath],
                 let firstAnimationForKeyPath = animations.getFirstElement(for: keyPath)
             {
-                removeAnimationAndRunCompletion(animation: firstAnimationForKeyPath)
+                removeAnimationAndNotifyGroup(animation: firstAnimationForKeyPath)
             }
-
+            
             updatePresentation(for: animation, at: currentTime)
             propertiesDidAnimate[keyPath] = true
 
             if animation.isComplete && animation.isRemovedOnCompletion {
-                removeAnimationAndRunCompletion(animation: animation)
+                removeAnimationAndNotifyGroup(animation: animation)
             }
         }
     }
@@ -153,6 +153,8 @@ fileprivate extension CALayer {
         borderWidth = layer.borderWidth
         borderColor = layer.borderColor
         shadowColor = layer.shadowColor
+        shadowPath = layer.shadowPath
+        shadowOffset = layer.shadowOffset
         shadowRadius = layer.shadowRadius
         shadowOpacity = layer.shadowOpacity
         //clone.texture = self.texture // macht komische sachen
@@ -167,11 +169,11 @@ fileprivate extension CALayer {
         if animation.fromValue == nil, let keypath = animation.keyPath {
             switch keypath as AnimationProperty  {
             case .frame:
-                animation.fromValue = animation.fromValue ?? frame
+                animation.fromValue = animation.fromValue ?? presentation?.frame ?? frame
             case .opacity:
-                animation.fromValue = animation.fromValue ?? opacity
+                animation.fromValue = animation.fromValue ?? presentation?.opacity ?? opacity
             case .bounds:
-                animation.fromValue = animation.fromValue ?? bounds
+                animation.fromValue = animation.fromValue ?? presentation?.bounds ?? bounds
             case .unknown: break
             }
         }
