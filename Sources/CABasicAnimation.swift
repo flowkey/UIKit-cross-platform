@@ -9,7 +9,6 @@
 public let kCAFillModeForwards = "kCAFillModeForwards"
 
 public class CABasicAnimation {
-
     // != nil means animating in UIView.animate closure
     // == nil means animation was manually instantiated
     var animationGroup: UIViewAnimationGroup? = UIView.currentAnimationGroup
@@ -75,7 +74,6 @@ public class CABasicAnimation {
     var isComplete: Bool {
         return progress == 1
     }
-
 }
 
 public enum AnimationProperty: ExpressibleByStringLiteral {

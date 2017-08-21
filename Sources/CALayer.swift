@@ -40,7 +40,7 @@ open class CALayer {
     /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc)
     open var frame: CGRect = .zero {
         willSet (newFrame) {
-            onWillSet(newFrame)
+            onWillSet(newFrame: newFrame)
         }
         didSet {
             if bounds.size != frame.size {
@@ -51,7 +51,7 @@ open class CALayer {
 
     open var bounds: CGRect = .zero {
         willSet(newBounds) {
-            if (bounds.origin != newBounds.origin) { // prevents crazy recursion, because bounds.size updates frame.size
+            if (bounds.origin != newBounds.origin) { // prevents recursion, bounds.size updates frame.size
                 onWillSet(newBounds: newBounds)
             }
         }
@@ -65,7 +65,7 @@ open class CALayer {
     public var isHidden = false
     public var opacity: CGFloat = 1 {
         willSet(newOpacity) {
-            self.onWillSet(newOpacity)
+            onWillSet(newOpacity: newOpacity)
         }
     }
 
@@ -102,7 +102,7 @@ open class CALayer {
 
     var animations = [(key: String?, animation: CABasicAnimation)]() {
         didSet {
-            onDidSetAnimations()
+            onDidSetAnimations(wasEmpty: oldValue.isEmpty)
         }
     }
 }

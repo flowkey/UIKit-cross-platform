@@ -29,26 +29,24 @@ extension CALayer {
         animations = animations.filter { $0.animation != animation }
     }
 
-    func onWillSet(_ newOpacity: CGFloat) {
+    func onWillSet(newOpacity: CGFloat) {
         if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
             let animation = prototype.createAnimation(
                 keyPath: .opacity,
                 fromValue: getCurrentState(for: prototype.options).opacity,
                 toValue: newOpacity
             )
-
             add(animation)
         }
     }
 
-    func onWillSet(_ newFrame: CGRect) {
+    func onWillSet(newFrame: CGRect) {
         if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
             let animation = prototype.createAnimation(
                 keyPath: .frame,
                 fromValue: getCurrentState(for: prototype.options).frame,
                 toValue: newFrame
             )
-
             add(animation)
         }
     }
@@ -59,7 +57,6 @@ extension CALayer {
                 fromValue: getCurrentState(for: prototype.options).bounds,
                 toValue: newBounds
             )
-
             add(animation)
         }
     }
@@ -68,11 +65,11 @@ extension CALayer {
         return options.contains(.beginFromCurrentState) ? (presentation ?? self) : self
     }
 
-    func onDidSetAnimations() {
-        if animations.count > 0 {
-            presentation = presentation ?? self.createNonAnimatingCopy()
+    func onDidSetAnimations(wasEmpty: Bool) {
+        if wasEmpty && !animations.isEmpty {
+            presentation = self.createNonAnimatingCopy()
             UIView.layersWithAnimations.insert(self)
-        } else {
+        } else if animations.isEmpty && !wasEmpty {
             presentation = nil
             UIView.layersWithAnimations.remove(self)
         }
@@ -100,7 +97,6 @@ extension CALayer {
             presentation.bounds.origin = (startBounds + (endBounds - startBounds) * animation.progress).origin
 
         case .opacity:
-
             guard
                 let startOpacity = animation.fromValue as? CGFloat,
                 let endOpacity = animation.toValue as? CGFloat
@@ -159,7 +155,6 @@ fileprivate extension CALayer {
         shadowOpacity = layer.shadowOpacity
         //clone.texture = self.texture // macht komische sachen
         sublayers = layer.sublayers
-
         self.shouldAnimate = shouldAnimate
     }
 }
