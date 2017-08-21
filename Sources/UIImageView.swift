@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public class UIImageView: UIView {
+open class UIImageView: UIView {
     public init(image: UIImage? = nil) {
         self.image = image
         super.init(frame: .zero)
@@ -17,6 +17,12 @@ public class UIImageView: UIView {
             updateTextureFromImage()
         }
         
+        isUserInteractionEnabled = false
+    }
+
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+
         isUserInteractionEnabled = false
     }
 
@@ -40,4 +46,5 @@ public class UIImageView: UIView {
 public enum UIContentMode {
     case left, right, top, bottom
     case center, stretch, contain
+    case scaleAspectFit
 }

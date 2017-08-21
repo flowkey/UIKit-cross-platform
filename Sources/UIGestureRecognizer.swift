@@ -41,6 +41,13 @@ open class UIGestureRecognizer {
     }
     public var onStateChanged: (() -> Void)? = nil
 
+    public typealias OnActionCallback = (() -> Void)?
+    internal var onAction: OnActionCallback
+
+    public init(onAction: OnActionCallback = nil) {
+        self.onAction = onAction
+    }
+
     public func require(toFail other: UIGestureRecognizer) {
         // TODO: Not implemented
     }
