@@ -42,6 +42,3 @@ fileprivate extension CABasicAnimation {
         self.toValue = toValue
     }
 }
-
-
-
