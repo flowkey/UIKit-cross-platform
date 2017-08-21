@@ -14,6 +14,9 @@ public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
 
     public static let allowUserInteraction = UIViewAnimationOptions(rawValue: 1 << 0)
     public static let beginFromCurrentState = UIViewAnimationOptions(rawValue: 1 << 1)
+    public static let curveEaseIn = UIViewAnimationOptions(rawValue: 1 << 2)
+    public static let curveEaseOut = UIViewAnimationOptions(rawValue: 1 << 3)
+    public static let curveEaseInOut = UIViewAnimationOptions(rawValue: 1 << 4)
 }
 
 extension UIView {

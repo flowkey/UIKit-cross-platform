@@ -75,12 +75,6 @@ public class CABasicAnimation {
     var timer = Timer()
     var progress: CGFloat = 0
 
-    func updateProgress(to currentTime: Timer) -> CGFloat {
-        let elapsedTime = max(CGFloat(currentTime - self.timer) - (delay * 1000), 0)
-        progress = min(elapsedTime / (duration * 1000), 1)
-        return progress
-    }
-
     var hasStarted: Bool {
         return progress > 0
     }
