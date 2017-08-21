@@ -28,6 +28,15 @@ public struct UIColor: Equatable {
         self.blue = blue.normalisedToUInt8()
         self.alpha = alpha.normalisedToUInt8()
     }
+
+    // mocked!
+    public init(patternImage: UIImage?) {
+        // TODO: define a color object for specified Quartz color reference https://developer.apple.com/documentation/uikit/uicolor/1621933-init
+        self.red = CGFloat(250).normalisedToUInt8()
+        self.green = CGFloat(250).normalisedToUInt8()
+        self.blue = CGFloat(250).normalisedToUInt8()
+        self.alpha = CGFloat(1).normalisedToUInt8()
+    }
     
     public static func == (lhs: UIColor, rhs: UIColor) -> Bool {
         return (lhs.red == rhs.red) && (lhs.green == rhs.green) && (lhs.blue == rhs.blue)
@@ -47,6 +56,8 @@ extension UIColor {
     public static let red = UIColor(red: 255, green: 0, blue: 0)
     public static let green = UIColor(red: 0, green: 255, blue: 0)
     public static let blue = UIColor(red: 0, green: 0, blue: 255)
+    public static let orange = UIColor(red: 255, green: 127.5, blue: 0)
+    public static let lightGray = UIColor(red: 170, green: 170, blue: 170)
     public static let clear = black.withAlphaComponent(0.0)
 
     public var cgColor: CGColor {

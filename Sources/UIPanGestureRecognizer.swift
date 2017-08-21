@@ -7,12 +7,6 @@
 //
 
 open class UIPanGestureRecognizer: UIGestureRecognizer {
-    internal var onPan: OnPanCallback
-    public typealias OnPanCallback = (() -> Void)?
-    public init(onPan: OnPanCallback = nil) {
-        self.onPan = onPan
-    }
-
     private var initialTouchPoint: CGPoint = .zero // should probably be optional instead
     private var trackedTouch: UITouch?
 
@@ -58,7 +52,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         }
 
         if state == .changed {
-            onPan?()
+            onAction?()
         }
     }
 

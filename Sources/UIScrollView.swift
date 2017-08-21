@@ -16,7 +16,7 @@ open class UIScrollView: UIView {
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        panGestureRecognizer.onPan = self.onPan
+        panGestureRecognizer.onAction = self.onPan
         panGestureRecognizer.onStateChanged = onPanGestureStateChanged
         addGestureRecognizer(panGestureRecognizer)
     }
