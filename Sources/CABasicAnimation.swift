@@ -36,21 +36,6 @@ public class CABasicAnimation {
         return CABasicAnimation(from: self)
     }
 
-    init(
-        prototype: CABasicAnimationPrototype,
-        keyPath: AnimationProperty,
-        fromValue: AnimatableProperty,
-        toValue: AnimatableProperty
-    ) {
-        delay = prototype.delay
-        duration = prototype.duration
-        options = prototype.options
-
-        self.fromValue = fromValue
-        self.toValue = toValue
-        self.keyPath = keyPath
-    }
-
     public var keyPath: AnimationProperty?
     public var fillMode: String?
     public var isRemovedOnCompletion = true
