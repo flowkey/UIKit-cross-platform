@@ -20,20 +20,7 @@ class CASpringAnimationPrototype: CABasicAnimationPrototype {
         keyPath: AnimationProperty,
         fromValue: AnimatableProperty,
         toValue: AnimatableProperty
-    ) -> CABasicAnimation {
+    ) -> CASpringAnimation {
         return CASpringAnimation(prototype: self, keyPath: keyPath, fromValue: fromValue, toValue: toValue)
-    }
-}
-
-fileprivate extension CASpringAnimation {
-    convenience init(prototype: CASpringAnimationPrototype,
-         keyPath: AnimationProperty,
-         fromValue: AnimatableProperty,
-         toValue: AnimatableProperty
-    ) {
-        self.init(prototype: prototype, keyPath: keyPath, fromValue: fromValue, toValue: toValue)
-        
-        self.damping = prototype.damping
-        self.initialSpringVelocity = prototype.initialSpringVelocity
     }
 }

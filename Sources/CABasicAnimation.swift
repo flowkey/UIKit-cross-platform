@@ -17,6 +17,20 @@ public class CABasicAnimation {
         self.keyPath = keyPath
     }
 
+    init(
+        prototype: CABasicAnimationPrototype,
+        keyPath: AnimationProperty,
+        fromValue: AnimatableProperty,
+        toValue: AnimatableProperty
+    ) {
+        delay = prototype.delay
+        duration = prototype.duration
+        options = prototype.options
+        self.keyPath = keyPath
+        self.fromValue = fromValue
+        self.toValue = toValue
+    }
+
     init(from animation: CABasicAnimation) {
         self.keyPath = animation.keyPath
         self.duration = animation.duration

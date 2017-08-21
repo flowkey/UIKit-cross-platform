@@ -25,20 +25,3 @@ class CABasicAnimationPrototype {
         return CABasicAnimation(prototype: self, keyPath: keyPath, fromValue: fromValue, toValue: toValue)
     }
 }
-
-fileprivate extension CABasicAnimation {
-    convenience init(
-        prototype: CABasicAnimationPrototype,
-        keyPath: AnimationProperty,
-        fromValue: AnimatableProperty,
-        toValue: AnimatableProperty
-    ) {
-        self.init(keyPath: keyPath)
-
-        delay = prototype.delay
-        duration = prototype.duration
-        options = prototype.options
-        self.fromValue = fromValue
-        self.toValue = toValue
-    }
-}
