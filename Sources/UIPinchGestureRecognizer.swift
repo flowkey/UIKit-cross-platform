@@ -7,11 +7,5 @@
 //
 
 public class UIPinchGestureRecognizer: UIGestureRecognizer {
-    public typealias OnPinchCallback = (() -> Void)?
-    internal var onPinch: OnPinchCallback
     public var scale: CGFloat = 1
-
-    public init(onPinch: OnPinchCallback) {
-        self.onPinch = onPinch
-    }
 }
