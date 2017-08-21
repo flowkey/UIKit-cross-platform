@@ -153,7 +153,7 @@ fileprivate extension CALayer {
         shadowOffset = layer.shadowOffset
         shadowRadius = layer.shadowRadius
         shadowOpacity = layer.shadowOpacity
-        //clone.texture = self.texture // macht komische sachen
+        texture = layer.texture
         sublayers = layer.sublayers
         self.shouldAnimate = shouldAnimate
     }
