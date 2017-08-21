@@ -1,5 +1,5 @@
 //
-//  AnimationPrototypes.swift
+//  CABasicAnimationPrototype.swift
 //  UIKit
 //
 //  Created by Michael Knoch on 18.08.17.
@@ -26,21 +26,22 @@ class CABasicAnimationPrototype {
     }
 }
 
-class CASpringAnimationPrototype: CABasicAnimationPrototype {
-    let damping: CGFloat
-    let initialSpringVelocity: CGFloat
-
-    init(duration: CGFloat, delay: CGFloat, damping: CGFloat, initialSpringVelocity: CGFloat, options: UIViewAnimationOptions) {
-        self.damping = damping
-        self.initialSpringVelocity = initialSpringVelocity
-        super.init(duration: duration, delay: delay, options: options)
-    }
-
-    override func createAnimation(
+fileprivate extension CABasicAnimation {
+    convenience init(
+        prototype: CABasicAnimationPrototype,
         keyPath: AnimationProperty,
         fromValue: AnimatableProperty,
         toValue: AnimatableProperty
-    ) -> CABasicAnimation {
-        return CASpringAnimation(prototype: self, keyPath: keyPath, fromValue: fromValue, toValue: toValue)
+    ) {
+        self.init(keyPath: keyPath)
+
+        delay = prototype.delay
+        duration = prototype.duration
+        options = prototype.options
+        self.fromValue = fromValue
+        self.toValue = toValue
     }
 }
+
+
+

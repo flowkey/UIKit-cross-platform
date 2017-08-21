@@ -45,13 +45,12 @@ class CABasicAnimationTests: XCTestCase {
     func testDoNotRemoveOnCompletion() {
         let layer = CALayer()
 
-        let animation = CABasicAnimation(keyPath: "fadeOut")
+        let animation = CABasicAnimation(keyPath: "opacity")
         animation.duration = 0.5
-        animation.keyPath = "opacity"
         animation.fromValue = 1
         animation.toValue = 0
         animation.isRemovedOnCompletion = false
-        layer.add(animation, forKey: "")
+        layer.add(animation, forKey: "fadeOut")
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2000))
 
