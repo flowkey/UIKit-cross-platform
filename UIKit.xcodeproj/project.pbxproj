@@ -173,7 +173,7 @@
 		5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimatableProperty.swift; path = Sources/AnimatableProperty.swift; sourceTree = SOURCE_ROOT; };
 		5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABasicAnimationTests.swift; sourceTree = "<group>"; };
 		5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CGRect+animations.swift"; path = "Sources/CGRect+animations.swift"; sourceTree = SOURCE_ROOT; };
-		5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CABasicAnimation+updateProgress.swift"; sourceTree = "<group>"; };
+		5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sources/CABasicAnimation+updateProgress.swift"; sourceTree = "SOURCE_ROOT"; };
 		5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewAnimationTests.swift; sourceTree = "<group>"; };
 		5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CABasicAnimationPrototype.swift; path = Sources/CABasicAnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
 		5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimationPrototype.swift; path = Sources/CASpringAnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
