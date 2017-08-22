@@ -56,21 +56,8 @@ public class CABasicAnimation {
     public var delay: CGFloat = 0
     public var options: UIViewAnimationOptions = []
 
-    public var fromValue: AnimatableProperty? {
-        didSet {
-            if let newValue = fromValue?.cgFloat {
-                fromValue = newValue
-            }
-        }
-    }
-
-    public var toValue: AnimatableProperty? {
-        didSet {
-            if let newValue = toValue?.cgFloat {
-                toValue = newValue
-            }
-        }
-    }
+    public var fromValue: AnimatableProperty?
+    public var toValue: AnimatableProperty?
 
     var timer = Timer()
     var progress: CGFloat = 0
