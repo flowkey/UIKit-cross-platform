@@ -53,7 +53,8 @@ extension CALayer {
 
     func onWillSet(newBounds: CGRect) {
         if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
-            let animation =  prototype.createAnimation(keyPath: .bounds,
+            let animation =  prototype.createAnimation(
+                keyPath: .bounds,
                 fromValue: getCurrentState(for: prototype.options).bounds,
                 toValue: newBounds
             )

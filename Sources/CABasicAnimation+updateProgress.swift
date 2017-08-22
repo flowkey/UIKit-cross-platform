@@ -6,6 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import func Foundation.pow
+
 extension CABasicAnimation {
     func updateProgress(to currentTime: Timer) -> CGFloat {
         let elapsedTime = max(CGFloat(currentTime - self.timer) - (delay * 1000), 0)
@@ -23,8 +25,8 @@ extension CGFloat {
     }
 }
 
-private func easeInQuad(at x: CGFloat) -> CGFloat { return x*x }
-private func easeInCubic(at x: CGFloat) -> CGFloat { return x*x*x }
+private func easeInQuad(at x: CGFloat) -> CGFloat { return pow(x, 2) }
+private func easeInCubic(at x: CGFloat) -> CGFloat { return pow(x, 3) }
 private func easeOutQuad(at x: CGFloat) -> CGFloat { return x * (2-x) }
 private func easeOutCubic(at x: CGFloat) -> CGFloat { return x * (2-x) }
-private func easeInOutCubic(at x: CGFloat) -> CGFloat { return x < 0.5 ? 4*(x*x*x) : (x-1)*(2*x-2)*(2*x-2)+1 }
+private func easeInOutCubic(at x: CGFloat) -> CGFloat { return x < 0.5 ? 4*pow(x, 3) : (x-1)*(2*x-2)*(2*x-2)+1 }
