@@ -58,22 +58,16 @@ public class CABasicAnimation {
 
     public var fromValue: AnimatableProperty? {
         didSet {
-            if let value = fromValue as? Double {
-                fromValue = CGFloat(value)
-            }
-            if let value = fromValue as? Int {
-                fromValue = CGFloat(value)
+            if let newValue = fromValue?.cgFloat {
+                fromValue = newValue
             }
         }
     }
 
     public var toValue: AnimatableProperty? {
         didSet {
-            if let value = toValue as? Double {
-                toValue = CGFloat(value)
-            }
-            if let value = toValue as? Int {
-                toValue = CGFloat(value)
+            if let newValue = toValue?.cgFloat {
+                toValue = newValue
             }
         }
     }
