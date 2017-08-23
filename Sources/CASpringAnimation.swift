@@ -22,9 +22,15 @@ class CASpringAnimation: CABasicAnimation {
          fromValue: AnimatableProperty,
          toValue: AnimatableProperty
     ) {
-        self.damping = prototype.damping
-        self.initialSpringVelocity = prototype.initialSpringVelocity
+        damping = prototype.damping
+        initialSpringVelocity = prototype.initialSpringVelocity
 
-        super.init(prototype: prototype, keyPath: keyPath, fromValue: fromValue, toValue: toValue)
+        super.init(
+            prototype: prototype,
+            keyPath: keyPath,
+            fromValue: fromValue,
+            toValue: toValue,
+            timingFunction: .timingFunction(from: prototype.options)
+        )
     }
 }

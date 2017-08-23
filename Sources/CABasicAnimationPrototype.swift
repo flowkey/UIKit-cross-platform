@@ -22,6 +22,12 @@ class CABasicAnimationPrototype {
         fromValue: AnimatableProperty,
         toValue: AnimatableProperty
     ) -> CABasicAnimation {
-        return CABasicAnimation(prototype: self, keyPath: keyPath, fromValue: fromValue, toValue: toValue)
+        return CABasicAnimation(
+            prototype: self,
+            keyPath: keyPath,
+            fromValue: fromValue,
+            toValue: toValue,
+            timingFunction: .timingFunction(from: options)
+        )
     }
 }
