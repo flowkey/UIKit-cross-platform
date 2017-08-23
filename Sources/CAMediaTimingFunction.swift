@@ -8,16 +8,16 @@
 
 import func Foundation.pow
 
-public let kCAMediaTimingFunctionLinear = "kCAMediaTimingFunctionLinear"
-public let kCAMediaTimingFunctionEaseIn = "kCAMediaTimingFunctionEaseIn"
-public let kCAMediaTimingFunctionEaseOut = "kCAMediaTimingFunctionEaseOut"
-public let kCAMediaTimingFunctionEaseInEaseOut = "kCAMediaTimingFunctionEaseInEaseOut"
-public let kCAMediaTimingFunctionDefault = "kCAMediaTimingFunctionEaseOut"
+public let kCAMediaTimingFunctionLinear = "linear"
+public let kCAMediaTimingFunctionEaseIn = "easeIn"
+public let kCAMediaTimingFunctionEaseOut = "easeOut"
+public let kCAMediaTimingFunctionEaseInEaseOut = "easeInEaseOut"
+public let kCAMediaTimingFunctionDefault = "default"
 
 private struct InvalidNameError: Error {}
 
 public class CAMediaTimingFunction {
-    private var timing: (CGFloat) -> CGFloat = easeOutCubic
+    private var timing: (CGFloat) -> CGFloat
 
     init(name: String) throws {
         switch name {
