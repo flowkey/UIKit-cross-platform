@@ -14,17 +14,19 @@ public let kCAMediaTimingFunctionEaseOut = "kCAMediaTimingFunctionEaseOut"
 public let kCAMediaTimingFunctionEaseInEaseOut = "kCAMediaTimingFunctionEaseInEaseOut"
 public let kCAMediaTimingFunctionDefault = "kCAMediaTimingFunctionEaseOut"
 
+private struct InvalidNameError: Error {}
+
 public class CAMediaTimingFunction {
     private var timing: (CGFloat) -> CGFloat = easeOutCubic
 
-    init(name: String) {
+    init(name: String) throws {
         switch name {
         case kCAMediaTimingFunctionLinear: timing = CAMediaTimingFunction.linear
         case kCAMediaTimingFunctionEaseIn: timing = CAMediaTimingFunction.easeInCubic
         case kCAMediaTimingFunctionEaseOut: timing = CAMediaTimingFunction.easeOutCubic
         case kCAMediaTimingFunctionEaseInEaseOut: timing = CAMediaTimingFunction.easeInOutCubic
         case kCAMediaTimingFunctionDefault: timing = CAMediaTimingFunction.easeOutCubic
-        default: break
+        default: throw InvalidNameError()
         }
     }
 
@@ -36,11 +38,11 @@ public class CAMediaTimingFunction {
 extension CAMediaTimingFunction {
     static func timingFunction(from options: UIViewAnimationOptions) -> CAMediaTimingFunction? {
         if options.contains(.curveEaseIn) {
-            return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn) }
+            return try! CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn) }
         if options.contains(.curveEaseOut) {
-            return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut) }
+            return try! CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut) }
         if options.contains(.curveEaseInOut) {
-            return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut) }
+            return try! CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut) }
 
         return nil
     }
