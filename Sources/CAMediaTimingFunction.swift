@@ -28,7 +28,7 @@ public class CAMediaTimingFunction {
         }
     }
 
-    func compute(x: CGFloat) -> CGFloat {
+    subscript(at x: CGFloat) -> CGFloat {
         return timing(x)
     }
 }

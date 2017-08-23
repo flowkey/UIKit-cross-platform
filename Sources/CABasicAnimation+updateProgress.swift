@@ -15,6 +15,6 @@ extension CABasicAnimation {
     }
 
     fileprivate func ease(x: CGFloat) -> CGFloat {
-        return timingFunction?.compute(x: x) ?? x
+        return timingFunction?[at: x] ?? x
     }
 }

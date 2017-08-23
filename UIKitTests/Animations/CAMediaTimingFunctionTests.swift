@@ -19,8 +19,8 @@ class CAMediaTimingFunctionTests: XCTestCase {
         })
 
         if let timingFunction = layer.animations.first?.animation.timingFunction {
-            XCTAssertEqual(timingFunction.compute(x: 0.2), 0.008, accuracy: 0.00001)
-            XCTAssertEqual(timingFunction.compute(x: 0.9), 0.729, accuracy: 0.00001)
+            XCTAssertEqual(timingFunction[at: 0.2], 0.008, accuracy: 0.00001)
+            XCTAssertEqual(timingFunction[at: 0.9], 0.729, accuracy: 0.00001)
         } else {
             XCTFail("timing function must not be nil")
         }
@@ -33,8 +33,8 @@ class CAMediaTimingFunctionTests: XCTestCase {
         })
 
         if let timingFunction = layer.animations.first?.animation.timingFunction {
-            XCTAssertEqual(timingFunction.compute(x: 0.2), 0.36, accuracy: 0.0001)
-            XCTAssertEqual(timingFunction.compute(x: 0.9), 0.99, accuracy: 0.0001)
+            XCTAssertEqual(timingFunction[at: 0.2], 0.36, accuracy: 0.0001)
+            XCTAssertEqual(timingFunction[at: 0.9], 0.99, accuracy: 0.0001)
         } else {
             XCTFail("timing function must not be nil")
         }
@@ -52,8 +52,8 @@ class CAMediaTimingFunctionTests: XCTestCase {
         )
 
         if let timingFunction = layer.animations.first?.animation.timingFunction {
-            XCTAssertEqual(timingFunction.compute(x: 0.2), 0.36, accuracy: 0.0001)
-            XCTAssertEqual(timingFunction.compute(x: 0.9), 0.99, accuracy: 0.0001)
+            XCTAssertEqual(timingFunction[at: 0.2], 0.36, accuracy: 0.0001)
+            XCTAssertEqual(timingFunction[at: 0.9], 0.99, accuracy: 0.0001)
         } else {
             XCTFail("timing function must not be nil")
         }
