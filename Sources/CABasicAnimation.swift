@@ -21,7 +21,8 @@ public class CABasicAnimation {
         prototype: CABasicAnimationPrototype,
         keyPath: AnimationProperty,
         fromValue: AnimatableProperty,
-        toValue: AnimatableProperty
+        toValue: AnimatableProperty,
+        timingFunction: CAMediaTimingFunction?
     ) {
         delay = prototype.delay
         duration = prototype.duration
@@ -29,6 +30,7 @@ public class CABasicAnimation {
         self.keyPath = keyPath
         self.fromValue = fromValue
         self.toValue = toValue
+        self.timingFunction = timingFunction
     }
 
     init(from animation: CABasicAnimation) {
@@ -43,6 +45,7 @@ public class CABasicAnimation {
         self.toValue = animation.toValue
         self.animationGroup = animation.animationGroup
         self.isRemovedOnCompletion = animation.isRemovedOnCompletion
+        self.timingFunction = animation.timingFunction
     }
 
     func copy() -> CABasicAnimation {
@@ -55,6 +58,7 @@ public class CABasicAnimation {
     public var duration: CGFloat = 0
     public var delay: CGFloat = 0
     public var options: UIViewAnimationOptions = []
+    public var timingFunction: CAMediaTimingFunction? = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
 
     public var fromValue: AnimatableProperty?
     public var toValue: AnimatableProperty?
