@@ -36,9 +36,10 @@ open class VideoPlayer: UIView {
         return (player?.currentTime().seconds ?? 0) * 1000
     }
 
-    public func seek(to newTime: Double) {
+    public func seek(to timeInMS: Double) {
+        let timeInSeconds = timeInMS * 1000
         player?.seek(
-            to: CMTime(seconds: newTime, preferredTimescale: 48),
+            to: CMTime(seconds: timeInSeconds, preferredTimescale: 48),
             toleranceBefore: CMTime(value: 32 / 1000, timescale: 48),
             toleranceAfter: CMTime(value: 32 / 1000, timescale: 48)
         )
