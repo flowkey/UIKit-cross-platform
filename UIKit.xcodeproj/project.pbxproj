@@ -45,7 +45,6 @@
 		5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
 		5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037241F138B8A0058E592 /* MeteringView.swift */; };
 		5CA995A21EE8182F007D0456 /* UIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C27E7B11ECB2F6500F5020D /* UIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5CADAF7B1F1D147600897FC1 /* AVPlayerLayer+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */; };
 		5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */; };
 		5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */; };
 		5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */; };
@@ -67,8 +66,8 @@
 		8337A8131F39F37500475F80 /* UIScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337A8121F39F37500475F80 /* UIScreen.swift */; };
 		8337A8591F3B143400475F80 /* UIActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337A8581F3B143400475F80 /* UIActivityIndicatorView.swift */; };
 		833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */; };
-		83667C8A1F4D888400780EA6 /* VideoPlayer+Android.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C391A8E1F13F62500EE012C /* VideoPlayer+Android.swift */; };
 		83667C8D1F4D8A6F00780EA6 /* VideoPlayer+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5AC6DC1F1791D0004A88C0 /* VideoPlayer+Mac.swift */; };
+		83667CE01F4DC87B00780EA6 /* AVPlayerLayer+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */; };
 		837335901F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8373358F1F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift */; };
 		837335921F2F6AC70012F066 /* ButtonSetTitleColorForStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8373358F1F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift */; };
 		8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8378E17D1F05503600E138BD /* UIVisualEffectView.swift */; };
@@ -685,7 +684,6 @@
 			files = (
 				5C6AB71E1ED3BECD006F90AC /* UIView.swift in Sources */,
 				5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */,
-				83667C8A1F4D888400780EA6 /* VideoPlayer+Android.swift in Sources */,
 				5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */,
 				5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */,
 				8333B2C01F1D11B800D98662 /* NSAttributedString.swift in Sources */,
@@ -708,6 +706,7 @@
 				5C6AB76B1ED5A648006F90AC /* UIView+animate.swift in Sources */,
 				83E5F7ED1EF8157300279C59 /* Window.swift in Sources */,
 				5C6AB77E1ED71867006F90AC /* CATransaction.swift in Sources */,
+				83667CE01F4DC87B00780EA6 /* AVPlayerLayer+Mac.swift in Sources */,
 				5C6AB71F1ED3BECD006F90AC /* UIWindow.swift in Sources */,
 				83667C8D1F4D8A6F00780EA6 /* VideoPlayer+Mac.swift in Sources */,
 				83CC3CD11F275DB600144E85 /* NSRange.swift in Sources */,
@@ -731,7 +730,6 @@
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
 				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
-				5CADAF7B1F1D147600897FC1 /* AVPlayerLayer+Mac.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,
 				83E5F7F61EF81AB500279C59 /* UIFont.swift in Sources */,
