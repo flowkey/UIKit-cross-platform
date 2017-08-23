@@ -6,9 +6,30 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import Foundation
+
+
+fileprivate func +(left: TimeInterval?, right: TimeInterval?) -> TimeInterval? {
+    guard let lhs = left, let rhs = right else { return nil }
+    return lhs + rhs
+}
+
+fileprivate func -(left: TimeInterval?, right: TimeInterval?) -> TimeInterval? {
+    guard let lhs = left, let rhs = right else { return nil }
+    return lhs - rhs
+}
+
+
 open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var initialTouchPoint: CGPoint = .zero // should probably be optional instead
+
+    private var lastLocation: CGPoint?
+    private var currentLocation: CGPoint?
+
     private var trackedTouch: UITouch?
+
+    private var timeSinceLastMovement: TimeInterval?
+    private var lastMovementTime: TimeInterval?
 
     private let minimumTranslationThreshold: CGFloat = 5
 
@@ -23,6 +44,30 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         guard let trackedTouch = trackedTouch else { return }
         let positionInTargetView = trackedTouch.location(in: view)
         initialTouchPoint = CGPoint(x: positionInTargetView.x + point.x, y: positionInTargetView.y + point.y)
+    }
+
+    // The velocity of the pan gesture, which is expressed in points per second.
+    // The velocity is broken into horizontal and vertical components.
+    open func velocity(in view: UIView?) -> CGPoint {
+
+        guard let curPos = currentLocation, let lastPos = lastLocation else {
+            print("no current or last location")
+            return CGPoint.zero
+        }
+
+        guard let timeSinceLastMovement = timeSinceLastMovement, timeSinceLastMovement != 0.0 else {
+            print("no timeSinceLastMovement or timeSinceLastMovement is 0")
+            return CGPoint.zero
+        }
+
+        let timeDiffInMs = CGFloat(timeSinceLastMovement)
+        // XXX: apple docs say velocity is in points per s (see above)
+        // here we use ms in order to get results in the same magnitude as in iOS though
+
+        return CGPoint(
+            x: (curPos.x - lastPos.x) / timeDiffInMs,
+            y: (curPos.y - lastPos.y) / timeDiffInMs
+        )
     }
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -40,12 +85,17 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             return
         }
 
-        let currentLocation = trackedTouch.location(in: self.view)
+        lastLocation = currentLocation
+        currentLocation = trackedTouch.location(in: self.view)
+
+        let now = NSDate.timeIntervalSinceReferenceDate
+        timeSinceLastMovement = now - lastMovementTime
+        lastMovementTime = now
 
         if
             state == .began,
-            (currentLocation.x - initialTouchPoint.x).magnitude >= minimumTranslationThreshold ||
-            (currentLocation.y - initialTouchPoint.y).magnitude >= minimumTranslationThreshold
+            (currentLocation!.x - initialTouchPoint.x).magnitude >= minimumTranslationThreshold ||
+            (currentLocation!.y - initialTouchPoint.y).magnitude >= minimumTranslationThreshold
         {
             // Activate:
             state = .changed
@@ -69,7 +119,11 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     }
 
     private func reset() {
-        self.trackedTouch = nil
+        trackedTouch = nil
+        currentLocation = nil
+        lastLocation = nil
+        lastMovementTime = nil
+        timeSinceLastMovement = nil
         initialTouchPoint = .zero
         state = .possible
     }
