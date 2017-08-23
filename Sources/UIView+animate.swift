@@ -71,10 +71,3 @@ extension UIView {
         layersWithAnimations.forEach { $0.animate(at: currentTime) }
     }
 }
-
-extension UIView {
-    open static func animate(withSpringDuration duration: Double, delay: Double = 0, damping: CGFloat = 0.9, initialVelocity: CGFloat = 0.7, options: UIViewAnimationOptions = [], animations: @escaping (() -> Void), completion: ((Bool) -> Void)? = nil) {
-
-        animate(withDuration: duration, delay: delay, usingSpringWithDamping: damping, initialSpringVelocity: initialVelocity, options: options, animations: animations, completion: completion)
-    }
-}
