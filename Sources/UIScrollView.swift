@@ -21,8 +21,8 @@ open class UIScrollView: UIView {
         addGestureRecognizer(panGestureRecognizer)
     }
 
-     // returns YES if user isn't dragging (touch up) but scroll view is still moving
-//    open var isDecelerating: Bool = false
+    // returns YES if user isn't dragging (touch up) but scroll view is still moving
+    open var isDecelerating: Bool = false
 
     var lastOnPanTimestamp: Double = 0
     private func onPan() {
@@ -60,11 +60,12 @@ open class UIScrollView: UIView {
 
     private func startDecelerating() {
         let decelerationRate = UIScrollViewDecelerationRateNormal * 1000
-        let initialVelocity = panGestureRecognizer.velocity(in: self)
 
         // ToDo: take y also into account
+        let initialSpeed = Double(panGestureRecognizer.velocity(in: self).x)
+
         let animationTime = time(
-            initialSpeed: Double(initialVelocity.x),
+            initialSpeed: initialSpeed,
             finalSpeed: 0,
             acceleration: Double(-decelerationRate)
         )
@@ -72,10 +73,10 @@ open class UIScrollView: UIView {
         let distanceToMove = distance(
             acceleration: Double(decelerationRate),
             time: Double(animationTime),
-            initialSpeed: Double(initialVelocity.x)
+            initialSpeed: initialSpeed
         )
 
-        let sign = -Double(initialVelocity.x / abs(initialVelocity.x)) // +1 or -1
+        let sign = -initialSpeed / abs(initialSpeed) // = +1 or -1
         let signedDistance = sign * distanceToMove
 
         let newX = contentOffset.x + CGFloat(signedDistance)
@@ -85,10 +86,12 @@ open class UIScrollView: UIView {
             x: min(max(newX, -contentInset.left), contentSize.width + contentInset.right),
             y: min(max(newY, -contentInset.top), contentInset.bottom) // XXX: logically incorrect
         )
+
         UIView.animate(withDuration: animationTime, options: [.curveEaseOut],  animations: {
+            self.isDecelerating = true
             setContentOffset(newOffset, animated: false)
         }, completion: { isCompleted in
-
+            self.isDecelerating = false
         })
     }
 
@@ -131,7 +134,6 @@ public protocol UIScrollViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)
 }
 
-
 fileprivate func time(initialSpeed: Double, finalSpeed: Double, acceleration: Double) -> Double {
     return abs((finalSpeed - initialSpeed) / acceleration)
 }
@@ -139,3 +141,11 @@ fileprivate func time(initialSpeed: Double, finalSpeed: Double, acceleration: Do
 fileprivate func distance(acceleration: Double, time: Double, initialSpeed: Double) -> Double {
     return abs((initialSpeed * time)) + abs((0.5 * acceleration * pow(time, 2)))
 }
+
+
+//extension CGPoint {
+//    var absoluteValue: CGFloat {
+//        return sqrt(pow(self.x, 2) + pow(self.y, 2))
+//    }
+//}
+
