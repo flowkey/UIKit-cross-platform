@@ -9,12 +9,12 @@
 import XCTest
 @testable import UIKit
 typealias CAMediaTimingFunction = UIKit.CAMediaTimingFunction
+typealias UIView = UIKit.UIView
 
 class CAMediaTimingFunctionTests: XCTestCase {
-
-    func testCurveEasIn() {
+    func testCurveEasInWhenUsingUIViewAnimate() {
         let layer = CALayer()
-        UIView.animate(withDuration: 5, delay: 0, options: [.curveEaseIn], animations: {
+        UIView.animate(withDuration: 0, delay: 0, options: [.curveEaseIn], animations: {
             layer.opacity = 0
         })
 
@@ -26,11 +26,30 @@ class CAMediaTimingFunctionTests: XCTestCase {
         }
     }
 
-    func testCurveEaseOut() {
+    func testCurveEasOutWhenUsingUIViewAnimate() {
         let layer = CALayer()
-        UIView.animate(withDuration: 5, delay: 0, options: [.curveEaseOut], animations: {
+        UIView.animate(withDuration: 0, delay: 0, options: [.curveEaseOut], animations: {
             layer.opacity = 0
         })
+
+        if let timingFunction = layer.animations.first?.animation.timingFunction {
+            XCTAssertEqual(timingFunction.compute(x: 0.2), 0.36, accuracy: 0.0001)
+            XCTAssertEqual(timingFunction.compute(x: 0.9), 0.99, accuracy: 0.0001)
+        } else {
+            XCTFail("timing function must not be nil")
+        }
+    }
+
+    func testCurveEasOutWhenUsingUIViewAnimateWithSprign() {
+        let layer = CALayer()
+        UIView.animate(
+            withDuration: 0,
+            delay: 0,
+            usingSpringWithDamping: 0,
+            initialSpringVelocity: 0,
+            options: [.curveEaseOut],
+            animations: { layer.opacity = 0 }
+        )
 
         if let timingFunction = layer.animations.first?.animation.timingFunction {
             XCTAssertEqual(timingFunction.compute(x: 0.2), 0.36, accuracy: 0.0001)
