@@ -15,10 +15,10 @@ class CABasicAnimationTests: XCTestCase {
     func testCanAnimateOpacity() {
         let layer = CALayer()
         let fadeOutAnimation = CABasicAnimation(keyPath: "opacity")
-
         fadeOutAnimation.duration = 0.5
-        fadeOutAnimation.fromValue = 1
-        fadeOutAnimation.toValue = 0
+        fadeOutAnimation.fromValue = CGFloat(1)
+        fadeOutAnimation.toValue = CGFloat(0)
+        fadeOutAnimation.timingFunction = nil // use linear pacing
 
         layer.add(fadeOutAnimation, forKey: "fadeOut")
 
@@ -47,8 +47,8 @@ class CABasicAnimationTests: XCTestCase {
 
         let animation = CABasicAnimation(keyPath: "opacity")
         animation.duration = 0.5
-        animation.fromValue = 1
-        animation.toValue = 0
+        animation.fromValue = CGFloat(1)
+        animation.toValue = CGFloat(0)
         animation.isRemovedOnCompletion = false
         layer.add(animation, forKey: "fadeOut")
 

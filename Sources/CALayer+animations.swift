@@ -53,7 +53,8 @@ extension CALayer {
 
     func onWillSet(newBounds: CGRect) {
         if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
-            let animation =  prototype.createAnimation(keyPath: .bounds,
+            let animation =  prototype.createAnimation(
+                keyPath: .bounds,
                 fromValue: getCurrentState(for: prototype.options).bounds,
                 toValue: newBounds
             )
@@ -114,7 +115,8 @@ extension CALayer {
         var propertiesDidAnimate = AnimationLoopState()
 
         animations.forEach { (_, animation) in
-            guard let keyPath = animation.keyPath, animation.updateProgress(to: currentTime) > 0 else { return }
+            animation.updateProgress(to: currentTime)
+            guard let keyPath = animation.keyPath, animation.progress > 0 else { return }
 
             if // if a property will animate twice during one animationLoop, cancel first animation
                 propertiesDidAnimate[keyPath],
