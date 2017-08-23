@@ -58,7 +58,7 @@ public class CABasicAnimation {
     public var duration: CGFloat = 0
     public var delay: CGFloat = 0
     public var options: UIViewAnimationOptions = []
-    public var timingFunction: CAMediaTimingFunction? = try! CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
+    public var timingFunction: CAMediaTimingFunction? = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
 
     public var fromValue: AnimatableProperty?
     public var toValue: AnimatableProperty?
