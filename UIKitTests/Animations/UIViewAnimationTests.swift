@@ -217,6 +217,23 @@ class UIViewAnimationTests: XCTestCase {
         let fromValue = view.layer.animations[1].animation.fromValue as? CGRect
         XCTAssertEqual(fromValue?.origin.x ?? -1, CGFloat(5), accuracy: 0.01)
     }
+
+    func testModifyLayerWhileAnimationIsInFlight() {
+        let view = UIView()
+
+        UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
+            view.frame.origin.x = 200
+        })
+        UIView.animateIfNeeded(at: Timer(startingAt: 5000))
+
+        view.frame.origin.x = 0
+
+        if let presentation = view.layer.presentation {
+            XCTAssertEqual(presentation.frame.origin.x, 0)
+        } else {
+            XCTFail("presentation must be defined")
+        }
+    }
 }
 
 fileprivate extension UIViewAnimationTests {
