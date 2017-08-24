@@ -36,7 +36,11 @@ open class VideoPlayer: UIView {
     }
 
     open var isMuted: Bool = false
-    open var rate: Double = 1
+    open var rate: Double = 1 {
+        willSet(newRate) {
+            javaVideo.setPlaybackRate(to: newRate)
+        }
+    }
 }
 
 private class JavaVideo: JNIObject {
@@ -58,5 +62,9 @@ private class JavaVideo: JNIObject {
 
     func seek(to timeInMilliseconds: Double) {
         try! call(methodName: "seekToTimeInMilliseconds", arguments: [timeInMilliseconds])
+    }
+
+    func setPlaybackRate(to rate: Double) {
+        try! call(methodName: "setPlaybackRate", arguments: [rate])
     }
 }
