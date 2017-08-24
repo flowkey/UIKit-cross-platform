@@ -98,7 +98,7 @@ open class CALayer {
     }
 
     var presentation: CALayer?
-    var shouldAnimate = true
+    var disableAnimations = false
 
     var animations = [(key: String?, animation: CABasicAnimation)]() {
         didSet {

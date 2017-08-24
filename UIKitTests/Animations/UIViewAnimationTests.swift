@@ -226,13 +226,29 @@ class UIViewAnimationTests: XCTestCase {
         })
         UIView.animateIfNeeded(at: Timer(startingAt: 5000))
 
-        view.frame.origin.x = 0
+        view.alpha = 0
 
         if let presentation = view.layer.presentation {
-            XCTAssertEqual(presentation.frame.origin.x, 0)
+            XCTAssertEqual(presentation.opacity, 0)
+            XCTAssertEqual(presentation.frame.origin.x, 100, accuracy: 0.01)
         } else {
             XCTFail("presentation must be defined")
         }
+
+    }
+
+    func testModifyPropertyCurrentlyBeingAnimated() {
+        let view = UIView()
+
+        UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
+            view.frame.origin.x = 200
+        })
+        UIView.animateIfNeeded(at: Timer(startingAt: 5000))
+
+        view.frame.origin.x = 0
+
+        XCTAssertNil(view.layer.presentation)
+        XCTAssertEqual(view.frame.origin.x, 0)
     }
 }
 

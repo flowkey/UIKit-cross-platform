@@ -19,51 +19,52 @@ extension CALayer {
         animations = animations.filter { $0.key == key }
     }
 
-    private func add(_ animation: CABasicAnimation) {
-        UIView.currentAnimationGroup?.queuedAnimations += 1
-        animations.append((nil, animation))
-    }
-
-    private func removeAnimationAndNotifyGroup(animation: CABasicAnimation) {
-        animation.animationGroup?.animationDidStop(finished: animation.isComplete)
-        animations = animations.filter { $0.animation != animation }
-    }
-
     func onWillSet(newOpacity: CGFloat) {
-        if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
+        if disableAnimations { return }
+
+        if let prototype = UIView.currentAnimationPrototype {
             let animation = prototype.createAnimation(
                 keyPath: .opacity,
                 fromValue: getCurrentState(for: prototype.options).opacity,
                 toValue: newOpacity
             )
             add(animation)
+        } else {
+            removeAllAnimationsAndNotifyGroups(for: .opacity)
+            presentation?.opacity = newOpacity
         }
     }
 
     func onWillSet(newFrame: CGRect) {
-        if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
+        if disableAnimations { return }
+
+        if let prototype = UIView.currentAnimationPrototype {
             let animation = prototype.createAnimation(
                 keyPath: .frame,
                 fromValue: getCurrentState(for: prototype.options).frame,
                 toValue: newFrame
             )
             add(animation)
+        } else {
+            removeAllAnimationsAndNotifyGroups(for: .frame)
+            presentation?.frame = newFrame
         }
     }
 
     func onWillSet(newBounds: CGRect) {
-        if let prototype = UIView.currentAnimationPrototype, shouldAnimate {
+        if disableAnimations { return }
+
+        if let prototype = UIView.currentAnimationPrototype {
             let animation =  prototype.createAnimation(
                 keyPath: .bounds,
                 fromValue: getCurrentState(for: prototype.options).bounds,
                 toValue: newBounds
             )
             add(animation)
+        } else {
+            removeAllAnimationsAndNotifyGroups(for: .bounds)
+            presentation?.bounds = newBounds
         }
-    }
-
-    private func getCurrentState(for options: UIViewAnimationOptions) -> CALayer {
-        return options.contains(.beginFromCurrentState) ? (presentation ?? self) : self
     }
 
     func onDidSetAnimations(wasEmpty: Bool) {
@@ -136,32 +137,26 @@ extension CALayer {
 }
 
 fileprivate extension CALayer {
-    func createNonAnimatingCopy() -> CALayer {
-        return CALayer(layer: self, shouldAnimate: false)
+    private func add(_ animation: CABasicAnimation) {
+        UIView.currentAnimationGroup?.queuedAnimations += 1
+        animations.append((nil, animation))
     }
 
-    convenience init(layer: CALayer, shouldAnimate: Bool) {
-        self.init()
-        frame = layer.frame
-        bounds = layer.bounds
-        opacity = layer.opacity
-        backgroundColor = layer.backgroundColor
-        isHidden = layer.isHidden
-        cornerRadius = layer.cornerRadius
-        borderWidth = layer.borderWidth
-        borderColor = layer.borderColor
-        shadowColor = layer.shadowColor
-        shadowPath = layer.shadowPath
-        shadowOffset = layer.shadowOffset
-        shadowRadius = layer.shadowRadius
-        shadowOpacity = layer.shadowOpacity
-        texture = layer.texture
-        sublayers = layer.sublayers
-        self.shouldAnimate = shouldAnimate
+    private func removeAnimationAndNotifyGroup(animation: CABasicAnimation) {
+        animation.animationGroup?.animationDidStop(finished: animation.isComplete)
+        animations = animations.filter { $0.animation != animation }
     }
-}
 
-fileprivate extension CALayer {
+    private func removeAllAnimationsAndNotifyGroups(for keyPath: AnimationProperty) {
+        animations
+            .filter { $0.animation.keyPath == keyPath }
+            .forEach { removeAnimationAndNotifyGroup(animation: $0.animation) }
+    }
+
+    private func getCurrentState(for options: UIViewAnimationOptions) -> CALayer {
+        return options.contains(.beginFromCurrentState) ? (presentation ?? self) : self
+    }
+
     private func ensureFromValueIsDefined(_ animation: CABasicAnimation) {
         if animation.fromValue == nil, let keypath = animation.keyPath {
             switch keypath as AnimationProperty  {
