@@ -45,6 +45,11 @@ open class UIScrollView: UIView {
         switch panGestureRecognizer.state {
         case .began:
             delegate?.scrollViewWillBeginDragging(self)
+            // if isDecelerating {
+            //     UIView.animate(withDuration: 0, animations: {
+            //         setContentOffset(self.contentOffset, animated: false)
+            //     })
+            // }
         case .ended:
             delegate?.scrollViewDidEndDragging(self, willDecelerate: false) // TODO: fix me
             startDecelerating()
