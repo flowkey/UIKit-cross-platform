@@ -64,14 +64,14 @@ extension UIColor {
         return self
     }
 
-    public func withAlphaComponent(_ alpha: CGFloat) -> UIColor {
+    public func withAlphaComponent(_ alpha: Float) -> UIColor {
         return UIColor((self.red, self.green, self.blue, alpha.normalisedToUInt8()))
     }
 }
 
 extension UInt8 {
-    func toNormalisedCGFloat() -> CGFloat {
-        return CGFloat(self) / CGFloat(UInt8.max)
+    func toNormalisedFloat() -> Float {
+        return Float(self) / Float(UInt8.max)
     }
 }
 
@@ -81,6 +81,13 @@ extension CGFloat {
     func normalisedToUInt8() -> UInt8 {
         let normalisedValue = Swift.min(Swift.max(self, 0), 1) // prevent overflow
         return UInt8(normalisedValue * CGFloat(UInt8.max))
+    }
+}
+
+extension Float {
+    func normalisedToUInt8() -> UInt8 {
+        let normalisedValue = Swift.min(Swift.max(self, 0), 1) // prevent overflow
+        return UInt8(normalisedValue * Float(UInt8.max))
     }
 }
 

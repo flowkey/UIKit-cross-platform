@@ -63,7 +63,7 @@ open class CALayer {
     }
 
     public var isHidden = false
-    public var opacity: CGFloat = 1 {
+    public var opacity: Float = 1 {
         willSet(newOpacity) {
             onWillSet(newOpacity: newOpacity)
         }
@@ -77,7 +77,7 @@ open class CALayer {
 
     public var shadowPath: CGRect?
     public var shadowColor: CGColor?
-    public var shadowOpacity: CGFloat = 0
+    public var shadowOpacity: Float = 0
     public var shadowOffset: CGSize = .zero
     public var shadowRadius: CGFloat = 0
 

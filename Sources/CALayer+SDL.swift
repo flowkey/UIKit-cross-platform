@@ -17,7 +17,7 @@ extension CALayer {
         if !absoluteFrame.intersects(SDL.rootView.bounds) { return }
 
         if let backgroundColor = backgroundColor {
-            let opacity = self.opacity * backgroundColor.alpha.toNormalisedCGFloat()
+            let opacity = self.opacity * backgroundColor.alpha.toNormalisedFloat()
             SDL.window.fill(absoluteFrame, with: backgroundColor.withAlphaComponent(opacity), cornerRadius: cornerRadius)
         }
 

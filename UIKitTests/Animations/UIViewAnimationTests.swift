@@ -46,7 +46,7 @@ class UIViewAnimationTests: XCTestCase {
             view.alpha = 0.2
         })
 
-        XCTAssertEqual(view.alpha, 0.2)
+        XCTAssertEqual(view.alpha, 0.2, accuracy: 0.001)
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
         if let presentation = view.layer.presentation {

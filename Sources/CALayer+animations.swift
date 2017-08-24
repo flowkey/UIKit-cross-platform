@@ -19,7 +19,7 @@ extension CALayer {
         animations = animations.filter { $0.key == key }
     }
 
-    func onWillSet(newOpacity: CGFloat) {
+    func onWillSet(newOpacity: Float) {
         if disableAnimations { return }
 
         if let prototype = UIView.currentAnimationPrototype {
@@ -100,11 +100,11 @@ extension CALayer {
 
         case .opacity:
             guard
-                let startOpacity = animation.fromValue as? CGFloat,
-                let endOpacity = animation.toValue as? CGFloat
+                let startOpacity = animation.fromValue as? Float,
+                let endOpacity = animation.toValue as? Float
                 else { return }
 
-            presentation.opacity = startOpacity + ((endOpacity - startOpacity) * animation.progress)
+            presentation.opacity = startOpacity + ((endOpacity - startOpacity)) * Float(animation.progress)
 
         case .unknown: print("unknown animation property")
         }
