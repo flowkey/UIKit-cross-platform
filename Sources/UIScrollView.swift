@@ -17,24 +17,20 @@ open class UIScrollView: UIView {
     override public init(frame: CGRect) {
         super.init(frame: frame)
         panGestureRecognizer.onAction = self.onPan
-        panGestureRecognizer.onStateChanged = onPanGestureStateChanged
+        panGestureRecognizer.onStateChanged = self.onPanGestureStateChanged
         addGestureRecognizer(panGestureRecognizer)
     }
 
     // returns YES if user isn't dragging (touch up) but scroll view is still moving
     open var isDecelerating: Bool = false
 
-    var lastOnPanTimestamp: Double = 0
     private func onPan() {
         let translation = panGestureRecognizer.translation(in: self)
         panGestureRecognizer.setTranslation(.zero, in: self)
 
-        let newX = contentOffset.x - translation.x
-        let newY = contentOffset.y - translation.y
-        let newOffset = CGPoint(
-            // XXX: Change this to accommodate `bounce`
-            x: min(max(newX, -contentInset.left), contentSize.width + contentInset.right),
-            y: min(max(newY, -contentInset.top), contentInset.bottom) // XXX: logically incorrect
+        let newOffset = getSafeContentOffset(
+            x: contentOffset.x - translation.x,
+            y: contentOffset.y - translation.y
         )
 
         setContentOffset(newOffset, animated: false)
@@ -45,11 +41,7 @@ open class UIScrollView: UIView {
         switch panGestureRecognizer.state {
         case .began:
             delegate?.scrollViewWillBeginDragging(self)
-            // if isDecelerating {
-            //     UIView.animate(withDuration: 0, animations: {
-            //         setContentOffset(self.contentOffset, animated: false)
-            //     })
-            // }
+            cancelDeceleratingIfNeccessary()
         case .ended:
             delegate?.scrollViewDidEndDragging(self, willDecelerate: false) // TODO: fix me
             startDecelerating()
@@ -69,7 +61,10 @@ open class UIScrollView: UIView {
         // ToDo: take y also into account
         let initialSpeed = Double(panGestureRecognizer.velocity(in: self).x)
 
-        let animationTime = time(
+        // prevent bugs
+        if initialSpeed == 0 { return }
+
+        var animationTime = time(
             initialSpeed: initialSpeed,
             finalSpeed: 0,
             acceleration: Double(-decelerationRate)
@@ -84,12 +79,9 @@ open class UIScrollView: UIView {
         let sign = -initialSpeed / abs(initialSpeed) // = +1 or -1
         let signedDistance = sign * distanceToMove
 
-        let newX = contentOffset.x + CGFloat(signedDistance)
-        let newY = contentOffset.y
         let newOffset = CGPoint(
-            // XXX: Change this to accommodate `bounce`
-            x: min(max(newX, -contentInset.left), contentSize.width + contentInset.right),
-            y: min(max(newY, -contentInset.top), contentInset.bottom) // XXX: logically incorrect
+            x: contentOffset.x + CGFloat(signedDistance),
+            y: contentOffset.y
         )
 
         UIView.animate(withDuration: animationTime, options: [.curveEaseOut],  animations: {
@@ -98,6 +90,26 @@ open class UIScrollView: UIView {
         }, completion: { isCompleted in
             self.isDecelerating = false
         })
+    }
+
+    private func cancelDeceleratingIfNeccessary() {
+        if !isDecelerating { return }
+
+        UIView.animate(withDuration: 0, animations: {
+            print("cancel deceleration animation")
+            setContentOffset(CGPoint(x: contentOffset.x, y: 0), animated: false)
+        })
+        isDecelerating = false
+    }
+
+
+    // does some min/max checks to prevent newOffset being out of bounds
+    private func getSafeContentOffset(x: CGFloat, y: CGFloat) -> CGPoint {
+        return CGPoint(
+            // XXX: Change this to accommodate `bounce`
+            x: min(max(x, -contentInset.left), contentSize.width + contentInset.right),
+            y: min(max(y, -contentInset.top), contentInset.bottom) // XXX: logically incorrect
+        )
     }
 
     open var contentInset = UIEdgeInsets() //{ didSet {updateBounds()} }
@@ -146,11 +158,3 @@ fileprivate func time(initialSpeed: Double, finalSpeed: Double, acceleration: Do
 fileprivate func distance(acceleration: Double, time: Double, initialSpeed: Double) -> Double {
     return abs((initialSpeed * time)) + abs((0.5 * acceleration * pow(time, 2)))
 }
-
-
-//extension CGPoint {
-//    var absoluteValue: CGFloat {
-//        return sqrt(pow(self.x, 2) + pow(self.y, 2))
-//    }
-//}
-

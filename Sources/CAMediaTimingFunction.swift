@@ -52,6 +52,6 @@ fileprivate extension CAMediaTimingFunction {
     static func easeInCubic(_ x: CGFloat) -> CGFloat { return pow(x, 3) }
     static func easeOutCubic(_ x: CGFloat) -> CGFloat { return x * (2-x) }
     static func easeInOutCubic(_ x: CGFloat) -> CGFloat {
-        return x < 0.5 ? 4*pow(x, 3) : (x-1)*(2*x-2)*(2*x-2)+1
+        return x < 0.5 ? 4*pow(x, 3) : (x-1) * pow((2*x-2), 2) + 1
     }
 }
