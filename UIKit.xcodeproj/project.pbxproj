@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		037A4EB11F50467300094EBB /* UIScrollViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037A4EB01F50467300094EBB /* UIScrollViewTests.swift */; };
 		5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */; };
 		5B2D46271F458E5000096D48 /* AnimationLoopState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B2D46261F458E5000096D48 /* AnimationLoopState.swift */; };
 		5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */; };
@@ -168,6 +169,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		037A4EB01F50467300094EBB /* UIScrollViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewTests.swift; sourceTree = "<group>"; };
 		5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CAMediaTimingFunction.swift; path = Sources/CAMediaTimingFunction.swift; sourceTree = SOURCE_ROOT; };
 		5B2D46261F458E5000096D48 /* AnimationLoopState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimationLoopState.swift; path = Sources/AnimationLoopState.swift; sourceTree = SOURCE_ROOT; };
 		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = Sources/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
@@ -442,6 +444,7 @@
 				83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */,
 				5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */,
 				8323F27F1F2FA2EE00C121BB /* TestSetup.swift */,
+				037A4EB01F50467300094EBB /* UIScrollViewTests.swift */,
 			);
 			path = UIKitTests;
 			sourceTree = "<group>";
@@ -810,6 +813,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */,
+				037A4EB11F50467300094EBB /* UIScrollViewTests.swift in Sources */,
 				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				5BD4762E1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift in Sources */,
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
