@@ -70,16 +70,14 @@ extension UIColor {
 }
 
 extension UInt8 {
-    func toNormalisedCGFloat() -> CGFloat {
-        return CGFloat(self) / CGFloat(UInt8.max)
+    func toNormalisedFloat() -> Float {
+        return Float(self) / Float(UInt8.max)
     }
 }
 
 extension CGFloat {
-    /// Normalises a double value to a number between 0 and 1,
-    /// then converts it to a range of 0 to 255 (UInt8.max):
     func normalisedToUInt8() -> UInt8 {
-        let normalisedValue = min(max(self, 0), 1) // prevent overflow
+        let normalisedValue = Swift.min(Swift.max(self, 0), 1) // prevent overflow
         return UInt8(normalisedValue * CGFloat(UInt8.max))
     }
 }

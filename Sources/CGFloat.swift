@@ -6,4 +6,5 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public typealias CGFloat = Float
+import struct Foundation.CGFloat
+public typealias CGFloat = Foundation.CGFloat

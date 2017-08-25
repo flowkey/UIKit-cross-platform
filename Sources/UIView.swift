@@ -67,8 +67,8 @@ open class UIView: UIResponder {
     }
 
     public var alpha: CGFloat {
-        get { return layer.opacity }
-        set { layer.opacity = newValue }
+        get { return CGFloat(layer.opacity) }
+        set { layer.opacity = Float(newValue) }
     }
 
     public var tintColor: UIColor! // mocked
