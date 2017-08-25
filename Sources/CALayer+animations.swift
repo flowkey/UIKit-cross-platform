@@ -69,6 +69,7 @@ extension CALayer {
     func onDidSetAnimations(wasEmpty: Bool) {
         if wasEmpty && !animations.isEmpty {
             presentation = self.createNonAnimatingCopy()
+//            presentation?.backgroundColor = .red
             UIView.layersWithAnimations.insert(self)
         } else if animations.isEmpty && !wasEmpty {
             presentation = nil
@@ -124,7 +125,7 @@ extension CALayer {
             {
                 removeAnimationAndNotifyGroup(animation: firstAnimationForKeyPath)
             }
-            
+
             updatePresentation(for: animation, at: currentTime)
             propertiesDidAnimate[keyPath] = true
 
@@ -157,6 +158,7 @@ fileprivate extension CALayer {
         shadowOpacity = layer.shadowOpacity
         texture = layer.texture
         sublayers = layer.sublayers
+        delegate = layer.delegate
         self.shouldAnimate = shouldAnimate
     }
 }

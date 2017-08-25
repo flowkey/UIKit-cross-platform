@@ -88,6 +88,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         lastLocation = currentLocation
         currentLocation = trackedTouch.location(in: self.view)
 
+        // XXX: revisit this and decide which timer we want to use
         let now = NSDate.timeIntervalSinceReferenceDate
         timeSinceLastMovement = now - lastMovementTime
         lastMovementTime = now

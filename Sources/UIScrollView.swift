@@ -10,7 +10,7 @@
 let UIScrollViewDecelerationRateFast: CGFloat = 0.99
 let UIScrollViewDecelerationRateNormal: CGFloat = 0.998
 
-open class UIScrollView: UIView {
+open class UIScrollView: UIView, CALayerPropertyChangedDelegate{
     open var delegate: UIScrollViewDelegate? // TODO: change this to individually settable callbacks
     open var panGestureRecognizer = UIPanGestureRecognizer()
 
@@ -19,6 +19,16 @@ open class UIScrollView: UIView {
         panGestureRecognizer.onAction = self.onPan
         panGestureRecognizer.onStateChanged = self.onPanGestureStateChanged
         addGestureRecognizer(panGestureRecognizer)
+        layer.delegate = self
+    }
+
+    func onBoundsChanged(_ bounds: CGRect) {
+        print(bounds)
+//        if bounds.origin.x > 425 {
+//            UIView.animate(withDuration: 0, animations: {
+//                setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+//            })
+//        }
     }
 
     // returns YES if user isn't dragging (touch up) but scroll view is still moving
@@ -64,7 +74,7 @@ open class UIScrollView: UIView {
         // prevent bugs
         if initialSpeed == 0 { return }
 
-        var animationTime = time(
+        let animationTime = time(
             initialSpeed: initialSpeed,
             finalSpeed: 0,
             acceleration: Double(-decelerationRate)

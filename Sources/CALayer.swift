@@ -8,6 +8,10 @@
 
 import SDL
 
+protocol CALayerPropertyChangedDelegate {
+    func onBoundsChanged(_ bounds: CGRect)
+}
+
 open class CALayer {
     var texture: Texture? {
         didSet {
@@ -15,6 +19,8 @@ open class CALayer {
             self.bounds.size = newSize
         }
     }
+
+    var delegate: CALayerPropertyChangedDelegate?
 
     public var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer] = []
@@ -59,6 +65,11 @@ open class CALayer {
             if frame.size != bounds.size {
                 frame.size = bounds.size
             }
+            if presentation == nil {
+                if oldValue != bounds {
+                    delegate?.onBoundsChanged(bounds)
+                }
+            }
         }
     }
 
@@ -90,7 +101,7 @@ open class CALayer {
     open func action(forKey event: String) -> CAAction? {
         return nil // TODO: Return the default CABasicAnimation of 0.25 seconds of all animatable properties
     }
-    
+
     // TODO: remove this function after implementing CGImage to get font texture in UIImage extension for fonts
     open func convertToUIImage() -> UIImage? {
         guard let texture = self.texture else { return nil }
