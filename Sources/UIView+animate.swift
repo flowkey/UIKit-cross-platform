@@ -24,6 +24,10 @@ extension UIView {
     static var currentAnimationGroup: UIViewAnimationGroup?
     static var currentAnimationPrototype: CABasicAnimationPrototype?
 
+    static var animationsArePending: Bool {
+        return !layersWithAnimations.isEmpty
+    }
+
     public static func animate(
         withDuration duration: Double,
         delay: Double = 0.0,
