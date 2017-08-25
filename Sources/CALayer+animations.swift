@@ -19,6 +19,10 @@ extension CALayer {
         animations = animations.filter { $0.key == key }
     }
 
+    open func removeAllAnimations() {
+        animations = []
+    }
+
     func onWillSet(newOpacity: Float) {
         if disableAnimations { return }
 
