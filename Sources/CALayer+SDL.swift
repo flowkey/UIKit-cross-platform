@@ -9,18 +9,20 @@
 import SDL
 
 extension CALayer {
-    final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect()) {
+    final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect(), parentOpacity: Float = 1) {
+        let opacity = parentOpacity * self.opacity
         if isHidden || opacity < 0.01 { return } // could be a hidden sublayer of a visible layer
+
         let absoluteFrame = frame.offsetBy(parentAbsoluteFrame.origin).offsetBy(bounds.origin)
         
         // Big performance optimization. Don't render anything that's entirely offscreen:
         if !absoluteFrame.intersects(SDL.rootView.bounds) { return }
 
         if let backgroundColor = backgroundColor {
-            let opacity = self.opacity * backgroundColor.alpha.toNormalisedFloat()
+            let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
             SDL.window.fill(
                 absoluteFrame,
-                with: backgroundColor.withAlphaComponent(CGFloat(opacity)),
+                with: backgroundColor.withAlphaComponent(CGFloat(backgroundColorOpacity)),
                 cornerRadius: cornerRadius
             )
         }
@@ -44,9 +46,9 @@ extension CALayer {
 
         if let texture = texture {
             // Later use more advanced blit funcs (with rotation, scale etc)
-            SDL.window.blit(texture, to: absoluteFrame.origin)
+            SDL.window.blit(texture, at: absoluteFrame.origin, opacity: opacity)
         }
         
-        sublayers.forEach { $0.sdlRender(in: absoluteFrame) }
+        sublayers.forEach { $0.sdlRender(in: absoluteFrame, parentOpacity: opacity) }
     }
 }

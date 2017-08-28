@@ -46,13 +46,9 @@ internal final class Window {
         return CGPoint(x: inputX / pixelCoordinateContentScale, y: inputY / pixelCoordinateContentScale)
     }
 
-    func blit(_ texture: Texture, to destination: CGPoint) {
+    func blit(_ texture: Texture, at destination: CGPoint, opacity: Float) {
+        GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8())
         GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
-    }
-
-    func blit(_ texture: Texture, from source: CGRect, to destination: CGPoint) {
-        var source = GPU_Rect(source)
-        GPU_Blit(texture.rawPointer, &source, rawPointer, Float(destination.x), Float(destination.y))
     }
 
     func clear() {
@@ -79,6 +75,10 @@ internal final class Window {
         } else {
             outline(rect, lineColor: lineColor, lineThickness: lineThickness)
         }
+    }
+
+    func setShapeBlending(_ newValue: Bool) {
+        GPU_SetShapeBlending(newValue)
     }
 
     func flip() {
