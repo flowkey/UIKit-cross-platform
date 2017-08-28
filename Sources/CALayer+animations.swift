@@ -132,7 +132,7 @@ extension CALayer {
             {
                 removeAnimationAndNotifyGroup(animation: firstAnimationForKeyPath)
             }
-            
+
             updatePresentation(for: animation, at: currentTime)
             propertiesDidAnimate[keyPath] = true
 
