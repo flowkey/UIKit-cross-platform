@@ -47,7 +47,7 @@ internal final class Window {
     }
 
     func blit(_ texture: Texture, at destination: CGPoint, opacity: Float) {
-        GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8())
+        if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
         GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
     }
 
