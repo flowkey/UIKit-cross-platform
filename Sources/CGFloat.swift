@@ -7,8 +7,4 @@
 //
 
 import struct Foundation.CGFloat
-<<<<<<< HEAD
-
-=======
->>>>>>> 9332fc17711b553612a3fa9b403386cc3daea00b
 public typealias CGFloat = Foundation.CGFloat
