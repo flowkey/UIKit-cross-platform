@@ -32,10 +32,10 @@ public struct UIColor: Equatable {
     // mocked!
     public init(patternImage: UIImage?) {
         // TODO: define a color object for specified Quartz color reference https://developer.apple.com/documentation/uikit/uicolor/1621933-init
-        self.red = CGFloat(250).normalisedToUInt8()
-        self.green = CGFloat(250).normalisedToUInt8()
-        self.blue = CGFloat(250).normalisedToUInt8()
-        self.alpha = CGFloat(1).normalisedToUInt8()
+        self.red = 255
+        self.green = 255
+        self.blue = 255
+        self.alpha = 255
     }
     
     public static func == (lhs: UIColor, rhs: UIColor) -> Bool {
@@ -52,13 +52,13 @@ public typealias CGColor = UIColor // They can be the same for us.
 
 extension UIColor {
     public static let black = UIColor(red: 0, green: 0, blue: 0)
-    public static let white = UIColor(red: 255, green: 255, blue: 255)
-    public static let red = UIColor(red: 255, green: 0, blue: 0)
-    public static let green = UIColor(red: 0, green: 255, blue: 0)
-    public static let blue = UIColor(red: 0, green: 0, blue: 255)
-    public static let orange = UIColor(red: 255, green: 127.5, blue: 0)
-    public static let lightGray = UIColor(red: 170, green: 170, blue: 170)
-    public static let clear = black.withAlphaComponent(0.0)
+    public static let white = UIColor(red: 1, green: 1, blue: 1)
+    public static let red = UIColor(red: 1, green: 0, blue: 0)
+    public static let green = UIColor(red: 0, green: 1, blue: 0)
+    public static let blue = UIColor(red: 0, green: 0, blue: 1)
+    public static let orange = UIColor(red: 1, green: 0.5, blue: 0)
+    public static let lightGray = UIColor(red: 2.0 / 3.0, green: 2.0 / 3.0, blue: 2.0 / 3.0)
+    public static let clear = white.withAlphaComponent(0.0)
 
     public var cgColor: CGColor {
         return self
@@ -76,9 +76,20 @@ extension UInt8 {
 }
 
 extension CGFloat {
+    /// Normalises a double value to a number between 0 and 1,
+    /// then converts it to a range of 0 to 255 (UInt8.max):
     func normalisedToUInt8() -> UInt8 {
         let normalisedValue = Swift.min(Swift.max(self, 0), 1) // prevent overflow
         return UInt8(normalisedValue * CGFloat(UInt8.max))
+    }
+}
+
+extension Float {
+    /// Normalises a double value to a number between 0 and 1,
+    /// then converts it to a range of 0 to 255 (UInt8.max):
+    func normalisedToUInt8() -> UInt8 {
+        let normalisedValue = Swift.min(Swift.max(self, 0), 1) // prevent overflow
+        return UInt8(normalisedValue * Float(UInt8.max))
     }
 }
 

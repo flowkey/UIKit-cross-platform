@@ -9,7 +9,8 @@
 @_exported import SDL
 
 extension UIView {
-    final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect()) {
+    final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect(), parentAlpha: CGFloat = 1.0) {
+        let alpha = self.alpha * parentAlpha
         if isHidden || alpha < 0.01 { return }
 
         if needsDisplay {
@@ -25,10 +26,10 @@ extension UIView {
         let absoluteFrame = frame.offsetBy(parentAbsoluteFrame.origin).offsetBy(bounds.origin)
 
         // Render layer and all sublayers
-        layer.sdlRender(in: parentAbsoluteFrame)
+        layer.sdlRender(in: parentAbsoluteFrame, parentOpacity: Float(alpha))
 
         // Render subviews and their sublayers
-        subviews.forEach { $0.sdlRender(in: absoluteFrame) }
+        subviews.forEach { $0.sdlRender(in: absoluteFrame, parentAlpha: alpha) }
     }
 }
 
