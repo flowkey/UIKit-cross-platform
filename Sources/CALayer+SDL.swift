@@ -18,7 +18,11 @@ extension CALayer {
 
         if let backgroundColor = backgroundColor {
             let opacity = self.opacity * backgroundColor.alpha.toNormalisedFloat()
-            SDL.window.fill(absoluteFrame, with: backgroundColor.withAlphaComponent(opacity), cornerRadius: cornerRadius)
+            SDL.window.fill(
+                absoluteFrame,
+                with: backgroundColor.withAlphaComponent(CGFloat(opacity)),
+                cornerRadius: cornerRadius
+            )
         }
 
         if borderWidth > 0 {
@@ -30,7 +34,11 @@ extension CALayer {
 
             if absoluteShadowOpacity > 0.01 {
                 let absoluteShadowPath = shadowPath.offsetBy(absoluteFrame.origin)
-                SDL.window.fill(absoluteShadowPath, with: shadowColor.withAlphaComponent(absoluteShadowOpacity), cornerRadius: 2)
+                SDL.window.fill(
+                    absoluteShadowPath,
+                    with: shadowColor.withAlphaComponent(CGFloat(absoluteShadowOpacity)),
+                    cornerRadius: 2
+                )
             }
         }
 

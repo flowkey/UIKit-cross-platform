@@ -76,8 +76,6 @@ extension UInt8 {
 }
 
 extension CGFloat {
-    /// Normalises a double value to a number between 0 and 1,
-    /// then converts it to a range of 0 to 255 (UInt8.max):
     func normalisedToUInt8() -> UInt8 {
         let normalisedValue = Swift.min(Swift.max(self, 0), 1) // prevent overflow
         return UInt8(normalisedValue * CGFloat(UInt8.max))
