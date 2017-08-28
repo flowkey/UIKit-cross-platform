@@ -47,10 +47,37 @@ class UIViewAnimationTests: XCTestCase {
         })
 
         XCTAssertEqual(view.alpha, 0.2, accuracy: 0.001)
+        XCTAssertEqual(view.layer.animations.count, 1)
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
         if let presentation = view.layer.presentation {
             XCTAssertEqual(presentation.opacity, 0.6, accuracy: 0.01)
+        } else {
+            XCTFail("presentation must be defined")
+        }
+    }
+
+    func testCanAnimateBounds() {
+        let view = UIView()
+
+        let boundsToStartFrom = CGRect(x: 10, y: 10, width: 10, height: 10)
+        let expectedBounds = CGRect(x: 20, y: 20, width: 20, height: 20)
+
+        view.bounds = boundsToStartFrom
+
+        UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
+            view.bounds = expectedBounds
+        })
+        XCTAssertEqual(view.bounds, expectedBounds)
+
+        // animating bounds consists of bounds.origin and frame.size animation
+        // because mutating frame mutates bounds and vice versa
+        XCTAssertEqual(view.layer.animations.count, 2)
+
+        UIView.animateIfNeeded(at: Timer(startingAt: 2500))
+
+        if let presentation = view.layer.presentation {
+            assertEqual(presentation.bounds, CGRect(x: 15, y: 15, width: 15, height: 15), accuracy: 0.01)
         } else {
             XCTFail("presentation must be defined")
         }
