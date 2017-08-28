@@ -57,6 +57,18 @@ class CABasicAnimationTests: XCTestCase {
         XCTAssertNotNil(layer.presentation)
         XCTAssertEqual(layer.presentation?.opacity, 0)
     }
+
+    func testShouldNotAnimate() {
+        let layer = CALayer()
+
+        UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
+            layer.opacity = 0.2
+        })
+
+        XCTAssertEqual(layer.opacity, 0.2, accuracy: 0.001)
+        UIView.animateIfNeeded(at: Timer(startingAt: 2500))
+        XCTAssertNil(layer.presentation)
+    }
 }
 
 
