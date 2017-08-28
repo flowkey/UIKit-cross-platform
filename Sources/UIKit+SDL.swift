@@ -80,6 +80,7 @@ final public class SDL { // XXX: only public for startRunLoop()
             UIView.animateIfNeeded(at: frameTimer)
 
             window.clear()
+            window.setShapeBlending(true)
             rootView.sdlRender()
             window.flip()
 
