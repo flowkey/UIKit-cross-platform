@@ -26,7 +26,7 @@ extension UIView {
         let absoluteFrame = frame.offsetBy(parentAbsoluteFrame.origin).offsetBy(bounds.origin)
 
         // Render layer and all sublayers
-        layer.sdlRender(in: parentAbsoluteFrame, parentOpacity: Float(alpha))
+        layer.sdlRender(in: parentAbsoluteFrame, parentOpacity: Float(parentAlpha))
 
         // Render subviews and their sublayers
         subviews.forEach { $0.sdlRender(in: absoluteFrame, parentAlpha: alpha) }
