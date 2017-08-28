@@ -23,7 +23,7 @@ public class CAMediaTimingFunction {
         case kCAMediaTimingFunctionEaseIn: timing = CAMediaTimingFunction.easeInCubic
         case kCAMediaTimingFunctionEaseOut: timing = CAMediaTimingFunction.easeOutCubic
         case kCAMediaTimingFunctionEaseInEaseOut: timing = CAMediaTimingFunction.easeInOutCubic
-        case kCAMediaTimingFunctionDefault: timing = CAMediaTimingFunction.easeOutCubic
+        case kCAMediaTimingFunctionDefault: timing = CAMediaTimingFunction.easeInOutCubic
         default: fatalError("invalid name")
         }
     }
@@ -43,7 +43,7 @@ extension CAMediaTimingFunction {
             return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         }
 
-        return nil
+        return CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
     }
 }
 
@@ -52,6 +52,6 @@ fileprivate extension CAMediaTimingFunction {
     static func easeInCubic(_ x: CGFloat) -> CGFloat { return pow(x, 3) }
     static func easeOutCubic(_ x: CGFloat) -> CGFloat { return x * (2-x) }
     static func easeInOutCubic(_ x: CGFloat) -> CGFloat {
-        return x < 0.5 ? 4*pow(x, 3) : (x-1)*pow((2*x-2), 2)+1
+        return x < 0.5 ? 2*pow(x, 2) : -1+(4-2*x)*x
     }
 }
