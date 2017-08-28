@@ -26,7 +26,8 @@ extension CALayer {
     func onWillSet(newOpacity: Float) {
         if disableAnimations { return }
 
-        if let prototype = UIView.currentAnimationPrototype {
+        if UIView.shouldAnimate,
+            let prototype = UIView.currentAnimationPrototype {
             let animation = prototype.createAnimation(
                 keyPath: .opacity,
                 fromValue: getCurrentState(for: prototype.options).opacity,
@@ -42,7 +43,8 @@ extension CALayer {
     func onWillSet(newFrame: CGRect) {
         if disableAnimations { return }
 
-        if let prototype = UIView.currentAnimationPrototype {
+        if UIView.shouldAnimate,
+            let prototype = UIView.currentAnimationPrototype {
             let animation = prototype.createAnimation(
                 keyPath: .frame,
                 fromValue: getCurrentState(for: prototype.options).frame,
@@ -58,7 +60,8 @@ extension CALayer {
     func onWillSet(newBounds: CGRect) {
         if disableAnimations { return }
 
-        if let prototype = UIView.currentAnimationPrototype {
+        if UIView.shouldAnimate,
+            let prototype = UIView.currentAnimationPrototype {
             let animation =  prototype.createAnimation(
                 keyPath: .bounds,
                 fromValue: getCurrentState(for: prototype.options).bounds,

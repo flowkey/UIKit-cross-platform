@@ -14,7 +14,7 @@ extension CABasicAnimation {
         self.progress = ease(x: linearProgress)
     }
 
-    fileprivate func ease(x: CGFloat) -> CGFloat {
+    private func ease(x: CGFloat) -> CGFloat {
         return timingFunction?[at: x] ?? x
     }
 }

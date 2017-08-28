@@ -28,6 +28,10 @@ extension UIView {
         return !layersWithAnimations.isEmpty
     }
 
+    static var shouldAnimate: Bool {
+        return currentAnimationGroup != nil && currentAnimationPrototype != nil
+    }
+
     public static func animate(
         withDuration duration: Double,
         delay: Double = 0.0,
