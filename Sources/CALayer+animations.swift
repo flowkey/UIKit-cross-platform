@@ -142,7 +142,7 @@ extension CALayer {
 
 fileprivate extension CALayer {
     private func add(_ animation: CABasicAnimation) {
-        UIView.currentAnimationGroup?.queuedAnimations += 1
+        animation.animationGroup?.queuedAnimations += 1
         animations.append((nil, animation))
     }
 
