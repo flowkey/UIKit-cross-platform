@@ -68,7 +68,7 @@ open class CALayer {
 
     public var opacity: Float = 1 {
         didSet {
-            if !UIView.shouldAnimate { presentation?.bounds = bounds }
+            if !UIView.shouldAnimate { presentation?.opacity = opacity }
         }
     }
 

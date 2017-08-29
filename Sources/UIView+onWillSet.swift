@@ -18,7 +18,6 @@ extension UIView {
             layer.add(animation)
         } else {
             layer.removeAllAnimationsAndNotifyGroups(for: .opacity)
-            layer.presentation?.opacity = newOpacity
         }
     }
 
@@ -33,7 +32,6 @@ extension UIView {
             layer.add(animation)
         } else {
             layer.removeAllAnimationsAndNotifyGroups(for: .frame)
-            layer.presentation?.frame = newFrame
         }
     }
 
@@ -48,7 +46,6 @@ extension UIView {
             layer.add(animation)
         } else {
             layer.removeAllAnimationsAndNotifyGroups(for: .bounds)
-            layer.presentation?.bounds = newBounds
         }
     }
 }
