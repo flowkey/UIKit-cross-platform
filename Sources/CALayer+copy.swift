@@ -28,5 +28,6 @@ extension CALayer {
         shadowOpacity = layer.shadowOpacity
         texture = layer.texture
         sublayers = layer.sublayers
+        superlayer = layer.superlayer
     }
 }

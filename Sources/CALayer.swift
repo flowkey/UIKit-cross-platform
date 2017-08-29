@@ -11,13 +11,17 @@ import SDL
 open class CALayer {
     var texture: Texture? {
         didSet {
+            presentation?.texture = texture
             let newSize = texture?.size ?? .zero
             self.bounds.size = newSize
         }
     }
 
     public var superlayer: CALayer?
-    internal (set) public var sublayers: [CALayer] = []
+
+    internal (set) public var sublayers: [CALayer] = [] {
+        didSet { presentation?.sublayers = sublayers }
+    }
     public func addSublayer(_ layer: CALayer) {
         layer.removeFromSuperlayer()
         sublayers.append(layer)
@@ -59,6 +63,7 @@ open class CALayer {
     public var isHidden = false {
         didSet { presentation?.isHidden = isHidden }
     }
+
     public var opacity: Float = 1
 
     public var cornerRadius: CGFloat = 0 {
@@ -76,10 +81,10 @@ open class CALayer {
     public var shadowPath: CGRect? {
         didSet { presentation?.shadowPath = shadowPath }
     }
-    public var shadowColor: CGColor?{
+    public var shadowColor: CGColor? {
         didSet { presentation?.shadowColor = shadowColor }
     }
-    public var shadowOpacity: Float = 0{
+    public var shadowOpacity: Float = 0 {
         didSet { presentation?.shadowOpacity = shadowOpacity }
     }
     public var shadowOffset: CGSize = .zero {
