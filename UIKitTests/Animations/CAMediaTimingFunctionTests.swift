@@ -13,12 +13,12 @@ typealias UIView = UIKit.UIView
 
 class CAMediaTimingFunctionTests: XCTestCase {
     func testCurveEasInWhenUsingUIViewAnimate() {
-        let layer = CALayer()
+        let view = UIView()
         UIView.animate(withDuration: 0, delay: 0, options: [.curveEaseIn], animations: {
-            layer.opacity = 0
+            view.alpha = 0
         })
 
-        if let timingFunction = layer.animations.first?.animation.timingFunction {
+        if let timingFunction = view.layer.animations.first?.animation.timingFunction {
             XCTAssertEqual(timingFunction[at: 0.2], 0.008, accuracy: 0.00001)
             XCTAssertEqual(timingFunction[at: 0.9], 0.729, accuracy: 0.00001)
         } else {
@@ -27,12 +27,12 @@ class CAMediaTimingFunctionTests: XCTestCase {
     }
 
     func testCurveEasOutWhenUsingUIViewAnimate() {
-        let layer = CALayer()
+        let view = UIView()
         UIView.animate(withDuration: 0, delay: 0, options: [.curveEaseOut], animations: {
-            layer.opacity = 0
+            view.alpha = 0
         })
 
-        if let timingFunction = layer.animations.first?.animation.timingFunction {
+        if let timingFunction = view.layer.animations.first?.animation.timingFunction {
             XCTAssertEqual(timingFunction[at: 0.2], 0.36, accuracy: 0.0001)
             XCTAssertEqual(timingFunction[at: 0.9], 0.99, accuracy: 0.0001)
         } else {
@@ -41,17 +41,17 @@ class CAMediaTimingFunctionTests: XCTestCase {
     }
 
     func testCurveEasOutWhenUsingUIViewAnimateWithSprign() {
-        let layer = CALayer()
+        let view = UIView()
         UIView.animate(
             withDuration: 0,
             delay: 0,
             usingSpringWithDamping: 0,
             initialSpringVelocity: 0,
             options: [.curveEaseOut],
-            animations: { layer.opacity = 0 }
+            animations: { view.alpha = 0 }
         )
 
-        if let timingFunction = layer.animations.first?.animation.timingFunction {
+        if let timingFunction = view.layer.animations.first?.animation.timingFunction {
             XCTAssertEqual(timingFunction[at: 0.2], 0.36, accuracy: 0.0001)
             XCTAssertEqual(timingFunction[at: 0.9], 0.99, accuracy: 0.0001)
         } else {

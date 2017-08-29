@@ -1,5 +1,5 @@
 //
-//  CALayer+createNonAnimatingCopy.swift
+//  CALayer+copy.swift
 //  UIKit
 //
 //  Created by Michael Knoch on 24.08.17.
@@ -7,11 +7,11 @@
 //
 
 extension CALayer {
-    func createNonAnimatingCopy() -> CALayer {
-        return CALayer(layer: self, disableAnimations: true)
+    func copy() -> CALayer {
+        return CALayer(layer: self)
     }
 
-    convenience init(layer: CALayer, disableAnimations: Bool) {
+    convenience init(layer: CALayer) {
         self.init()
         frame = layer.frame
         bounds = layer.bounds
@@ -28,6 +28,5 @@ extension CALayer {
         shadowOpacity = layer.shadowOpacity
         texture = layer.texture
         sublayers = layer.sublayers
-        self.disableAnimations = disableAnimations
     }
 }

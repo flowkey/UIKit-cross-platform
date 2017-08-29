@@ -41,9 +41,6 @@ open class CALayer {
 
     /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc)
     open var frame: CGRect = .zero {
-        willSet (newFrame) {
-            onWillSet(newFrame: newFrame)
-        }
         didSet {
             if bounds.size != frame.size {
                 bounds.size = frame.size
@@ -52,9 +49,6 @@ open class CALayer {
     }
 
     open var bounds: CGRect = .zero {
-        willSet(newBounds) {
-            onWillSet(newBounds: newBounds)
-        }
         didSet {
             if frame.size != bounds.size {
                 frame.size = bounds.size
@@ -65,11 +59,7 @@ open class CALayer {
     public var isHidden = false {
         didSet { presentation?.isHidden = isHidden }
     }
-    public var opacity: Float = 1 {
-        willSet(newOpacity) {
-            onWillSet(newOpacity: newOpacity)
-        }
-    }
+    public var opacity: Float = 1
 
     public var cornerRadius: CGFloat = 0 {
         didSet { presentation?.cornerRadius = cornerRadius }
@@ -116,7 +106,6 @@ open class CALayer {
     }
 
     var presentation: CALayer?
-    var disableAnimations = false
 
     var animations = [(key: String?, animation: CABasicAnimation)]() {
         didSet {
