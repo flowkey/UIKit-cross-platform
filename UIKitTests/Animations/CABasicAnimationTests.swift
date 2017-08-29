@@ -69,6 +69,25 @@ class CABasicAnimationTests: XCTestCase {
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
         XCTAssertNil(layer.presentation)
     }
+
+    func testModifyPropertyDuringAnimationShouldUpdatePresentation() {
+        let layer = CALayer()
+
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.duration = 0.5
+        animation.fromValue = Float(1)
+        animation.toValue = Float(0)
+        layer.add(animation, forKey: "fadeOut")
+
+        layer.frame.origin.x = 1000
+
+        XCTAssertEqual(layer.frame.origin.x, 1000)
+        if let presentation = layer.presentation {
+            XCTAssertEqual(presentation.frame.origin.x, 1000)
+        } else {
+            XCTFail("presentation must be defined")
+        }
+    }
 }
 
 
