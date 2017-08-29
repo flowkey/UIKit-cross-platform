@@ -13,8 +13,13 @@ import SDL.gpu
 open class VideoPlayer: UIView {
     fileprivate let javaVideo: JavaVideo
 
+    override open var frame: CGRect {
+        willSet(newFrame) {
+            javaVideo.setSize(width: Double(newFrame.width), height: Double(newFrame.height))
+        }
+    }
+
     public init(url: String) {
-        print(url)
         javaVideo = JavaVideo(url: url)!
         super.init(frame: .zero)
     }
@@ -66,5 +71,9 @@ private class JavaVideo: JNIObject {
 
     func setPlaybackRate(to rate: Double) {
         try! call(methodName: "setPlaybackRate", arguments: [rate])
+    }
+
+    func setSize(width: Double, height: Double) {
+        try! call(methodName: "setSize", arguments: [width, height])
     }
 }
