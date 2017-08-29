@@ -50,7 +50,7 @@ open class VideoPlayer: UIView {
 
 private class JavaVideo: JNIObject {
     convenience init?(url: String) {
-        self.init("com.flowkey.nativeplayersdl.SDLVideo", arguments: [url])
+        self.init("com.flowkey.nativeplayersdl.VideoJNI", arguments: [url])
     }
 
     func play() {
