@@ -1,5 +1,5 @@
 //
-//  CALayer+createNonAnimatingCopy.swift
+//  CALayer+copy.swift
 //  UIKit
 //
 //  Created by Michael Knoch on 24.08.17.
@@ -28,5 +28,6 @@ extension CALayer {
         shadowOpacity = layer.shadowOpacity
         texture = layer.texture
         sublayers = layer.sublayers
+        superlayer = layer.superlayer
     }
 }

@@ -23,54 +23,6 @@ extension CALayer {
         animations = []
     }
 
-    func onWillSet(newOpacity: Float) {
-        if disableAnimations { return }
-
-        if UIView.shouldAnimate,
-            let prototype = UIView.currentAnimationPrototype {
-            let animation = prototype.createAnimation(
-                keyPath: .opacity,
-                fromValue: getCurrentState(for: prototype.options).opacity,
-                toValue: newOpacity
-            )
-            add(animation)
-        } else {
-            presentation?.opacity = newOpacity
-        }
-    }
-
-    func onWillSet(newFrame: CGRect) {
-        if disableAnimations { return }
-
-        if UIView.shouldAnimate,
-            let prototype = UIView.currentAnimationPrototype {
-            let animation = prototype.createAnimation(
-                keyPath: .frame,
-                fromValue: getCurrentState(for: prototype.options).frame,
-                toValue: newFrame
-            )
-            add(animation)
-        } else {
-            presentation?.frame = newFrame
-        }
-    }
-
-    func onWillSet(newBounds: CGRect) {
-        if disableAnimations { return }
-
-        if UIView.shouldAnimate,
-            let prototype = UIView.currentAnimationPrototype {
-            let animation =  prototype.createAnimation(
-                keyPath: .bounds,
-                fromValue: getCurrentState(for: prototype.options).bounds,
-                toValue: newBounds
-            )
-            add(animation)
-        } else {
-            presentation?.bounds = newBounds
-        }
-    }
-
     func onDidSetAnimations(wasEmpty: Bool) {
         if wasEmpty && !animations.isEmpty {
             presentation = self.copy()
@@ -101,8 +53,7 @@ extension CALayer {
                 (!animation.isUIViewAnimation || endBounds == self.bounds)
                 else { return }
 
-            // animate origin only, because setting bounds.size updates frame.size
-            presentation.bounds.origin = (startBounds + (endBounds - startBounds) * animation.progress).origin
+            presentation.bounds = (startBounds + (endBounds - startBounds) * animation.progress)
 
         case .opacity:
             guard
@@ -149,22 +100,8 @@ fileprivate extension CABasicAnimation {
     }
 }
 
-fileprivate extension CALayer {
-    private func add(_ animation: CABasicAnimation) {
-        animation.animationGroup?.queuedAnimations += 1
-        animations.append((nil, animation))
-    }
-
-    private func removeAnimationAndNotifyGroup(animation: CABasicAnimation) {
-        animation.animationGroup?.animationDidStop(finished: animation.isComplete)
-        animations = animations.filter { $0.animation != animation }
-    }
-
-    private func getCurrentState(for options: UIViewAnimationOptions) -> CALayer {
-        return options.contains(.beginFromCurrentState) ? (presentation ?? self) : self
-    }
-
-    private func ensureFromValueIsDefined(_ animation: CABasicAnimation) {
+extension CALayer {
+    func ensureFromValueIsDefined(_ animation: CABasicAnimation) {
         if animation.fromValue == nil, let keypath = animation.keyPath {
             switch keypath as AnimationProperty  {
             case .frame:

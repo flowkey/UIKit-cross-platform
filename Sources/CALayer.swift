@@ -11,13 +11,17 @@ import SDL
 open class CALayer {
     var texture: Texture? {
         didSet {
+            presentation?.texture = texture
             let newSize = texture?.size ?? .zero
             self.bounds.size = newSize
         }
     }
 
     public var superlayer: CALayer?
-    internal (set) public var sublayers: [CALayer] = []
+
+    internal (set) public var sublayers: [CALayer] = [] {
+        didSet { presentation?.sublayers = sublayers }
+    }
     public func addSublayer(_ layer: CALayer) {
         layer.removeFromSuperlayer()
         sublayers.append(layer)
@@ -41,10 +45,8 @@ open class CALayer {
 
     /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc)
     open var frame: CGRect = .zero {
-        willSet (newFrame) {
-            onWillSet(newFrame: newFrame)
-        }
         didSet {
+            if !UIView.shouldAnimate { presentation?.frame = frame }
             if bounds.size != frame.size {
                 bounds.size = frame.size
             }
@@ -52,10 +54,8 @@ open class CALayer {
     }
 
     open var bounds: CGRect = .zero {
-        willSet(newBounds) {
-            onWillSet(newBounds: newBounds)
-        }
         didSet {
+            if !UIView.shouldAnimate { presentation?.bounds = bounds }
             if frame.size != bounds.size {
                 frame.size = bounds.size
             }
@@ -65,9 +65,10 @@ open class CALayer {
     public var isHidden = false {
         didSet { presentation?.isHidden = isHidden }
     }
+
     public var opacity: Float = 1 {
-        willSet(newOpacity) {
-            onWillSet(newOpacity: newOpacity)
+        didSet {
+            if !UIView.shouldAnimate { presentation?.opacity = opacity }
         }
     }
 
@@ -116,7 +117,6 @@ open class CALayer {
     }
 
     var presentation: CALayer?
-    var disableAnimations = true //layers created by UIView set this to false explicitly
 
     var animations = [(key: String?, animation: CABasicAnimation)]() {
         didSet {

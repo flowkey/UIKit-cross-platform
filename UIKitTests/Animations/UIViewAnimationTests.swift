@@ -70,10 +70,6 @@ class UIViewAnimationTests: XCTestCase {
         })
         XCTAssertEqual(view.bounds, expectedBounds)
 
-        // animating bounds consists of bounds.origin and frame.size animation
-        // because mutating frame mutates bounds and vice versa
-        XCTAssertEqual(view.layer.animations.count, 2)
-
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
 
         if let presentation = view.layer.presentation {

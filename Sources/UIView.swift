@@ -20,12 +20,18 @@ open class UIView: UIResponder {
 
     open var frame: CGRect {
         get { return layer.frame }
-        set { layer.frame = newValue }
+        set {
+            onWillSet(newFrame: newValue)
+            layer.frame = newValue
+        }
     }
 
     open var bounds: CGRect {
         get { return layer.bounds }
-        set { layer.bounds = newValue }
+        set {
+            onWillSet(newBounds: newValue)
+            layer.bounds = newValue
+        }
     }
 
     open var center: CGPoint {
@@ -77,7 +83,11 @@ open class UIView: UIResponder {
 
     public var alpha: CGFloat {
         get { return CGFloat(layer.opacity) }
-        set { layer.opacity = Float(newValue) }
+        set {
+            let opacity = Float(newValue)
+            onWillSet(newOpacity: opacity)
+            layer.opacity = opacity
+        }
     }
 
     public var tintColor: UIColor! // mocked
@@ -104,7 +114,6 @@ open class UIView: UIResponder {
 
     public init(frame: CGRect) {
         self.layer = type(of: self).layerClass.init()
-        self.layer.disableAnimations = false
         self.frame = frame
     }
 
