@@ -86,10 +86,10 @@ open class CALayer {
     public var shadowPath: CGRect? {
         didSet { presentation?.shadowPath = shadowPath }
     }
-    public var shadowColor: CGColor?{
+    public var shadowColor: CGColor? {
         didSet { presentation?.shadowColor = shadowColor }
     }
-    public var shadowOpacity: Float = 0{
+    public var shadowOpacity: Float = 0 {
         didSet { presentation?.shadowOpacity = shadowOpacity }
     }
     public var shadowOffset: CGSize = .zero {
