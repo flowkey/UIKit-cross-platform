@@ -7,7 +7,7 @@
 //
 
 // everything with a larger height is a tablet
-let HEIGHT_BOUNDARY: CGFloat = 800
+let HEIGHT_LIMIT_FOR_PHONES: CGFloat = 800
 
 public class UIScreen {
     var size: CGSize
@@ -18,6 +18,6 @@ public class UIScreen {
 
 public extension UIScreen {
     public static var main = UIScreen(size: SDL.window.size)
-    public static var isTablet = main.size.height > HEIGHT_BOUNDARY
+    public static var isTablet = main.size.height > HEIGHT_LIMIT_FOR_PHONES
     public static var isPhone = !isTablet
 }
