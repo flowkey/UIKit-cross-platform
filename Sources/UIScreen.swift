@@ -8,7 +8,7 @@
 
 public class UIScreen {
     // mocked
-    public static var isPhone = true
-    public static var isTablet = false
+    public static var isPhone = false
+    public static var isTablet = true
     // TODO: implement for Android
 }

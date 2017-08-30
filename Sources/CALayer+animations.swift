@@ -35,7 +35,6 @@ extension CALayer {
             )
             add(animation)
         } else {
-            removeAllAnimationsAndNotifyGroups(for: .opacity)
             presentation?.opacity = newOpacity
         }
     }
@@ -52,7 +51,6 @@ extension CALayer {
             )
             add(animation)
         } else {
-            removeAllAnimationsAndNotifyGroups(for: .frame)
             presentation?.frame = newFrame
         }
     }
@@ -69,14 +67,13 @@ extension CALayer {
             )
             add(animation)
         } else {
-            removeAllAnimationsAndNotifyGroups(for: .bounds)
             presentation?.bounds = newBounds
         }
     }
 
     func onDidSetAnimations(wasEmpty: Bool) {
         if wasEmpty && !animations.isEmpty {
-            presentation = self.createNonAnimatingCopy()
+            presentation = self.copy()
             UIView.layersWithAnimations.insert(self)
         } else if animations.isEmpty && !wasEmpty {
             presentation = nil
@@ -91,7 +88,8 @@ extension CALayer {
         case .frame:
             guard
                 let startFrame = animation.fromValue as? CGRect,
-                let endFrame = animation.toValue as? CGRect
+                let endFrame = animation.toValue as? CGRect,
+                (!animation.isUIViewAnimation || endFrame == self.frame)
                 else { return }
 
             presentation.frame = startFrame + (endFrame - startFrame) * animation.progress
@@ -99,7 +97,8 @@ extension CALayer {
         case .bounds:
             guard
                 let startBounds = animation.fromValue as? CGRect,
-                let endBounds = animation.toValue as? CGRect
+                let endBounds = animation.toValue as? CGRect,
+                (!animation.isUIViewAnimation || endBounds == self.bounds)
                 else { return }
 
             // animate origin only, because setting bounds.size updates frame.size
@@ -108,7 +107,8 @@ extension CALayer {
         case .opacity:
             guard
                 let startOpacity = animation.fromValue as? Float,
-                let endOpacity = animation.toValue as? Float
+                let endOpacity = animation.toValue as? Float,
+                (!animation.isUIViewAnimation || endOpacity == self.opacity)
                 else { return }
 
             presentation.opacity = startOpacity + ((endOpacity - startOpacity)) * Float(animation.progress)
@@ -143,6 +143,12 @@ extension CALayer {
     }
 }
 
+fileprivate extension CABasicAnimation {
+    var isUIViewAnimation: Bool {
+        return animationGroup != nil
+    }
+}
+
 fileprivate extension CALayer {
     private func add(_ animation: CABasicAnimation) {
         animation.animationGroup?.queuedAnimations += 1
@@ -154,12 +160,6 @@ fileprivate extension CALayer {
         animations = animations.filter { $0.animation != animation }
     }
 
-    private func removeAllAnimationsAndNotifyGroups(for keyPath: AnimationProperty) {
-        animations
-            .filter { $0.animation.keyPath == keyPath }
-            .forEach { removeAnimationAndNotifyGroup(animation: $0.animation) }
-    }
-
     private func getCurrentState(for options: UIViewAnimationOptions) -> CALayer {
         return options.contains(.beginFromCurrentState) ? (presentation ?? self) : self
     }
@@ -168,11 +168,11 @@ fileprivate extension CALayer {
         if animation.fromValue == nil, let keypath = animation.keyPath {
             switch keypath as AnimationProperty  {
             case .frame:
-                animation.fromValue = animation.fromValue ?? presentation?.frame ?? frame
+                animation.fromValue = presentation?.frame ?? frame
             case .opacity:
-                animation.fromValue = animation.fromValue ?? presentation?.opacity ?? opacity
+                animation.fromValue = presentation?.opacity ?? opacity
             case .bounds:
-                animation.fromValue = animation.fromValue ?? presentation?.bounds ?? bounds
+                animation.fromValue = presentation?.bounds ?? bounds
             case .unknown: break
             }
         }

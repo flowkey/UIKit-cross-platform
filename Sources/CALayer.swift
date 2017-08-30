@@ -116,7 +116,7 @@ open class CALayer {
     }
 
     var presentation: CALayer?
-    var disableAnimations = false
+    var disableAnimations = true //layers created by UIView set this to false explicitly
 
     var animations = [(key: String?, animation: CABasicAnimation)]() {
         didSet {

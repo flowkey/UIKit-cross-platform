@@ -22,8 +22,8 @@ final public class SDL { // XXX: only public for startRunLoop()
             windowOptions = [SDL_WINDOW_FULLSCREEN]
         #else
             // This corresponds to the Samsung S7 screen at its 1080p 1.5x Retina resolution:
-            let SCREEN_WIDTH = 2560 / 3
-            let SCREEN_HEIGHT = 1440 / 3
+            let SCREEN_WIDTH = 3560 / 3
+            let SCREEN_HEIGHT = 2440 / 3
             windowOptions = [
                 SDL_WINDOW_ALLOW_HIGHDPI,
                 //SDL_WINDOW_FULLSCREEN
