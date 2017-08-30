@@ -94,33 +94,14 @@ extension CALayer {
     }
 }
 
-<<<<<<< HEAD
-extension CALayer {
-    func ensureFromValueIsDefined(_ animation: CABasicAnimation) {
-=======
 fileprivate extension CABasicAnimation {
     var isUIViewAnimation: Bool {
         return animationGroup != nil
     }
 }
 
-fileprivate extension CALayer {
-    private func add(_ animation: CABasicAnimation) {
-        animation.animationGroup?.queuedAnimations += 1
-        animations.append((nil, animation))
-    }
-
-    private func removeAnimationAndNotifyGroup(animation: CABasicAnimation) {
-        animation.animationGroup?.animationDidStop(finished: animation.isComplete)
-        animations = animations.filter { $0.animation != animation }
-    }
-
-    private func getCurrentState(for options: UIViewAnimationOptions) -> CALayer {
-        return options.contains(.beginFromCurrentState) ? (presentation ?? self) : self
-    }
-
-    private func ensureFromValueIsDefined(_ animation: CABasicAnimation) {
->>>>>>> 3f981bed606e185148396666ea97c91c8d8b734b
+extension CALayer {
+    func ensureFromValueIsDefined(_ animation: CABasicAnimation) {
         if animation.fromValue == nil, let keypath = animation.keyPath {
             switch keypath as AnimationProperty  {
             case .frame:

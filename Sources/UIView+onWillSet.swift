@@ -16,8 +16,6 @@ extension UIView {
                 toValue: newOpacity
             )
             layer.add(animation)
-        } else {
-            layer.removeAllAnimationsAndNotifyGroups(for: .opacity)
         }
     }
 
@@ -30,8 +28,6 @@ extension UIView {
                 toValue: newFrame
             )
             layer.add(animation)
-        } else {
-            layer.removeAllAnimationsAndNotifyGroups(for: .frame)
         }
     }
 
@@ -44,8 +40,6 @@ extension UIView {
                 toValue: newBounds
             )
             layer.add(animation)
-        } else {
-            layer.removeAllAnimationsAndNotifyGroups(for: .bounds)
         }
     }
 }
@@ -59,12 +53,6 @@ extension UIView {
     func removeAnimationAndNotifyGroup(animation: CABasicAnimation) {
         animation.animationGroup?.animationDidStop(finished: animation.isComplete)
         animations = animations.filter { $0.animation != animation }
-    }
-
-    fileprivate func removeAllAnimationsAndNotifyGroups(for keyPath: AnimationProperty) {
-        animations
-            .filter { $0.animation.keyPath == keyPath }
-            .forEach { removeAnimationAndNotifyGroup(animation: $0.animation) }
     }
 
     fileprivate func getCurrentState(for options: UIViewAnimationOptions) -> CALayer {
