@@ -17,9 +17,7 @@ public class UIScreen {
 }
 
 public extension UIScreen {
-    public static var main: UIScreen {
-        return UIScreen(size: SDL.window.size)
-    }
-    public static var isTablet: Bool = main.size.height > HEIGHT_BOUNDARY
-    public static var isPhone: Bool = !isTablet
+    public static var main = UIScreen(size: SDL.window.size)
+    public static var isTablet = main.size.height > HEIGHT_BOUNDARY
+    public static var isPhone = !isTablet
 }
