@@ -270,7 +270,11 @@ class UIViewAnimationTests: XCTestCase {
 
         view.frame.origin.x = 0
 
-        XCTAssertNil(view.layer.presentation)
+        if let presentation = view.layer.presentation {
+            XCTAssertEqual(presentation.frame.origin.x, 0)
+        } else {
+            XCTFail("presentation must be defined")
+        }
         XCTAssertEqual(view.frame.origin.x, 0)
     }
 }

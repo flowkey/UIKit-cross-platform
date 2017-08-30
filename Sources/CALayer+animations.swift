@@ -40,7 +40,8 @@ extension CALayer {
         case .frame:
             guard
                 let startFrame = animation.fromValue as? CGRect,
-                let endFrame = animation.toValue as? CGRect
+                let endFrame = animation.toValue as? CGRect,
+                (!animation.isUIViewAnimation || endFrame == self.frame)
                 else { return }
 
             presentation.frame = startFrame + (endFrame - startFrame) * animation.progress
@@ -48,7 +49,8 @@ extension CALayer {
         case .bounds:
             guard
                 let startBounds = animation.fromValue as? CGRect,
-                let endBounds = animation.toValue as? CGRect
+                let endBounds = animation.toValue as? CGRect,
+                (!animation.isUIViewAnimation || endBounds == self.bounds)
                 else { return }
 
             presentation.bounds = (startBounds + (endBounds - startBounds) * animation.progress)
@@ -56,7 +58,8 @@ extension CALayer {
         case .opacity:
             guard
                 let startOpacity = animation.fromValue as? Float,
-                let endOpacity = animation.toValue as? Float
+                let endOpacity = animation.toValue as? Float,
+                (!animation.isUIViewAnimation || endOpacity == self.opacity)
                 else { return }
 
             presentation.opacity = startOpacity + ((endOpacity - startOpacity)) * Float(animation.progress)
@@ -91,16 +94,41 @@ extension CALayer {
     }
 }
 
+<<<<<<< HEAD
 extension CALayer {
     func ensureFromValueIsDefined(_ animation: CABasicAnimation) {
+=======
+fileprivate extension CABasicAnimation {
+    var isUIViewAnimation: Bool {
+        return animationGroup != nil
+    }
+}
+
+fileprivate extension CALayer {
+    private func add(_ animation: CABasicAnimation) {
+        animation.animationGroup?.queuedAnimations += 1
+        animations.append((nil, animation))
+    }
+
+    private func removeAnimationAndNotifyGroup(animation: CABasicAnimation) {
+        animation.animationGroup?.animationDidStop(finished: animation.isComplete)
+        animations = animations.filter { $0.animation != animation }
+    }
+
+    private func getCurrentState(for options: UIViewAnimationOptions) -> CALayer {
+        return options.contains(.beginFromCurrentState) ? (presentation ?? self) : self
+    }
+
+    private func ensureFromValueIsDefined(_ animation: CABasicAnimation) {
+>>>>>>> 3f981bed606e185148396666ea97c91c8d8b734b
         if animation.fromValue == nil, let keypath = animation.keyPath {
             switch keypath as AnimationProperty  {
             case .frame:
-                animation.fromValue = animation.fromValue ?? presentation?.frame ?? frame
+                animation.fromValue = presentation?.frame ?? frame
             case .opacity:
-                animation.fromValue = animation.fromValue ?? presentation?.opacity ?? opacity
+                animation.fromValue = presentation?.opacity ?? opacity
             case .bounds:
-                animation.fromValue = animation.fromValue ?? presentation?.bounds ?? bounds
+                animation.fromValue = presentation?.bounds ?? bounds
             case .unknown: break
             }
         }
