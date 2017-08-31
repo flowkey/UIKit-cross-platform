@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5BD476361F4D94F40055EE27 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD476341F4D94F40055EE27 /* Logging.swift */; };
 		5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F06AE1F3210F200EFF087 /* UIViewController.swift */; };
 		5C27149E1F2A3CC40026BBA9 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		5C2714A21F2A3FC50026BBA9 /* SDL+JNIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */; };
@@ -45,7 +44,6 @@
 		5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7811EDC18BA006F90AC /* UITouch.swift */; };
 		5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
 		5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037241F138B8A0058E592 /* MeteringView.swift */; };
-		5CA995A21EE8182F007D0456 /* UIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C27E7B11ECB2F6500F5020D /* UIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */; };
 		5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */; };
 		5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */; };
@@ -89,6 +87,7 @@
 		83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8101EF8316C00279C59 /* CGPoint.swift */; };
 		83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8111EF8316C00279C59 /* CGFloat.swift */; };
 		83E5F8181EF8323500279C59 /* CGAffineTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */; };
+		83EA4ED01F581DF40088701D /* UIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C27E7B11ECB2F6500F5020D /* UIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
 		83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB01F17988F00347AA8 /* Texture+Size.swift */; };
 		83F02DB41F1798D100347AA8 /* loadCustomFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */; };
@@ -501,7 +500,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5CA995A21EE8182F007D0456 /* UIKit.h in Headers */,
+				83EA4ED01F581DF40088701D /* UIKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,7 +726,6 @@
 				5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */,
 				8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */,
 				5C6AB7651ED5A0C3006F90AC /* UIEvent.swift in Sources */,
-				5BD476361F4D94F40055EE27 /* Logging.swift in Sources */,
 				8337A8131F39F37500475F80 /* UIScreen.swift in Sources */,
 				83E5F8151EF8322800279C59 /* CGSize.swift in Sources */,
 				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,

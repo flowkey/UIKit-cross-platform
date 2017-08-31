@@ -7,11 +7,7 @@
 //
 
 import XCTest
-#if os(iOS)
 import UIKit
-#else
-@testable import UIKit
-#endif
 
 class ButtonContentAlignmentTests: XCTestCase {
     var button = Button(frame: .zero)

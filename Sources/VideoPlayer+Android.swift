@@ -24,11 +24,11 @@ open class VideoPlayer: UIView {
         super.init(frame: .zero)
     }
 
-    open func play() {
+    public func play() {
         javaVideo.play()
     }
 
-    open func pause() {
+    public func pause() {
         javaVideo.pause()
     }
 
@@ -40,8 +40,8 @@ open class VideoPlayer: UIView {
         javaVideo.seek(to: newTime)
     }
 
-    open var isMuted: Bool = false
-    open var rate: Double = 1 {
+    public var isMuted: Bool = false
+    public var rate: Double = 1 {
         willSet(newRate) {
             javaVideo.setPlaybackRate(to: newRate)
         }

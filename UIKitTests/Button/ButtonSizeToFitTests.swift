@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import UIKit
 
 private let frameSizeWithShortLabelText = CGSize(width: 28.5, height: 26.5)
 private let frameSizeWithMediumLabelText = CGSize(width: 137, height: 31.0)
@@ -39,10 +40,6 @@ class ButtonSizeToFitTests: XCTestCase {
         button.titleLabel!.font = UIFont(name: "roboto-medium", size: mediumFontSize)!
         button.sizeToFit()
 
-<<<<<<< HEAD
-        let frameSizeWithMediumLabelText = CGSize(width: 136.5, height: 31.0)
-=======
->>>>>>> master
         XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithMediumLabelText.width, accuracy: 1.5)
         XCTAssertEqualWithAccuracy(button.frame.height, frameSizeWithMediumLabelText.height, accuracy: 0.1)
     }
