@@ -19,8 +19,7 @@ class CASpringAnimation: CABasicAnimation {
 
     init(prototype: CASpringAnimationPrototype,
          keyPath: AnimationProperty,
-         fromValue: AnimatableProperty,
-         toValue: AnimatableProperty
+         fromValue: AnimatableProperty
     ) {
         damping = prototype.damping
         initialSpringVelocity = prototype.initialSpringVelocity
@@ -29,7 +28,6 @@ class CASpringAnimation: CABasicAnimation {
             prototype: prototype,
             keyPath: keyPath,
             fromValue: fromValue,
-            toValue: toValue,
             timingFunction: .timingFunction(from: prototype.options)
         )
     }

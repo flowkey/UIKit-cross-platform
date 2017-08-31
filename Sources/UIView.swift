@@ -15,6 +15,10 @@ open class UIView: UIResponder {
 
     open let layer: CALayer
 
+    func presentation(for time: Timer = Timer()) {
+
+    }
+
     // mocked for parentViewController.present function in AlertContainer
     open let parentViewController: UIViewController? = UIViewController()
 

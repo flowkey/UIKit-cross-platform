@@ -21,7 +21,6 @@ public class CABasicAnimation {
         prototype: CABasicAnimationPrototype,
         keyPath: AnimationProperty,
         fromValue: AnimatableProperty,
-        toValue: AnimatableProperty,
         timingFunction: CAMediaTimingFunction?
     ) {
         delay = prototype.delay
@@ -29,7 +28,6 @@ public class CABasicAnimation {
         options = prototype.options
         self.keyPath = keyPath
         self.fromValue = fromValue
-        self.toValue = toValue
         self.timingFunction = timingFunction
     }
 

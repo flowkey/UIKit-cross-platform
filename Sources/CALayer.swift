@@ -29,9 +29,7 @@ open class CALayer {
         }
     }
 
-    public var backgroundColor: CGColor? {
-        didSet { presentation?.backgroundColor = backgroundColor }
-    }
+    public var backgroundColor: CGColor?
 
     public var position: CGPoint {
         // Note: this should be based on the CALayer's anchor point: (midX, midY) is just the default (0.5, 0.5) point:
@@ -62,42 +60,23 @@ open class CALayer {
         }
     }
 
-    public var isHidden = false {
-        didSet { presentation?.isHidden = isHidden }
-    }
     public var opacity: Float = 1 {
         willSet(newOpacity) {
             onWillSet(newOpacity: newOpacity)
         }
     }
 
-    public var cornerRadius: CGFloat = 0 {
-        didSet { presentation?.cornerRadius = cornerRadius }
-    }
+    public var isHidden = false
+    public var cornerRadius: CGFloat = 0
 
     // TODO: Implement these!
-    public var borderWidth: CGFloat = 0 {
-        didSet { presentation?.borderWidth = borderWidth }
-    }
-    public var borderColor: CGColor = UIColor.black.cgColor {
-        didSet { presentation?.borderColor = borderColor }
-    }
-
-    public var shadowPath: CGRect? {
-        didSet { presentation?.shadowPath = shadowPath }
-    }
-    public var shadowColor: CGColor? {
-        didSet { presentation?.shadowColor = shadowColor }
-    }
-    public var shadowOpacity: Float = 0 {
-        didSet { presentation?.shadowOpacity = shadowOpacity }
-    }
-    public var shadowOffset: CGSize = .zero {
-        didSet { presentation?.shadowOffset = shadowOffset }
-    }
-    public var shadowRadius: CGFloat = 0 {
-        didSet { presentation?.shadowRadius = shadowRadius }
-    }
+    public var borderWidth: CGFloat = 0
+    public var borderColor: CGColor = UIColor.black.cgColor
+    public var shadowPath: CGRect?
+    public var shadowColor: CGColor?
+    public var shadowOpacity: Float = 0
+    public var shadowOffset: CGSize = .zero
+    public var shadowRadius: CGFloat = 0
 
 
     public required init() {}

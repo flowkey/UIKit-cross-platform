@@ -198,7 +198,7 @@ class UIViewAnimationTests: XCTestCase {
             view.alpha = 0.1
         })
 
-        UIView.animateIfNeeded(at: Timer(startingAt: 5000))
+        UIView.animateIfNeeded(at: Timer(startingAt: 6000))
         XCTAssertNil(view.layer.presentation)
     }
 
@@ -251,9 +251,9 @@ class UIViewAnimationTests: XCTestCase {
         UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
             view.frame.origin.x = 200
         })
-        UIView.animateIfNeeded(at: Timer(startingAt: 5000))
 
         view.alpha = 0
+        UIView.animateIfNeeded(at: Timer(startingAt: 5000))
 
         if let presentation = view.layer.presentation {
             XCTAssertEqual(presentation.opacity, 0)
@@ -270,9 +270,9 @@ class UIViewAnimationTests: XCTestCase {
         UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
             view.frame.origin.x = 200
         })
-        UIView.animateIfNeeded(at: Timer(startingAt: 5000))
 
         view.frame.origin.x = 0
+        UIView.animateIfNeeded(at: Timer(startingAt: 5000))
 
         if let presentation = view.layer.presentation {
             XCTAssertEqual(presentation.frame.origin.x, 0)

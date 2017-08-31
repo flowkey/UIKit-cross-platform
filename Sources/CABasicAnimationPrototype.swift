@@ -19,14 +19,12 @@ class CABasicAnimationPrototype {
 
     func createAnimation(
         keyPath: AnimationProperty,
-        fromValue: AnimatableProperty,
-        toValue: AnimatableProperty
+        fromValue: AnimatableProperty
     ) -> CABasicAnimation {
         return CABasicAnimation(
             prototype: self,
             keyPath: keyPath,
             fromValue: fromValue,
-            toValue: toValue,
             timingFunction: .timingFunction(from: options)
         )
     }
