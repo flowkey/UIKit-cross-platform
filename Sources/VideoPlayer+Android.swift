@@ -9,7 +9,6 @@
 import JNI
 import SDL.gpu
 
-
 open class VideoPlayer: UIView {
     fileprivate let javaVideo: JavaVideo
 
@@ -32,8 +31,8 @@ open class VideoPlayer: UIView {
         javaVideo.pause()
     }
 
-    public func getCurrentTime() -> Double {
-        return javaVideo.getCurrentTime()
+    public func getCurrentTimeInMS() -> Double {
+        return javaVideo.getCurrentTimeInMS()
     }
 
     public func seek(to newTime: Double) {
@@ -61,7 +60,7 @@ private class JavaVideo: JNIObject {
         try! call(methodName: "pause")
     }
 
-    func getCurrentTime() -> Double {
+    func getCurrentTimeInMS() -> Double {
         return try! call(methodName: "getCurrentTimeInMilliseconds")
     }
 

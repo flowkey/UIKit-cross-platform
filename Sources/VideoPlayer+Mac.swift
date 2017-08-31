@@ -32,7 +32,7 @@ open class VideoPlayer: UIView {
         player?.rate = 0
     }
 
-    public func getCurrentTime() -> Double {
+    public func getCurrentTimeInMS() -> Double {
         return (player?.currentTime().seconds ?? 0) * 1000
     }
 
