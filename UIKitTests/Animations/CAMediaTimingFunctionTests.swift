@@ -18,7 +18,7 @@ class CAMediaTimingFunctionTests: XCTestCase {
             view.alpha = 0
         })
 
-        if let timingFunction = view.layer.animations.first?.animation.timingFunction {
+        if let timingFunction = view.layer.animations["opacity"]?.timingFunction {
             XCTAssertEqual(timingFunction[at: 0.2], 0.008, accuracy: 0.00001)
             XCTAssertEqual(timingFunction[at: 0.9], 0.729, accuracy: 0.00001)
         } else {
@@ -32,7 +32,7 @@ class CAMediaTimingFunctionTests: XCTestCase {
             view.alpha = 0
         })
 
-        if let timingFunction = view.layer.animations.first?.animation.timingFunction {
+        if let timingFunction = view.layer.animations["opacity"]?.timingFunction {
             XCTAssertEqual(timingFunction[at: 0.2], 0.36, accuracy: 0.0001)
             XCTAssertEqual(timingFunction[at: 0.9], 0.99, accuracy: 0.0001)
         } else {
@@ -51,7 +51,7 @@ class CAMediaTimingFunctionTests: XCTestCase {
             animations: { view.alpha = 0 }
         )
 
-        if let timingFunction = view.layer.animations.first?.animation.timingFunction {
+        if let timingFunction = view.layer.animations["opacity"]?.timingFunction {
             XCTAssertEqual(timingFunction[at: 0.2], 0.36, accuracy: 0.0001)
             XCTAssertEqual(timingFunction[at: 0.9], 0.99, accuracy: 0.0001)
         } else {

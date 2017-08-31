@@ -166,7 +166,7 @@ class UIViewAnimationTests: XCTestCase {
         if
             let firstAnimationDidFinish = firstAnimationDidFinish,
             let secondAnimationDidFinish = secondAnimationDidFinish {
-            XCTAssertTrue(firstAnimationDidFinish)
+            XCTAssertFalse(firstAnimationDidFinish)
             XCTAssertTrue(secondAnimationDidFinish)
         } else {
             XCTFail("completion callback never called")
@@ -241,7 +241,7 @@ class UIViewAnimationTests: XCTestCase {
             view.frame.origin.x = 20
         })
 
-        let fromValue = view.layer.animations[1].animation.fromValue as? CGRect
+        let fromValue = view.layer.animations["frame"]?.fromValue as? CGRect
         XCTAssertEqual(fromValue?.origin.x ?? -1, CGFloat(5), accuracy: 0.01)
     }
 

@@ -7,8 +7,10 @@
 //
 
 extension CALayer {
-    func copy() -> CALayer {
-        return CALayer(layer: self)
+    func copy(disableAnimations: Bool = false) -> CALayer {
+        let copy = CALayer(layer: self)
+        copy.disableAnimations = disableAnimations
+        return copy
     }
 
     convenience init(layer: CALayer) {

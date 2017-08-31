@@ -9,39 +9,42 @@
 extension CALayer {
     open func add(_ animation: CABasicAnimation, forKey key: String) {
         ensureFromValueIsDefined(animation)
-        animation.timer = Timer()
 
         let copy = CABasicAnimation(from: animation)
-        animations.append((key, copy))
+        copy.animationGroup?.queuedAnimations += 1
+        copy.timer = Timer()
+
+        animations[key]?.animationGroup?.animationDidStop(finished: false)
+        animations[key] = copy
     }
 
     open func removeAnimation(forKey key: String) {
-        animations = animations.filter { $0.key == key }
+        animations.removeValue(forKey: key)
     }
 
     open func removeAllAnimations() {
-        animations = []
+        animations = [:]
     }
 
     func onWillSet(newOpacity: Float) {
-        if !self.disableAnimations, UIView.shouldAnimate,
+        if !self.disableAnimations,
             let prototype = UIView.currentAnimationPrototype {
             let animation = prototype.createAnimation(
                 keyPath: .opacity,
                 fromValue: getCurrentState(for: prototype.options).opacity
             )
-            add(animation)
+            add(animation, forKey: "opacity")
         }
     }
 
     func onWillSet(newFrame: CGRect) {
-        if !self.disableAnimations, UIView.shouldAnimate,
+        if !self.disableAnimations,
             let prototype = UIView.currentAnimationPrototype {
             let animation = prototype.createAnimation(
                 keyPath: .frame,
                 fromValue: getCurrentState(for: prototype.options).frame
             )
-            add(animation)
+            add(animation, forKey: "frame")
         }
     }
 
@@ -52,13 +55,16 @@ extension CALayer {
                 keyPath: .bounds,
                 fromValue: getCurrentState(for: prototype.options).bounds
             )
-            add(animation)
+            add(animation, forKey: "bounds")
         }
     }
 
     func onDidSetAnimations(wasEmpty: Bool) {
         if wasEmpty && !animations.isEmpty {
             UIView.layersWithAnimations.insert(self)
+
+            self.presentation = self.copy(disableAnimations: true)
+
         } else if animations.isEmpty && !wasEmpty {
             UIView.layersWithAnimations.remove(self)
         }
@@ -93,28 +99,16 @@ extension CALayer {
     }
 
     func animate(at currentTime: Timer) {
-        // reset state on each animationLoop
-        var propertiesDidAnimate = AnimationLoopState()
+        let presentation = self.copy(disableAnimations: true)
 
-        let presentation = self.copy()
-        presentation.disableAnimations = true
-
-        animations.forEach { (_, animation) in
+        animations.forEach { (key, animation) in
             animation.updateProgress(to: currentTime)
-            guard let keyPath = animation.keyPath, animation.progress > 0 else { return }
-
-            if // if a property will animate twice during one animationLoop, cancel first animation
-                propertiesDidAnimate[keyPath],
-                let firstAnimationForKeyPath = animations.getFirstElement(for: keyPath)
-            {
-                removeAnimationAndNotifyGroup(animation: firstAnimationForKeyPath)
-            }
 
             update(presentation, for: animation, at: currentTime)
-            propertiesDidAnimate[keyPath] = true
 
             if animation.isComplete && animation.isRemovedOnCompletion {
-                removeAnimationAndNotifyGroup(animation: animation)
+                animation.animationGroup?.animationDidStop(finished: true)
+                removeAnimation(forKey: key)
             }
         }
 
@@ -122,23 +116,7 @@ extension CALayer {
     }
 }
 
-fileprivate extension CABasicAnimation {
-    var isUIViewAnimation: Bool {
-        return animationGroup != nil
-    }
-}
-
 fileprivate extension CALayer {
-    private func add(_ animation: CABasicAnimation) {
-        animation.animationGroup?.queuedAnimations += 1
-        animations.append((nil, animation))
-    }
-
-    private func removeAnimationAndNotifyGroup(animation: CABasicAnimation) {
-        animation.animationGroup?.animationDidStop(finished: animation.isComplete)
-        animations = animations.filter { $0.animation != animation }
-    }
-
     private func getCurrentState(for options: UIViewAnimationOptions) -> CALayer {
         return options.contains(.beginFromCurrentState) ? (presentation ?? self) : self
     }
@@ -155,11 +133,5 @@ fileprivate extension CALayer {
             case .unknown: break
             }
         }
-    }
-}
-
-fileprivate extension Array where Iterator.Element == (key: String?, animation: CABasicAnimation) {
-    func getFirstElement(for keyPath: AnimationProperty) -> CABasicAnimation? {
-         return self.filter({ $0.animation.keyPath == keyPath }).first?.animation
     }
 }

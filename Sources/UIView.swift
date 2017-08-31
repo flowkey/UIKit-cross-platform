@@ -53,8 +53,8 @@ open class UIView: UIResponder {
         if !isUserInteractionEnabled {
             return false
         }
-        return layer.animations.isEmpty || layer.animations
-            .filter { $0.animation.options.contains(.allowUserInteraction) }
+        return layer.animations.isEmpty || layer.animations.values
+            .filter { $0.options.contains(.allowUserInteraction) }
             .count > 0
     }
 

@@ -39,7 +39,7 @@ class CABasicAnimationTests: XCTestCase {
         firstLayer.add(animation, forKey: "fadeOut")
         secondLayer.add(animation, forKey: "fadeOut")
 
-        XCTAssertNotEqual(firstLayer.animations.first?.animation, secondLayer.animations.first?.animation)
+        XCTAssertNotEqual(firstLayer.animations["fadeOut"], secondLayer.animations["fadeOut"])
     }
 
     func testDoNotRemoveOnCompletion() {
