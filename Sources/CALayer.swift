@@ -9,6 +9,8 @@
 import SDL
 
 open class CALayer {
+    var delegate: CALayerDelegate?
+
     var texture: Texture? {
         didSet {
             let newSize = texture?.size ?? .zero

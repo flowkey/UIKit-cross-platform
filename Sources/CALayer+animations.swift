@@ -8,11 +8,15 @@
 
 extension CALayer {
     open func add(_ animation: CABasicAnimation, forKey key: String) {
-        ensureFromValueIsDefined(animation)
 
         let copy = CABasicAnimation(from: animation)
         copy.animationGroup?.queuedAnimations += 1
         copy.timer = Timer()
+
+        if copy.fromValue == nil, let keyPath = copy.keyPath {
+            let layer = presentation ?? self
+            copy.fromValue = layer.value(forKeyPath: keyPath)
+        }
 
         animations[key]?.animationGroup?.animationDidStop(finished: false)
         animations[key] = copy
@@ -27,34 +31,19 @@ extension CALayer {
     }
 
     func onWillSet(newOpacity: Float) {
-        if !self.disableAnimations,
-            let prototype = UIView.currentAnimationPrototype {
-            let animation = prototype.createAnimation(
-                keyPath: .opacity,
-                fromValue: getCurrentState(for: prototype.options).opacity
-            )
+        if let animation = action(forKey: .opacity), !disableAnimations {
             add(animation, forKey: "opacity")
         }
     }
 
     func onWillSet(newFrame: CGRect) {
-        if !self.disableAnimations,
-            let prototype = UIView.currentAnimationPrototype {
-            let animation = prototype.createAnimation(
-                keyPath: .frame,
-                fromValue: getCurrentState(for: prototype.options).frame
-            )
+        if let animation = action(forKey: .frame), !disableAnimations {
             add(animation, forKey: "frame")
         }
     }
 
     func onWillSet(newBounds: CGRect) {
-        if !self.disableAnimations,
-            let prototype = UIView.currentAnimationPrototype {
-            let animation =  prototype.createAnimation(
-                keyPath: .bounds,
-                fromValue: getCurrentState(for: prototype.options).bounds
-            )
+        if let animation = action(forKey: .bounds), !disableAnimations {
             add(animation, forKey: "bounds")
         }
     }
@@ -116,22 +105,29 @@ extension CALayer {
     }
 }
 
-fileprivate extension CALayer {
-    private func getCurrentState(for options: UIViewAnimationOptions) -> CALayer {
-        return options.contains(.beginFromCurrentState) ? (presentation ?? self) : self
+extension CALayer {
+    func action(forKey event: AnimationProperty) -> CABasicAnimation? {
+        if let delegate = delegate {
+            return delegate.action(forKey: event)
+        }
+        //return CALayer.defaultAction(forKey: event)
+        return nil
     }
 
-    private func ensureFromValueIsDefined(_ animation: CABasicAnimation) {
-        if animation.fromValue == nil, let keypath = animation.keyPath {
-            switch keypath as AnimationProperty  {
-            case .frame:
-                animation.fromValue = presentation?.frame ?? frame
-            case .opacity:
-                animation.fromValue = presentation?.opacity ?? opacity
-            case .bounds:
-                animation.fromValue = presentation?.bounds ?? bounds
-            case .unknown: break
-            }
+    static func defaultAction(forKey event: AnimationProperty) -> CABasicAnimation {
+        let animation = CABasicAnimation(keyPath: event)
+        animation.duration = 0.25
+        return animation
+    }
+}
+
+extension CALayer {
+    func value(forKeyPath: AnimationProperty) -> AnimatableProperty? {
+        switch forKeyPath as AnimationProperty  {
+        case .frame: return frame
+        case .opacity: return opacity
+        case .bounds: return bounds
+        case .unknown: return nil
         }
     }
 }
