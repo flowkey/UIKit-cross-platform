@@ -108,7 +108,6 @@ open class UIView: UIResponder {
 
     public init(frame: CGRect) {
         self.layer = type(of: self).layerClass.init()
-        self.layer.disableAnimations = false
         self.frame = frame
     }
 

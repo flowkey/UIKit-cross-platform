@@ -58,7 +58,7 @@ class CABasicAnimationTests: XCTestCase {
         XCTAssertEqual(layer.presentation?.opacity, 0)
     }
 
-    func testShouldNotAnimate() {
+    func testShouldAnimateWithDefaultAnimation() {
         let layer = CALayer()
 
         UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
