@@ -18,7 +18,7 @@ class CASpringAnimation: CABasicAnimation {
     }
 
     init(prototype: CASpringAnimationPrototype,
-         keyPath: AnimationProperty,
+         keyPath: AnimationKeyPath,
          fromValue: AnimatableProperty
     ) {
         damping = prototype.damping

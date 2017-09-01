@@ -8,7 +8,6 @@
 
 extension CALayer {
     open func add(_ animation: CABasicAnimation, forKey key: String) {
-
         let copy = CABasicAnimation(from: animation)
         copy.animationGroup?.queuedAnimations += 1
         copy.timer = Timer()
@@ -32,20 +31,20 @@ extension CALayer {
     }
 
     func onWillSet(newOpacity: Float) {
-        if let animation = action(forKey: .opacity), !disableAnimations {
-            add(animation, forKey: "opacity")
-        }
+        onWillSet(keyPath: .opacity)
     }
 
     func onWillSet(newFrame: CGRect) {
-        if let animation = action(forKey: .frame), !disableAnimations {
-            add(animation, forKey: "frame")
-        }
+        onWillSet(keyPath: .frame)
     }
 
     func onWillSet(newBounds: CGRect) {
-        if let animation = action(forKey: .bounds), !disableAnimations {
-            add(animation, forKey: "bounds")
+        onWillSet(keyPath: .bounds)
+    }
+
+    private func onWillSet(keyPath: AnimationKeyPath) {
+        if let animation = action(forKey: keyPath.rawValue) as? CABasicAnimation, !disableAnimations {
+            add(animation, forKey: keyPath.rawValue)
         }
     }
 
@@ -59,8 +58,27 @@ extension CALayer {
             UIView.layersWithAnimations.remove(self)
         }
     }
+}
 
-    func update(_ presentation: CALayer, for animation: CABasicAnimation, at currentTime: Timer) {
+extension CALayer {
+    func animate(at currentTime: Timer) {
+        let presentation = self.copy(disableAnimations: true)
+
+        animations.forEach { (key, animation) in
+            animation.updateProgress(to: currentTime)
+
+            update(presentation, for: animation, at: currentTime)
+
+            if animation.isComplete && animation.isRemovedOnCompletion {
+                animation.animationGroup?.animationDidStop(finished: true)
+                removeAnimation(forKey: key)
+            }
+        }
+
+        self.presentation = animations.isEmpty ? nil : presentation
+    }
+
+    private func update(_ presentation: CALayer, for animation: CABasicAnimation, at currentTime: Timer) {
 
         guard let keyPath = animation.keyPath else { return }
 
@@ -85,46 +103,20 @@ extension CALayer {
             print("unknown animation property")
             break
         }
-
-    }
-
-    func animate(at currentTime: Timer) {
-        let presentation = self.copy(disableAnimations: true)
-
-        animations.forEach { (key, animation) in
-            animation.updateProgress(to: currentTime)
-
-            update(presentation, for: animation, at: currentTime)
-
-            if animation.isComplete && animation.isRemovedOnCompletion {
-                animation.animationGroup?.animationDidStop(finished: true)
-                removeAnimation(forKey: key)
-            }
-        }
-
-        self.presentation = animations.isEmpty ? nil : presentation
     }
 }
 
 extension CALayer {
-    func action(forKey event: AnimationProperty) -> CABasicAnimation? {
-        if let delegate = delegate {
-            return delegate.action(forKey: event)
-        }
-        //return CALayer.defaultAction(forKey: event)
-        return nil
-    }
-
-    static func defaultAction(forKey event: AnimationProperty) -> CABasicAnimation {
-        let animation = CABasicAnimation(keyPath: event)
+    static func defaultAction(forKey event: String) -> CABasicAnimation {
+        let animation = CABasicAnimation(keyPath: AnimationKeyPath(stringLiteral: event))
         animation.duration = 0.25
         return animation
     }
 }
 
 extension CALayer {
-    func value(forKeyPath: AnimationProperty) -> AnimatableProperty? {
-        switch forKeyPath as AnimationProperty  {
+    func value(forKeyPath: AnimationKeyPath) -> AnimatableProperty? {
+        switch forKeyPath as AnimationKeyPath  {
         case .frame: return frame
         case .opacity: return opacity
         case .bounds: return bounds

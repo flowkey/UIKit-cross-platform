@@ -69,6 +69,19 @@ class CABasicAnimationTests: XCTestCase {
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
         XCTAssertNil(layer.presentation)
     }
+
+    func testShouldImplicitlyAnimate() {
+        let layer = CALayer()
+        layer.opacity = 0 // should be animated implicitly with duration of 0.25
+
+        UIView.animateIfNeeded(at: Timer(startingAt: 125))
+
+        if let presentation = layer.presentation {
+            XCTAssertEqual(presentation.opacity, 0.5, accuracy: 0.01)
+        } else {
+            XCTFail("presentation must be defined")
+        }
+    }
 }
 
 

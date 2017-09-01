@@ -6,6 +6,6 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public class CAAction {
+public protocol CAAction {
 
 }

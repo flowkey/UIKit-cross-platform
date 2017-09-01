@@ -18,7 +18,7 @@ class CABasicAnimationPrototype {
     }
 
     func createAnimation(
-        keyPath: AnimationProperty,
+        keyPath: AnimationKeyPath,
         fromValue: AnimatableProperty
     ) -> CABasicAnimation {
         return CABasicAnimation(

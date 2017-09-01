@@ -87,7 +87,10 @@ open class CALayer {
     public init(layer: Any) {}
 
     open func action(forKey event: String) -> CAAction? {
-        return nil // TODO: Return the default CABasicAnimation of 0.25 seconds of all animatable properties
+        if let delegate = delegate {
+            return delegate.action(forKey: event)
+        }
+        return CALayer.defaultAction(forKey: event)
     }
     
     // TODO: remove this function after implementing CGImage to get font texture in UIImage extension for fonts
@@ -100,9 +103,7 @@ open class CALayer {
     var disableAnimations = false
 
     var animations = [String: CABasicAnimation]() {
-        didSet {
-            onDidSetAnimations(wasEmpty: oldValue.isEmpty)
-        }
+        didSet { onDidSetAnimations(wasEmpty: oldValue.isEmpty) }
     }
 }
 

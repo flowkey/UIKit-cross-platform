@@ -8,18 +8,18 @@
 
 public let kCAFillModeForwards = "kCAFillModeForwards"
 
-public class CABasicAnimation {
+public class CABasicAnimation: CAAction {
     // != nil means animating in UIView.animate closure
     // == nil means animation was manually instantiated
     var animationGroup: UIViewAnimationGroup? = UIView.currentAnimationGroup
 
-    public init(keyPath: AnimationProperty) {
+    public init(keyPath: AnimationKeyPath) {
         self.keyPath = keyPath
     }
 
     init(
         prototype: CABasicAnimationPrototype,
-        keyPath: AnimationProperty,
+        keyPath: AnimationKeyPath,
         fromValue: AnimatableProperty,
         timingFunction: CAMediaTimingFunction?
     ) {
@@ -50,7 +50,7 @@ public class CABasicAnimation {
         return CABasicAnimation(from: self)
     }
 
-    public var keyPath: AnimationProperty?
+    public var keyPath: AnimationKeyPath?
     public var fillMode: String?
     public var isRemovedOnCompletion = true
     public var duration: CGFloat = 0
@@ -70,18 +70,6 @@ public class CABasicAnimation {
 
     var isComplete: Bool {
         return progress == 1
-    }
-}
-
-public enum AnimationProperty: ExpressibleByStringLiteral {
-    case frame, opacity, bounds, unknown
-    public init(stringLiteral value: String) {
-        switch value {
-        case "frame": self = .frame
-        case "opacity": self = .opacity
-        case "bounds": self = .bounds
-        default: self = .unknown
-        }
     }
 }
 
