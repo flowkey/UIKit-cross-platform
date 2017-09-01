@@ -43,7 +43,10 @@ extension CALayer {
     }
 
     private func onWillSet(keyPath: AnimationKeyPath) {
-        if let animation = action(forKey: keyPath.rawValue) as? CABasicAnimation, !disableAnimations {
+        if let animation = action(forKey: keyPath.rawValue) as? CABasicAnimation,
+            !disableAnimations,
+            !CATransaction.disableActions
+        {
             add(animation, forKey: keyPath.rawValue)
         }
     }
