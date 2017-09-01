@@ -98,7 +98,7 @@ open class CALayer {
 
     var presentation: CALayer?
     var disableAnimations = false
-    
+
     var animations = [String: CABasicAnimation]() {
         didSet {
             onDidSetAnimations(wasEmpty: oldValue.isEmpty)

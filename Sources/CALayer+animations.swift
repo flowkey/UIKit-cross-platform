@@ -13,6 +13,7 @@ extension CALayer {
         copy.animationGroup?.queuedAnimations += 1
         copy.timer = Timer()
 
+        // fromValue is optional, set it to currently visible state
         if copy.fromValue == nil, let keyPath = copy.keyPath {
             let layer = presentation ?? self
             copy.fromValue = layer.value(forKeyPath: keyPath)
@@ -27,7 +28,7 @@ extension CALayer {
     }
 
     open func removeAllAnimations() {
-        animations = [:]
+        animations.removeAll()
     }
 
     func onWillSet(newOpacity: Float) {
