@@ -6,22 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
-    public let rawValue: UInt
-    public init(rawValue: UInt) {
-        self.rawValue = rawValue
-    }
-
-    public static let allowUserInteraction = UIViewAnimationOptions(rawValue: 1 << 0)
-    public static let beginFromCurrentState = UIViewAnimationOptions(rawValue: 1 << 1)
-    public static let curveEaseIn = UIViewAnimationOptions(rawValue: 1 << 2)
-    public static let curveEaseOut = UIViewAnimationOptions(rawValue: 1 << 3)
-    public static let curveEaseInOut = UIViewAnimationOptions(rawValue: 1 << 4)
-}
-
 extension UIView {
     static var layersWithAnimations = Set<CALayer>()
-    static var currentAnimationGroup: UIViewAnimationGroup?
     static var currentAnimationPrototype: CABasicAnimationPrototype?
 
     static var animationsArePending: Bool {
@@ -35,15 +21,14 @@ extension UIView {
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
-        currentAnimationGroup = UIViewAnimationGroup(completion: completion)
         currentAnimationPrototype = CABasicAnimationPrototype(
             duration: CGFloat(duration),
             delay: CGFloat(delay),
-            options: options
+            options: options,
+            animationGroup: .init(completion: completion)
         )
 
         animations()
-        currentAnimationGroup = nil
         currentAnimationPrototype = nil
     }
 
@@ -56,17 +41,16 @@ extension UIView {
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
-        currentAnimationGroup = UIViewAnimationGroup(completion: completion)
         currentAnimationPrototype = CASpringAnimationPrototype(
             duration: CGFloat(duration),
             delay: CGFloat(delay),
             damping: usingSpringWithDamping,
             initialSpringVelocity: initialSpringVelocity,
-            options: options
+            options: options,
+            animationGroup: .init(completion: completion)
         )
 
         animations()
-        currentAnimationGroup = nil
         currentAnimationPrototype = nil
     }
 
@@ -74,4 +58,17 @@ extension UIView {
         if layersWithAnimations.isEmpty { return }
         layersWithAnimations.forEach { $0.animate(at: currentTime) }
     }
+}
+
+public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
+    public let rawValue: UInt
+    public init(rawValue: UInt) {
+        self.rawValue = rawValue
+    }
+
+    public static let allowUserInteraction = UIViewAnimationOptions(rawValue: 1 << 0)
+    public static let beginFromCurrentState = UIViewAnimationOptions(rawValue: 1 << 1)
+    public static let curveEaseIn = UIViewAnimationOptions(rawValue: 1 << 2)
+    public static let curveEaseOut = UIViewAnimationOptions(rawValue: 1 << 3)
+    public static let curveEaseInOut = UIViewAnimationOptions(rawValue: 1 << 4)
 }

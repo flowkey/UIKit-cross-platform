@@ -9,9 +9,6 @@
 public let kCAFillModeForwards = "kCAFillModeForwards"
 
 public class CABasicAnimation: CAAction {
-    // != nil means animating in UIView.animate closure
-    // == nil means animation was manually instantiated
-    var animationGroup: UIViewAnimationGroup? = UIView.currentAnimationGroup
 
     public init(keyPath: AnimationKeyPath) {
         self.keyPath = keyPath
@@ -26,24 +23,26 @@ public class CABasicAnimation: CAAction {
         delay = prototype.delay
         duration = prototype.duration
         options = prototype.options
+        animationGroup = prototype.animationGroup
+
         self.keyPath = keyPath
         self.fromValue = fromValue
         self.timingFunction = timingFunction
     }
 
     init(from animation: CABasicAnimation) {
-        self.keyPath = animation.keyPath
-        self.duration = animation.duration
-        self.delay = animation.delay
-        self.options = animation.options
-        self.timer = animation.timer
-        self.progress = animation.progress
-        self.fillMode = animation.fillMode
-        self.fromValue = animation.fromValue
-        self.toValue = animation.toValue
-        self.animationGroup = animation.animationGroup
-        self.isRemovedOnCompletion = animation.isRemovedOnCompletion
-        self.timingFunction = animation.timingFunction
+        keyPath = animation.keyPath
+        duration = animation.duration
+        delay = animation.delay
+        options = animation.options
+        timer = animation.timer
+        progress = animation.progress
+        fillMode = animation.fillMode
+        fromValue = animation.fromValue
+        toValue = animation.toValue
+        animationGroup = animation.animationGroup
+        isRemovedOnCompletion = animation.isRemovedOnCompletion
+        timingFunction = animation.timingFunction
     }
 
     func copy() -> CABasicAnimation {
@@ -61,13 +60,10 @@ public class CABasicAnimation: CAAction {
     public var fromValue: AnimatableProperty?
     public var toValue: AnimatableProperty?
 
+    var animationGroup: UIViewAnimationGroup?
+
     var timer = Timer()
     var progress: CGFloat = 0
-
-    var hasStarted: Bool {
-        return progress > 0
-    }
-
     var isComplete: Bool {
         return progress == 1
     }

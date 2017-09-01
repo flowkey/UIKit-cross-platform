@@ -10,11 +10,13 @@ class CABasicAnimationPrototype {
     let duration: CGFloat
     let delay: CGFloat
     let options: UIViewAnimationOptions
+    let animationGroup: UIViewAnimationGroup
 
-    init(duration: CGFloat, delay: CGFloat, options: UIViewAnimationOptions) {
+    init(duration: CGFloat, delay: CGFloat, options: UIViewAnimationOptions, animationGroup: UIViewAnimationGroup) {
         self.delay = delay
         self.duration = duration
         self.options = options
+        self.animationGroup = animationGroup
     }
 
     func createAnimation(
