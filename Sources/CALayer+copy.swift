@@ -1,5 +1,5 @@
 //
-//  CALayer+createNonAnimatingCopy.swift
+//  CALayer+copy.swift
 //  UIKit
 //
 //  Created by Michael Knoch on 24.08.17.

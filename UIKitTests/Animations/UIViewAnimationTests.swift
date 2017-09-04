@@ -18,7 +18,6 @@ class UIViewAnimationTests: XCTestCase {
 
     func testCanAnimateFrame() {
         let view = UIView()
-
         let frameToStartFrom = CGRect(x: 10, y: 10, width: 10, height: 10)
         let expectedFrame = CGRect(x: 20, y: 20, width: 20, height: 20)
 
@@ -33,7 +32,10 @@ class UIViewAnimationTests: XCTestCase {
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
 
         if let presentation = view.layer.presentation {
-            assertEqual(presentation.frame, CGRect(x: 15, y: 15, width: 15, height: 15), accuracy: 0.01)
+            XCTAssertEqual(
+                presentation.frame.rounded(accuracy: 0.01),
+                CGRect(x: 15, y: 15, width: 15, height: 15)
+            )
         } else {
             XCTFail("presentation must be defined")
         }
@@ -59,7 +61,6 @@ class UIViewAnimationTests: XCTestCase {
 
     func testCanAnimateBounds() {
         let view = UIView()
-
         let boundsToStartFrom = CGRect(x: 10, y: 10, width: 10, height: 10)
         let expectedBounds = CGRect(x: 20, y: 20, width: 20, height: 20)
 
@@ -77,7 +78,10 @@ class UIViewAnimationTests: XCTestCase {
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
 
         if let presentation = view.layer.presentation {
-            assertEqual(presentation.bounds, CGRect(x: 15, y: 15, width: 15, height: 15), accuracy: 0.01)
+            XCTAssertEqual(
+                presentation.bounds.rounded(accuracy: 0.01),
+                CGRect(x: 15, y: 15, width: 15, height: 15)
+            )
         } else {
             XCTFail("presentation must be defined")
         }
@@ -188,7 +192,7 @@ class UIViewAnimationTests: XCTestCase {
         XCTAssertNotNil(view.layer.presentation)
     }
 
-    func testPresentationIsRemovedWhenAnimationsComplete() {
+    func testPresentationIsRemovedWhenAnimationCompletes() {
         let view = UIView()
 
         let expectedFrame = CGRect(x: 20, y: 20, width: 20, height: 20)
@@ -264,7 +268,7 @@ class UIViewAnimationTests: XCTestCase {
 
     }
 
-    func testModifyPropertyCurrentlyBeingAnimated() {
+    func testModifyPropertyWhichIsCurrentlyAnimating() {
         let view = UIView()
 
         UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
@@ -283,11 +287,21 @@ class UIViewAnimationTests: XCTestCase {
     }
 }
 
-fileprivate extension UIViewAnimationTests {
-    func assertEqual(_ rect1: CGRect, _ rect2: CGRect, accuracy: CGFloat) {
-        XCTAssertEqual(rect1.height, rect2.height, accuracy: accuracy)
-        XCTAssertEqual(rect1.width, rect2.width, accuracy: accuracy)
-        XCTAssertEqual(rect1.origin.x, rect2.origin.x, accuracy: accuracy)
-        XCTAssertEqual(rect1.origin.y, rect2.origin.y, accuracy: accuracy)
+
+fileprivate extension CGRect {
+    func rounded(accuracy: CGFloat) -> CGRect {
+        return CGRect(
+            x: self.origin.x.rounded(accuracy: accuracy),
+            y: self.origin.y.rounded(accuracy: accuracy),
+            width: self.size.width.rounded(accuracy: accuracy),
+            height: self.size.height.rounded(accuracy: accuracy)
+        )
+    }
+}
+
+fileprivate extension CGFloat {
+    func rounded(accuracy: CGFloat) -> CGFloat {
+        let inverseAccuracy = 1 / accuracy
+        return (self * inverseAccuracy).rounded() / inverseAccuracy
     }
 }

@@ -12,7 +12,7 @@ extension CALayer {
         copy.animationGroup?.queuedAnimations += 1
         copy.timer = Timer()
 
-        // fromValue is optional, set it to currently visible state
+        // animation.fromValue is optional, set it to currently visible state if nil
         if copy.fromValue == nil, let keyPath = copy.keyPath {
             let layer = presentation ?? self
             copy.fromValue = layer.value(forKeyPath: keyPath)
