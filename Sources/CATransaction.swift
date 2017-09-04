@@ -16,6 +16,7 @@ public struct CATransaction {
     }
 
     public static func setDisableActions(_ to: Bool) {
+        if actionStack.isEmpty { return }
         actionStack[actionStack.count - 1] = to
     }
 
