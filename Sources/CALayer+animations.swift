@@ -14,8 +14,7 @@ extension CALayer {
 
         // animation.fromValue is optional, set it to currently visible state if nil
         if copy.fromValue == nil, let keyPath = copy.keyPath {
-            let layer = presentation ?? self
-            copy.fromValue = layer.value(forKeyPath: keyPath)
+            copy.fromValue = (presentation ?? self).value(forKeyPath: keyPath)
         }
 
         animations[key]?.animationGroup?.animationDidStop(finished: false)
@@ -30,19 +29,7 @@ extension CALayer {
         animations.removeAll()
     }
 
-    func onWillSet(newOpacity: Float) {
-        onWillSet(keyPath: .opacity)
-    }
-
-    func onWillSet(newFrame: CGRect) {
-        onWillSet(keyPath: .frame)
-    }
-
-    func onWillSet(newBounds: CGRect) {
-        onWillSet(keyPath: .bounds)
-    }
-
-    private func onWillSet(keyPath: AnimationKeyPath) {
+    func onWillSet(keyPath: AnimationKeyPath) {
         if let animation = action(forKey: keyPath.rawValue) as? CABasicAnimation,
             !disableAnimations,
             !CATransaction.disableActions
@@ -54,7 +41,6 @@ extension CALayer {
     func onDidSetAnimations(wasEmpty: Bool) {
         if wasEmpty && !animations.isEmpty {
             UIView.layersWithAnimations.insert(self)
-
             self.presentation = self.copy(disableAnimations: true)
 
         } else if animations.isEmpty && !wasEmpty {

@@ -42,7 +42,7 @@ open class CALayer {
     /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc)
     open var frame: CGRect = .zero {
         willSet (newFrame) {
-            onWillSet(newFrame: newFrame)
+            onWillSet(keyPath: .frame)
         }
         didSet {
             if bounds.size != frame.size {
@@ -53,7 +53,7 @@ open class CALayer {
 
     open var bounds: CGRect = .zero {
         willSet(newBounds) {
-            onWillSet(newBounds: newBounds)
+            onWillSet(keyPath: .bounds)
         }
         didSet {
             if frame.size != bounds.size {
@@ -64,7 +64,7 @@ open class CALayer {
 
     public var opacity: Float = 1 {
         willSet(newOpacity) {
-            onWillSet(newOpacity: newOpacity)
+            onWillSet(keyPath: .opacity)
         }
     }
 

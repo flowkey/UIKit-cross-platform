@@ -7,6 +7,8 @@
 //
 
 public struct CATransaction {
+    private static var actionStack = [Bool]()
+
     public static func begin() {
         actionStack.append(false)
     }
@@ -23,6 +25,4 @@ public struct CATransaction {
     static var disableActions: Bool {
         return actionStack.last ?? false
     }
-
-    private static var actionStack = [Bool]()
 }
