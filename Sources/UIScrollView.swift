@@ -19,7 +19,7 @@ open class UIScrollView: UIView, CALayerPropertyChangedDelegate{
         panGestureRecognizer.onAction = self.onPan
         panGestureRecognizer.onStateChanged = self.onPanGestureStateChanged
         addGestureRecognizer(panGestureRecognizer)
-        layer.delegate = self
+        layer.properyChangedDelegate = self
     }
 
     func onBoundsChanged(_ bounds: CGRect) {

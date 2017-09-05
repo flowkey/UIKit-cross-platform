@@ -22,7 +22,7 @@ open class CALayer {
         }
     }
 
-    var delegate: CALayerPropertyChangedDelegate?
+    var properyChangedDelegate: CALayerPropertyChangedDelegate?
 
     public var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer] = []
@@ -67,7 +67,7 @@ open class CALayer {
             }
             if presentation == nil {
                 if oldValue != bounds {
-                    delegate?.onBoundsChanged(bounds)
+                    properyChangedDelegate?.onBoundsChanged(bounds)
                 }
             }
         }
