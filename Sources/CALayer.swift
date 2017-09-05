@@ -13,6 +13,8 @@ protocol CALayerPropertyChangedDelegate {
 }
 
 open class CALayer {
+    var delegate: CALayerDelegate?
+
     var texture: Texture? {
         didSet {
             let newSize = texture?.size ?? .zero
@@ -57,9 +59,7 @@ open class CALayer {
 
     open var bounds: CGRect = .zero {
         willSet(newBounds) {
-//            if (bounds.origin != newBounds.origin) { // prevents recursion, bounds.size updates frame.size
-                onWillSet(newBounds: newBounds)
-//            }
+            onWillSet(newBounds: newBounds)
         }
         didSet {
             if frame.size != bounds.size {
@@ -73,22 +73,21 @@ open class CALayer {
         }
     }
 
-    public var isHidden = false
-    public var opacity: CGFloat = 1 {
+    public var opacity: Float = 1 {
         willSet(newOpacity) {
             onWillSet(newOpacity: newOpacity)
         }
     }
 
+    public var isHidden = false
     public var cornerRadius: CGFloat = 0
 
     // TODO: Implement these!
     public var borderWidth: CGFloat = 0
     public var borderColor: CGColor = UIColor.black.cgColor
-
     public var shadowPath: CGRect?
     public var shadowColor: CGColor?
-    public var shadowOpacity: CGFloat = 0
+    public var shadowOpacity: Float = 0
     public var shadowOffset: CGSize = .zero
     public var shadowRadius: CGFloat = 0
 
@@ -99,7 +98,10 @@ open class CALayer {
     public init(layer: Any) {}
 
     open func action(forKey event: String) -> CAAction? {
-        return nil // TODO: Return the default CABasicAnimation of 0.25 seconds of all animatable properties
+        if let delegate = delegate {
+            return delegate.action(forKey: event)
+        }
+        return CALayer.defaultAction(forKey: event)
     }
 
     // TODO: remove this function after implementing CGImage to get font texture in UIImage extension for fonts
@@ -109,12 +111,10 @@ open class CALayer {
     }
 
     var presentation: CALayer?
-    var shouldAnimate = true
+    var disableAnimations = false
 
-    var animations = [(key: String?, animation: CABasicAnimation)]() {
-        didSet {
-            onDidSetAnimations(wasEmpty: oldValue.isEmpty)
-        }
+    var animations = [String: CABasicAnimation]() {
+        didSet { onDidSetAnimations(wasEmpty: oldValue.isEmpty) }
     }
 }
 

@@ -44,7 +44,6 @@ open class UIScrollView: UIView, CALayerPropertyChangedDelegate{
         )
 
         setContentOffset(newOffset, animated: false)
-        delegate?.scrollViewDidScroll(self)
     }
 
     private func onPanGestureStateChanged() {
@@ -126,7 +125,12 @@ open class UIScrollView: UIView, CALayerPropertyChangedDelegate{
     open var contentSize: CGSize = .zero {
         didSet { bounds.size = contentSize }
     }
-    open var contentOffset: CGPoint = .zero { didSet {updateBounds()} }
+    open var contentOffset: CGPoint = .zero {
+        didSet {
+            delegate?.scrollViewDidScroll(self)
+            updateBounds()
+        }
+    }
 
     open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         let extendedBounds = CGRect(

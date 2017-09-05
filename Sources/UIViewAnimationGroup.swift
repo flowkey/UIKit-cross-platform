@@ -6,6 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+/// Animations with the same animationGroup were created by the same UIView.animate call
 class UIViewAnimationGroup {
     var completion: ((Bool) -> ())?
     var queuedAnimations = 0

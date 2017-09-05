@@ -45,6 +45,15 @@ open class UIView: UIResponder {
     }
 
     open var isUserInteractionEnabled = true
+    private var _isUserInteractionEnabled: Bool {
+        if !isUserInteractionEnabled {
+            return false
+        }
+        return layer.animations.isEmpty || layer.animations.values
+            .filter { $0.options.contains(.allowUserInteraction) }
+            .count > 0
+    }
+
     internal var needsLayout = false
     internal var needsDisplay = true
 
@@ -67,8 +76,8 @@ open class UIView: UIResponder {
     }
 
     public var alpha: CGFloat {
-        get { return layer.opacity }
-        set { layer.opacity = newValue }
+        get { return CGFloat(layer.opacity) }
+        set { layer.opacity = Float(newValue) }
     }
 
     public var tintColor: UIColor! // mocked
@@ -95,6 +104,7 @@ open class UIView: UIResponder {
 
     public init(frame: CGRect) {
         self.layer = type(of: self).layerClass.init()
+        self.layer.delegate = self
         self.frame = frame
     }
 
@@ -189,7 +199,7 @@ open class UIView: UIResponder {
     }
 
     open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard !isHidden, isUserInteractionEnabled, alpha > 0.01, self.point(inside: point, with: event) else {
+        guard !isHidden, _isUserInteractionEnabled, alpha > 0.01, self.point(inside: point, with: event) else {
             return nil
         }
 

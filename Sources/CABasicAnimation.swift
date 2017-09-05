@@ -8,51 +8,48 @@
 
 public let kCAFillModeForwards = "kCAFillModeForwards"
 
-public class CABasicAnimation {
-    // != nil means animating in UIView.animate closure
-    // == nil means animation was manually instantiated
-    var animationGroup: UIViewAnimationGroup? = UIView.currentAnimationGroup
+public class CABasicAnimation: CAAction {
 
-    public init(keyPath: AnimationProperty) {
+    public init(keyPath: AnimationKeyPath) {
         self.keyPath = keyPath
     }
 
     init(
         prototype: CABasicAnimationPrototype,
-        keyPath: AnimationProperty,
+        keyPath: AnimationKeyPath,
         fromValue: AnimatableProperty,
-        toValue: AnimatableProperty,
         timingFunction: CAMediaTimingFunction?
     ) {
         delay = prototype.delay
         duration = prototype.duration
         options = prototype.options
+        animationGroup = prototype.animationGroup
+
         self.keyPath = keyPath
         self.fromValue = fromValue
-        self.toValue = toValue
         self.timingFunction = timingFunction
     }
 
     init(from animation: CABasicAnimation) {
-        self.keyPath = animation.keyPath
-        self.duration = animation.duration
-        self.delay = animation.delay
-        self.options = animation.options
-        self.timer = animation.timer
-        self.progress = animation.progress
-        self.fillMode = animation.fillMode
-        self.fromValue = animation.fromValue
-        self.toValue = animation.toValue
-        self.animationGroup = animation.animationGroup
-        self.isRemovedOnCompletion = animation.isRemovedOnCompletion
-        self.timingFunction = animation.timingFunction
+        keyPath = animation.keyPath
+        duration = animation.duration
+        delay = animation.delay
+        options = animation.options
+        timer = animation.timer
+        progress = animation.progress
+        fillMode = animation.fillMode
+        fromValue = animation.fromValue
+        toValue = animation.toValue
+        animationGroup = animation.animationGroup
+        isRemovedOnCompletion = animation.isRemovedOnCompletion
+        timingFunction = animation.timingFunction
     }
 
     func copy() -> CABasicAnimation {
         return CABasicAnimation(from: self)
     }
 
-    public var keyPath: AnimationProperty?
+    public var keyPath: AnimationKeyPath?
     public var fillMode: String?
     public var isRemovedOnCompletion = true
     public var duration: CGFloat = 0
@@ -63,27 +60,12 @@ public class CABasicAnimation {
     public var fromValue: AnimatableProperty?
     public var toValue: AnimatableProperty?
 
+    var animationGroup: UIViewAnimationGroup?
+
     var timer = Timer()
     var progress: CGFloat = 0
-
-    var hasStarted: Bool {
-        return progress > 0
-    }
-
     var isComplete: Bool {
         return progress == 1
-    }
-}
-
-public enum AnimationProperty: ExpressibleByStringLiteral {
-    case frame, opacity, bounds, unknown
-    public init(stringLiteral value: String) {
-        switch value {
-        case "frame": self = .frame
-        case "opacity": self = .opacity
-        case "bounds": self = .bounds
-        default: self = .unknown
-        }
     }
 }
 

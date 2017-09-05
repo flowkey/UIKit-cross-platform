@@ -9,7 +9,7 @@
 open class UIViewController {
     open func present(_ presentedController: UIAlertController, animated: Bool, completion: (() -> Void)?) {
         print("About to present UIViewController (not yet implemented):")
-        print("Title:", presentedController.title)
-        print("Message:", presentedController.message)
+        print("Title:", presentedController.title ?? "(none)")
+        print("Message:", presentedController.message ?? "(none)")
     }
 }
