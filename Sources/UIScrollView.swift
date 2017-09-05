@@ -58,8 +58,8 @@ open class UIScrollView: UIView {
     }
     open var contentOffset: CGPoint = .zero {
         didSet {
-            delegate?.scrollViewDidScroll(self)
             updateBounds()
+            delegate?.scrollViewDidScroll(self)
         }
     }
 
