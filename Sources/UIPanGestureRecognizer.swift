@@ -8,18 +8,6 @@
 
 import Foundation
 
-
-fileprivate func +(left: TimeInterval?, right: TimeInterval?) -> TimeInterval? {
-    guard let lhs = left, let rhs = right else { return nil }
-    return lhs + rhs
-}
-
-fileprivate func -(left: TimeInterval?, right: TimeInterval?) -> TimeInterval? {
-    guard let lhs = left, let rhs = right else { return nil }
-    return lhs - rhs
-}
-
-
 open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var initialTouchPoint: CGPoint = .zero // should probably be optional instead
 
@@ -90,13 +78,13 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
         // XXX: revisit this and decide which timer we want to use
         let now = NSDate.timeIntervalSinceReferenceDate
-        timeSinceLastMovement = now - lastMovementTime
+        timeSinceLastMovement = now - lastMovementTime // optional substraction, see "-" operator for TimeInterval? below
         lastMovementTime = now
 
-        if
-            state == .began,
-            (currentLocation!.x - initialTouchPoint.x).magnitude >= minimumTranslationThreshold ||
-            (currentLocation!.y - initialTouchPoint.y).magnitude >= minimumTranslationThreshold
+        if  state == .began,
+            let location = currentLocation,
+            (location.x - initialTouchPoint.x).magnitude >= minimumTranslationThreshold ||
+            (location.y - initialTouchPoint.y).magnitude >= minimumTranslationThreshold
         {
             // Activate:
             state = .changed
@@ -128,4 +116,9 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         initialTouchPoint = .zero
         state = .possible
     }
+}
+
+fileprivate func -(left: TimeInterval?, right: TimeInterval?) -> TimeInterval? {
+    guard let lhs = left, let rhs = right else { return nil }
+    return lhs - rhs
 }

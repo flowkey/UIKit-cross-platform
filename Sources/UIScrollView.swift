@@ -10,7 +10,7 @@
 let UIScrollViewDecelerationRateFast: CGFloat = 0.99
 let UIScrollViewDecelerationRateNormal: CGFloat = 0.998
 
-open class UIScrollView: UIView, CALayerPropertyChangedDelegate{
+open class UIScrollView: UIView {
     open var delegate: UIScrollViewDelegate? // TODO: change this to individually settable callbacks
     open var panGestureRecognizer = UIPanGestureRecognizer()
 
@@ -19,16 +19,6 @@ open class UIScrollView: UIView, CALayerPropertyChangedDelegate{
         panGestureRecognizer.onAction = self.onPan
         panGestureRecognizer.onStateChanged = self.onPanGestureStateChanged
         addGestureRecognizer(panGestureRecognizer)
-        layer.properyChangedDelegate = self
-    }
-
-    func onBoundsChanged(_ bounds: CGRect) {
-        print(bounds)
-//        if bounds.origin.x > 425 {
-//            UIView.animate(withDuration: 0, animations: {
-//                setContentOffset(CGPoint(x: 0, y: 0), animated: false)
-//            })
-//        }
     }
 
     // returns YES if user isn't dragging (touch up) but scroll view is still moving
@@ -68,32 +58,56 @@ open class UIScrollView: UIView, CALayerPropertyChangedDelegate{
         let decelerationRate = UIScrollViewDecelerationRateNormal * 1000
 
         // ToDo: take y also into account
-        let initialSpeed = Double(panGestureRecognizer.velocity(in: self).x)
+        let initialVelocity = Double(panGestureRecognizer.velocity(in: self).x)
 
         // prevent bugs
-        if initialSpeed == 0 { return }
+        if initialVelocity == 0 { return }
 
-        let animationTime = time(
-            initialSpeed: initialSpeed,
-            finalSpeed: 0,
+        var animationTime = time(
+            initialVelocity: initialVelocity,
+            finalVelocity: 0,
             acceleration: Double(-decelerationRate)
         )
 
         let distanceToMove = distance(
             acceleration: Double(decelerationRate),
             time: Double(animationTime),
-            initialSpeed: initialSpeed
+            initialVelocity: initialVelocity
         )
 
-        let sign = -initialSpeed / abs(initialSpeed) // = +1 or -1
+        let sign = -initialVelocity / abs(initialVelocity) // = +1 or -1
         let signedDistance = sign * distanceToMove
 
-        let newOffset = CGPoint(
+        var newOffset = CGPoint(
             x: contentOffset.x + CGFloat(signedDistance),
             y: contentOffset.y
         )
 
-        UIView.animate(withDuration: animationTime, options: [.curveEaseOut],  animations: {
+        let actualOffset = getSafeContentOffset(
+            x: contentOffset.x + CGFloat(signedDistance),
+            y: contentOffset.y
+        )
+
+        if newOffset != actualOffset {
+            newOffset = actualOffset
+            let distance = abs(contentOffset.x - actualOffset.x)
+            print("distance: " + String(describing: distance))
+            let newTime = time(
+                accleration: Double(decelerationRate),
+                initialVelocity: initialVelocity,
+                distance: Double(distance)
+            )
+
+            let targetVelocity = velocity(initialVelocity: initialVelocity, acceleration: Double(decelerationRate), time: newTime)
+
+            animationTime = time(
+                initialVelocity: initialVelocity,
+                finalVelocity: targetVelocity,
+                acceleration: Double(-decelerationRate)
+            )
+        }
+
+        UIView.animate(withDuration: animationTime, options: [.curveEaseOut, .allowUserInteraction],  animations: {
             self.isDecelerating = true
             setContentOffset(newOffset, animated: false)
         }, completion: { isCompleted in
@@ -165,10 +179,25 @@ public protocol UIScrollViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)
 }
 
-fileprivate func time(initialSpeed: Double, finalSpeed: Double, acceleration: Double) -> Double {
-    return abs((finalSpeed - initialSpeed) / acceleration)
+fileprivate func time(accleration: Double, initialVelocity: Double, distance: Double) -> Double {
+    let term1 = -(initialVelocity / accleration)
+    let term2 = sqrt( pow((initialVelocity / accleration), 2) + (2 * distance / accleration) )
+
+    let t1 = term1 + term2
+    let t2 = term1 - term2
+
+    if t1 < 0 { return t2 }
+    else { return t1 }
 }
 
-fileprivate func distance(acceleration: Double, time: Double, initialSpeed: Double) -> Double {
-    return abs((initialSpeed * time)) + abs((0.5 * acceleration * pow(time, 2)))
+fileprivate func time(initialVelocity: Double, finalVelocity: Double, acceleration: Double) -> Double {
+    return abs((finalVelocity - initialVelocity) / acceleration)
+}
+
+fileprivate func velocity(initialVelocity: Double, acceleration: Double, time: Double) -> Double {
+    return initialVelocity + (acceleration * time)
+}
+
+fileprivate func distance(acceleration: Double, time: Double, initialVelocity: Double) -> Double {
+    return abs((initialVelocity * time)) + abs((0.5 * acceleration * pow(time, 2)))
 }

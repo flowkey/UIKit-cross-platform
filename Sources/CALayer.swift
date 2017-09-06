@@ -8,10 +8,6 @@
 
 import SDL
 
-protocol CALayerPropertyChangedDelegate {
-    func onBoundsChanged(_ bounds: CGRect)
-}
-
 open class CALayer {
     var delegate: CALayerDelegate?
 
@@ -21,8 +17,6 @@ open class CALayer {
             self.bounds.size = newSize
         }
     }
-
-    var properyChangedDelegate: CALayerPropertyChangedDelegate?
 
     public var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer] = []
@@ -65,11 +59,11 @@ open class CALayer {
             if frame.size != bounds.size {
                 frame.size = bounds.size
             }
-            if presentation == nil {
-                if oldValue != bounds {
-                    properyChangedDelegate?.onBoundsChanged(bounds)
-                }
-            }
+//            if presentation == nil {
+//                if oldValue != bounds {
+//
+//                }
+//            }
         }
     }
 
