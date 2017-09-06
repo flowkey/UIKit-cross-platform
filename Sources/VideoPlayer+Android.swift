@@ -10,7 +10,7 @@ import JNI
 import SDL.gpu
 
 open class VideoPlayer: UIView {
-    fileprivate let javaVideo: JavaVideo
+    fileprivate var javaVideo: JavaVideo
 
     override open var frame: CGRect {
         willSet(newFrame) {
@@ -18,8 +18,15 @@ open class VideoPlayer: UIView {
         }
     }
 
+    var onVideoEnded: (() -> Void)? {
+        didSet {
+            print("didSet onVideoEnded to", onVideoEnded)
+            javaVideo.setOnEndedCallback(onVideoEnded!) // should always exist in didSet call
+        }
+    }
+
     public init(url: String) {
-        javaVideo = JavaVideo(url: url)!
+        self.javaVideo = JavaVideo(url: url)!
         super.init(frame: .zero)
     }
 
@@ -31,8 +38,12 @@ open class VideoPlayer: UIView {
         javaVideo.pause()
     }
 
+//    public func setOnEndedCallback(_ callback: (() -> Void)) {
+//        javaVideo?.setOnEndedCallback(callback)
+//    }
+
     public func getCurrentTimeInMS() -> Double {
-        return javaVideo.getCurrentTimeInMS()
+        return javaVideo.getCurrentTimeInMS() ?? 0.0
     }
 
     public func seek(to newTime: Double) {
@@ -58,6 +69,11 @@ private class JavaVideo: JNIObject {
 
     func pause() {
         try! call(methodName: "pause")
+    }
+
+    func setOnEndedCallback(_ callback: (() -> Void)) {
+        print("javaVideo.setOnEndedCallback to", callback)
+        try! call(methodName: "setOnVideoEndedCallback") // add callback argument / function pointer here
     }
 
     func getCurrentTimeInMS() -> Double {

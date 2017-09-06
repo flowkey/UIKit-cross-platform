@@ -23,6 +23,8 @@ open class VideoPlayer: UIView {
         playerLayer.player = AVPlayer(url: URL(string: url)!)
     }
 
+    var onVideoEnded: (() -> Void)?
+
     open func play() {
         player?.rate = Float(self.rate)
     }
