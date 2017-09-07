@@ -38,19 +38,14 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     // The velocity is broken into horizontal and vertical components.
     open func velocity(in view: UIView?) -> CGPoint {
 
-        guard let curPos = currentLocation, let lastPos = lastLocation else {
-            print("no current or last location")
+        guard let curPos = currentLocation, let lastPos = lastLocation,
+              let timeSinceLastMovement = timeSinceLastMovement, timeSinceLastMovement != 0.0 else {
             return CGPoint.zero
         }
 
-        guard let timeSinceLastMovement = timeSinceLastMovement, timeSinceLastMovement != 0.0 else {
-            print("no timeSinceLastMovement or timeSinceLastMovement is 0")
-            return CGPoint.zero
-        }
-
-        let timeDiffInMs = CGFloat(timeSinceLastMovement)
         // XXX: apple docs say velocity is in points per s (see above)
         // here we use milliseconds though in order to get results in the same magnitude as in iOS
+        let timeDiffInMs = CGFloat(timeSinceLastMovement)
 
         return CGPoint(
             x: (curPos.x - lastPos.x) / timeDiffInMs,

@@ -28,7 +28,7 @@ open class UIScrollView: UIView {
         let translation = panGestureRecognizer.translation(in: self)
         panGestureRecognizer.setTranslation(.zero, in: self)
 
-        let newOffset = getSafeContentOffset(
+        let newOffset = getBoundsCheckedContentOffset(
             x: contentOffset.x - translation.x,
             y: contentOffset.y - translation.y
         )
@@ -55,7 +55,7 @@ open class UIScrollView: UIView {
     }
 
     private let maxVelocity = 1200.0 // hand tuned value
-    func easedVelocity(velocity: Double) -> Double {
+    func easedVelocity(_ velocity: Double) -> Double {
         let normalizedVelocity = min(abs(velocity), maxVelocity) / maxVelocity
         let easedVelocity = normalizedVelocity * (2-normalizedVelocity)
         let denormalizedVelocity = easedVelocity * maxVelocity
@@ -67,12 +67,9 @@ open class UIScrollView: UIView {
 
         // ToDo: take y also into account
         let gestureVelocity = Double(panGestureRecognizer.velocity(in: self).x)
-        let initialVelocity = easedVelocity(
-            velocity: gestureVelocity
-        )
+        if gestureVelocity == 0 { return }
 
-        // prevent bugs
-        if initialVelocity == 0 { return }
+        let initialVelocity = easedVelocity(gestureVelocity)
 
         // calculate time it would take until deceleration is complete (final velocity = 0)
         var animationTime = time(
@@ -81,9 +78,9 @@ open class UIScrollView: UIView {
             finalVelocity: 0
         )
 
-        // calculate the distance to move until completely decelerated
+        // calculate the distance to move until completed deceleration
         let distanceToMove = distance(
-            acceleration: Double(decelerationRate),
+            acceleration: Double(-decelerationRate),
             time: Double(animationTime),
             initialVelocity: initialVelocity
         )
@@ -97,25 +94,25 @@ open class UIScrollView: UIView {
             y: contentOffset.y
         )
 
-        let actualOffset = getSafeContentOffset(
+        let boundsCheckedOffset = getBoundsCheckedContentOffset(
             x: contentOffset.x + CGFloat(signedDistance),
             y: contentOffset.y
         )
 
-        let offsetIsOutOfBounds = (newOffset != actualOffset)
+        let offsetIsOutOfBounds = (newOffset != boundsCheckedOffset)
         if offsetIsOutOfBounds {
-            newOffset = actualOffset
+            newOffset = boundsCheckedOffset
             // time it takes until reaching bounds from current position
             animationTime = time(
                 initialVelocity: initialVelocity,
                 accleration: Double(decelerationRate),
-                distance: Double(abs(contentOffset.x - actualOffset.x))
+                distance: Double(abs(contentOffset.x - boundsCheckedOffset.x))
             )
         }
 
         UIView.animate(withDuration: animationTime, options: [.curveEaseOut, .allowUserInteraction],  animations: {
             self.isDecelerating = true
-            setContentOffset(newOffset, animated: false)
+            self.setContentOffset(newOffset, animated: false)
         }, completion: { isCompleted in
             self.isDecelerating = false
         })
@@ -133,7 +130,7 @@ open class UIScrollView: UIView {
 
 
     // does some min/max checks to prevent newOffset being out of bounds
-    private func getSafeContentOffset(x: CGFloat, y: CGFloat) -> CGPoint {
+    private func getBoundsCheckedContentOffset(x: CGFloat, y: CGFloat) -> CGPoint {
         return CGPoint(
             // XXX: Change this to accommodate `bounce`
             x: min(max(x, -contentInset.left), contentSize.width - contentInset.right),
