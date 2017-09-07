@@ -88,22 +88,25 @@ open class UIScrollView: UIView {
             y: contentOffset.y
         )
 
-        if newOffset != actualOffset {
+        let offsetIsOutOfBounds = (newOffset != actualOffset)
+
+        if offsetIsOutOfBounds {
             newOffset = actualOffset
+
             let distance = abs(contentOffset.x - actualOffset.x)
-            print("distance: " + String(describing: distance))
-            let newTime = time(
+
+            // time it takes until reaching bounds
+            animationTime = time(
                 accleration: Double(decelerationRate),
                 initialVelocity: initialVelocity,
                 distance: Double(distance)
             )
 
-            let targetVelocity = velocity(initialVelocity: initialVelocity, acceleration: Double(decelerationRate), time: newTime)
-
-            animationTime = time(
+            // velocity at end of animation
+            let finalVelocity = velocity(
                 initialVelocity: initialVelocity,
-                finalVelocity: targetVelocity,
-                acceleration: Double(-decelerationRate)
+                acceleration: Double(decelerationRate),
+                time: animationTime
             )
         }
 
