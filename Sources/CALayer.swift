@@ -59,11 +59,6 @@ open class CALayer {
             if frame.size != bounds.size {
                 frame.size = bounds.size
             }
-//            if presentation == nil {
-//                if oldValue != bounds {
-//
-//                }
-//            }
         }
     }
 

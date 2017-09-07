@@ -50,7 +50,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
         let timeDiffInMs = CGFloat(timeSinceLastMovement)
         // XXX: apple docs say velocity is in points per s (see above)
-        // here we use ms in order to get results in the same magnitude as in iOS though
+        // here we use milliseconds though in order to get results in the same magnitude as in iOS
 
         return CGPoint(
             x: (curPos.x - lastPos.x) / timeDiffInMs,
