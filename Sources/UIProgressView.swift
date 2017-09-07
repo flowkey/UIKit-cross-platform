@@ -6,18 +6,14 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public enum UIProgressViewStyle {
-    case `default`
-}
-
 open class UIProgressView: UIView {
-    var progress: Float = 0
+    public var progress: Float = 0
     let progressLayer = CALayer()
 
-    public var progressViewStyle: UIProgressViewStyle = .`default`
-
     public var progressTintColor: UIColor? {
-        didSet { progressLayer.backgroundColor = progressTintColor?.cgColor }
+        didSet {
+            progressLayer.backgroundColor = progressTintColor?.cgColor ?? UIColor.clear.cgColor
+        }
     }
 
     public var trackTintColor: UIColor? {

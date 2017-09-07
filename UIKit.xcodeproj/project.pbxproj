@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B115C5E1F61DBF800AAB895 /* UIProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */; };
 		5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F06AE1F3210F200EFF087 /* UIViewController.swift */; };
 		5C27E7B81ECB2F6500F5020D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7AE1ECB2F6500F5020D /* UIKit.framework */; };
 		5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D21ECB2F9100F5020D /* Cocoa.framework */; };
@@ -153,6 +154,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIProgressView.swift; path = Sources/UIProgressView.swift; sourceTree = SOURCE_ROOT; };
 		5BD476341F4D94F40055EE27 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Logging.swift; path = Sources/Logging.swift; sourceTree = SOURCE_ROOT; };
 		5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNI.xcodeproj; path = "swift-jni/JNI.xcodeproj"; sourceTree = "<group>"; };
 		5C1F06AE1F3210F200EFF087 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewController.swift; path = Sources/UIViewController.swift; sourceTree = SOURCE_ROOT; };
@@ -366,6 +368,7 @@
 				838545621F26458100B64986 /* UIVisualEffect.swift */,
 				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
 				5C6AB7171ED3BECD006F90AC /* UIWindow.swift */,
+				5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */,
 				5C391A8E1F13F62500EE012C /* VideoPlayer+Dummy.swift */,
 				5C5AC6DC1F1791D0004A88C0 /* VideoPlayer+Mac.swift */,
 				8337A8121F39F37500475F80 /* UIScreen.swift */,
@@ -709,6 +712,7 @@
 				8337A8591F3B143400475F80 /* UIActivityIndicatorView.swift in Sources */,
 				5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */,
 				5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */,
+				5B115C5E1F61DBF800AAB895 /* UIProgressView.swift in Sources */,
 				5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */,
 				5C6AB76E1ED5B8DB006F90AC /* UIGestureRecognizer.swift in Sources */,
 				8318D27B1F0695080029816A /* UIControl.swift in Sources */,
