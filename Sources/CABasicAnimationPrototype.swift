@@ -19,10 +19,7 @@ class CABasicAnimationPrototype {
         self.animationGroup = animationGroup
     }
 
-    func createAnimation(
-        keyPath: AnimationKeyPath,
-        fromValue: AnimatableProperty
-    ) -> CABasicAnimation {
+    func createAnimation(keyPath: AnimationKeyPath, fromValue: AnimatableProperty) -> CABasicAnimation {
         return CABasicAnimation(
             prototype: self,
             keyPath: keyPath,
