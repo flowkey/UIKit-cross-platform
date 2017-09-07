@@ -39,6 +39,8 @@ open class UIView: UIResponder {
         }
     }
 
+    open var mask: UIView?
+
     open var isHidden: Bool {
         get { return layer.isHidden }
         set { layer.isHidden = newValue }
