@@ -24,8 +24,7 @@ extension UIView {
         currentAnimationPrototype = CABasicAnimationPrototype(
             duration: CGFloat(duration),
             delay: CGFloat(delay),
-            options: options,
-            animationGroup: .init(completion: completion)
+            animationGroup: .init(options: options, completion: completion)
         )
 
         animations()
@@ -46,8 +45,7 @@ extension UIView {
             delay: CGFloat(delay),
             damping: usingSpringWithDamping,
             initialSpringVelocity: initialSpringVelocity,
-            options: options,
-            animationGroup: .init(completion: completion)
+            animationGroup: .init(options: options, completion: completion)
         )
 
         animations()

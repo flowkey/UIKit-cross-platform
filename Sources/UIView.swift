@@ -49,8 +49,9 @@ open class UIView: UIResponder {
         if !isUserInteractionEnabled {
             return false
         }
-        return layer.animations.isEmpty || layer.animations.values
-            .contains(where: { $0.options.contains(.allowUserInteraction) })
+        return layer.animations.isEmpty || layer.animations.values.contains(where: {
+            $0.animationGroup?.options.contains(.allowUserInteraction) ?? false
+        })
     }
 
     internal var needsLayout = false
