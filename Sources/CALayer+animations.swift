@@ -54,11 +54,11 @@ extension CALayer {
         let presentation = self.copy(disableAnimations: true)
 
         animations.forEach { (key, animation) in
-            animation.updateProgress(to: currentTime)
+            let animationProgress = animation.progress(for: currentTime)
 
-            update(presentation, for: animation, at: currentTime)
+            update(presentation, for: animation, with: animationProgress)
 
-            if animation.isComplete && animation.isRemovedOnCompletion {
+            if animationProgress == 1 && animation.isRemovedOnCompletion {
                 animation.animationGroup?.animationDidStop(finished: true)
                 removeAnimation(forKey: key)
             }
@@ -67,7 +67,7 @@ extension CALayer {
         self.presentation = animations.isEmpty ? nil : presentation
     }
 
-    private func update(_ presentation: CALayer, for animation: CABasicAnimation, at currentTime: Timer) {
+    private func update(_ presentation: CALayer, for animation: CABasicAnimation, with progress: CGFloat) {
 
         guard let keyPath = animation.keyPath else { return }
 
@@ -75,18 +75,18 @@ extension CALayer {
         case .frame:
             guard let startFrame = animation.fromValue as? CGRect else { break }
             let endFrame = animation.toValue as? CGRect ?? self.frame
-            presentation.frame = startFrame + (endFrame - startFrame) * animation.progress
+            presentation.frame = startFrame + (endFrame - startFrame) * progress
 
         case .bounds:
             guard let startBounds = animation.fromValue as? CGRect else { break }
             let endBounds = animation.toValue as? CGRect ?? self.bounds
             // animate origin only, because setting bounds.size updates frame.size
-            presentation.bounds.origin = (startBounds + (endBounds - startBounds) * animation.progress).origin
+            presentation.bounds.origin = (startBounds + (endBounds - startBounds) * progress).origin
 
         case .opacity:
             guard let startOpacity = animation.fromValue as? Float else { break }
             let endOpacity = animation.toValue as? Float ?? self.opacity
-            presentation.opacity = startOpacity + ((endOpacity - startOpacity)) * Float(animation.progress)
+            presentation.opacity = startOpacity + ((endOpacity - startOpacity)) * Float(progress)
 
         case .unknown:
             print("unknown animation property")

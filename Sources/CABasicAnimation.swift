@@ -36,7 +36,6 @@ public class CABasicAnimation: CAAction {
         delay = animation.delay
         options = animation.options
         timer = animation.timer
-        progress = animation.progress
         fillMode = animation.fillMode
         fromValue = animation.fromValue
         toValue = animation.toValue
@@ -63,15 +62,4 @@ public class CABasicAnimation: CAAction {
     var animationGroup: UIViewAnimationGroup?
 
     var timer = Timer()
-    var progress: CGFloat = 0
-    var isComplete: Bool {
-        return progress == 1
-    }
 }
-
-extension CABasicAnimation: Equatable {
-    public static func ==(lhs: CABasicAnimation, rhs: CABasicAnimation) -> Bool {
-        return ObjectIdentifier(lhs).hashValue == ObjectIdentifier(rhs).hashValue
-    }
-}
-
