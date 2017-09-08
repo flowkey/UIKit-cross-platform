@@ -23,10 +23,7 @@ class CASpringAnimationPrototype: CABasicAnimationPrototype {
         super.init(duration: duration, delay: delay, options: options, animationGroup: animationGroup)
     }
 
-    override func createAnimation(
-        keyPath: AnimationKeyPath,
-        fromValue: AnimatableProperty
-    ) -> CASpringAnimation {
+    override func createAnimation(keyPath: AnimationKeyPath, fromValue: AnimatableProperty) -> CASpringAnimation {
         return CASpringAnimation(prototype: self, keyPath: keyPath, fromValue: fromValue)
     }
 }

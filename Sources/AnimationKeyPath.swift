@@ -13,7 +13,9 @@ public enum AnimationKeyPath: String, ExpressibleByStringLiteral {
         case "frame": self = .frame
         case "opacity": self = .opacity
         case "bounds": self = .bounds
-        default: self = .unknown
+        default:
+            assertionFailure("unknown AnimationKeyPath")
+            self = .unknown
         }
     }
 }

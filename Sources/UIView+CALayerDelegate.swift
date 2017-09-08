@@ -7,7 +7,7 @@
 //
 
 extension UIView: CALayerDelegate {
-    func action(forKey event: String) -> CABasicAnimation? {
+    open func action(forKey event: String) -> CABasicAnimation? {
         let keyPath = AnimationKeyPath(stringLiteral: event)
 
         let beginFromCurrentState = UIView.currentAnimationPrototype?.options.contains(.beginFromCurrentState) ?? false
@@ -24,6 +24,6 @@ extension UIView: CALayerDelegate {
     }
 }
 
-protocol CALayerDelegate {
+public protocol CALayerDelegate {
     func action(forKey event: String) -> CABasicAnimation?
 }

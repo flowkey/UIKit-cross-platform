@@ -50,8 +50,7 @@ open class UIView: UIResponder {
             return false
         }
         return layer.animations.isEmpty || layer.animations.values
-            .filter { $0.options.contains(.allowUserInteraction) }
-            .count > 0
+            .contains(where: { $0.options.contains(.allowUserInteraction) })
     }
 
     internal var needsLayout = false

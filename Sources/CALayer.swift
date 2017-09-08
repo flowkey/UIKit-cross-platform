@@ -9,7 +9,7 @@
 import SDL
 
 open class CALayer {
-    var delegate: CALayerDelegate?
+    open var delegate: CALayerDelegate?
 
     var texture: Texture? {
         didSet {
@@ -83,8 +83,35 @@ open class CALayer {
 
     public required init() {}
 
-    // Match UIKit by providing this initializer to override
-    public init(layer: Any) {}
+    public init(layer: Any) {
+        guard let layer = layer as? CALayer else { fatalError() }
+        frame = layer.frame
+        bounds = layer.bounds
+        opacity = layer.opacity
+        backgroundColor = layer.backgroundColor
+        isHidden = layer.isHidden
+        cornerRadius = layer.cornerRadius
+        borderWidth = layer.borderWidth
+        borderColor = layer.borderColor
+        shadowColor = layer.shadowColor
+        shadowPath = layer.shadowPath
+        shadowOffset = layer.shadowOffset
+        shadowRadius = layer.shadowRadius
+        shadowOpacity = layer.shadowOpacity
+        texture = layer.texture
+        sublayers = layer.sublayers
+    }
+
+    open func copy() -> Any {
+        return CALayer(layer: self)
+    }
+
+    /// returns a non animating copy of the layer
+    func createPresentation() -> CALayer {
+        let copy = CALayer(layer: self)
+        copy.disableAnimations = true
+        return copy
+    }
 
     open func action(forKey event: String) -> CAAction? {
         if let delegate = delegate {

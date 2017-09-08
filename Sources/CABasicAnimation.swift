@@ -48,18 +48,21 @@ public class CABasicAnimation: CAAction {
         return CABasicAnimation(from: self)
     }
 
+    /// animation duration in seconds
+    public var duration: CGFloat = 0
+
+    /// animation delay in seconds
+    public var delay: CGFloat = 0
+
     public var keyPath: AnimationKeyPath?
     public var fillMode: String?
     public var isRemovedOnCompletion = true
-    public var duration: CGFloat = 0
-    public var delay: CGFloat = 0
     public var options: UIViewAnimationOptions = []
-    public var timingFunction: CAMediaTimingFunction? = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
+    public var timingFunction: CAMediaTimingFunction? = .init(name: kCAMediaTimingFunctionDefault)
 
     public var fromValue: AnimatableProperty?
     public var toValue: AnimatableProperty?
 
     var animationGroup: UIViewAnimationGroup?
-
     var timer = Timer()
 }
