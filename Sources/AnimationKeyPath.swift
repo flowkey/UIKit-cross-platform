@@ -7,7 +7,8 @@
 //
 
 public enum AnimationKeyPath: String, ExpressibleByStringLiteral {
-    case frame = "frame", opacity = "opacity", bounds = "bounds", unknown = "unknown"
+    case frame, opacity, bounds, unknown
+
     public init(stringLiteral value: String) {
         switch value {
         case "frame": self = .frame
