@@ -47,7 +47,11 @@ open class VideoPlayer: UIView {
         javaVideo.seek(to: newTime)
     }
 
-    public var isMuted: Bool = false
+    public var isMuted: Bool = false {
+        willSet(newValue) {
+            javaVideo.isMuted = newValue
+        }
+    }
     public var rate: Double = 1 {
         willSet(newRate) {
             javaVideo.setPlaybackRate(to: newRate)
@@ -73,6 +77,16 @@ private class JavaVideo: JNIObject {
     }
 
     var onVideoEnded: (() -> Void)?
+    
+    var isMuted: Bool = false {
+        willSet(muted) {
+            if (muted) {
+                try! call(methodName: "setVolume", arguments: [0.0])
+            } else {
+                try! call(methodName: "setVolume", arguments: [1.0])
+            }
+        }
+    }
 
     func play() {
         try! call(methodName: "play")
