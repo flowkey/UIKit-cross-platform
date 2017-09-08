@@ -113,9 +113,9 @@ private class JavaVideo: JNIObject {
     }
 
     func setSize(width: Double, height: Double) {
-        let pixelCoordinateContentScale = 2
-        let androidWidth = Int(width) * pixelCoordinateContentScale
-        let androidHeight = Int(height) * pixelCoordinateContentScale
+        let scaleFactor = Int(androidDeviceScaleFactor ?? 2.0)
+        let androidWidth = Int(width) * scaleFactor
+        let androidHeight = Int(height) * scaleFactor
         try! call(methodName: "setSize", arguments: [androidWidth, androidHeight])
     }
 }
