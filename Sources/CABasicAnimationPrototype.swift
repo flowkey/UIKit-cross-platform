@@ -9,13 +9,11 @@
 class CABasicAnimationPrototype {
     let duration: CGFloat
     let delay: CGFloat
-    let options: UIViewAnimationOptions
     let animationGroup: UIViewAnimationGroup
 
-    init(duration: CGFloat, delay: CGFloat, options: UIViewAnimationOptions, animationGroup: UIViewAnimationGroup) {
+    init(duration: CGFloat, delay: CGFloat, animationGroup: UIViewAnimationGroup) {
         self.delay = delay
         self.duration = duration
-        self.options = options
         self.animationGroup = animationGroup
     }
 
@@ -24,7 +22,7 @@ class CABasicAnimationPrototype {
             prototype: self,
             keyPath: keyPath,
             fromValue: fromValue,
-            timingFunction: .timingFunction(from: options)
+            timingFunction: .timingFunction(from: animationGroup.options)
         )
     }
 }

@@ -22,7 +22,6 @@ public class CABasicAnimation: CAAction {
     ) {
         delay = prototype.delay
         duration = prototype.duration
-        options = prototype.options
         animationGroup = prototype.animationGroup
 
         self.keyPath = keyPath
@@ -34,7 +33,6 @@ public class CABasicAnimation: CAAction {
         keyPath = animation.keyPath
         duration = animation.duration
         delay = animation.delay
-        options = animation.options
         timer = animation.timer
         fillMode = animation.fillMode
         fromValue = animation.fromValue

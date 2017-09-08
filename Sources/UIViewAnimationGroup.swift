@@ -10,8 +10,10 @@
 class UIViewAnimationGroup {
     var completion: ((Bool) -> ())?
     var queuedAnimations = 0
+    var options: UIViewAnimationOptions = []
 
-    init(completion: ((Bool) -> Void)?) {
+    init(options: UIViewAnimationOptions, completion: ((Bool) -> Void)?) {
+        self.options = options
         self.completion = completion
     }
 

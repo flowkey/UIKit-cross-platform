@@ -28,7 +28,7 @@ class CASpringAnimation: CABasicAnimation {
             prototype: prototype,
             keyPath: keyPath,
             fromValue: fromValue,
-            timingFunction: .timingFunction(from: prototype.options)
+            timingFunction: .timingFunction(from: prototype.animationGroup.options)
         )
     }
 }
