@@ -55,8 +55,8 @@ open class VideoPlayer: UIView {
     }
 }
 
-@_silgen_name("Java_com_flowkey_nativeplayersdl_VideoJNI_onVideoEnded")
-public func onVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
+@_silgen_name("Java_com_flowkey_nativeplayersdl_VideoJNI_nativeOnVideoEnded")
+public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     javaVideo?.onVideoEnded?()
 }
 
