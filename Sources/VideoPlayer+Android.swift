@@ -18,10 +18,11 @@ open class VideoPlayer: UIView {
         }
     }
 
-    var onVideoEnded: (() -> Void)? {
-        didSet {
-            print("didSet onVideoEnded to", onVideoEnded)
-            javaVideo.setOnEndedCallback(onVideoEnded!) // should always exist in didSet call
+    public var onVideoEnded: (() -> Void)? {
+        willSet(newValue) {
+            if let onEndedCallback = newValue {
+                javaVideo.setOnEndedCallback(onEndedCallback)
+            }
         }
     }
 
@@ -38,12 +39,8 @@ open class VideoPlayer: UIView {
         javaVideo.pause()
     }
 
-//    public func setOnEndedCallback(_ callback: (() -> Void)) {
-//        javaVideo?.setOnEndedCallback(callback)
-//    }
-
     public func getCurrentTimeInMS() -> Double {
-        return javaVideo.getCurrentTimeInMS() ?? 0.0
+        return javaVideo.getCurrentTimeInMS()
     }
 
     public func seek(to newTime: Double) {
@@ -58,10 +55,24 @@ open class VideoPlayer: UIView {
     }
 }
 
+@_silgen_name("Java_com_flowkey_nativeplayersdl_VideoJNI_onVideoEnded")
+public func onVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
+    javaVideo?.onVideoEnded?()
+}
+
+private weak var javaVideo: JavaVideo?
+
 private class JavaVideo: JNIObject {
     convenience init?(url: String) {
         self.init("com.flowkey.nativeplayersdl.VideoJNI", arguments: [url])
+        javaVideo = self
     }
+
+    deinit {
+        javaVideo = nil
+    }
+
+    var onVideoEnded: (() -> Void)?
 
     func play() {
         try! call(methodName: "play")
@@ -71,9 +82,8 @@ private class JavaVideo: JNIObject {
         try! call(methodName: "pause")
     }
 
-    func setOnEndedCallback(_ callback: (() -> Void)) {
-        print("javaVideo.setOnEndedCallback to", callback)
-        try! call(methodName: "setOnVideoEndedCallback") // add callback argument / function pointer here
+    func setOnEndedCallback(_ callback: @escaping (() -> Void)) {
+        onVideoEnded = callback
     }
 
     func getCurrentTimeInMS() -> Double {
