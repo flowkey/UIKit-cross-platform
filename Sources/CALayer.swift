@@ -83,7 +83,7 @@ open class CALayer {
 
     public required init() {}
 
-    public init(layer: Any) {
+    public required init(layer: Any) {
         guard let layer = layer as? CALayer else { fatalError() }
         frame = layer.frame
         bounds = layer.bounds
