@@ -7,8 +7,10 @@
 //
 
 open class UIProgressView: UIView {
-    open var progress: Float = 0
     let progressLayer = CALayer()
+    open var progress: Float = 0 {
+        didSet { setNeedsLayout() }
+    }
 
     public var progressTintColor: UIColor? {
         didSet { progressLayer.backgroundColor = progressTintColor?.cgColor }
@@ -30,6 +32,7 @@ open class UIProgressView: UIView {
     override open func layoutSubviews() {
         progressLayer.frame = bounds
         progressLayer.frame.width = bounds.width * CGFloat(progress)
+        super.layoutSubviews()
     }
 }
 
