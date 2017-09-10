@@ -75,20 +75,17 @@ extension CALayer {
             guard let startFrame = animation.fromValue as? CGRect else { return }
             let endFrame = animation.toValue as? CGRect ?? self.frame
             presentation.frame = startFrame + (endFrame - startFrame) * progress
-            break
 
         case .bounds:
             guard let startBounds = animation.fromValue as? CGRect else { return }
             let endBounds = animation.toValue as? CGRect ?? self.bounds
             // animate origin only, because setting bounds.size updates frame.size
             presentation.bounds.origin = (startBounds + (endBounds - startBounds) * progress).origin
-            break
 
         case .opacity:
             guard let startOpacity = animation.fromValue as? Float else { return }
             let endOpacity = animation.toValue as? Float ?? self.opacity
             presentation.opacity = startOpacity + ((endOpacity - startOpacity)) * Float(progress)
-            break
 
         case .unknown: break
         }
