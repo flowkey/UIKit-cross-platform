@@ -21,7 +21,10 @@ open class UIProgressView: UIView {
     }
 
     public func setProgress(_ progress: Float, animated: Bool) {
+        CATransaction.begin()
+        CATransaction.setDisableActions(!animated)
         self.progress = progress
+        CATransaction.commit()
     }
 
     public init() {
