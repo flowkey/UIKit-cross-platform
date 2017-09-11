@@ -11,7 +11,7 @@ import SDL
 internal final class Texture {
     let rawPointer: UnsafeMutablePointer<GPU_Image>
 
-    var scale: Float = 2 // TODO: get from window
+    var scale = Float(SDL.window.scaleFactor)
 
     var size: CGSize {
         return CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
@@ -52,17 +52,19 @@ internal final class Texture {
         GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * Int32(bytesPerPixel))
     }
 
-    private func scaleImage(_ scale: Float) {
+    private func scaleImage(_ scale: Float) { // WARNING: scale parameter currently not used in function
         var image = rawPointer.pointee
-        let scale = UInt16(2) // XXX: get this from image path
+
+        let defaultImageScale = UInt16(2) // XXX: get this from image path
+        self.scale = Float(defaultImageScale)
         
         // Setting the scale here allows the texture to render at the expected size automatically
-        image.h /= scale
-        image.w /= scale
-        image.texture_h /= scale
-        image.texture_w /= scale
-        image.base_h /= scale
-        image.base_w /= scale
+        image.h /= defaultImageScale
+        image.w /= defaultImageScale
+        image.texture_h /= defaultImageScale
+        image.texture_w /= defaultImageScale
+        image.base_h /= defaultImageScale
+        image.base_w /= defaultImageScale
 
         rawPointer.pointee = image
         GPU_SetAnchor(rawPointer, 0, 0)
