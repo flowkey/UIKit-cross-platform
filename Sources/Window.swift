@@ -17,6 +17,7 @@ public let androidDeviceScaleFactor: Double = (try? jni.GetStaticField("contentS
 internal final class Window {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
     let size: CGSize
+    let scaleFactor: Double
 
     // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
     // The easiest solution is just to work in 1:1 pixels
@@ -35,23 +36,20 @@ internal final class Window {
         rawPointer = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue)!
 
         #if os(Android)
-            let scaleFactor = CGFloat(androidDeviceScaleFactor)
+            scaleFactor = androidDeviceScaleFactor
 
-            GPU_SetVirtualResolution(rawPointer, UInt16(size.width / scaleFactor), UInt16(size.height / scaleFactor))
-            size.width /= scaleFactor
-            size.height /= scaleFactor
-            pixelCoordinateContentScale = scaleFactor
+            GPU_SetVirtualResolution(rawPointer, UInt16(size.width / CGFloat(scaleFactor)), UInt16(size.height / CGFloat(scaleFactor)))
+            size.width /= CGFloat(scaleFactor)
+            size.height /= CGFloat(scaleFactor)
         #else // Mac:
-            pixelCoordinateContentScale = 1
+            scaleFactor = 1.0
         #endif
         
         self.size = size
     }
 
-    private let pixelCoordinateContentScale: CGFloat
-
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
-        return CGPoint(x: inputX / pixelCoordinateContentScale, y: inputY / pixelCoordinateContentScale)
+        return CGPoint(x: inputX / CGFloat(scaleFactor), y: inputY / CGFloat(scaleFactor))
     }
 
     func blit(_ texture: Texture, to destination: CGPoint) {
