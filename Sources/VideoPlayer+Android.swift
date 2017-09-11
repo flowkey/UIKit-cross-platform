@@ -15,6 +15,7 @@ open class VideoPlayer: UIView {
     override open var frame: CGRect {
         willSet(newFrame) {
             javaVideo.setSize(width: Double(newFrame.width), height: Double(newFrame.height))
+            javaVideo.setOrigin(x: Double(newFrame.origin.x), y: Double(newFrame.origin.y))
         }
     }
 
@@ -113,9 +114,13 @@ private class JavaVideo: JNIObject {
     }
 
     func setSize(width: Double, height: Double) {
-        let scaleFactor = Int(androidDeviceScaleFactor)
+        let scaleFactor = Int(SDL.window.scaleFactor)
         let androidWidth = Int(width) * scaleFactor
         let androidHeight = Int(height) * scaleFactor
         try! call(methodName: "setSize", arguments: [androidWidth, androidHeight])
+    }
+
+    func setOrigin(x: Double, y: Double) {
+        try! call(methodName: "setOrigin", arguments: [Int(x), Int(y)])
     }
 }
