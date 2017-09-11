@@ -45,13 +45,13 @@ open class UIView: UIResponder {
     }
 
     open var isUserInteractionEnabled = true
-    private var _isUserInteractionEnabled: Bool {
-        if !isUserInteractionEnabled {
-            return false
-        }
-        return layer.animations.isEmpty || layer.animations.values.contains(where: {
+
+    /// returns true if any animation was started with allowUserInteraction
+    /// or if no animation is currently running
+    var animationsAllowUserInteraction: Bool {
+        return layer.animations.isEmpty || layer.animations.values.contains {
             $0.animationGroup?.options.contains(.allowUserInteraction) ?? false
-        })
+        }
     }
 
     internal var needsLayout = false
@@ -199,9 +199,8 @@ open class UIView: UIResponder {
     }
 
     open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard !isHidden, _isUserInteractionEnabled, alpha > 0.01, self.point(inside: point, with: event) else {
-            return nil
-        }
+        guard !isHidden, isUserInteractionEnabled, animationsAllowUserInteraction,
+            alpha > 0.01, self.point(inside: point, with: event) else { return nil }
 
         // reversing allows us to return the view with the highest z-index in the shortest amount of time:
         for subview in subviews.reversed() {
