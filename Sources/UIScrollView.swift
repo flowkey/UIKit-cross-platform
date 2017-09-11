@@ -14,11 +14,17 @@ open class UIScrollView: UIView {
     public var scrollViewDidScroll: (() -> Void)?
     public var scrollViewDidEndDragging: ((_ willDecelerate: Bool) -> Void)?
 
+    private var verticalScrollIndicator = CALayer()
+    public var indicatorStyle: UIColor = .white
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
         panGestureRecognizer.onAction = self.onPan
         panGestureRecognizer.onStateChanged = onPanGestureStateChanged
         addGestureRecognizer(panGestureRecognizer)
+
+        verticalScrollIndicator.backgroundColor = self.indicatorStyle
+        layer.addSublayer(verticalScrollIndicator)
     }
 
     var lastOnPanTimestamp: Double = 0
@@ -28,10 +34,10 @@ open class UIScrollView: UIView {
 
         let newX = contentOffset.x - translation.x
         let newY = contentOffset.y - translation.y
+
         let newOffset = CGPoint(
-            // XXX: Change this to accommodate `bounce`
-            x: min(max(newX, -contentInset.left), contentSize.width + contentInset.right),
-            y: min(max(newY, -contentInset.top), contentInset.bottom) // XXX: logically incorrect
+            x: min(max(newX, -contentInset.left), contentSize.width - bounds.width + contentInset.right),
+            y: min(max(newY, -contentInset.top), contentSize.height - bounds.height + contentInset.bottom)
         )
 
         setContentOffset(newOffset, animated: false)
@@ -54,10 +60,14 @@ open class UIScrollView: UIView {
     }
 
     open var contentInset = UIEdgeInsets() //{ didSet {updateBounds()} }
-    open var contentSize: CGSize = .zero {
-        didSet { bounds.size = contentSize }
+    open var contentSize: CGSize = .zero
+
+    open var contentOffset: CGPoint = .zero {
+        didSet {
+            updateBounds()
+            setNeedsLayout()
+        }
     }
-    open var contentOffset: CGPoint = .zero { didSet {updateBounds()} }
 
     open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         let extendedBounds = CGRect(
@@ -77,12 +87,29 @@ open class UIScrollView: UIView {
     }
 
     // TODO: Implement these:
-    open var showsVerticalScrollIndicator = true
+    open var showsVerticalScrollIndicator = true {
+        didSet { verticalScrollIndicator.isHidden = !showsVerticalScrollIndicator }
+    }
     open var showsHorizontalScrollIndicator = true
 
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         // TODO: animate
         contentOffset = point
+    }
+
+    override open func layoutSubviews() {
+        if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
+    }
+
+    private func layoutVerticalScrollIndicator() {
+        let indicatorHeight: CGFloat = (bounds.height / contentSize.height) * bounds.height
+        let indicatorWidth: CGFloat = 2
+        verticalScrollIndicator.frame = CGRect(
+            x: bounds.maxX + 5,
+            y: contentOffset.y + (contentOffset.y / contentSize.height) * bounds.height,
+            width: indicatorWidth,
+            height: indicatorHeight
+        )
     }
 }
 

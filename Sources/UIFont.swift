@@ -59,7 +59,7 @@ open class UIFont: Equatable {
     fileprivate let renderer: FontRenderer
 
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> Texture? {
-        return renderer.render(text, color: color, wrapLength: Int(wrapLength))
+        return renderer.render(text, color: color, wrapLength: Int(wrapLength * UIFont.contentScale))
     }
 }
 
