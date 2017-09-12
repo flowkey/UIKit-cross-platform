@@ -9,11 +9,6 @@
 import SDL
 import JNI
 
-#if os(Android)
-private let MainActivity = jni.FindClass(name: "com/flowkey/nativeplayersdl/MainActivity")!
-public let androidDeviceScaleFactor: Double = (try? jni.GetStaticField("contentScaleFactor", on: MainActivity)) ?? 2.0
-#endif
-
 internal final class Window {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
     let size: CGSize
@@ -36,7 +31,8 @@ internal final class Window {
         rawPointer = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue)!
 
         #if os(Android)
-            scaleFactor = androidDeviceScaleFactor
+            let MainActivity = jni.FindClass(name: "com/flowkey/nativeplayersdl/MainActivity")!
+            scaleFactor = (try? jni.GetStaticField("deviceScaleFactor", on: MainActivity)) ?? 2.0
 
             GPU_SetVirtualResolution(rawPointer, UInt16(size.width / CGFloat(scaleFactor)), UInt16(size.height / CGFloat(scaleFactor)))
             size.width /= CGFloat(scaleFactor)
