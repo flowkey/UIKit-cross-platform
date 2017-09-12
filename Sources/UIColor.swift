@@ -39,7 +39,7 @@ public struct UIColor: Equatable {
     }
     
     public static func == (lhs: UIColor, rhs: UIColor) -> Bool {
-        return (lhs.red == rhs.red) && (lhs.green == rhs.green) && (lhs.blue == rhs.blue)
+        return (lhs.red == rhs.red) && (lhs.green == rhs.green) && (lhs.blue == rhs.blue) && (lhs.alpha == rhs.alpha)
     }
 
     // Initialise from a color struct from e.g. renderer.getDrawColor()

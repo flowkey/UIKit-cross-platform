@@ -15,18 +15,14 @@ class CASpringAnimationPrototype: CABasicAnimationPrototype {
         delay: CGFloat,
         damping: CGFloat,
         initialSpringVelocity: CGFloat,
-        options: UIViewAnimationOptions,
         animationGroup: UIViewAnimationGroup
     ) {
         self.damping = damping
         self.initialSpringVelocity = initialSpringVelocity
-        super.init(duration: duration, delay: delay, options: options, animationGroup: animationGroup)
+        super.init(duration: duration, delay: delay, animationGroup: animationGroup)
     }
 
-    override func createAnimation(
-        keyPath: AnimationKeyPath,
-        fromValue: AnimatableProperty
-    ) -> CASpringAnimation {
+    override func createAnimation(keyPath: AnimationKeyPath, fromValue: AnimatableProperty) -> CASpringAnimation {
         return CASpringAnimation(prototype: self, keyPath: keyPath, fromValue: fromValue)
     }
 }

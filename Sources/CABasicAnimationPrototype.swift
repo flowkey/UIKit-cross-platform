@@ -9,25 +9,34 @@
 class CABasicAnimationPrototype {
     let duration: CGFloat
     let delay: CGFloat
-    let options: UIViewAnimationOptions
     let animationGroup: UIViewAnimationGroup
 
-    init(duration: CGFloat, delay: CGFloat, options: UIViewAnimationOptions, animationGroup: UIViewAnimationGroup) {
+    init(duration: CGFloat, delay: CGFloat, animationGroup: UIViewAnimationGroup) {
         self.delay = delay
         self.duration = duration
-        self.options = options
         self.animationGroup = animationGroup
     }
 
-    func createAnimation(
-        keyPath: AnimationKeyPath,
-        fromValue: AnimatableProperty
-    ) -> CABasicAnimation {
+    func createAnimation(keyPath: AnimationKeyPath, fromValue: AnimatableProperty) -> CABasicAnimation {
         return CABasicAnimation(
             prototype: self,
             keyPath: keyPath,
             fromValue: fromValue,
-            timingFunction: .timingFunction(from: options)
+            timingFunction: .timingFunction(from: animationGroup.options)
         )
+    }
+}
+
+extension CAMediaTimingFunction {
+    static func timingFunction(from options: UIViewAnimationOptions) -> CAMediaTimingFunction? {
+        if options.contains(.curveEaseIn) {
+            return .init(name: kCAMediaTimingFunctionEaseIn)
+        } else if options.contains(.curveEaseOut) {
+            return .init(name: kCAMediaTimingFunctionEaseOut)
+        } else if options.contains(.curveEaseInOut) {
+            return .init(name: kCAMediaTimingFunctionEaseInEaseOut)
+        }
+
+        return .init(name: kCAMediaTimingFunctionDefault)
     }
 }

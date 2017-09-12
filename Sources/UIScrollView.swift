@@ -141,12 +141,7 @@ open class UIScrollView: UIView {
     open var contentSize: CGSize = .zero {
         didSet { bounds.size = contentSize }
     }
-    open var contentOffset: CGPoint = .zero {
-        didSet {
-            delegate?.scrollViewDidScroll(self)
-            updateBounds()
-        }
-    }
+    open var contentOffset: CGPoint = .zero { didSet {updateBounds()} }
 
     open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         let extendedBounds = CGRect(
@@ -172,6 +167,7 @@ open class UIScrollView: UIView {
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         // TODO: animate
         contentOffset = point
+        delegate?.scrollViewDidScroll(self)
     }
 }
 

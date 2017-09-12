@@ -7,16 +7,14 @@
 //
 
 extension UIView: CALayerDelegate {
-    func action(forKey event: String) -> CABasicAnimation? {
-        let keyPath = AnimationKeyPath(stringLiteral: event)
+    open func action(forKey event: String) -> CABasicAnimation? {
+        guard let prototype = UIView.currentAnimationPrototype else { return nil }
 
-        let beginFromCurrentState = UIView.currentAnimationPrototype?.options.contains(.beginFromCurrentState) ?? false
+        let keyPath = AnimationKeyPath(stringLiteral: event)
+        let beginFromCurrentState = prototype.animationGroup.options.contains(.beginFromCurrentState)
         let state = beginFromCurrentState ? (layer.presentation ?? layer) : layer
 
-        if
-            let fromValue = state.value(forKeyPath: keyPath),
-            let prototype = UIView.currentAnimationPrototype
-        {
+        if let fromValue = state.value(forKeyPath: keyPath) {
             return prototype.createAnimation(keyPath: keyPath, fromValue: fromValue)
         }
 
@@ -24,6 +22,6 @@ extension UIView: CALayerDelegate {
     }
 }
 
-protocol CALayerDelegate {
+public protocol CALayerDelegate {
     func action(forKey event: String) -> CABasicAnimation?
 }

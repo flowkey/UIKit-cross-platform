@@ -285,6 +285,18 @@ class UIViewAnimationTests: XCTestCase {
         }
         XCTAssertEqual(view.frame.origin.x, 0)
     }
+
+    func testAllowUserInteraction() {
+        let view = UIView()
+
+        UIView.animate(withDuration: 10, delay: 0, options: [.allowUserInteraction], animations: {
+            view.frame.origin.x = 200
+        })
+
+        XCTAssertTrue((view.layer.animations["frame"]?.animationGroup?
+            .options.contains(.allowUserInteraction) ?? false))
+        XCTAssertTrue(view.animationsAllowUserInteraction)
+    }
 }
 
 

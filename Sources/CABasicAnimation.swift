@@ -22,7 +22,6 @@ public class CABasicAnimation: CAAction {
     ) {
         delay = prototype.delay
         duration = prototype.duration
-        options = prototype.options
         animationGroup = prototype.animationGroup
 
         self.keyPath = keyPath
@@ -34,9 +33,7 @@ public class CABasicAnimation: CAAction {
         keyPath = animation.keyPath
         duration = animation.duration
         delay = animation.delay
-        options = animation.options
         timer = animation.timer
-        progress = animation.progress
         fillMode = animation.fillMode
         fromValue = animation.fromValue
         toValue = animation.toValue
@@ -49,29 +46,20 @@ public class CABasicAnimation: CAAction {
         return CABasicAnimation(from: self)
     }
 
+    /// animation duration in seconds
+    public var duration: CGFloat = 0
+
+    /// animation delay in seconds
+    public var delay: CGFloat = 0
+
     public var keyPath: AnimationKeyPath?
     public var fillMode: String?
     public var isRemovedOnCompletion = true
-    public var duration: CGFloat = 0
-    public var delay: CGFloat = 0
-    public var options: UIViewAnimationOptions = []
-    public var timingFunction: CAMediaTimingFunction? = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
+    public var timingFunction: CAMediaTimingFunction? = .init(name: kCAMediaTimingFunctionDefault)
 
     public var fromValue: AnimatableProperty?
     public var toValue: AnimatableProperty?
 
     var animationGroup: UIViewAnimationGroup?
-
     var timer = Timer()
-    var progress: CGFloat = 0
-    var isComplete: Bool {
-        return progress == 1
-    }
 }
-
-extension CABasicAnimation: Equatable {
-    public static func ==(lhs: CABasicAnimation, rhs: CABasicAnimation) -> Bool {
-        return ObjectIdentifier(lhs).hashValue == ObjectIdentifier(rhs).hashValue
-    }
-}
-

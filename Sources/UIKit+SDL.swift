@@ -69,7 +69,7 @@ final public class SDL { // XXX: only public for startRunLoop()
                 DisplayLink.activeDisplayLinks.forEach { $0.callback() }
             } else if !eventWasHandled && !firstRender && !UIView.animationsArePending {
                 // We can avoid updating the screen at all unless there is active touch input
-                // or a running animation. We still need to handle the case of animations here!
+                // or animations are pending for execution
 
                 // Sleep to avoid 100% CPU load when nothing is happening!
                 // Normally this case is covered by the automatic VSYNC in window.flip():

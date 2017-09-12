@@ -7,22 +7,25 @@
 //
 
 public struct CATransaction {
+    var areActionsDisabled = false
+
+    private static var transactionStack = [CATransaction]()
+
     public static func begin() {
-        actionStack.append(false)
+        transactionStack.append(CATransaction())
     }
 
     public static func commit() {
-        actionStack.removeLast()
+        transactionStack.removeLast()
     }
 
-    public static func setDisableActions(_ to: Bool) {
-        if actionStack.isEmpty { return }
-        actionStack[actionStack.count - 1] = to
+    public static func setDisableActions(_ newValue: Bool) {
+        if transactionStack.isEmpty { return }
+        transactionStack[transactionStack.count - 1].areActionsDisabled = newValue
     }
 
     static var disableActions: Bool {
-        return actionStack.last ?? false
+        return transactionStack.last?.areActionsDisabled ?? false
     }
-
-    private static var actionStack = [Bool]()
 }
+    
