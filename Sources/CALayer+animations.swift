@@ -93,9 +93,11 @@ extension CALayer {
 }
 
 extension CALayer {
+    static let defaultAnimationDuration: CGFloat = 0.25
+
     static func defaultAction(forKey event: String) -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: AnimationKeyPath(stringLiteral: event))
-        animation.duration = 0.25
+        animation.duration = defaultAnimationDuration
         return animation
     }
 }
