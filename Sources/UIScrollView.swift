@@ -21,7 +21,6 @@ open class UIScrollView: UIView {
         addGestureRecognizer(panGestureRecognizer)
     }
 
-    // returns YES if user isn't dragging (touch up) but scroll view is still moving
     open var isDecelerating: Bool = false
 
     private func onPan() {
@@ -78,7 +77,7 @@ open class UIScrollView: UIView {
             finalVelocity: 0
         )
 
-        // calculate the distance to move until completed deceleration
+        // calculate the distance to move until completely decelerated
         let distanceToMove = distance(
             acceleration: Double(-decelerationRate),
             time: Double(animationTime),
@@ -113,7 +112,7 @@ open class UIScrollView: UIView {
         UIView.animate(withDuration: animationTime, options: [.curveEaseOut, .allowUserInteraction],  animations: {
             self.isDecelerating = true
             self.setContentOffset(newOffset, animated: false)
-        }, completion: { isCompleted in
+        }, completion: { _ in
             self.isDecelerating = false
         })
     }
