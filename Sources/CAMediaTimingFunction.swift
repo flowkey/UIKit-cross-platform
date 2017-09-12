@@ -22,28 +22,15 @@ public class CAMediaTimingFunction {
         case kCAMediaTimingFunctionLinear: timing = CAMediaTimingFunction.linear
         case kCAMediaTimingFunctionEaseIn: timing = CAMediaTimingFunction.easeInCubic
         case kCAMediaTimingFunctionEaseOut: timing = CAMediaTimingFunction.easeOutCubic
-        case kCAMediaTimingFunctionEaseInEaseOut: timing = CAMediaTimingFunction.easeInOutCubic
-        case kCAMediaTimingFunctionDefault: timing = CAMediaTimingFunction.easeInOutCubic
-        default: fatalError("invalid name")
+        case kCAMediaTimingFunctionEaseInEaseOut, kCAMediaTimingFunctionDefault:
+            timing = CAMediaTimingFunction.easeInOutCubic
+
+        default: fatalError("invalid name in CAMediaTimingFunction init")
         }
     }
 
     subscript(at x: CGFloat) -> CGFloat {
         return timing(x)
-    }
-}
-
-extension CAMediaTimingFunction {
-    static func timingFunction(from options: UIViewAnimationOptions) -> CAMediaTimingFunction? {
-        if options.contains(.curveEaseIn) {
-            return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
-        } else if options.contains(.curveEaseOut) {
-            return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-        } else if options.contains(.curveEaseInOut) {
-            return CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-        }
-
-        return CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
     }
 }
 
