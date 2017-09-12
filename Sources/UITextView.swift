@@ -49,12 +49,11 @@ open class UITextView: UIScrollView {
     }
 
     override open func layoutSubviews() {
+        label.frame.width = bounds.width
         label.sizeToFit()
-        label.frame.size = bounds.size
 
-        let textHeight: CGFloat = 520 // xxx: get this from label when multiline sizeToFit is fixed
+        let textHeight: CGFloat = label.textLayer.frame.size.height
         contentSize = CGSize(width: bounds.width, height: textHeight)
-        backgroundColor = UIColor.red.withAlphaComponent(0.1)
 
         super.layoutSubviews()
     }

@@ -64,7 +64,7 @@ open class UIScrollView: UIView {
 
     open var contentOffset: CGPoint = .zero {
         didSet {
-            updateBounds()
+            //updateBounds()
             setNeedsLayout()
         }
     }
@@ -102,14 +102,20 @@ open class UIScrollView: UIView {
     }
 
     private func layoutVerticalScrollIndicator() {
-        let indicatorHeight: CGFloat = (bounds.height / contentSize.height) * bounds.height
         let indicatorWidth: CGFloat = 2
+        let indicatorHeight: CGFloat = (bounds.height / contentSize.height) * bounds.height
+        let indicatorYOffset = (contentOffset.y / contentSize.height) * bounds.height
+
         verticalScrollIndicator.frame = CGRect(
             x: bounds.maxX + 5,
-            y: contentOffset.y + (contentOffset.y / contentSize.height) * bounds.height,
+            y: indicatorYOffset,
             width: indicatorWidth,
             height: indicatorHeight
         )
+    }
+
+    override var clip: CGRect? {
+        return CGRect(origin: contentOffset, size: bounds.size)
     }
 }
 

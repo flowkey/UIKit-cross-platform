@@ -218,6 +218,10 @@ open class UIView: UIResponder {
         self.bounds.size = sizeThatFits(self.bounds.size)
         setNeedsLayout()
     }
+    
+    var clip: CGRect? {
+        return clipsToBounds ? bounds : nil
+    }
 
     // MARK: UIResponder conformance:
 
@@ -238,3 +242,4 @@ extension UIView: Equatable {
         return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
     }
 }
+

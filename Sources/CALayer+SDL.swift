@@ -9,7 +9,7 @@
 import SDL
 
 extension CALayer {
-    final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect(), parentOpacity: Float = 1) {
+    final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect(), parentOpacity: Float = 1, clip: CGRect? = nil) {
         let opacity = parentOpacity * self.opacity
         if isHidden || opacity < 0.01 { return } // could be a hidden sublayer of a visible layer
 
@@ -46,9 +46,9 @@ extension CALayer {
 
         if let texture = texture {
             // Later use more advanced blit funcs (with rotation, scale etc)
-            SDL.window.blit(texture, at: absoluteFrame.origin, opacity: opacity)
+            SDL.window.blit(texture, at: absoluteFrame.origin, opacity: opacity, clip: clip)
         }
         
-        sublayers.forEach { $0.sdlRender(in: absoluteFrame, parentOpacity: opacity) }
+        sublayers.forEach { $0.sdlRender(in: absoluteFrame, parentOpacity: opacity, clip: clip) }
     }
 }

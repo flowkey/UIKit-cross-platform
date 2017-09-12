@@ -55,6 +55,7 @@ open class UILabel: UIView {
     open override func draw() {
         super.draw()
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
+
         textLayer.texture = font.render(text, color: textColor, wrapLength: wrapLength)
         setNeedsLayout() // to realign text if needed
     }
@@ -66,9 +67,10 @@ open class UILabel: UIView {
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
-        // XXX: We should take numberOfLines into account here!
-        guard let text = self.text else { return .zero }
-        return text.size(with: self.font)
+        self.draw()
+
+        guard let texture = textLayer.texture else { return .zero }
+        return texture.size
     }
 
     open override func layoutSubviews() {
