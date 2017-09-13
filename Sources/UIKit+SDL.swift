@@ -78,6 +78,7 @@ final public class SDL { // XXX: only public for startRunLoop()
             }
 
             window.clear()
+            window.setShapeBlending(true)
             rootView.sdlRender()
             window.flip()
 
