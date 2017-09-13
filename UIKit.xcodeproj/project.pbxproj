@@ -61,6 +61,7 @@
 		832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
 		832A7F0D1F16368D0041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
 		832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */; };
+		8330753A1F69768E002089AC /* JNIVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833075391F69768E002089AC /* JNIVideo.swift */; };
 		8333B2C01F1D11B800D98662 /* NSAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8333B2BF1F1D11B800D98662 /* NSAttributedString.swift */; };
 		8337A8131F39F37500475F80 /* UIScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337A8121F39F37500475F80 /* UIScreen.swift */; };
 		8337A8591F3B143400475F80 /* UIActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337A8581F3B143400475F80 /* UIActivityIndicatorView.swift */; };
@@ -214,6 +215,7 @@
 		8323F27F1F2FA2EE00C121BB /* TestSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSetup.swift; sourceTree = "<group>"; };
 		832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSizeToFitTests.swift; sourceTree = "<group>"; };
 		832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonContentAlignmentTests.swift; sourceTree = "<group>"; };
+		833075391F69768E002089AC /* JNIVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = JNIVideo.swift; path = Sources/JNIVideo.swift; sourceTree = SOURCE_ROOT; };
 		8333B2BF1F1D11B800D98662 /* NSAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NSAttributedString.swift; path = Sources/NSAttributedString.swift; sourceTree = SOURCE_ROOT; };
 		8337A8121F39F37500475F80 /* UIScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIScreen.swift; path = Sources/UIScreen.swift; sourceTree = SOURCE_ROOT; };
 		8337A8581F3B143400475F80 /* UIActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIActivityIndicatorView.swift; path = Sources/UIActivityIndicatorView.swift; sourceTree = SOURCE_ROOT; };
@@ -332,6 +334,7 @@
 		5C27E7B01ECB2F6500F5020D /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				833075381F697613002089AC /* Video */,
 				83E5F7FF1EF826CC00279C59 /* Geometry */,
 				5C6AB7101ED3BECD006F90AC /* Button.swift */,
 				5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */,
@@ -368,9 +371,6 @@
 				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
 				5C6AB7171ED3BECD006F90AC /* UIWindow.swift */,
 				5C9037241F138B8A0058E592 /* MeteringView.swift */,
-				5C5AC6DC1F1791D0004A88C0 /* VideoPlayer+Mac.swift */,
-				5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */,
-				5C391A8E1F13F62500EE012C /* VideoPlayer+Android.swift */,
 				8333B2BF1F1D11B800D98662 /* NSAttributedString.swift */,
 				8337A8121F39F37500475F80 /* UIScreen.swift */,
 				8337A8581F3B143400475F80 /* UIActivityIndicatorView.swift */,
@@ -439,6 +439,17 @@
 			);
 			name = SDL;
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		833075381F697613002089AC /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */,
+				833075391F69768E002089AC /* JNIVideo.swift */,
+				5C391A8E1F13F62500EE012C /* VideoPlayer+Android.swift */,
+				5C5AC6DC1F1791D0004A88C0 /* VideoPlayer+Mac.swift */,
+			);
+			name = Video;
 			sourceTree = "<group>";
 		};
 		833860AD1F0D55B3004DD55E /* iOSTestTarget */ = {
@@ -733,6 +744,7 @@
 				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
+				8330753A1F69768E002089AC /* JNIVideo.swift in Sources */,
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,
 				83E5F7F61EF81AB500279C59 /* UIFont.swift in Sources */,
 				5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */,
