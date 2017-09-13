@@ -28,12 +28,9 @@ class JNIVideo: JNIObject {
     var onVideoEnded: (() -> Void)?
 
     var isMuted: Bool = false {
-        willSet(muted) {
-            if (muted) {
-                try! call(methodName: "setVolume", arguments: [0.0])
-            } else {
-                try! call(methodName: "setVolume", arguments: [1.0])
-            }
+        didSet {
+            let args = isMuted ? [0.0] : [1.0]
+            try! call(methodName: "setVolume", arguments: args)
         }
     }
 

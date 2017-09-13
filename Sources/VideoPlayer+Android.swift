@@ -51,13 +51,10 @@ open class VideoPlayer: UIView {
     }
 
     public var isMuted: Bool = false {
-        willSet(newValue) {
-            jniVideo.isMuted = newValue
-        }
+        willSet { jniVideo.isMuted = newValue }
     }
+
     public var rate: Double = 1 {
-        willSet(newRate) {
-            jniVideo.setPlaybackRate(to: newRate)
-        }
+        willSet { jniVideo.setPlaybackRate(to: newValue) }
     }
 }
