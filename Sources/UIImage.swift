@@ -22,21 +22,46 @@ public class UIImage {
         scale = 2 // TODO: get from last path component
     }
 
-    // public convenience init?(data: Data) {
-    //     var imageData = data.base64EncodedData()
-    //     let freesrc = Int32(1) // non-zero to close the stream after being read
+    public convenience init?(data: Data) {
+        let imageData = data.base64EncodedData()
+        let bufferSize = Int32(imageData.count)
 
-    //     guard
-    //         let ptr = SDL_RWFromMem(&imageData, Int32(imageData.count)), // XXX: I have no idea what I'm doing here
-    //         let image = SDL_LoadBMP_RW(ptr, freesrc),
-    //         let texture = Texture(surface: image)
-    //      else {
-    //         return nil
-    //     }
+//        let imageDataPtr = (imageData as NSData).bytes
+//        let unsafeImageDataPtr = UnsafeMutableRawPointer(mutating: imageDataPtr)
 
-    //     self.init(texture: texture)
-    // }
-    
+        let unsafeImageDataPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: imageData.count)
+        unsafeImageDataPtr.initialize(from: data)
+
+        guard
+            let rwOps = SDL_RWFromMem(unsafeImageDataPtr, bufferSize),
+            let gpuImagePtr = GPU_LoadImage_RW(rwOps, true),
+            let texture = Texture(gpuImage: gpuImagePtr.pointee)
+        else {
+            print("Could not load image or create texture")
+            return nil
+        }
+
+//        var texture: Texture? = nil
+//        var imageData = data.base64EncodedData()
+//        imageData.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>)->Void in
+//            guard
+//                let rwOps = SDL_RWFromMem(bytes, Int32(imageData.count)),
+//                let gpuImagePtr = GPU_LoadImage_RW(rwOps, true),
+//                let _texture = Texture(gpuImage: gpuImagePtr.pointee)
+//            else {
+//                print("Could not load image or create texture")
+//                return
+//            }
+//            texture = _texture
+//        }
+//
+//        guard let imageTexture = texture else {
+//            return nil
+//        }
+
+        self.init(texture: texture)
+    }
+
     init(texture: Texture) {
         self.texture = texture
         self.size = texture.size
