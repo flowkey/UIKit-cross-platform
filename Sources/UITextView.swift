@@ -47,11 +47,16 @@ open class UITextView: UIScrollView {
         label.numberOfLines = 0
     }
 
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        label.frame.width = bounds.width
+        return label.sizeThatFits(size)
+    }
+
     override open func layoutSubviews() {
         label.frame.width = bounds.width
         label.sizeToFit()
 
-        let textHeight: CGFloat = label.textLayer.frame.size.height
+        let textHeight = label.textLayer.frame.size.height
         contentSize = CGSize(width: bounds.width, height: max(textHeight, bounds.height))
 
         super.layoutSubviews()

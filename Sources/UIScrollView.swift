@@ -120,6 +120,10 @@ open class UIScrollView: UIView {
             height: indicatorHeight
         )
     }
+
+    open func flashScrollIndicators() {
+
+    }
 }
 
 public protocol UIScrollViewDelegate {
