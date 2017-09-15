@@ -34,6 +34,7 @@ open class Button: UIControl {
         titleLabel?.sizeToFit()
         imageView?.sizeToFit()
         setNeedsLayout()
+        superview?.setNeedsLayout()
 
         guard let titleLabel = titleLabel, let imageView = imageView else {
             assertionFailure("titleLabel or imageView should always exist in UIKit-SDL Button")
