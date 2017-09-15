@@ -61,6 +61,12 @@ open class UIView: UIResponder {
         needsLayout = true
     }
 
+    public func layoutIfNeeded() {
+        if needsLayout {
+            layoutSubviews()
+        }
+    }
+
     public var backgroundColor: UIColor? {
         get { return layer.backgroundColor }
         set { layer.backgroundColor = newValue }
