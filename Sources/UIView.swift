@@ -78,8 +78,10 @@ open class UIView: UIResponder {
     public var isOpaque: Bool = false // mocked
     // TODO: implement with relation to drawing system: https://developer.apple.com/documentation/uikit/uiview/1622622-isopaque
 
-    public var clipsToBounds: Bool = false // mocked
-    // TODO: implement according to: https://developer.apple.com/documentation/uikit/uiview/1622415-clipstobounds
+    public var clipsToBounds: Bool{
+        get { return layer.masksToBounds }
+        set { layer.masksToBounds = newValue }
+    }
 
     public internal(set) var superview: UIView? {
         didSet { if superview != nil { didMoveToSuperview() } }
@@ -146,9 +148,9 @@ open class UIView: UIResponder {
 
         // Fast paths:
         if let superview = self.superview, superview == otherView {
-            return frame.origin.offsetBy(bounds.origin).offsetBy(point)
+            return frame.origin.offsetBy(point)
         } else if subviews.contains(otherView) {
-            let otherViewOrigin = otherView.frame.origin.offsetBy(otherView.bounds.origin)
+            let otherViewOrigin = otherView.frame.origin
             return CGPoint(x: point.x - otherViewOrigin.x, y: point.y - otherViewOrigin.y)
         }
 
@@ -207,7 +209,7 @@ open class UIView: UIResponder {
 
     /// It would be easier to understand this if it was called `contains(_ point: CGPoint, with event:)`
     open func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        return bounds.contains(point)
+        return CGRect(origin: .zero, size: bounds.size).contains(point)
     }
 
     open func sizeThatFits(_ size: CGSize) -> CGSize {
@@ -217,10 +219,6 @@ open class UIView: UIResponder {
     open func sizeToFit() {
         self.bounds.size = sizeThatFits(self.bounds.size)
         setNeedsLayout()
-    }
-    
-    var clip: CGRect? {
-        return clipsToBounds ? bounds : nil
     }
 
     // MARK: UIResponder conformance:

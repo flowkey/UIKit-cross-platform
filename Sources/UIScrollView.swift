@@ -22,6 +22,7 @@ open class UIScrollView: UIView {
         panGestureRecognizer.onAction = self.onPan
         panGestureRecognizer.onStateChanged = onPanGestureStateChanged
         addGestureRecognizer(panGestureRecognizer)
+        clipsToBounds = true
 
         verticalScrollIndicator.backgroundColor = self.indicatorStyle
         layer.addSublayer(verticalScrollIndicator)
@@ -64,7 +65,7 @@ open class UIScrollView: UIView {
 
     open var contentOffset: CGPoint = .zero {
         didSet {
-            //updateBounds()
+            updateBounds()
             setNeedsLayout()
         }
     }
@@ -83,7 +84,7 @@ open class UIScrollView: UIView {
     private func updateBounds() {
         // logically it'd make sense for origin to be `inset + offset` but
         // the original implementation seems to do what we have here instead:
-        bounds.origin = -contentOffset
+        bounds.origin = contentOffset
     }
 
     // TODO: Implement these:
@@ -102,9 +103,15 @@ open class UIScrollView: UIView {
     }
 
     private func layoutVerticalScrollIndicator() {
+
+        if contentSize.height == bounds.height {
+            showsVerticalScrollIndicator = false
+            return
+        }
+
         let indicatorWidth: CGFloat = 2
         let indicatorHeight: CGFloat = (bounds.height / contentSize.height) * bounds.height
-        let indicatorYOffset = (contentOffset.y / contentSize.height) * bounds.height
+        let indicatorYOffset = contentOffset.y + (contentOffset.y / contentSize.height) * bounds.height
 
         verticalScrollIndicator.frame = CGRect(
             x: bounds.maxX + 5,
@@ -112,10 +119,6 @@ open class UIScrollView: UIView {
             width: indicatorWidth,
             height: indicatorHeight
         )
-    }
-
-    override var clip: CGRect? {
-        return CGRect(origin: contentOffset, size: bounds.size)
     }
 }
 

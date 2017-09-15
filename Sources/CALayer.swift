@@ -68,6 +68,7 @@ open class CALayer {
     public var shadowOffset: CGSize = .zero
     public var shadowRadius: CGFloat = 0
 
+    public var masksToBounds = false
 
     public required init() {}
 
