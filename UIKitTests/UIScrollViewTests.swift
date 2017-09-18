@@ -71,20 +71,19 @@ class UIScrollViewTests: XCTestCase {
 
         let scrollView = DelegationTestScrollView(
             beginDragginExpectation: beginDragginExpectation,
-            didScrollExpectation: nil, // didScrollExpectation,
-            didEndDraggingExpectation: nil // didEndDraggingExpectation
+            didScrollExpectation: didScrollExpectation,
+            didEndDraggingExpectation: didEndDraggingExpectation
         )
+        
 
         let mockView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100)))
-        let mockTouch0 = UITouch(at: CGPoint(x: 0, y: 0), in: mockView, touchId: 0)
-        let mockTouch1 = UITouch(at: CGPoint(x: 100, y: 100), in: mockView, touchId: 1)
-        let mockTouch2 = UITouch(at: CGPoint(x: 200, y: 200), in: mockView, touchId: 2)
+        let mockTouch = UITouch(at: CGPoint(x: 0, y: 0), in: mockView, touchId: 0)
 
-        scrollView.panGestureRecognizer.touchesBegan([mockTouch0], with: UIEvent())
-        scrollView.panGestureRecognizer.touchesMoved([mockTouch1], with: UIEvent())
-        scrollView.panGestureRecognizer.touchesEnded([mockTouch2], with: UIEvent())
+        scrollView.panGestureRecognizer.touchesBegan([mockTouch], with: UIEvent())
+        mockTouch.positionInView = CGPoint(x: 100, y: 100)
+        scrollView.panGestureRecognizer.touchesMoved([mockTouch], with: UIEvent())
+        scrollView.panGestureRecognizer.touchesEnded([mockTouch], with: UIEvent())
 
-        // ToDo: make test pass with didScrollExpectation and didEndDraggingExpectation !
         wait(for: [beginDragginExpectation, didScrollExpectation, didEndDraggingExpectation], timeout: 1.0)
     }
 }
