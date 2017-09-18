@@ -33,9 +33,9 @@ open class UIProgressView: UIView {
     }
 
     override open func layoutSubviews() {
+        super.layoutSubviews()
         progressLayer.frame = bounds
         progressLayer.frame.width = bounds.width * CGFloat(progress)
-        super.layoutSubviews()
     }
 }
 
