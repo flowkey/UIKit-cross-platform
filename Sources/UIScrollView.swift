@@ -85,16 +85,15 @@ open class UIScrollView: UIView {
         )
 
         // determine scroll direction
-        let sign = -gestureVelocity / abs(gestureVelocity) // = +1 or -1
-        let signedDistance = sign * distanceToMove
+        let distanceWithDirection = gestureVelocity.sign == .minus ? distanceToMove : -distanceToMove
 
         var newOffset = CGPoint(
-            x: contentOffset.x + CGFloat(signedDistance),
+            x: contentOffset.x + CGFloat(distanceWithDirection),
             y: contentOffset.y
         )
 
         let boundsCheckedOffset = getBoundsCheckedContentOffset(
-            x: contentOffset.x + CGFloat(signedDistance),
+            x: contentOffset.x + CGFloat(distanceWithDirection),
             y: contentOffset.y
         )
 
