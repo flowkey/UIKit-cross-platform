@@ -37,7 +37,7 @@ public class CAMediaTimingFunction {
 fileprivate extension CAMediaTimingFunction {
     static func linear(_ x: CGFloat) -> CGFloat { return x }
     static func easeInCubic(_ x: CGFloat) -> CGFloat { return pow(x, 3) }
-    static func easeOutCubic(_ x: CGFloat) -> CGFloat { return x * (2-x) }
+    static func easeOutCubic(_ x: CGFloat) -> CGFloat { return (x-1)*x*x+1 }
     static func easeInOutCubic(_ x: CGFloat) -> CGFloat {
         return x < 0.5 ? 2*pow(x, 2) : -1+(4-2*x)*x
     }
