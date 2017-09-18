@@ -44,8 +44,12 @@ class UIScrollViewTests: XCTestCase {
             let didScrollExpectation: XCTestExpectation?
             let didEndDraggingExpectation: XCTestExpectation?
 
-            init(beginDragginExpectation: XCTestExpectation?, didScrollExpectation: XCTestExpectation?, didEndDraggingExpectation: XCTestExpectation?){
-                self.beginDraggingExpectation = beginDragginExpectation
+            init(
+                beginDraggingExpectation: XCTestExpectation?,
+                didScrollExpectation: XCTestExpectation?,
+                didEndDraggingExpectation: XCTestExpectation?
+            ) {
+                self.beginDraggingExpectation = beginDraggingExpectation
                 self.didScrollExpectation = didScrollExpectation
                 self.didEndDraggingExpectation = didEndDraggingExpectation
                 super.init(frame: .zero)
@@ -65,12 +69,12 @@ class UIScrollViewTests: XCTestCase {
             }
         }
 
-        let beginDragginExpectation = expectation(description: "scrollViewWillBeginDragging was called")
+        let beginDraggingExpectation = expectation(description: "scrollViewWillBeginDragging was called")
         let didScrollExpectation = expectation(description: "scrollViewDidScroll was called")
         let didEndDraggingExpectation = expectation(description: "scrollViewDidEndDragging was called")
 
         let scrollView = DelegationTestScrollView(
-            beginDragginExpectation: beginDragginExpectation,
+            beginDraggingExpectation: beginDraggingExpectation,
             didScrollExpectation: didScrollExpectation,
             didEndDraggingExpectation: didEndDraggingExpectation
         )
@@ -84,6 +88,6 @@ class UIScrollViewTests: XCTestCase {
         scrollView.panGestureRecognizer.touchesMoved([mockTouch], with: UIEvent())
         scrollView.panGestureRecognizer.touchesEnded([mockTouch], with: UIEvent())
 
-        wait(for: [beginDragginExpectation, didScrollExpectation, didEndDraggingExpectation], timeout: 1.0)
+        wait(for: [beginDraggingExpectation, didScrollExpectation, didEndDraggingExpectation], timeout: 1.0)
     }
 }
