@@ -56,7 +56,7 @@ open class UIScrollView: UIView {
     private let maxVelocity = 1200.0 // hand tuned value
     func easedVelocity(_ velocity: Double) -> Double {
         let normalizedVelocity = min(abs(velocity), maxVelocity) / maxVelocity
-        let easedVelocity = normalizedVelocity * (2-normalizedVelocity)
+        let easedVelocity = Double(CAMediaTimingFunction.easeOutCubic(CGFloat(normalizedVelocity)))
         let denormalizedVelocity = easedVelocity * maxVelocity
         return denormalizedVelocity
     }
@@ -68,7 +68,7 @@ open class UIScrollView: UIView {
         let gestureVelocity = Double(panGestureRecognizer.velocity(in: self).x)
         if gestureVelocity == 0 { return }
 
-        let initialVelocity = easedVelocity(gestureVelocity)
+        let initialVelocity = gestureVelocity //easedVelocity(gestureVelocity)
 
         // calculate time it would take until deceleration is complete (final velocity = 0)
         var animationTime = time(
