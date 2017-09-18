@@ -21,7 +21,7 @@ public class CAMediaTimingFunction {
         switch name {
         case kCAMediaTimingFunctionLinear: timing = CAMediaTimingFunction.linear
         case kCAMediaTimingFunctionEaseIn: timing = CAMediaTimingFunction.easeInCubic
-        case kCAMediaTimingFunctionEaseOut: timing = CAMediaTimingFunction.easeOutQuad
+        case kCAMediaTimingFunctionEaseOut: timing = CAMediaTimingFunction.easeOutCubic
         case kCAMediaTimingFunctionEaseInEaseOut, kCAMediaTimingFunctionDefault:
             timing = CAMediaTimingFunction.easeInOutCubic
 
