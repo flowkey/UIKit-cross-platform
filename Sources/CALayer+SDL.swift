@@ -49,6 +49,6 @@ extension CALayer {
             SDL.window.blit(texture, at: absoluteFrame.origin, opacity: opacity)
         }
         
-        sublayers.forEach { $0.sdlRender(in: absoluteFrame, parentOpacity: opacity) }
+        sublayers.forEach { ($0.presentation ?? $0).sdlRender(in: absoluteFrame, parentOpacity: opacity) }
     }
 }
