@@ -66,8 +66,8 @@ class UIScrollViewTests: XCTestCase {
         }
 
         let beginDragginExpectation = expectation(description: "scrollViewWillBeginDragging was called")
-//        let didScrollExpectation = expectation(description: "scrollViewDidScroll was called")
-//        let didEndDraggingExpectation = expectation(description: "scrollViewDidEndDragging was called")
+        let didScrollExpectation = expectation(description: "scrollViewDidScroll was called")
+        let didEndDraggingExpectation = expectation(description: "scrollViewDidEndDragging was called")
 
         let scrollView = DelegationTestScrollView(
             beginDragginExpectation: beginDragginExpectation,
@@ -85,6 +85,6 @@ class UIScrollViewTests: XCTestCase {
         scrollView.panGestureRecognizer.touchesEnded([mockTouch2], with: UIEvent())
 
         // ToDo: make test pass with didScrollExpectation and didEndDraggingExpectation !
-        wait(for: [beginDragginExpectation, /*didScrollExpectation, didEndDraggingExpectation*/], timeout: 1.0)
+        wait(for: [beginDragginExpectation, didScrollExpectation, didEndDraggingExpectation], timeout: 1.0)
     }
 }
