@@ -35,7 +35,6 @@ open class UIScrollView: UIView {
         )
 
         setContentOffset(newOffset, animated: false)
-        delegate?.scrollViewDidScroll(self)
     }
 
     private func onPanGestureStateChanged() {
@@ -83,6 +82,7 @@ open class UIScrollView: UIView {
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         // TODO: animate
         contentOffset = point
+        delegate?.scrollViewDidScroll(self)
     }
 }
 
