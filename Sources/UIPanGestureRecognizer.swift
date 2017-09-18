@@ -16,6 +16,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     private var trackedTouch: UITouch?
 
+    private var timeSinceLastMovement: TimeInterval?
     private var lastMovementTime: TimeInterval?
 
     private let minimumTranslationThreshold: CGFloat = 5
@@ -38,13 +39,13 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     open func velocity(in view: UIView?) -> CGPoint {
 
         guard let curPos = currentLocation, let lastPos = lastLocation,
-              let lastMovementTime = lastMovementTime else {
+              let timeSinceLastMovement = timeSinceLastMovement, timeSinceLastMovement != 0.0 else {
             return CGPoint.zero
         }
 
         // XXX: apple docs say velocity is in points per s (see above)
         // here we use milliseconds though in order to get results in the same magnitude as in iOS
-        let timeDiffInMs = CGFloat(NSDate.timeIntervalSinceReferenceDate - lastMovementTime)
+        let timeDiffInMs = CGFloat(timeSinceLastMovement)
 
         return CGPoint(
             x: (curPos.x - lastPos.x) / timeDiffInMs,
@@ -71,7 +72,9 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         currentLocation = trackedTouch.location(in: self.view)
 
         // XXX: revisit this and decide which timer we want to use
-        lastMovementTime = NSDate.timeIntervalSinceReferenceDate
+        let now = NSDate.timeIntervalSinceReferenceDate
+        timeSinceLastMovement = now - lastMovementTime // optional substraction, see "-" operator for TimeInterval? below
+        lastMovementTime = now
 
         if  state == .began,
             let location = currentLocation,
@@ -104,7 +107,13 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         currentLocation = nil
         lastLocation = nil
         lastMovementTime = nil
+        timeSinceLastMovement = nil
         initialTouchPoint = .zero
         state = .possible
     }
+}
+
+fileprivate func -(left: TimeInterval?, right: TimeInterval?) -> TimeInterval? {
+    guard let lhs = left, let rhs = right else { return nil }
+    return lhs - rhs
 }
