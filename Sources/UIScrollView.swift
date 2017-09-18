@@ -68,7 +68,7 @@ open class UIScrollView: UIView {
         let gestureVelocity = Double(panGestureRecognizer.velocity(in: self).x)
         if gestureVelocity == 0 { return }
 
-        let initialVelocity = gestureVelocity //easedVelocity(gestureVelocity)
+        let initialVelocity = easedVelocity(gestureVelocity)
 
         // calculate time it would take until deceleration is complete (final velocity = 0)
         var animationTime = time(
