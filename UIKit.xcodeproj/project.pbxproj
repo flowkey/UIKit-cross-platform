@@ -7,6 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */; };
+		5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */; };
+		5B5239D31F586BAA004043B4 /* UIView+CALayerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5239D21F586BAA004043B4 /* UIView+CALayerDelegate.swift */; };
+		5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */; };
+		5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */; };
+		5B840BB71F42FCBD0010AC95 /* AnimatableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */; };
+		5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */; };
+		5BA7B40E1F45A6E10040CB58 /* CABasicAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */; };
+		5BBEECA51F39E7A6006E3416 /* CGRect+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */; };
+		5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */; };
+		5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */; };
+		5BD4762E1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD4762D1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift */; };
+		5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */; };
+		5BDE15E11F3DF7AE005620AA /* UIViewAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */; };
+		5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */; };
+		5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */; };
 		5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F06AE1F3210F200EFF087 /* UIViewController.swift */; };
 		5C27E7B81ECB2F6500F5020D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7AE1ECB2F6500F5020D /* UIKit.framework */; };
 		5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D21ECB2F9100F5020D /* Cocoa.framework */; };
@@ -153,7 +169,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CAMediaTimingFunction.swift; path = Sources/CAMediaTimingFunction.swift; sourceTree = SOURCE_ROOT; };
+		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = Sources/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
+		5B5239D21F586BAA004043B4 /* UIView+CALayerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIView+CALayerDelegate.swift"; path = "Sources/UIView+CALayerDelegate.swift"; sourceTree = SOURCE_ROOT; };
+		5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CALayer+animations.swift"; path = "Sources/CALayer+animations.swift"; sourceTree = SOURCE_ROOT; };
+		5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewAnimationGroup.swift; path = Sources/UIViewAnimationGroup.swift; sourceTree = SOURCE_ROOT; };
+		5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimatableProperty.swift; path = Sources/AnimatableProperty.swift; sourceTree = SOURCE_ROOT; };
+		5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABasicAnimationTests.swift; sourceTree = "<group>"; };
+		5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CGRect+animations.swift"; path = "Sources/CGRect+animations.swift"; sourceTree = SOURCE_ROOT; };
+		5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CABasicAnimation+updateProgress.swift"; path = "Sources/CABasicAnimation+updateProgress.swift"; sourceTree = SOURCE_ROOT; };
+		5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimationKeyPath.swift; path = Sources/AnimationKeyPath.swift; sourceTree = SOURCE_ROOT; };
+		5BD4762D1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAMediaTimingFunctionTests.swift; sourceTree = "<group>"; };
 		5BD476341F4D94F40055EE27 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Logging.swift; path = Sources/Logging.swift; sourceTree = SOURCE_ROOT; };
+		5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewAnimationTests.swift; sourceTree = "<group>"; };
+		5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CABasicAnimationPrototype.swift; path = Sources/CABasicAnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
+		5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimationPrototype.swift; path = Sources/CASpringAnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
 		5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNI.xcodeproj; path = "swift-jni/JNI.xcodeproj"; sourceTree = "<group>"; };
 		5C1F06AE1F3210F200EFF087 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewController.swift; path = Sources/UIViewController.swift; sourceTree = SOURCE_ROOT; };
 		5C27E7AE1ECB2F6500F5020D /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -199,6 +229,7 @@
 		5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "AVPlayerLayer+Mac.swift"; path = "Sources/AVPlayerLayer+Mac.swift"; sourceTree = SOURCE_ROOT; };
 		5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CABasicAnimation.swift; path = Sources/CABasicAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CAAction.swift; path = Sources/CAAction.swift; sourceTree = SOURCE_ROOT; };
+		5CAF2D1D1EE6FD29004C6380 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGDataProvider.swift; sourceTree = "<group>"; };
 		5CDB31B61F1CE8050081A605 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIPanGestureRecognizer.swift; path = Sources/UIPanGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
@@ -291,6 +322,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5BA7B40D1F45A6C30040CB58 /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */,
+				5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */,
+				5BD4762D1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift */,
+			);
+			path = Animations;
+			sourceTree = "<group>";
+		};
+		5BBEECA21F39E770006E3416 /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				5B5239D21F586BAA004043B4 /* UIView+CALayerDelegate.swift */,
+				5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */,
+				5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */,
+				5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */,
+				5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */,
+				5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */,
+				5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */,
+				5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */,
+				5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */,
+				5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */,
+				5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */,
+				5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */,
+			);
+			name = Animations;
+			sourceTree = "<group>";
+		};
 		5C2714B01F2B86240026BBA9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -332,7 +392,7 @@
 				5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */,
 				5C6AB7101ED3BECD006F90AC /* Button.swift */,
 				5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */,
-				5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */,
+				5BBEECA21F39E770006E3416 /* Animations */,
 				5C6AB7111ED3BECD006F90AC /* CALayer.swift */,
 				5C6AB77D1ED71867006F90AC /* CATransaction.swift */,
 				83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */,
@@ -379,6 +439,7 @@
 			isa = PBXGroup;
 			children = (
 				83F02DBB1F179B0300347AA8 /* Button */,
+				5BA7B40D1F45A6C30040CB58 /* Animations */,
 				5C9037201F137FB70058E592 /* CGRectTests.swift */,
 				5C27E7BE1ECB2F6500F5020D /* Info.plist */,
 				83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */,
@@ -423,6 +484,7 @@
 				83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */,
 				5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */,
 				5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */,
+				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
 				5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */,
 				5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */,
 				83E5F7EA1EF8156400279C59 /* Texture.swift */,
@@ -687,15 +749,20 @@
 				838545631F26458100B64986 /* UIVisualEffect.swift in Sources */,
 				5C6AB7181ED3BECD006F90AC /* Button.swift in Sources */,
 				5C6AB71C1ED3BECD006F90AC /* UIImage.swift in Sources */,
+				5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */,
 				5C6AB7191ED3BECD006F90AC /* CALayer.swift in Sources */,
+				5B5239D31F586BAA004043B4 /* UIView+CALayerDelegate.swift in Sources */,
 				83E5F7F31EF8188400279C59 /* UILabel.swift in Sources */,
 				83D961351F2635D5005176DC /* NSMutableAttributedString.swift in Sources */,
 				5C6AB7711ED680BC006F90AC /* UIResponder.swift in Sources */,
 				83E5F8181EF8323500279C59 /* CGAffineTransform.swift in Sources */,
+				5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */,
 				5CE5C57A1EDDAE5000680154 /* CGPath.swift in Sources */,
 				5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */,
 				83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */,
 				5C6AB71D1ED3BECD006F90AC /* UIImageView.swift in Sources */,
+				5BBEECA51F39E7A6006E3416 /* CGRect+animations.swift in Sources */,
+				5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */,
 				83AB7B5C1F2B6A2000C7997D /* UIGestureRecognizerDelegate.swift in Sources */,
 				838545721F26536200B64986 /* NSAttributedStringKey.swift in Sources */,
 				5C6AB7611ED5762A006F90AC /* UIEdgeInsets.swift in Sources */,
@@ -703,8 +770,11 @@
 				5C6AB76B1ED5A648006F90AC /* UIView+animate.swift in Sources */,
 				83E5F7ED1EF8157300279C59 /* Window.swift in Sources */,
 				5C6AB77E1ED71867006F90AC /* CATransaction.swift in Sources */,
+				5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */,
 				5C6AB71F1ED3BECD006F90AC /* UIWindow.swift in Sources */,
+				5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */,
 				83CC3CD11F275DB600144E85 /* NSRange.swift in Sources */,
+				5B840BB71F42FCBD0010AC95 /* AnimatableProperty.swift in Sources */,
 				5C27E8181ECB301900F5020D /* UIKit+SDL.swift in Sources */,
 				8337A8591F3B143400475F80 /* UIActivityIndicatorView.swift in Sources */,
 				5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */,
@@ -714,6 +784,7 @@
 				8318D27B1F0695080029816A /* UIControl.swift in Sources */,
 				5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */,
 				83AB7B481F2B504300C7997D /* UIAlertController.swift in Sources */,
+				5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */,
 				83E5F7EB1EF8156400279C59 /* Texture.swift in Sources */,
 				5C6AB75F1ED575CF006F90AC /* UIScrollView.swift in Sources */,
 				5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */,
@@ -723,6 +794,7 @@
 				83E5F8151EF8322800279C59 /* CGSize.swift in Sources */,
 				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
+				5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */,
 				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
 				5CADAF7B1F1D147600897FC1 /* AVPlayerLayer+Mac.swift in Sources */,
@@ -731,6 +803,7 @@
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,
 				83E5F7F61EF81AB500279C59 /* UIFont.swift in Sources */,
 				5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */,
+				5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */,
 				5C3716B61F10050600B2C366 /* Timer.swift in Sources */,
 				5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
@@ -744,8 +817,11 @@
 			files = (
 				83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */,
 				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
+				5BD4762E1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift in Sources */,
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
+				5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */,
 				8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */,
+				5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */,
 				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
 				83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */,
 				83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */,
@@ -762,7 +838,9 @@
 				83F02DBA1F179AE800347AA8 /* UIImage+testImage.swift in Sources */,
 				83F02DBE1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */,
+				5BA7B40E1F45A6E10040CB58 /* CABasicAnimationTests.swift in Sources */,
 				8323F2821F2FA42A00C121BB /* TestSetup.swift in Sources */,
+				5BDE15E11F3DF7AE005620AA /* UIViewAnimationTests.swift in Sources */,
 				83F02DB71F1798F200347AA8 /* Button.swift in Sources */,
 				83F02DB41F1798D100347AA8 /* loadCustomFont.swift in Sources */,
 				832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */,
