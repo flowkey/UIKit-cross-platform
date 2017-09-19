@@ -13,12 +13,14 @@ public let kCAMediaTimingFunctionEaseIn = "easeIn"
 public let kCAMediaTimingFunctionEaseOut = "easeOut"
 public let kCAMediaTimingFunctionEaseInEaseOut = "easeInEaseOut"
 public let kCAMediaTimingFunctionDefault = "default"
+let kCAMediaTimingFunctionExp = "exponential"
 
 public class CAMediaTimingFunction {
     private let timing: (CGFloat) -> CGFloat
 
     init(name: String) {
         switch name {
+        case kCAMediaTimingFunctionExp: timing = CAMediaTimingFunction.easeOutExp
         case kCAMediaTimingFunctionLinear: timing = CAMediaTimingFunction.linear
         case kCAMediaTimingFunctionEaseIn: timing = CAMediaTimingFunction.easeInCubic
         case kCAMediaTimingFunctionEaseOut: timing = CAMediaTimingFunction.easeOutCubic
@@ -45,4 +47,9 @@ extension CAMediaTimingFunction {
     static func easeInOutCubic(_ x: CGFloat) -> CGFloat {
         return x < 0.5 ? 2*pow(x, 2) : -1+(4-2*x)*x
     }
+    static func easeOutExp(_ x: CGFloat) -> CGFloat {
+        return exp(-x * easeOutExpTimeContant)
+    }
 }
+
+fileprivate let easeOutExpTimeContant: CGFloat = 0.325
