@@ -26,9 +26,6 @@ public class UIImage {
         let imageData = data.base64EncodedData()
         let bufferSize = Int32(imageData.count)
 
-//        let imageDataPtr = (imageData as NSData).bytes
-//        let unsafeImageDataPtr = UnsafeMutableRawPointer(mutating: imageDataPtr)
-
         let unsafeImageDataPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: imageData.count)
         unsafeImageDataPtr.initialize(from: data)
 
@@ -40,24 +37,6 @@ public class UIImage {
             print("Could not load image or create texture")
             return nil
         }
-
-//        var texture: Texture? = nil
-//        var imageData = data.base64EncodedData()
-//        imageData.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>)->Void in
-//            guard
-//                let rwOps = SDL_RWFromMem(bytes, Int32(imageData.count)),
-//                let gpuImagePtr = GPU_LoadImage_RW(rwOps, true),
-//                let _texture = Texture(gpuImage: gpuImagePtr.pointee)
-//            else {
-//                print("Could not load image or create texture")
-//                return
-//            }
-//            texture = _texture
-//        }
-//
-//        guard let imageTexture = texture else {
-//            return nil
-//        }
 
         self.init(texture: texture)
     }
