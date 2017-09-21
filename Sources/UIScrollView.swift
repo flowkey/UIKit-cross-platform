@@ -108,7 +108,7 @@ open class UIScrollView: UIView {
             )
         }
 
-        UIView.animate(withDuration: animationTime, options: [.curveDecay, .allowUserInteraction],  animations: {
+        UIView.animate(withDuration: animationTime, options: [.curveEaseOut, .allowUserInteraction],  animations: {
             self.isDecelerating = true
             self.setContentOffset(newOffset, animated: false)
         }, completion: { _ in
