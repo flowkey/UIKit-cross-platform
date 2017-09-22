@@ -9,7 +9,7 @@
 import XCTest
 @testable import UIKit
 
-class TestPanGestureRecognizer: UIPanGestureRecognizer {
+fileprivate class TestPanGestureRecognizer: UIPanGestureRecognizer {
     let stateCancelledExpectation: XCTestExpectation?
     let stateEndedExpectation: XCTestExpectation?
 
@@ -31,10 +31,11 @@ class TestPanGestureRecognizer: UIPanGestureRecognizer {
 
 class UIGestureRegognizerTests: XCTestCase {
     var mockTouch: UITouch!
+    let mockView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100)))
     override func setUp() {
         mockTouch = UITouch(
             at: CGPoint(x: 0, y: 0),
-            in: UIView(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100))),
+            in: mockView,
             touchId: 0
         )
     }
@@ -52,7 +53,7 @@ class UIGestureRegognizerTests: XCTestCase {
 
         pgr.touchesEnded([mockTouch], with: UIEvent())
         wait(for: [endedExpectation], timeout: 1)
-        XCTAssert(pgr.state == .possible)  // XXX: state is set to .ended and then immediately resetted to .possible
+        XCTAssert(pgr.state == .possible)
     }
 
     func testPanGestureRecognizerStateCancelled() {
@@ -69,5 +70,41 @@ class UIGestureRegognizerTests: XCTestCase {
         pgr.touchesCancelled([mockTouch], with: UIEvent())
         wait(for: [cancelledExpectation], timeout: 1)
         XCTAssert(pgr.state == .possible)
+    }
+
+    func testPanGestureVelocity () {
+        let touchPositionDiff: CGFloat = 50
+        let timeInterval = 1.0
+
+        let pgr = UIPanGestureRecognizer()
+        let velocityExp = expectation(description: "velocity is as expected")
+
+        pgr.touchesBegan([mockTouch], with: UIEvent())
+        self.mockTouch.positionInView = CGPoint(x: touchPositionDiff, y: 0)
+        pgr.touchesMoved([self.mockTouch], with: UIEvent())
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + timeInterval) {
+            self.mockTouch.positionInView = CGPoint(
+                x: self.mockTouch.positionInView.x + touchPositionDiff,
+                y: self.mockTouch.positionInView.y
+            )
+            pgr.touchesMoved([self.mockTouch], with: UIEvent())
+            let velocityX = pgr.velocity(in: self.mockView).x
+            let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
+
+            print(velocityX, expectedVelocityX)
+            if velocityX.isRoundAbout(to: expectedVelocityX, percentalAccuracy: 5.0) {
+                velocityExp.fulfill()
+            }
+        }
+
+        wait(for: [velocityExp], timeout: 1.1)
+    }
+}
+
+fileprivate extension CGFloat {
+    func isRoundAbout(to value: CGFloat, percentalAccuracy: Double) -> Bool {
+        let min = Double(value) - ((Double(value) * percentalAccuracy) / 100)
+        let max = Double(value) + ((Double(value) * percentalAccuracy) / 100)
+        return  (min ..< max)~=(Double(self)) // if in range
     }
 }
