@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03760AE51F67E73300F36283 /* UIScrollViewTests.swift */; };
+		03C4872A1F750C8D004BAA0C /* UIGestureRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C487291F750C8D004BAA0C /* UIGestureRecognizerTests.swift */; };
 		5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */; };
 		5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */; };
 		5B5239D31F586BAA004043B4 /* UIView+CALayerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5239D21F586BAA004043B4 /* UIView+CALayerDelegate.swift */; };
@@ -171,6 +172,7 @@
 
 /* Begin PBXFileReference section */
 		03760AE51F67E73300F36283 /* UIScrollViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewTests.swift; sourceTree = "<group>"; };
+		03C487291F750C8D004BAA0C /* UIGestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIGestureRecognizerTests.swift; sourceTree = "<group>"; };
 		5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CAMediaTimingFunction.swift; path = Sources/CAMediaTimingFunction.swift; sourceTree = SOURCE_ROOT; };
 		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = Sources/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5B5239D21F586BAA004043B4 /* UIView+CALayerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIView+CALayerDelegate.swift"; path = "Sources/UIView+CALayerDelegate.swift"; sourceTree = SOURCE_ROOT; };
@@ -324,6 +326,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		03C487271F750C74004BAA0C /* Gestures */ = {
+			isa = PBXGroup;
+			children = (
+				03C487291F750C8D004BAA0C /* UIGestureRecognizerTests.swift */,
+			);
+			path = Gestures;
+			sourceTree = "<group>";
+		};
 		5BA7B40D1F45A6C30040CB58 /* Animations */ = {
 			isa = PBXGroup;
 			children = (
@@ -440,6 +450,7 @@
 		5C27E7BB1ECB2F6500F5020D /* UIKitTests */ = {
 			isa = PBXGroup;
 			children = (
+				03C487271F750C74004BAA0C /* Gestures */,
 				83F02DBB1F179B0300347AA8 /* Button */,
 				5BA7B40D1F45A6C30040CB58 /* Animations */,
 				5C9037201F137FB70058E592 /* CGRectTests.swift */,
@@ -821,6 +832,7 @@
 				83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */,
 				03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */,
 				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
+				03C4872A1F750C8D004BAA0C /* UIGestureRecognizerTests.swift in Sources */,
 				5BD4762E1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift in Sources */,
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
 				5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */,
