@@ -41,6 +41,7 @@ extension CAMediaTimingFunction {
         let t = x - 1
         return (t*t*t + 1)
     }
+    static func easeInQuad(_ x: CGFloat) -> CGFloat { return pow(x, 2) }
     static func easeOutQuad(_ x: CGFloat) -> CGFloat { return x*(2-x) }
     static func easeInOutCubic(_ x: CGFloat) -> CGFloat {
         return x < 0.5 ? 2*pow(x, 2) : -1+(4-2*x)*x

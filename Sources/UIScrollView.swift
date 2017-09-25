@@ -56,7 +56,7 @@ open class UIScrollView: UIView {
     private let maxVelocity = 1200.0 // hand tuned value
     func easedVelocity(_ velocity: Double) -> Double {
         let normalizedVelocity = min(abs(velocity), maxVelocity) / maxVelocity
-        let easedVelocity = Double(CAMediaTimingFunction.easeOutCubic(CGFloat(normalizedVelocity)))
+        let easedVelocity = Double(CAMediaTimingFunction.easeInQuad(CGFloat(normalizedVelocity)))
         let denormalizedVelocity = easedVelocity * maxVelocity
         return denormalizedVelocity
     }
