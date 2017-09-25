@@ -79,14 +79,10 @@ class UIGestureRegognizerTests: XCTestCase {
         let pgr = UIPanGestureRecognizer()
         let velocityExp = expectation(description: "velocity is as expected")
 
-        pgr.touchesBegan([mockTouch], with: UIEvent())
+        self.mockTouch.previousPositionInView = CGPoint(x: 0, y: 0)
         self.mockTouch.positionInView = CGPoint(x: touchPositionDiff, y: 0)
-        pgr.touchesMoved([self.mockTouch], with: UIEvent())
+        pgr.touchesBegan([mockTouch], with: UIEvent())
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + timeInterval) {
-            self.mockTouch.positionInView = CGPoint(
-                x: self.mockTouch.positionInView.x + touchPositionDiff,
-                y: self.mockTouch.positionInView.y
-            )
             pgr.touchesMoved([self.mockTouch], with: UIEvent())
             let velocityX = pgr.velocity(in: self.mockView).x
             let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
@@ -105,6 +101,10 @@ fileprivate extension CGFloat {
     func isRoundAbout(to value: CGFloat, percentalAccuracy: Double) -> Bool {
         let min = Double(value) - ((Double(value) * percentalAccuracy) / 100)
         let max = Double(value) + ((Double(value) * percentalAccuracy) / 100)
-        return  (min ..< max)~=(Double(self)) // if in range
+        let result = (min ..< max)~=(Double(self)) // if in range
+        if (result == false) {
+            fatalError(String(describing: self) + "is not in range between " + String(describing: min) + " and " + String(describing: max))
+        }
+        return result
     }
 }
