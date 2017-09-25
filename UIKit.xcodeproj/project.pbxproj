@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0371D21F1F7911F1005DDFED /* UIScrollView+velocity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371D21E1F7911F1005DDFED /* UIScrollView+velocity.swift */; };
+		0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */; };
 		03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03760AE51F67E73300F36283 /* UIScrollViewTests.swift */; };
 		03C4872A1F750C8D004BAA0C /* UIGestureRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C487291F750C8D004BAA0C /* UIGestureRecognizerTests.swift */; };
 		5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */; };
@@ -172,7 +172,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0371D21E1F7911F1005DDFED /* UIScrollView+velocity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+velocity.swift"; sourceTree = "<group>"; };
+		0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIScrollView+velocity.swift"; path = "Sources/UIScrollView+velocity.swift"; sourceTree = SOURCE_ROOT; };
 		03760AE51F67E73300F36283 /* UIScrollViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewTests.swift; sourceTree = "<group>"; };
 		03C487291F750C8D004BAA0C /* UIGestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIGestureRecognizerTests.swift; sourceTree = "<group>"; };
 		5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CAMediaTimingFunction.swift; path = Sources/CAMediaTimingFunction.swift; sourceTree = SOURCE_ROOT; };
@@ -432,7 +432,7 @@
 				83AB7B591F2B679600C7997D /* UIPinchGestureRecognizer.swift */,
 				5C6AB7701ED680BC006F90AC /* UIResponder.swift */,
 				5C6AB75E1ED575CF006F90AC /* UIScrollView.swift */,
-				0371D21E1F7911F1005DDFED /* UIScrollView+velocity.swift */,
+				0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */,
 				5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */,
 				5C6AB7811EDC18BA006F90AC /* UITouch.swift */,
 				5C6AB7161ED3BECD006F90AC /* UIView.swift */,
@@ -818,13 +818,13 @@
 				5C5AC6DD1F1791D0004A88C0 /* VideoPlayer+Mac.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,
-				0371D21F1F7911F1005DDFED /* UIScrollView+velocity.swift in Sources */,
 				83E5F7F61EF81AB500279C59 /* UIFont.swift in Sources */,
 				5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */,
 				5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */,
 				5C3716B61F10050600B2C366 /* Timer.swift in Sources */,
 				5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
+				0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */,
 				83AB7B5A1F2B679600C7997D /* UIPinchGestureRecognizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
