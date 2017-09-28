@@ -30,6 +30,13 @@ internal final class Window {
         
         rawPointer = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue)!
 
+        GPU_SetShapeBlending(true)
+        
+        // works for normal transparent and opaque SDL surfaces
+        // fixes wrong transparency when using a transparent
+        // SDL surface and a PixelFormat_8888
+        GPU_SetShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
+
         #if os(Android)
             let MainActivity = jni.FindClass(name: "com/flowkey/nativeplayersdl/MainActivity")!
             scaleFactor = (try? jni.GetStaticField("deviceScaleFactor", on: MainActivity)) ?? 2.0
@@ -77,14 +84,6 @@ internal final class Window {
         } else {
             outline(rect, lineColor: lineColor, lineThickness: lineThickness)
         }
-    }
-    
-    func setShapeBlending(_ newValue: Bool) {
-        GPU_SetShapeBlending(newValue)
-    }
-
-    func setShapeBlendMode(_ blendMode: GPU_BlendPresetEnum){
-        GPU_SetShapeBlendMode(blendMode)
     }
 
     func flip() {

@@ -33,6 +33,7 @@ final public class SDL { // XXX: only public for startRunLoop()
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
 
         let window = Window(size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT), options: windowOptions)
+
         rootView.frame.size = window.size
         return window
     }()
@@ -80,12 +81,6 @@ final public class SDL { // XXX: only public for startRunLoop()
             UIView.animateIfNeeded(at: frameTimer)
 
             window.clear()
-            window.setShapeBlending(true)
-            
-            // works for normal transparent and opaque SDL surfaces
-            // fixes wrong transparency when using a transparent
-            // SDL surface and a PixelFormat_8888 
-            window.setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
             rootView.sdlRender()
             window.flip()
 
