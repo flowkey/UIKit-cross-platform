@@ -86,10 +86,6 @@ internal final class Window {
     func setShapeBlendMode(_ blendMode: GPU_BlendPresetEnum){
         GPU_SetShapeBlendMode(blendMode)
     }
-    
-    func w3 (){
-        GPU_CopyImageFromTarget(rawPointer)
-    }
 
     func flip() {
         GPU_Flip(rawPointer)
