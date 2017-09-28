@@ -78,9 +78,17 @@ internal final class Window {
             outline(rect, lineColor: lineColor, lineThickness: lineThickness)
         }
     }
-
+    
     func setShapeBlending(_ newValue: Bool) {
         GPU_SetShapeBlending(newValue)
+    }
+
+    func setShapeBlendMode(_ blendMode: GPU_BlendPresetEnum){
+        GPU_SetShapeBlendMode(blendMode)
+    }
+    
+    func w3 (){
+        GPU_CopyImageFromTarget(rawPointer)
     }
 
     func flip() {
