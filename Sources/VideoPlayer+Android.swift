@@ -10,7 +10,7 @@ open class VideoPlayer: UIView {
     fileprivate var jniVideo: JNIVideo
 
     public init(url: String) {
-        self.jniVideo = JNIVideo(url: url)!
+        self.jniVideo = try! JNIVideo(url: url)
         super.init(frame: .zero)
     }
 

@@ -38,7 +38,7 @@ internal final class Window {
         GPU_SetShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
 
         #if os(Android)
-            let DisplayMetricsClass = jni.FindClass(name: "android/util/DisplayMetrics")! // should always exist on Android
+            let DisplayMetricsClass = try! jni.FindClass(name: "android/util/DisplayMetrics") // should always exist on Android
 
             let deviceDensity: Int = (try? jni.GetStaticField("DENSITY_DEVICE_STABLE", on: DisplayMetricsClass)) ?? 320
             let defaultDensity: Int = (try? jni.GetStaticField("DENSITY_DEFAULT", on: DisplayMetricsClass)) ?? 160
@@ -47,8 +47,13 @@ internal final class Window {
 
             scale = androidDeviceScale
 
+            print("scale", scale)
+            print("size before scale", size)
+
             size.width /= scale
             size.height /= scale
+
+            print("size after scale", size)
         #else
             scale = 1.0 // for Mac
         #endif
