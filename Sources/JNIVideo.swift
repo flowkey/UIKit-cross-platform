@@ -16,8 +16,8 @@ public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObjec
 private weak var jniVideo: JNIVideo?
 
 class JNIVideo: JNIObject {
-    convenience init(url: String) throws {
-        try self.init("com.flowkey.nativeplayersdl.VideoJNI", arguments: [url])
+    convenience init(url: String, javaClassPath: String) throws {
+        try self.init(javaClassPath, arguments: [url])
         jniVideo = self
     }
 
