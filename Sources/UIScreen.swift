@@ -11,13 +11,16 @@ let HEIGHT_LIMIT_FOR_PHONES: CGFloat = 800
 
 public class UIScreen {
     var size: CGSize
-    init(size: CGSize) {
+    var scale: CGFloat
+    
+    init(size: CGSize, scale: CGFloat) {
         self.size = size
+        self.scale = scale
     }
 }
 
 public extension UIScreen {
-    public static var main = UIScreen(size: SDL.window.size)
+    public static var main = UIScreen(size: SDL.window.size, scale: SDL.window.scale)
     public static var isTablet = main.size.height > HEIGHT_LIMIT_FOR_PHONES
     public static var isPhone = !isTablet
 }

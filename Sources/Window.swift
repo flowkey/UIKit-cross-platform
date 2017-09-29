@@ -12,7 +12,7 @@ import JNI
 internal final class Window {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
     let size: CGSize
-    let scaleFactor: Double
+    let scale: CGFloat
 
     // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
     // The easiest solution is just to work in 1:1 pixels
@@ -38,21 +38,26 @@ internal final class Window {
         GPU_SetShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
 
         #if os(Android)
-            let MainActivity = jni.FindClass(name: "com/flowkey/nativeplayersdl/MainActivity")!
-            scaleFactor = (try? jni.GetStaticField("deviceScaleFactor", on: MainActivity)) ?? 2.0
+            let DisplayMetricsClass = jni.FindClass(name: "android/util/DisplayMetrics")! // should always exist on Android
 
-            GPU_SetVirtualResolution(rawPointer, UInt16(size.width / CGFloat(scaleFactor)), UInt16(size.height / CGFloat(scaleFactor)))
-            size.width /= CGFloat(scaleFactor)
-            size.height /= CGFloat(scaleFactor)
-        #else // Mac:
-            scaleFactor = 1.0
+            let deviceDensity: Int = (try? jni.GetStaticField("DENSITY_DEVICE_STABLE", on: DisplayMetricsClass)) ?? 320
+            let defaultDensity: Int = (try? jni.GetStaticField("DENSITY_DEFAULT", on: DisplayMetricsClass)) ?? 160
+
+            let androidDeviceScale = CGFloat(deviceDensity / defaultDensity)
+
+            scale = androidDeviceScale
+
+            size.width /= scale
+            size.height /= scale
+        #else
+            scale = 1.0 // for Mac
         #endif
         
         self.size = size
     }
 
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
-        return CGPoint(x: inputX / CGFloat(scaleFactor), y: inputY / CGFloat(scaleFactor))
+        return CGPoint(x: inputX / scale, y: inputY / scale)
     }
 
     func blit(_ texture: Texture, at destination: CGPoint, opacity: Float) {

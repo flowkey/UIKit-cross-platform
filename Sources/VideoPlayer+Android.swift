@@ -16,10 +16,10 @@ open class VideoPlayer: UIView {
 
     override open var frame: CGRect {
         willSet(newFrame) {
-            let scaledWidth = Double(newFrame.width) * SDL.window.scaleFactor
-            let scaledHeight = Double(newFrame.height) * SDL.window.scaleFactor
-            let scaledX = Double(newFrame.origin.x) * SDL.window.scaleFactor
-            let scaledY = Double(newFrame.origin.y) * SDL.window.scaleFactor
+            let scaledWidth = Double(newFrame.width * UIScreen.main.scale)
+            let scaledHeight = Double(newFrame.height * UIScreen.main.scale)
+            let scaledX = Double(newFrame.origin.x * UIScreen.main.scale)
+            let scaledY = Double(newFrame.origin.y * UIScreen.main.scale)
 
             jniVideo.setSize(width: scaledWidth, height: scaledHeight)
             jniVideo.setOrigin(x: scaledX, y: scaledY)
