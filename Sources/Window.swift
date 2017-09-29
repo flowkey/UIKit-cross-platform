@@ -43,8 +43,7 @@ internal final class Window {
             let deviceDensity: Int = (try? jni.GetStaticField("DENSITY_DEVICE_STABLE", on: DisplayMetricsClass)) ?? 320
             let defaultDensity: Int = (try? jni.GetStaticField("DENSITY_DEFAULT", on: DisplayMetricsClass)) ?? 160
 
-            let androidDeviceScale = CGFloat(deviceDensity / defaultDensity)
-            scale = androidDeviceScale
+            scale = CGFloat(deviceDensity / defaultDensity)
 
             GPU_SetVirtualResolution(rawPointer, UInt16(size.width / scale), UInt16(size.height / scale))
             size.width /= scale
