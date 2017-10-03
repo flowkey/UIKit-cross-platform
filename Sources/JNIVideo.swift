@@ -8,24 +8,10 @@
 
 import JNI
 
-@_silgen_name("Java_com_flowkey_nativeplayersdl_VideoJNI_nativeOnVideoEnded")
-public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    jniVideo?.onVideoEnded?()
-}
-
-private weak var jniVideo: JNIVideo?
-
 class JNIVideo: JNIObject {
     convenience init(url: String, javaClassPath: String) throws {
         try self.init(javaClassPath, arguments: [url])
-        jniVideo = self
     }
-
-    deinit {
-        jniVideo = nil
-    }
-
-    var onVideoEnded: (() -> Void)?
 
     var isMuted: Bool = false {
         didSet {
@@ -40,10 +26,6 @@ class JNIVideo: JNIObject {
 
     func pause() {
         try! call(methodName: "pause")
-    }
-
-    func setOnEndedCallback(_ callback: @escaping (() -> Void)) {
-        onVideoEnded = callback
     }
 
     func getCurrentTimeInMS() -> Double {

@@ -26,14 +26,6 @@ open class VideoPlayer: UIView {
         }
     }
 
-    public var onVideoEnded: (() -> Void)? {
-        willSet(newValue) {
-            if let onEndedCallback = newValue {
-                jniVideo.setOnEndedCallback(onEndedCallback)
-            }
-        }
-    }
-
     public func play() {
         jniVideo.play()
     }
