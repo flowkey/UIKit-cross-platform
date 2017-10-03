@@ -30,13 +30,6 @@ internal final class Window {
         
         rawPointer = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue)!
 
-        GPU_SetShapeBlending(true)
-        
-        // works for normal transparent and opaque SDL surfaces
-        // fixes wrong transparency when using a transparent
-        // SDL surface and a PixelFormat_8888
-        GPU_SetShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
-
         #if os(Android)
             // should always exist on Android devices
             let DisplayMetricsClass = try! jni.FindClass(name: "android/util/DisplayMetrics")
@@ -62,6 +55,14 @@ internal final class Window {
     func blit(_ texture: Texture, at destination: CGPoint, opacity: Float) {
         if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
         GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
+    }
+
+    func setShapeBlending(_ newValue: Bool) {
+        GPU_SetShapeBlending(newValue)
+    }
+
+    func setShapeBlendMode(_ newValue: GPU_BlendPresetEnum) {
+        GPU_SetShapeBlendMode(newValue)
     }
 
     func clear() {
