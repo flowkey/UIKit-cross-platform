@@ -83,9 +83,8 @@ final public class SDL { // XXX: only public for startRunLoop()
             window.clear()
             window.setShapeBlending(true)
 
-            // works for normal transparent and opaque SDL surfaces
-            // fixes wrong transparency when using a transparent
-            // SDL surface and a PixelFormat_8888
+            // fixes video surface visibility with transparent & opaque views in SDLSurface above
+            // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
             window.setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
             rootView.sdlRender()
             window.flip()
