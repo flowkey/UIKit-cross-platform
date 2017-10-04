@@ -7,13 +7,13 @@
 //
 
 open class UIProgressView: UIView {
-    public var progress: Float = 0
     let progressLayer = CALayer()
+    open var progress: Float = 0 {
+        didSet { setNeedsLayout() }
+    }
 
     public var progressTintColor: UIColor? {
-        didSet {
-            progressLayer.backgroundColor = progressTintColor?.cgColor ?? UIColor.clear.cgColor
-        }
+        didSet { progressLayer.backgroundColor = progressTintColor?.cgColor }
     }
 
     public var trackTintColor: UIColor? {
@@ -21,7 +21,10 @@ open class UIProgressView: UIView {
     }
 
     public func setProgress(_ progress: Float, animated: Bool) {
+        CATransaction.begin()
+        CATransaction.setDisableActions(!animated)
         self.progress = progress
+        CATransaction.commit()
     }
 
     public init() {
@@ -30,6 +33,7 @@ open class UIProgressView: UIView {
     }
 
     override open func layoutSubviews() {
+        super.layoutSubviews()
         progressLayer.frame = bounds
         progressLayer.frame.width = bounds.width * CGFloat(progress)
     }

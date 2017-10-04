@@ -9,6 +9,8 @@
 import SDL
 
 open class CALayer {
+    open var delegate: CALayerDelegate?
+
     var texture: Texture? {
         didSet {
             let newSize = texture?.size ?? .zero
@@ -39,6 +41,9 @@ open class CALayer {
 
     /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc)
     open var frame: CGRect = .zero {
+        willSet (newFrame) {
+            onWillSet(keyPath: .frame)
+        }
         didSet {
             if bounds.size != frame.size {
                 bounds.size = frame.size
@@ -47,6 +52,9 @@ open class CALayer {
     }
 
     open var bounds: CGRect = .zero {
+        willSet(newBounds) {
+            onWillSet(keyPath: .bounds)
+        }
         didSet {
             if frame.size != bounds.size {
                 frame.size = bounds.size
@@ -54,14 +62,18 @@ open class CALayer {
         }
     }
 
+    public var opacity: Float = 1 {
+        willSet(newOpacity) {
+            onWillSet(keyPath: .opacity)
+        }
+    }
+
     public var isHidden = false
-    public var opacity: Float = 1
     public var cornerRadius: CGFloat = 0
 
     // TODO: Implement these!
     public var borderWidth: CGFloat = 0
     public var borderColor: CGColor = UIColor.black.cgColor
-
     public var shadowPath: CGRect?
     public var shadowColor: CGColor?
     public var shadowOpacity: Float = 0
@@ -72,19 +84,41 @@ open class CALayer {
 
     public required init() {}
 
-    // Match UIKit by providing this initializer to override
-    public init(layer: Any) {}
-
-    open func add(_ animation: CABasicAnimation, forKey key: String) {
-
+    public required init(layer: Any) {
+        guard let layer = layer as? CALayer else { fatalError() }
+        frame = layer.frame
+        bounds = layer.bounds
+        opacity = layer.opacity
+        backgroundColor = layer.backgroundColor
+        isHidden = layer.isHidden
+        cornerRadius = layer.cornerRadius
+        borderWidth = layer.borderWidth
+        borderColor = layer.borderColor
+        shadowColor = layer.shadowColor
+        shadowPath = layer.shadowPath
+        shadowOffset = layer.shadowOffset
+        shadowRadius = layer.shadowRadius
+        shadowOpacity = layer.shadowOpacity
+        texture = layer.texture
+        sublayers = layer.sublayers
     }
 
-    open func removeAnimation(forKey key: String) {
+    open func copy() -> Any {
+        return CALayer(layer: self)
+    }
 
+    /// returns a non animating copy of the layer
+    func createPresentation() -> CALayer {
+        let copy = CALayer(layer: self)
+        copy.disableAnimations = true
+        return copy
     }
 
     open func action(forKey event: String) -> CAAction? {
-        return nil // TODO: Return the default CABasicAnimation of 0.25 seconds of all animatable properties
+        if let delegate = delegate {
+            return delegate.action(forKey: event)
+        }
+        return CALayer.defaultAction(forKey: event)
     }
     
     // TODO: remove this function after implementing CGImage to get font texture in UIImage extension for fonts
@@ -92,11 +126,22 @@ open class CALayer {
         guard let texture = self.texture else { return nil }
         return UIImage(texture: texture)
     }
-}
 
+    var presentation: CALayer?
+    var disableAnimations = false
 
-extension CALayer: Equatable {
-    public static func == (lhs: CALayer, rhs: CALayer) -> Bool {
-        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+    var animations = [String: CABasicAnimation]() {
+        didSet { onDidSetAnimations(wasEmpty: oldValue.isEmpty) }
     }
 }
+
+extension CALayer: Hashable {
+    public var hashValue: Int {
+        return ObjectIdentifier(self).hashValue
+    }
+
+    public static func == (lhs: CALayer, rhs: CALayer) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+}
+

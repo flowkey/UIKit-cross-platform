@@ -9,12 +9,11 @@
 @_exported import SDL
 
 extension UIView {
-    final func sdlRender(
-        in parentAbsoluteFrame: CGRect = CGRect(),
-        parentAlpha: CGFloat = 1.0
-    ) {
-        let alpha = self.alpha * parentAlpha
-        if isHidden || alpha < 0.01 { return }
+    final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect(), parentAlpha: CGFloat = 1.0) {
+        let visibleLayer = (layer.presentation ?? layer)
+        
+        let alpha = CGFloat(visibleLayer.opacity) * parentAlpha
+        if visibleLayer.isHidden || alpha < 0.01 { return }
 
         if needsDisplay {
             draw()
@@ -27,7 +26,7 @@ extension UIView {
         }
 
         // Render layer and all sublayers
-        layer.sdlRender(
+        visibleLayer.sdlRender(
             in: parentAbsoluteFrame.offsetBy(-bounds.origin),
             parentOpacity: Float(parentAlpha),
             // clip to superView bounds when clipsToBounds is truthy
