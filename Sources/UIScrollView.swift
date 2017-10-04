@@ -24,6 +24,7 @@ open class UIScrollView: UIView {
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
 
+        verticalScrollIndicator.disableAnimations = true
         verticalScrollIndicator.backgroundColor = self.indicatorStyle
         layer.addSublayer(verticalScrollIndicator)
     }
