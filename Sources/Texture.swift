@@ -17,26 +17,45 @@ internal final class Texture {
         return CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
     }
 
-    init?(imagePath: String) {
-        guard let image = GPU_LoadImage(imagePath) else { return nil }
-        rawPointer = image
+    init?(imagePtr: UnsafeMutablePointer<GPU_Image>) {
+        rawPointer = imagePtr
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
         GPU_SetImageFilter(rawPointer, GPU_FILTER_NEAREST)
         scaleImage(scale)
     }
+
+    convenience init?(imagePath: String) {
+        guard let image = GPU_LoadImage(imagePath) else { return nil }
+        self.init(imagePtr: image)
+    }
     
-    init?(surface: UnsafeMutablePointer<SDLSurface>) {
+    convenience init?(surface: UnsafeMutablePointer<SDLSurface>) {
         guard let image = GPU_CopyImageFromSurface(surface) else { return nil }
-        rawPointer = image
-        GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
-        scaleImage(scale)
+        self.init(imagePtr: image)
     }
 
-    init?(gpuImage: GPU_Image) {
-        let gpuImagePointer = UnsafeMutablePointer<GPU_Image>.allocate(capacity: 1)
-        gpuImagePointer.initialize(to: gpuImage)
+    // ToDo: call first init as designated initializer
+    // incl. GPU_SetSnapMode, GPU_SetImageFilter, scaleImage
 
-        rawPointer = gpuImagePointer
+    convenience init?(data: Data) {
+        let unsafeImageDataPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: data.count)
+        unsafeImageDataPtr.initialize(from: data)
+
+        defer {
+            unsafeImageDataPtr.deinitialize()
+            unsafeImageDataPtr.deallocate(capacity: data.count)
+        }
+
+        guard
+            let rwOps = SDL_RWFromMem(unsafeImageDataPtr, Int32(data.count)),
+            let gpuImagePtr = GPU_LoadImage_RW(rwOps, true)
+        else {
+            print("Could not load image or create texture")
+            return nil
+        }
+
+        self.init(imagePtr: gpuImagePtr)
+
     }
 
     init(width: Int, height: Int, format: GPU_FormatEnum) {

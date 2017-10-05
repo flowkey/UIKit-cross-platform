@@ -23,21 +23,9 @@ public class UIImage {
     }
 
     public convenience init?(data: Data) {
-        let imageData = data.base64EncodedData()
-        let bufferSize = Int32(imageData.count)
-
-        let unsafeImageDataPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: imageData.count)
-        unsafeImageDataPtr.initialize(from: data)
-
-        guard
-            let rwOps = SDL_RWFromMem(unsafeImageDataPtr, bufferSize),
-            let gpuImagePtr = GPU_LoadImage_RW(rwOps, true),
-            let texture = Texture(gpuImage: gpuImagePtr.pointee)
-        else {
-            print("Could not load image or create texture")
+        guard let texture = Texture(data: data) else {
             return nil
         }
-
         self.init(texture: texture)
     }
 
