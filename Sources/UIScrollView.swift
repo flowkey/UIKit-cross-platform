@@ -87,10 +87,11 @@ open class UIScrollView: UIView {
         bounds.origin = contentOffset
     }
 
-    // TODO: Implement these:
-    open var showsVerticalScrollIndicator = true {
-        didSet { verticalScrollIndicator.isHidden = !showsVerticalScrollIndicator }
+    open var showsVerticalScrollIndicator: Bool {
+        get { return !verticalScrollIndicator.isHidden }
+        set { verticalScrollIndicator.isHidden = !showsVerticalScrollIndicator }
     }
+    // TODO: Implement these:
     open var showsHorizontalScrollIndicator = true
 
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
