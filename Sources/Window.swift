@@ -46,17 +46,17 @@ internal final class Window {
         return CGPoint(x: inputX / pixelCoordinateContentScale, y: inputY / pixelCoordinateContentScale)
     }
 
-    func blit(_ texture: Texture, at destination: CGPoint, opacity: Float, clip: CGRect?) {
+    func blit(_ texture: Texture, at destination: CGPoint, opacity: Float, clippingRect: CGRect?) {
         if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
 
-        if let clip = clip {
-            var clipGPU_Rect = GPU_Rect(clip)
+        if let clippingRect = clippingRect {
+            var clipGPU_Rect = GPU_Rect(clippingRect)
             GPU_Blit(
                 texture.rawPointer,
                 &clipGPU_Rect,
                 rawPointer,
-                Float(destination.x + clip.origin.x),
-                Float(destination.y + clip.origin.y)
+                Float(destination.x + clippingRect.origin.x),
+                Float(destination.y + clippingRect.origin.y)
             )
         } else {
             GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))

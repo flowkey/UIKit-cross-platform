@@ -9,4 +9,4 @@
 // TODO: add further API for attributes
 
 import class Foundation.NSMutableAttributedString
-typealias NSMutableAttributedString = Foundation.NSMutableAttributedString
+public typealias NSMutableAttributedString = Foundation.NSMutableAttributedString

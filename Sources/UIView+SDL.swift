@@ -30,7 +30,7 @@ extension UIView {
             in: parentAbsoluteFrame.offsetBy(-bounds.origin),
             parentOpacity: Float(parentAlpha),
             // clip to superView bounds when clipsToBounds is truthy
-            clip: ((superview?.clipsToBounds ?? false) ? superview?.bounds : nil)
+            clippingRect: ((superview?.clipsToBounds ?? false) ? superview?.bounds : nil)
         )
 
         // Render subviews and their sublayers
