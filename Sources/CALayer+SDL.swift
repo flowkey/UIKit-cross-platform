@@ -16,7 +16,7 @@ extension CALayer {
         let absoluteFrame = frame.offsetBy(parentAbsoluteFrame.origin)
         
         // Big performance optimization. Don't render anything that's entirely offscreen:
-        if !absoluteFrame.intersects(SDL.rootView.bounds) { return }
+        if !absoluteFrame.intersects(SDL.rootView.bounds) && sublayers.isEmpty { return }
 
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
@@ -48,6 +48,6 @@ extension CALayer {
             // Later use more advanced blit funcs (with rotation, scale etc)
             SDL.window.blit(texture, at: absoluteFrame.origin, opacity: opacity, clippingRect: clippingRect)
         }
-        sublayers.forEach { ($0.presentation ?? $0).sdlRender(in: absoluteFrame, parentOpacity: opacity, clippingRect: clippingRect) }
+        sublayers.forEach { ($0.presentation ?? $0).sdlRender(in: absoluteFrame.offsetBy(-bounds.origin), parentOpacity: opacity, clippingRect: clippingRect) }
     }
 }

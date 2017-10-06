@@ -158,9 +158,9 @@ open class UIView: UIResponder {
 
         // Fast paths:
         if let superview = self.superview, superview == otherView {
-            return frame.origin.offsetBy(point)
+            return frame.origin.offsetBy(superview.bounds.origin).offsetBy(point)
         } else if subviews.contains(otherView) {
-            let otherViewOrigin = otherView.frame.origin
+            let otherViewOrigin = otherView.frame.origin.offsetBy(-otherView.bounds.origin)
             return CGPoint(x: point.x - otherViewOrigin.x, y: point.y - otherViewOrigin.y)
         }
 
