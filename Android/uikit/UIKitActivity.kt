@@ -1,5 +1,4 @@
 package org.uikit
-import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.widget.FrameLayout
 import org.libsdl.app.SDLActivity
@@ -11,9 +10,5 @@ open class UIKitActivity : SDLActivity(), ActivityCompat.OnRequestPermissionsRes
         fun addChildLayout(layout: FrameLayout) {
             mLayout.addView(layout)
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 }
