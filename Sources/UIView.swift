@@ -180,7 +180,7 @@ open class UIView: UIResponder {
         var origin = frame.origin
         while let superview = view.superview {
             view = superview
-            origin = superview.frame.origin.offsetBy(superview.bounds.origin).offsetBy(origin)
+            origin = superview.frame.origin.offsetBy(-superview.bounds.origin).offsetBy(origin)
         }
         return origin
     }
