@@ -1,4 +1,4 @@
-package com.flowkey.nativeplayersdl
+package org.uikit
 
 import android.net.Uri
 import android.os.Looper
