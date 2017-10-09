@@ -21,6 +21,8 @@ internal final class Window {
 
         GPU_SetPreInitFlags(GPU_INIT_ENABLE_VSYNC)
 
+        UIFont.loadSystemFonts()
+
         var size = size
         if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
             // Fix fullscreen resolution on Mac and make Android easier to reason about:

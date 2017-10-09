@@ -38,20 +38,16 @@ final public class SDL { // XXX: only public for startRunLoop()
         return window
     }()
 
+    public static func initWithRootView(_ view: UIView) {
+        rootView.addSubview(view)
+        startRunLoop()
+    }
+
     public static func startRunLoop() {
         if isRunning == false {
             isRunning = true
             _startRunLoop()
         }
-    }
-
-    public static func initialize() {
-        SDL.window.clear() // do something random to ensure that `SDL.window` exists
-        UIFont.loadSystemFonts()
-    }
-
-    public static func addWindowToRoot(_ window: UIView) {
-        rootView.addSubview(window)
     }
 
     private static var isRunning = false
