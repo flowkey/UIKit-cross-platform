@@ -10,8 +10,8 @@
 let HEIGHT_LIMIT_FOR_PHONES: CGFloat = 800
 
 public class UIScreen {
-    var size: CGSize
-    var scale: CGFloat
+    public var size: CGSize
+    public var scale: CGFloat
     
     init(size: CGSize, scale: CGFloat) {
         self.size = size
