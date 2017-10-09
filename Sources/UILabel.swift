@@ -24,7 +24,16 @@ open class UILabel: UIView {
     public var attributedText: NSAttributedString? {
         didSet {
             text = attributedText?.string
-            // TODO: also set textColor etc according to attributes
+
+            let color = attributedText?.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? NSColor
+            if let color = color {
+                 textColor = UIColor(
+                    red: color.redComponent,
+                    green: color.greenComponent,
+                    blue: color.blueComponent
+                )
+            }
+
             setNeedsDisplay()
         }
     }
