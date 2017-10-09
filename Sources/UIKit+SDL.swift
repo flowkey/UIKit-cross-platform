@@ -50,6 +50,10 @@ final public class SDL { // XXX: only public for startRunLoop()
         UIFont.loadSystemFonts()
     }
 
+    public static func addWindowToRoot(_ window: UIView) {
+        rootView.addSubview(window)
+    }
+
     private static var isRunning = false
 
     private static func _startRunLoop() {
