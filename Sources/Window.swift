@@ -31,12 +31,7 @@ internal final class Window {
         rawPointer = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue)!
 
         #if os(Android)
-            // should always exist on Android devices
-            let DisplayMetricsClass = try! jni.FindClass(name: "android/util/DisplayMetrics")
-            let deviceDensity: Int = try! jni.GetStaticField("DENSITY_DEVICE_STABLE", on: DisplayMetricsClass)
-            let defaultDensity: Int = try! jni.GetStaticField("DENSITY_DEFAULT", on: DisplayMetricsClass)
-
-            scale = CGFloat(deviceDensity / defaultDensity)
+            scale = getAndroidDeviceScale()
 
             GPU_SetVirtualResolution(rawPointer, UInt16(size.width / scale), UInt16(size.height / scale))
             size.width /= scale
@@ -102,3 +97,14 @@ internal final class Window {
 }
 
 extension SDLWindowFlags: OptionSet {}
+
+#if os(Android)
+    fileprivate func getAndroidDeviceScale() -> CGFloat {
+        // should always exist on Android devices
+        let DisplayMetricsClass = try! jni.FindClass(name: "android/util/DisplayMetrics")
+        let deviceDensity: Int = try! jni.GetStaticField("DENSITY_DEVICE_STABLE", on: DisplayMetricsClass)
+        let defaultDensity: Int = try! jni.GetStaticField("DENSITY_DEFAULT", on: DisplayMetricsClass)
+
+        return CGFloat(deviceDensity / defaultDensity)
+    }
+#endif
