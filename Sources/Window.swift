@@ -21,7 +21,7 @@ internal final class Window {
 
         GPU_SetPreInitFlags(GPU_INIT_ENABLE_VSYNC)
 
-        UIFont.loadSystemFonts()
+        UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
 
         var size = size
         if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
