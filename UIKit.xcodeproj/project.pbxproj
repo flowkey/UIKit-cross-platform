@@ -78,7 +78,6 @@
 		832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
 		832A7F0D1F16368D0041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
 		832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */; };
-		8330753A1F69768E002089AC /* JNIVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833075391F69768E002089AC /* JNIVideo.swift */; };
 		8333B2C01F1D11B800D98662 /* NSAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8333B2BF1F1D11B800D98662 /* NSAttributedString.swift */; };
 		8337A8131F39F37500475F80 /* UIScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337A8121F39F37500475F80 /* UIScreen.swift */; };
 		8337A8591F3B143400475F80 /* UIActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337A8581F3B143400475F80 /* UIActivityIndicatorView.swift */; };
@@ -142,20 +141,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5C1F06B71F321FC500EFF087 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = "JNI::JNI::Product";
-			remoteInfo = JNI;
-		};
-		5C1F06B91F321FC500EFF087 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = "JNI::CJNI::Product";
-			remoteInfo = CJNI;
-		};
 		5C2714DF1F2B9FB90026BBA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
@@ -169,6 +154,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 5C27E7AD1ECB2F6500F5020D;
 			remoteInfo = UIKit;
+		};
+		835693301F8CD3C100C6D253 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "JNI::JNI::Product";
+			remoteInfo = JNI;
+		};
+		835693321F8CD3C100C6D253 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "JNI::CJNI::Product";
+			remoteInfo = CJNI;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -359,15 +358,6 @@
 			name = Animations;
 			sourceTree = "<group>";
 		};
-		5C2714B01F2B86240026BBA9 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5C1F06B81F321FC500EFF087 /* JNI.framework */,
-				5C1F06BA1F321FC500EFF087 /* CJNI.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		5C27E7A41ECB2F6500F5020D = {
 			isa = PBXGroup;
 			children = (
@@ -525,6 +515,15 @@
 			path = iOSTestTarget;
 			sourceTree = "<group>";
 		};
+		8356932D1F8CD2C000C6D253 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				835693311F8CD3C100C6D253 /* JNI.framework */,
+				835693331F8CD3C100C6D253 /* CJNI.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		83C18F391F0FB486008FEA07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -677,7 +676,7 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 5C27148D1F2A38E70026BBA9 /* Products */;
+					ProductGroup = 8356932D1F8CD2C000C6D253 /* Products */;
 					ProjectRef = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
 				},
 			);
@@ -691,18 +690,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		5C1F06B81F321FC500EFF087 /* JNI.framework */ = {
+		835693311F8CD3C100C6D253 /* JNI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = JNI.framework;
-			remoteRef = 5C1F06B71F321FC500EFF087 /* PBXContainerItemProxy */;
+			remoteRef = 835693301F8CD3C100C6D253 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		5C1F06BA1F321FC500EFF087 /* CJNI.framework */ = {
+		835693331F8CD3C100C6D253 /* CJNI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = CJNI.framework;
-			remoteRef = 5C1F06B91F321FC500EFF087 /* PBXContainerItemProxy */;
+			remoteRef = 835693321F8CD3C100C6D253 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -820,7 +819,6 @@
 				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
-				8330753A1F69768E002089AC /* JNIVideo.swift in Sources */,
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,
 				83E5F7F61EF81AB500279C59 /* UIFont.swift in Sources */,
 				5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */,

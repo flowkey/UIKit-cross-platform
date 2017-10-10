@@ -8,9 +8,27 @@
 
 import JNI
 
+@_silgen_name("Java_org_uikit_VideoJNI_nativeOnVideoEnded")
+public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
+    globalJNIVideo?.onVideoEnded?()
+}
+
+private weak var globalJNIVideo: JNIVideo?
+
 class JNIVideo: JNIObject {
-    convenience init(url: String, javaClassPath: String) throws {
-        try self.init(javaClassPath, arguments: [url])
+    init(url: String) throws {
+        try super.init("org.uikit.VideoJNI", arguments: [url])
+        globalJNIVideo = self
+    }
+
+    deinit {
+        globalJNIVideo = nil
+    }
+
+    var onVideoEnded: (() -> Void)?
+
+    func setOnEndedCallback(_ callback: @escaping (() -> Void)) {
+        onVideoEnded = callback
     }
 
     var isMuted: Bool = false {
