@@ -297,6 +297,24 @@ class UIViewAnimationTests: XCTestCase {
             .options.contains(.allowUserInteraction) ?? false))
         XCTAssertTrue(view.animationsAllowUserInteraction)
     }
+
+    func testCreateAnimationsOnlyWhenPropertiesDiffer() {
+        let view = UIView()
+        view.frame.origin.x = 100
+        var firstAnimationDidFinish = false
+
+        UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
+            view.frame.origin.x = 100
+        }) { finished in
+            firstAnimationDidFinish = finished
+        }
+
+        UIView.animateIfNeeded(at: Timer(startingAt: 10000))
+
+        XCTAssertTrue(view.layer.animations.isEmpty)
+        // nevertheless completion should be called
+        XCTAssertTrue(firstAnimationDidFinish)
+    }
 }
 
 

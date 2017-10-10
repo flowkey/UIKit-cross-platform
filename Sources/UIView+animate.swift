@@ -28,6 +28,10 @@ extension UIView {
         )
 
         animations()
+
+        if (currentAnimationPrototype?.animationGroup.queuedAnimations == 0) {
+            completion?(true)
+        }
         currentAnimationPrototype = nil
     }
 
@@ -49,6 +53,10 @@ extension UIView {
         )
 
         animations()
+
+        if (currentAnimationPrototype?.animationGroup.queuedAnimations == 0) {
+            completion?(true)
+        }
         currentAnimationPrototype = nil
     }
 
