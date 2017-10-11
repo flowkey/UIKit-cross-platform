@@ -16,7 +16,7 @@ extension CALayer {
         let absoluteFrame = frame.offsetBy(parentAbsoluteFrame.origin)
         
         // Big performance optimization. Don't render anything that's entirely offscreen:
-        if !absoluteFrame.intersects(SDL.rootView.bounds) && sublayers.isEmpty { return }
+        if !absoluteFrame.intersects(SDL.rootView.bounds) { return }
 
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
