@@ -66,7 +66,7 @@ open class UIScrollView: UIView {
     open var contentOffset: CGPoint = .zero {
         didSet {
             updateBounds()
-            setNeedsLayout()
+            if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
         }
     }
 
@@ -101,13 +101,13 @@ open class UIScrollView: UIView {
     }
 
     override open func layoutSubviews() {
+        super.layoutSubviews()
         if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
     }
 
     private func layoutVerticalScrollIndicator() {
-
         if contentSize.height == bounds.height {
-            showsVerticalScrollIndicator = false
+            verticalScrollIndicator.isHidden = true
             return
         }
 
