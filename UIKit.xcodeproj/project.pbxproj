@@ -71,6 +71,7 @@
 		5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */; };
 		5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5771EDDAD8200680154 /* CGRect.swift */; };
 		5CE5C57A1EDDAE5000680154 /* CGPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5791EDDAE5000680154 /* CGPath.swift */; };
+		5CF2BEEE1F8D1BD7009FCA1E /* UIFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF2BEED1F8D1BD7009FCA1E /* UIFontTests.swift */; };
 		5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */; };
 		8318D27B1F0695080029816A /* UIControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D27A1F0695080029816A /* UIControl.swift */; };
 		8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323F27F1F2FA2EE00C121BB /* TestSetup.swift */; };
@@ -239,6 +240,7 @@
 		5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL+TouchHandling.swift"; sourceTree = "<group>"; };
 		5CE5C5771EDDAD8200680154 /* CGRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGRect.swift; path = Sources/CGRect.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5791EDDAE5000680154 /* CGPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGPath.swift; path = Sources/CGPath.swift; sourceTree = SOURCE_ROOT; };
+		5CF2BEED1F8D1BD7009FCA1E /* UIFontTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFontTests.swift; sourceTree = "<group>"; };
 		5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontRenderer.swift; sourceTree = "<group>"; };
 		8318D27A1F0695080029816A /* UIControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIControl.swift; path = ../Sources/UIControl.swift; sourceTree = "<group>"; };
 		8323F27F1F2FA2EE00C121BB /* TestSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSetup.swift; sourceTree = "<group>"; };
@@ -450,6 +452,7 @@
 				83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */,
 				5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */,
 				8323F27F1F2FA2EE00C121BB /* TestSetup.swift */,
+				5CF2BEED1F8D1BD7009FCA1E /* UIFontTests.swift */,
 			);
 			path = UIKitTests;
 			sourceTree = "<group>";
@@ -831,6 +834,7 @@
 				83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */,
 				837335901F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift in Sources */,
 				832A7F021F1632070041916B /* ButtonSizeToFitTests.swift in Sources */,
+				5CF2BEEE1F8D1BD7009FCA1E /* UIFontTests.swift in Sources */,
 				832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

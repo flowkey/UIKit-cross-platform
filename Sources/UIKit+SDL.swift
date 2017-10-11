@@ -34,6 +34,7 @@ final public class SDL { // XXX: only public for startRunLoop()
 
         let window = Window(size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT), options: windowOptions)
         rootView.frame.size = window.size
+
         return window
     }()
 
