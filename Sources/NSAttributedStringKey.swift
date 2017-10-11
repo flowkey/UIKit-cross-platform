@@ -7,8 +7,10 @@
 //
 
 #if !os(Android)
+
 import struct Foundation.NSAttributedStringKey
 public typealias NSAttributedStringKey = Foundation.NSAttributedStringKey
+
 #else
 
 import class Foundation.NSMutableAttributedString
