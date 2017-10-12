@@ -31,7 +31,7 @@ class VideoJNI(url: String) {
     val videoPlayer: SimpleExoPlayer
     var videoPlayerLayout: SimpleExoPlayerView? = null
 
-    external fun nativeOnVideoEnded() // calls javaVideo.onVideoEnded function in Swift
+    external fun nativeOnVideoEnded() // calls onVideoEnded function in Swift
 
     init {
         val context = SDLActivity.getContext()
