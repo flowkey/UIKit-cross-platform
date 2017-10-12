@@ -56,7 +56,7 @@ open class UITextView: UIScrollView {
         label.frame.width = bounds.width
         label.sizeToFit()
 
-        let textHeight = label.textLayer.frame.size.height
+        let textHeight = label.frame.height
         contentSize = CGSize(width: bounds.width, height: max(textHeight, bounds.height))
 
         super.layoutSubviews()

@@ -24,7 +24,7 @@ open class UILabel: UIView {
     public var attributedText: NSAttributedString? {
         didSet {
             text = attributedText?.string
-
+            // TODO: also set textColor etc according to attributes
             setNeedsDisplay()
         }
     }
@@ -67,10 +67,9 @@ open class UILabel: UIView {
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
-        self.draw()
-
-        guard let texture = textLayer.texture else { return .zero }
-        return texture.size
+        guard let text = self.text else { return .zero }
+        let wrapLength = (numberOfLines != 1) ? bounds.width : 0
+        return text.size(with: self.font, wrapLength: UInt(wrapLength))
     }
 
     open override func layoutSubviews() {
