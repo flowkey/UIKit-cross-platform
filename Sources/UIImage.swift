@@ -7,6 +7,7 @@
 //
 
 import SDL
+import Foundation
 
 public class UIImage {
     var texture: Texture
@@ -20,7 +21,14 @@ public class UIImage {
         self.size = texture.size
         scale = 2 // TODO: get from last path component
     }
-    
+
+    public convenience init?(data: Data) {
+        guard let texture = Texture(data: data) else {
+            return nil
+        }
+        self.init(texture: texture)
+    }
+
     init(texture: Texture) {
         self.texture = texture
         self.size = texture.size
