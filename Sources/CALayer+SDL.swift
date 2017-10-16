@@ -28,7 +28,12 @@ extension CALayer {
         }
 
         if borderWidth > 0 {
-            SDL.window.outline(absoluteFrame, lineColor: borderColor, lineThickness: borderWidth, cornerRadius: cornerRadius)
+            SDL.window.outline(
+                absoluteFrame,
+                lineColor: borderColor.withAlphaComponent(CGFloat(opacity)),
+                lineThickness: borderWidth,
+                cornerRadius: cornerRadius
+            )
         }
 
         if let shadowPath = shadowPath, let shadowColor = shadowColor {
