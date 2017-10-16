@@ -71,8 +71,8 @@ extension CGRect {
 
     public func contains(_ point: CGPoint) -> Bool {
         return
-            (point.x >= minX) && (point.x < maxX) &&
-            (point.y >= minY) && (point.y < maxY)
+            (point.x >= minX) && (point.x <= maxX) &&
+            (point.y >= minY) && (point.y <= maxY)
     }
 
     public func insetBy(dx: CGFloat, dy: CGFloat) -> CGRect {

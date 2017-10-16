@@ -57,6 +57,7 @@ final public class SDL { // XXX: only public for startRunLoop()
         let fpsView = MeteringView(metric: "FPS")
         fpsView.frame = CGRect(x: 0, y: 0, width: 150, height: 25)
         fpsView.frame.maxX = rootView.bounds.maxX
+        fpsView.isUserInteractionEnabled = false
         fpsView.sizeToFit()
         rootView.addSubview(fpsView)
 

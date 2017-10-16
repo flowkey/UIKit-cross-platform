@@ -66,7 +66,7 @@ class UIViewTests: XCTestCase {
 
     func testAbsoluteOrigin() {
         let rootView = UIView()
-        rootView.bounds = CGRect(x: 0, y: 0, width: 100, height: 100)
+        rootView.bounds = CGRect(x: 15, y: -5, width: 100, height: 100)
 
         let subview1 = UIView()
         subview1.frame = CGRect(x: 20, y: 10, width: 10, height: 10)
@@ -78,6 +78,34 @@ class UIViewTests: XCTestCase {
         subview1.addSubview(subview1subview1)
 
         XCTAssertEqual(rootView.absoluteOrigin(), CGPoint(x: 0, y: 0))
-        XCTAssertEqual(subview1subview1.absoluteOrigin(), CGPoint(x: 25, y: 15))
+        XCTAssertEqual(subview1subview1.absoluteOrigin(), CGPoint(x: 10, y: 20))
+    }
+
+    func testPointInside() {
+        let view = UIView()
+        // bounds.origin affect child elements only
+        view.bounds = CGRect(x: 100000, y: 100000, width: 100, height: 100)
+        XCTAssertTrue((view.point(inside: CGPoint(x: 100, y: 100), with: nil)))
+        XCTAssertFalse((view.point(inside: CGPoint(x: 101, y: 101), with: nil)))
+    }
+
+    func testHitTest() {
+
+        let rootView = UIView()
+        rootView.bounds = CGRect(x: -10, y: -10, width: 100, height: 100)
+
+        let subview1 = UIView()
+        subview1.frame = CGRect(x: 40, y: 40, width: 10, height: 10)
+
+        let subview1subview1 = UIView()
+        subview1subview1.frame = CGRect(x: 10, y: 10, width: 1, height: 1)
+
+        rootView.addSubview(subview1)
+        subview1.addSubview(subview1subview1)
+
+        XCTAssertEqual(rootView.hitTest(CGPoint(x: 0, y: 0), with: nil), rootView)
+        XCTAssertEqual(rootView.hitTest(CGPoint(x: 55, y: 55), with: nil), subview1)
+        XCTAssertEqual(rootView.hitTest(CGPoint(x: 60, y: 60), with: nil), subview1subview1)
+
     }
 }
