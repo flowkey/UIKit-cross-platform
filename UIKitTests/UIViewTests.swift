@@ -90,7 +90,6 @@ class UIViewTests: XCTestCase {
     }
 
     func testHitTest() {
-
         let rootView = UIView()
         rootView.bounds = CGRect(x: -10, y: -10, width: 100, height: 100)
 
@@ -106,6 +105,6 @@ class UIViewTests: XCTestCase {
         XCTAssertEqual(rootView.hitTest(CGPoint(x: 0, y: 0), with: nil), rootView)
         XCTAssertEqual(rootView.hitTest(CGPoint(x: 55, y: 55), with: nil), subview1)
         XCTAssertEqual(rootView.hitTest(CGPoint(x: 60, y: 60), with: nil), subview1subview1)
-
+        XCTAssertNil(rootView.hitTest(CGPoint(x: -1, y: -1), with: nil))
     }
 }
