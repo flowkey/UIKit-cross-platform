@@ -37,9 +37,11 @@ open class UIScrollView: UIView {
         let newX = contentOffset.x - translation.x
         let newY = contentOffset.y - translation.y
 
+        // user can scroll starting at contentInset.left until contentInset.right
+        // visible area starts at e.g. contentOffset.x and goes until contentOffset.x + bounds.width
         let newOffset = CGPoint(
-            x: min(max(newX, -contentInset.left), contentSize.width - bounds.width + contentInset.right),
-            y: min(max(newY, -contentInset.top), contentSize.height - bounds.height + contentInset.bottom)
+            x: min(max(newX, -contentInset.left), (contentSize.width + contentInset.right) - bounds.width),
+            y: min(max(newY, -contentInset.top), (contentSize.height + contentInset.bottom) - bounds.height)
         )
 
         setContentOffset(newOffset, animated: false)

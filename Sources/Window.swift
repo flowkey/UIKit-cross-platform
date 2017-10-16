@@ -46,6 +46,7 @@ internal final class Window {
         return CGPoint(x: inputX / pixelCoordinateContentScale, y: inputY / pixelCoordinateContentScale)
     }
 
+    /// clippingRect behaves like an offset
     func blit(_ texture: Texture, at destination: CGPoint, opacity: Float, clippingRect: CGRect?) {
         if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
 

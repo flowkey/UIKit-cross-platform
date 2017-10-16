@@ -93,7 +93,10 @@ open class UIView: UIResponder {
     }
 
     public internal(set) var superview: UIView? {
-        didSet { if superview != nil { didMoveToSuperview() } }
+        didSet {
+            layer.superlayer = superview?.layer
+            if superview != nil { didMoveToSuperview() }
+        }
     }
 
     internal(set) public var subviews: [UIView] = [] {

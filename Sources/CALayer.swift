@@ -18,7 +18,7 @@ open class CALayer {
         }
     }
 
-    public var superlayer: CALayer?
+    internal (set) public var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer] = []
     public func addSublayer(_ layer: CALayer) {
         layer.removeFromSuperlayer()

@@ -85,8 +85,8 @@ class UIViewTests: XCTestCase {
         let view = UIView()
         // bounds.origin affect child elements only
         view.bounds = CGRect(x: 100000, y: 100000, width: 100, height: 100)
-        XCTAssertTrue((view.point(inside: CGPoint(x: 100, y: 100), with: nil)))
-        XCTAssertFalse((view.point(inside: CGPoint(x: 101, y: 101), with: nil)))
+        XCTAssertTrue((view.point(inside: CGPoint(x: 99, y: 99), with: nil)))
+        XCTAssertFalse((view.point(inside: CGPoint(x: 100, y: 100), with: nil)))
     }
 
     func testHitTest() {
