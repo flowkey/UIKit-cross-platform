@@ -31,8 +31,8 @@ class ButtonSizeToFitTests: XCTestCase {
         button.titleLabel!.font = UIFont(name: "roboto-medium", size: smallFontSize)!
         button.sizeToFit()
 
-        XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithShortLabelText.width, accuracy: 1.5)
-        XCTAssertEqualWithAccuracy(button.frame.height, frameSizeWithShortLabelText.height, accuracy: 0.5)
+        XCTAssertEqual(button.frame.width, frameSizeWithShortLabelText.width, accuracy: 1.5)
+        XCTAssertEqual(button.frame.height, frameSizeWithShortLabelText.height, accuracy: 0.5)
     }
 
     func testSizeToFitWithMediumLabel() {
@@ -40,8 +40,8 @@ class ButtonSizeToFitTests: XCTestCase {
         button.titleLabel!.font = UIFont(name: "roboto-medium", size: mediumFontSize)!
         button.sizeToFit()
 
-        XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithMediumLabelText.width, accuracy: 1.5)
-        XCTAssertEqualWithAccuracy(button.frame.height, frameSizeWithMediumLabelText.height, accuracy: 0.1)
+        XCTAssertEqual(button.frame.width, frameSizeWithMediumLabelText.width, accuracy: 1.5)
+        XCTAssertEqual(button.frame.height, frameSizeWithMediumLabelText.height, accuracy: 0.1)
     }
 
     func testSizeToFitWithLargeLabel() {
@@ -49,8 +49,8 @@ class ButtonSizeToFitTests: XCTestCase {
         button.titleLabel!.font = UIFont(name: "roboto-medium", size: largeFontSize)!
         button.sizeToFit()
 
-        XCTAssertEqualWithAccuracy(button.frame.width, frameSizeWithLongLabelText.width, accuracy: 1.5)
-        XCTAssertEqualWithAccuracy(button.frame.height, frameSizeWithLongLabelText.height, accuracy: 0.1)
+        XCTAssertEqual(button.frame.width, frameSizeWithLongLabelText.width, accuracy: 1.5)
+        XCTAssertEqual(button.frame.height, frameSizeWithLongLabelText.height, accuracy: 0.1)
     }
 
     func testSizeToFitWithMediumImage() {
@@ -65,7 +65,7 @@ class ButtonSizeToFitTests: XCTestCase {
         button.titleLabel!.font = UIFont(name: "roboto-medium", size: mediumFontSize)!
         button.sizeToFit()
 
-        XCTAssertEqualWithAccuracy(button.frame.width, (mediumImageSize.width + frameSizeWithMediumLabelText.width), accuracy: 1.0)
-        XCTAssertEqualWithAccuracy(button.frame.height, max(mediumImageSize.height, frameSizeWithMediumLabelText.height), accuracy: 0.0001)
+        XCTAssertEqual(button.frame.width, (mediumImageSize.width + frameSizeWithMediumLabelText.width), accuracy: 1.0)
+        XCTAssertEqual(button.frame.height, max(mediumImageSize.height, frameSizeWithMediumLabelText.height), accuracy: 0.0001)
     }
 }
