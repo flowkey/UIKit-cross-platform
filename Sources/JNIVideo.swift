@@ -27,10 +27,6 @@ class JNIVideo: JNIObject {
 
     var onVideoEnded: (() -> Void)?
 
-    func setOnEndedCallback(_ callback: @escaping (() -> Void)) {
-        onVideoEnded = callback
-    }
-
     var isMuted: Bool = false {
         didSet {
             let args = isMuted ? [0.0] : [1.0]
