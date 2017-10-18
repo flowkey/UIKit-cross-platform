@@ -15,7 +15,7 @@ open class UIScrollView: UIView {
     public var scrollViewDidEndDragging: ((_ willDecelerate: Bool) -> Void)?
 
     private var verticalScrollIndicator = CALayer()
-    public var indicatorStyle: UIColor = .white
+    public var indicatorStyle: UIScrollViewIndicatorStyle = .white
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,7 +25,7 @@ open class UIScrollView: UIView {
         clipsToBounds = true
 
         verticalScrollIndicator.disableAnimations = true
-        verticalScrollIndicator.backgroundColor = self.indicatorStyle
+        verticalScrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
         layer.addSublayer(verticalScrollIndicator)
     }
 
@@ -134,4 +134,18 @@ public protocol UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
     func scrollViewDidScroll(_ scrollView: UIScrollView)
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)
+}
+
+public enum UIScrollViewIndicatorStyle {
+    case `default`
+    case black
+    case white
+
+    var backgroundColor: UIColor {
+        switch self {
+        case .`default`: return UIColor.black
+        case .black: return UIColor.black
+        case .white: return UIColor.white
+        }
+    }
 }
