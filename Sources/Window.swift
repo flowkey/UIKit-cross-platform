@@ -102,11 +102,13 @@ extension SDLWindowFlags: OptionSet {}
 
 #if os(Android)
     fileprivate func getAndroidDeviceScale() -> CGFloat {
-        // should always exist on Android devices
-        let DisplayMetricsClass = try! jni.FindClass(name: "android/util/DisplayMetrics")
-        let deviceDensity: Int = try! jni.GetStaticField("DENSITY_DEVICE_STABLE", on: DisplayMetricsClass)
-        let defaultDensity: Int = try! jni.GetStaticField("DENSITY_DEFAULT", on: DisplayMetricsClass)
-
+        guard
+            let DisplayMetricsClass = try? jni.FindClass(name: "android/util/DisplayMetrics"),
+            let deviceDensity: Int = try? jni.GetStaticField("DENSITY_DEVICE_STABLE", on: DisplayMetricsClass),
+            let defaultDensity: Int = try? jni.GetStaticField("DENSITY_DEFAULT", on: DisplayMetricsClass)
+        else {
+            return 2.0
+        }
         return CGFloat(deviceDensity / defaultDensity)
     }
 #endif

@@ -10,9 +10,9 @@
 import SDL
 import CJNI
 
-var androidMain: (() -> Void)?
+private var androidMain: (() -> Void)?
 
-public func setAndroidMain(_ main: @escaping () -> Void) {
+public func setAndroidMain(_ main: (() -> Void)?) {
     androidMain = main
 }
 
