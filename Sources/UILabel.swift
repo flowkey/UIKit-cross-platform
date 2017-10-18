@@ -67,9 +67,9 @@ open class UILabel: UIView {
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
-        // XXX: We should take numberOfLines into account here!
         guard let text = self.text else { return .zero }
-        return text.size(with: self.font)
+        let wrapLength = (numberOfLines != 1) ? bounds.width : 0
+        return text.size(with: self.font, wrapLength: UInt(wrapLength))
     }
 
     open override func layoutSubviews() {

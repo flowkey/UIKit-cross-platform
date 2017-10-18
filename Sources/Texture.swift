@@ -7,6 +7,7 @@
 //
 
 import SDL
+import Foundation
 
 internal final class Texture {
     let rawPointer: UnsafeMutablePointer<GPU_Image>
@@ -17,34 +18,40 @@ internal final class Texture {
         return CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
     }
 
-    init?(imagePath: String) {
-        guard let image = GPU_LoadImage(imagePath) else { return nil }
-        rawPointer = image
+    init?(imagePtr: UnsafeMutablePointer<GPU_Image>?, scale: Float = 2) {
+        guard let ptr = imagePtr else {
+            return nil
+        }
+        rawPointer = ptr
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
         GPU_SetImageFilter(rawPointer, GPU_FILTER_NEAREST)
+        self.scale = scale
         scaleImage(scale)
+        GPU_SetAnchor(rawPointer, 0, 0)
+    }
+
+    convenience init?(imagePath: String) {
+        self.init(imagePtr: GPU_LoadImage(imagePath))
     }
     
-    init?(surface: UnsafeMutablePointer<SDLSurface>) {
-        guard let image = GPU_CopyImageFromSurface(surface) else { return nil }
-        rawPointer = image
-        GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
-        scaleImage(scale)
+    convenience init?(surface: UnsafeMutablePointer<SDLSurface>) {
+        self.init(imagePtr: GPU_CopyImageFromSurface(surface))
     }
 
-    init?(gpuImage: GPU_Image) {
-        let gpuImagePointer = UnsafeMutablePointer<GPU_Image>.allocate(capacity: 1)
-        gpuImagePointer.initialize(to: gpuImage)
-
-        rawPointer = gpuImagePointer
+    convenience init?(data: Data) {
+        var data = data
+        let gpuImagePtr = data.withUnsafeMutableBytes({ (ptr: UnsafeMutablePointer<Int8>) -> UnsafeMutablePointer<GPU_Image>? in
+            let rw = SDL_RWFromMem(ptr, Int32(data.count))
+            return GPU_LoadImage_RW(rw, false)
+        })
+        self.init(imagePtr: gpuImagePtr)
     }
 
-    init(width: Int, height: Int, format: GPU_FormatEnum) {
-        let scale = 1
-        let image = GPU_CreateImage(UInt16(width), UInt16(height), format)
-        rawPointer = image!
-        GPU_SetAnchor(rawPointer, 0, 0)
-        self.scale = Float(scale)
+    convenience init?(width: Int, height: Int, format: GPU_FormatEnum) {
+        self.init(
+            imagePtr: GPU_CreateImage(UInt16(width), UInt16(height), format),
+            scale: 1
+        )
     }
 
     func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
@@ -67,7 +74,6 @@ internal final class Texture {
         image.base_w /= defaultImageScale
 
         rawPointer.pointee = image
-        GPU_SetAnchor(rawPointer, 0, 0)
     }
 
     deinit {

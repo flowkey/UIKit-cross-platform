@@ -25,12 +25,18 @@ extension UIView {
             needsLayout = false
         }
 
-        let absoluteFrame = visibleLayer.frame.offsetBy(parentAbsoluteFrame.origin).offsetBy(visibleLayer.bounds.origin)
-
         // Render layer and all sublayers
-        visibleLayer.sdlRender(in: parentAbsoluteFrame, parentOpacity: Float(parentAlpha))
+        let clipsToBounds = superview?.clipsToBounds ?? false
+        visibleLayer.sdlRender(
+            in: parentAbsoluteFrame,
+            parentOpacity: Float(parentAlpha),
+            // clip to superView bounds when clipsToBounds is truthy
+            clippingRect: (clipsToBounds ? superview?.bounds : nil)
+
+        )
 
         // Render subviews and their sublayers
+        let absoluteFrame = visibleLayer.frame.offsetBy(parentAbsoluteFrame.origin).offsetBy(-visibleLayer.bounds.origin)
         subviews.forEach { $0.sdlRender(in: absoluteFrame, parentAlpha: alpha) }
     }
 }

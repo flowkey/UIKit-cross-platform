@@ -71,7 +71,7 @@ class ButtonContentAlignmentTests: XCTestCase {
         button.layoutSubviews()
 
         XCTAssertEqual(button.titleLabel!.frame.origin.x, 0.0)
-        XCTAssertEqualWithAccuracy(button.titleLabel!.frame.origin.y, defaultLabelVerticalPaddingAfterSizeToFit, accuracy: 0.0001)
+        XCTAssertEqual(button.titleLabel!.frame.origin.y, defaultLabelVerticalPaddingAfterSizeToFit, accuracy: 0.0001)
     }
 
     func testBottomRightContentAlignmentWithOnlyLabel() {
@@ -147,9 +147,9 @@ class ButtonContentAlignmentTests: XCTestCase {
 
         XCTAssertEqual(button.contentHorizontalAlignment, .center)
         XCTAssertEqual(button.contentVerticalAlignment, .center)
-        XCTAssertEqualWithAccuracy(button.imageView!.frame.origin.x, (buttonSize.width - (testImageSize.width + button.titleLabel!.frame.width)) / 2, accuracy: 0.0001)
+        XCTAssertEqual(button.imageView!.frame.origin.x, (buttonSize.width - (testImageSize.width + button.titleLabel!.frame.width)) / 2, accuracy: 0.0001)
         XCTAssertEqual(button.imageView!.frame.origin.y, buttonSize.height / 2 - testImageSize.height / 2)
-        XCTAssertEqualWithAccuracy(button.titleLabel!.frame.origin.x, (buttonSize.width - button.titleLabel!.frame.width + testImageSize.width) / 2, accuracy: 0.0001)
+        XCTAssertEqual(button.titleLabel!.frame.origin.x, (buttonSize.width - button.titleLabel!.frame.width + testImageSize.width) / 2, accuracy: 0.0001)
         XCTAssertEqual(button.titleLabel!.frame.origin.y.rounded(), ((buttonSize.height - button.titleLabel!.frame.height) / 2).rounded())
     }
 
@@ -166,7 +166,7 @@ class ButtonContentAlignmentTests: XCTestCase {
 
         XCTAssertEqual(button.imageView!.frame.origin.x, 0.0)
         XCTAssertEqual(button.imageView!.frame.origin.y, 0.0)
-        XCTAssertEqualWithAccuracy(button.titleLabel!.frame.origin.x, testImageSize.width, accuracy: 0.0001)
+        XCTAssertEqual(button.titleLabel!.frame.origin.x, testImageSize.width, accuracy: 0.0001)
         XCTAssertEqual(button.titleLabel!.frame.origin.y, 0.0)
     }
 

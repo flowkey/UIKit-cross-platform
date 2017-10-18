@@ -49,9 +49,22 @@ internal final class Window {
         return CGPoint(x: inputX / scale, y: inputY / scale)
     }
 
-    func blit(_ texture: Texture, at destination: CGPoint, opacity: Float) {
+    /// clippingRect behaves like an offset
+    func blit(_ texture: Texture, at destination: CGPoint, opacity: Float, clippingRect: CGRect?) {
         if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
-        GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
+
+        if let clippingRect = clippingRect {
+            var clipGPU_Rect = GPU_Rect(clippingRect)
+            GPU_Blit(
+                texture.rawPointer,
+                &clipGPU_Rect,
+                rawPointer,
+                Float(destination.x + clippingRect.origin.x),
+                Float(destination.y + clippingRect.origin.y)
+            )
+        } else {
+            GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
+        }
     }
 
     func setShapeBlending(_ newValue: Bool) {

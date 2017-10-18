@@ -72,6 +72,7 @@ open class Button: UIControl {
         let titleLabel = UILabel()
         titleLabel.isHidden = true
         addSubview(titleLabel)
+        setTitleColor(.white, for: .normal)
         self.titleLabel = titleLabel
 
         let imageView = UIImageView()

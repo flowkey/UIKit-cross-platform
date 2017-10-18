@@ -7,14 +7,14 @@
 //
 
 public struct UIEdgeInsets {
-    public var left: CGFloat = 0
-    public var right: CGFloat = 0
-    public var top: CGFloat = 0
-    public var bottom: CGFloat = 0
+    public var top: CGFloat
+    public var left: CGFloat
+    public var bottom: CGFloat
+    public var right: CGFloat
 
     public init(top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) {
-        self.left = left; self.right = right; self.top = top; self.bottom = bottom;
+        self.top = top; self.left = left; self.bottom = bottom; self.right = right
     }
 
-    public init() {}
+    public static let zero = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 }

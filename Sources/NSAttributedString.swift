@@ -6,12 +6,6 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-// TODO: add further API for attributes
+import class Foundation.NSAttributedString
+public typealias NSAttributedString = Foundation.NSAttributedString
 
-public class NSAttributedString {
-    public var string: String
-
-    public init(string: String) {
-        self.string = string
-    }
-}
