@@ -26,11 +26,13 @@ extension UIView {
         }
 
         // Render layer and all sublayers
+        let clipsToBounds = superview?.clipsToBounds ?? false
         visibleLayer.sdlRender(
             in: parentAbsoluteFrame,
             parentOpacity: Float(parentAlpha),
             // clip to superView bounds when clipsToBounds is truthy
-            clippingRect: ((superview?.clipsToBounds ?? false) ? superview?.bounds : nil)
+            clippingRect: (clipsToBounds ? superview?.bounds : nil)
+
         )
 
         // Render subviews and their sublayers
