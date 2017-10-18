@@ -143,7 +143,7 @@ public enum UIScrollViewIndicatorStyle {
 
     var backgroundColor: UIColor {
         switch self {
-        case .`default`: return UIColor.black
+        case .`default`: return UIColor.black // TBD: default in iOS UIKit is "black with a white border"
         case .black: return UIColor.black
         case .white: return UIColor.white
         }
