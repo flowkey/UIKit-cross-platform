@@ -9,8 +9,8 @@
 open class VideoPlayer: UIView {
     fileprivate var jniVideo: JNIVideo
 
-    public init(url: String, javaClassPath: String) {
-        self.jniVideo = try! JNIVideo(url: url, javaClassPath: javaClassPath)
+    public init(url: String) {
+        self.jniVideo = try! JNIVideo(url: url)
         super.init(frame: .zero)
     }
 
@@ -23,6 +23,12 @@ open class VideoPlayer: UIView {
 
             jniVideo.setSize(width: scaledWidth, height: scaledHeight)
             jniVideo.setOrigin(x: scaledX, y: scaledY)
+        }
+    }
+
+    public var onVideoEnded: (() -> Void)? {
+        willSet(newValue) {
+            jniVideo.onVideoEnded = newValue
         }
     }
 

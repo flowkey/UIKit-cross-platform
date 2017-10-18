@@ -78,11 +78,11 @@
 		832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
 		832A7F0D1F16368D0041916B /* ButtonContentAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F031F1632250041916B /* ButtonContentAlignmentTests.swift */; };
 		832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832A7F011F1632070041916B /* ButtonSizeToFitTests.swift */; };
-		8330753A1F69768E002089AC /* JNIVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833075391F69768E002089AC /* JNIVideo.swift */; };
 		8333B2C01F1D11B800D98662 /* NSAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8333B2BF1F1D11B800D98662 /* NSAttributedString.swift */; };
 		8337A8131F39F37500475F80 /* UIScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337A8121F39F37500475F80 /* UIScreen.swift */; };
 		8337A8591F3B143400475F80 /* UIActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337A8581F3B143400475F80 /* UIActivityIndicatorView.swift */; };
 		833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */; };
+		8356933C1F8CF6C500C6D253 /* setAndroidMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8356933B1F8CF6C500C6D253 /* setAndroidMain.swift */; };
 		83667C8D1F4D8A6F00780EA6 /* VideoPlayer+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5AC6DC1F1791D0004A88C0 /* VideoPlayer+Mac.swift */; };
 		83667CE01F4DC87B00780EA6 /* AVPlayerLayer+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */; };
 		837335901F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8373358F1F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift */; };
@@ -142,20 +142,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5C1F06B71F321FC500EFF087 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = "JNI::JNI::Product";
-			remoteInfo = JNI;
-		};
-		5C1F06B91F321FC500EFF087 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = "JNI::CJNI::Product";
-			remoteInfo = CJNI;
-		};
 		5C2714DF1F2B9FB90026BBA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
@@ -169,6 +155,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 5C27E7AD1ECB2F6500F5020D;
 			remoteInfo = UIKit;
+		};
+		835693301F8CD3C100C6D253 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "JNI::JNI::Product";
+			remoteInfo = JNI;
+		};
+		835693321F8CD3C100C6D253 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "JNI::CJNI::Product";
+			remoteInfo = CJNI;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -254,6 +254,7 @@
 		8337A8581F3B143400475F80 /* UIActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIActivityIndicatorView.swift; path = Sources/UIActivityIndicatorView.swift; sourceTree = SOURCE_ROOT; };
 		833860AC1F0D55B3004DD55E /* iOSTestTarget.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTestTarget.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		833860B01F0D55B3004DD55E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8356933B1F8CF6C500C6D253 /* setAndroidMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = setAndroidMain.swift; sourceTree = "<group>"; };
 		8373358F1F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSetTitleColorForStateTests.swift; sourceTree = "<group>"; };
 		8378E17D1F05503600E138BD /* UIVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIVisualEffectView.swift; path = ../Sources/UIVisualEffectView.swift; sourceTree = "<group>"; };
 		838545621F26458100B64986 /* UIVisualEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIVisualEffect.swift; path = Sources/UIVisualEffect.swift; sourceTree = SOURCE_ROOT; };
@@ -357,15 +358,6 @@
 				5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */,
 			);
 			name = Animations;
-			sourceTree = "<group>";
-		};
-		5C2714B01F2B86240026BBA9 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5C1F06B81F321FC500EFF087 /* JNI.framework */,
-				5C1F06BA1F321FC500EFF087 /* CJNI.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		5C27E7A41ECB2F6500F5020D = {
@@ -501,6 +493,7 @@
 				83E5F7EC1EF8157300279C59 /* Window.swift */,
 				5CDB31B61F1CE8050081A605 /* Bundle.swift */,
 				5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */,
+				8356933B1F8CF6C500C6D253 /* setAndroidMain.swift */,
 			);
 			name = SDL;
 			path = Sources;
@@ -523,6 +516,15 @@
 				833860B01F0D55B3004DD55E /* Info.plist */,
 			);
 			path = iOSTestTarget;
+			sourceTree = "<group>";
+		};
+		8356932D1F8CD2C000C6D253 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				835693311F8CD3C100C6D253 /* JNI.framework */,
+				835693331F8CD3C100C6D253 /* CJNI.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		83C18F391F0FB486008FEA07 /* Resources */ = {
@@ -677,7 +679,7 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 5C27148D1F2A38E70026BBA9 /* Products */;
+					ProductGroup = 8356932D1F8CD2C000C6D253 /* Products */;
 					ProjectRef = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
 				},
 			);
@@ -691,18 +693,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		5C1F06B81F321FC500EFF087 /* JNI.framework */ = {
+		835693311F8CD3C100C6D253 /* JNI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = JNI.framework;
-			remoteRef = 5C1F06B71F321FC500EFF087 /* PBXContainerItemProxy */;
+			remoteRef = 835693301F8CD3C100C6D253 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		5C1F06BA1F321FC500EFF087 /* CJNI.framework */ = {
+		835693331F8CD3C100C6D253 /* CJNI.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = CJNI.framework;
-			remoteRef = 5C1F06B91F321FC500EFF087 /* PBXContainerItemProxy */;
+			remoteRef = 835693321F8CD3C100C6D253 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -781,6 +783,7 @@
 				83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */,
 				5C6AB71D1ED3BECD006F90AC /* UIImageView.swift in Sources */,
 				5BBEECA51F39E7A6006E3416 /* CGRect+animations.swift in Sources */,
+				8356933C1F8CF6C500C6D253 /* setAndroidMain.swift in Sources */,
 				5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */,
 				83AB7B5C1F2B6A2000C7997D /* UIGestureRecognizerDelegate.swift in Sources */,
 				838545721F26536200B64986 /* NSAttributedStringKey.swift in Sources */,
@@ -820,7 +823,6 @@
 				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
-				8330753A1F69768E002089AC /* JNIVideo.swift in Sources */,
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,
 				83E5F7F61EF81AB500279C59 /* UIFont.swift in Sources */,
 				5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */,
