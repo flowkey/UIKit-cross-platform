@@ -62,7 +62,7 @@ open class UIScrollView: UIView {
         }
     }
 
-    open var contentInset = UIEdgeInsets() //{ didSet {updateBounds()} }
+    open var contentInset: UIEdgeInsets = .zero //{ didSet {updateBounds()} }
     open var contentSize: CGSize = .zero
 
     open var contentOffset: CGPoint = .zero {
@@ -118,7 +118,7 @@ open class UIScrollView: UIView {
         let indicatorYOffset = contentOffset.y + (contentOffset.y / contentSize.height) * bounds.height
 
         verticalScrollIndicator.frame = CGRect(
-            x: bounds.maxX + 5,
+            x: bounds.maxX,
             y: indicatorYOffset,
             width: indicatorWidth,
             height: indicatorHeight

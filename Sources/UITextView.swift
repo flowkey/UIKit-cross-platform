@@ -52,8 +52,10 @@ open class UITextView: UIScrollView {
         return label.sizeThatFits(size)
     }
 
+    private let spaceToVerticalScrollIndicator: CGFloat = 5
+
     override open func layoutSubviews() {
-        label.frame.width = bounds.width
+        label.frame.width = bounds.width - spaceToVerticalScrollIndicator
         label.sizeToFit()
 
         let textHeight = label.frame.height
