@@ -6,6 +6,15 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+#if !os(Android)
+
+import struct Foundation.NSAttributedStringKey
+public typealias NSAttributedStringKey = Foundation.NSAttributedStringKey
+
+#else
+
+import class Foundation.NSMutableAttributedString
+
 public struct NSAttributedStringKey: Hashable, RawRepresentable {
     public typealias RawValue = String
     public var rawValue: String
@@ -23,3 +32,17 @@ public struct NSAttributedStringKey: Hashable, RawRepresentable {
     public static let kern = NSAttributedStringKey(rawValue: "NSKern")
     public static let foregroundColor = NSAttributedStringKey(rawValue: "NSColor")
 }
+
+extension NSMutableAttributedString {
+    open func addAttribute(_ name: NSAttributedStringKey, value: Any, range: NSRange) {
+        self.addAttribute(name.rawValue, value: value, range: range)
+    }
+
+    open func addAttributes(_ attrs: [NSAttributedStringKey : Any], range: NSRange) {
+        attrs.forEach {
+            self.addAttribute($0.key, value: $0.value, range: range)
+        }
+    }
+}
+
+#endif

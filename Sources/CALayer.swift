@@ -18,7 +18,7 @@ open class CALayer {
         }
     }
 
-    public var superlayer: CALayer?
+    internal (set) public var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer] = []
     public func addSublayer(_ layer: CALayer) {
         layer.removeFromSuperlayer()
@@ -83,6 +83,7 @@ open class CALayer {
     public var shadowOffset: CGSize = .zero
     public var shadowRadius: CGFloat = 0
 
+    public var masksToBounds = false
 
     public required init() {}
 
