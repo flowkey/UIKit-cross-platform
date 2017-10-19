@@ -78,7 +78,10 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
         // XXX: revisit this and decide which timer we want to use
         let now = NSDate.timeIntervalSinceReferenceDate
-        timeSinceLastMovement = now - lastMovementTimestamp // optional substraction, see "-" operator for TimeInterval? below
+
+        if let before = lastMovementTimestamp {
+            timeSinceLastMovement = now - before
+        }
         lastMovementTimestamp = now
 
         let location = trackedTouch.location(in: self.view)
@@ -116,9 +119,4 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         initialTouchPoint = .zero
         state = .possible
     }
-}
-
-fileprivate func -(left: TimeInterval?, right: TimeInterval?) -> TimeInterval? {
-    guard let lhs = left, let rhs = right else { return nil }
-    return lhs - rhs
 }
