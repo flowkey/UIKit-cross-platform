@@ -14,7 +14,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var trackedTouch: UITouch?
 
     private var timeSinceLastMovement: TimeInterval?
-    private var lastMovementTime: TimeInterval?
+    private var lastMovementTimestamp: TimeInterval?
 
     private let minimumTranslationThreshold: CGFloat = 5
 
@@ -62,7 +62,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         state = .began
         trackedTouch = firstTouch
         initialTouchPoint = firstTouch.location(in: self.view)
-        lastMovementTime = NSDate.timeIntervalSinceReferenceDate
+        lastMovementTimestamp = NSDate.timeIntervalSinceReferenceDate
     }
 
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -78,8 +78,8 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
         // XXX: revisit this and decide which timer we want to use
         let now = NSDate.timeIntervalSinceReferenceDate
-        timeSinceLastMovement = now - lastMovementTime // optional substraction, see "-" operator for TimeInterval? below
-        lastMovementTime = now
+        timeSinceLastMovement = now - lastMovementTimestamp // optional substraction, see "-" operator for TimeInterval? below
+        lastMovementTimestamp = now
 
         let location = trackedTouch.location(in: self.view)
 
@@ -111,7 +111,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     private func reset() {
         trackedTouch = nil
-        lastMovementTime = nil
+        lastMovementTimestamp = nil
         timeSinceLastMovement = nil
         initialTouchPoint = .zero
         state = .possible
