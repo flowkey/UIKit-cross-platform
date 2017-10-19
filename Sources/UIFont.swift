@@ -49,7 +49,7 @@ open class UIFont: Equatable {
         self.fontName = name
         self.familyName = renderer.getFontFamilyName() ?? "<unknown>"
         self.pointSize = size
-        self.lineHeight = CGFloat(renderer.getLineHeight())
+        self.lineHeight = CGFloat(renderer.getLineHeight()) / UIFont.contentScale
     }
 
     // MARK: Implementation details:
@@ -59,7 +59,7 @@ open class UIFont: Equatable {
     fileprivate let renderer: FontRenderer
 
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> Texture? {
-        return renderer.render(text, color: color, wrapLength: Int(wrapLength))
+        return renderer.render(text, color: color, wrapLength: Int(wrapLength * UIFont.contentScale))
     }
 }
 
@@ -122,11 +122,18 @@ extension UIFont {
 }
 
 extension String {
-    public func size(with font: UIFont) -> CGSize {
-        let unscaledSize = font.renderer.size(of: self)
+    public func size(with font: UIFont, wrapLength: UInt = 0) -> CGSize {
+        let retinaResolutionSize =
+            (wrapLength == 0) ?
+                font.renderer.singleLineSize(of: self) :
+                font.renderer.multilineSize(
+                    of: self,
+                    wrapLength: UInt(CGFloat(wrapLength) * UIFont.contentScale)
+                )
+
         return CGSize(
-            width: unscaledSize.width / UIFont.contentScale,
-            height: unscaledSize.height / UIFont.contentScale
+            width: retinaResolutionSize.width / UIFont.contentScale,
+            height: retinaResolutionSize.height / UIFont.contentScale
         )
     }
 }

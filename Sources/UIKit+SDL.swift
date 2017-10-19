@@ -34,6 +34,7 @@ final public class SDL { // XXX: only public for startRunLoop()
 
         let window = Window(size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT), options: windowOptions)
         rootView.frame.size = window.size
+
         return window
     }()
 
@@ -56,6 +57,7 @@ final public class SDL { // XXX: only public for startRunLoop()
         let fpsView = MeteringView(metric: "FPS")
         fpsView.frame = CGRect(x: 0, y: 0, width: 150, height: 25)
         fpsView.frame.maxX = rootView.bounds.maxX
+        fpsView.isUserInteractionEnabled = false
         fpsView.sizeToFit()
         rootView.addSubview(fpsView)
 
@@ -67,15 +69,17 @@ final public class SDL { // XXX: only public for startRunLoop()
 
             if !DisplayLink.activeDisplayLinks.isEmpty {
                 DisplayLink.activeDisplayLinks.forEach { $0.callback() }
-            } else if !eventWasHandled && !firstRender {
+            } else if !eventWasHandled && !firstRender && !UIView.animationsArePending {
                 // We can avoid updating the screen at all unless there is active touch input
-                // or a running animation. We still need to handle the case of animations here!
+                // or animations are pending for execution
 
                 // Sleep to avoid 100% CPU load when nothing is happening!
                 // Normally this case is covered by the automatic VSYNC in window.flip():
                 sleepFor(milliseconds: (1000.0 / 60.0) - frameTimer.getElapsedTimeInMilliseconds())
                 continue
             }
+
+            UIView.animateIfNeeded(at: frameTimer)
 
             window.clear()
             window.setShapeBlending(true)

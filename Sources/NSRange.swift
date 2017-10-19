@@ -6,17 +6,6 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public struct NSRange {
-    public var location: Int
-    public var length: Int
+import struct Foundation.NSRange
+public typealias NSRange = Foundation.NSRange
 
-    public init() {
-        location = 0
-        length = 0
-    }
-
-    public init(location: Int, length: Int) {
-        self.location = location
-        self.length = length
-    }
-}
