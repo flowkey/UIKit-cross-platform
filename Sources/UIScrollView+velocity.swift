@@ -77,20 +77,10 @@ extension UIScrollView {
         if !isDecelerating { return }
 
         UIView.animate(withDuration: 0, animations: {
-            let currentX = -(layer.presentation?.bounds.origin.x ?? bounds.origin.x)
+            let currentX = layer.presentation?.bounds.origin.x ?? bounds.origin.x
             setContentOffset(CGPoint(x: currentX, y: 0), animated: false)
         })
         isDecelerating = false
-    }
-
-
-    /// does some min/max checks to prevent newOffset being out of bounds
-    func getBoundsCheckedContentOffset(x: CGFloat, y: CGFloat) -> CGPoint {
-        return CGPoint(
-            // XXX: Change this to accommodate `bounce`
-            x: min(max(x, -contentInset.left), contentSize.width - contentInset.right),
-            y: min(max(y, -contentInset.top), contentInset.bottom) // XXX: logically incorrect
-        )
     }
 }
 

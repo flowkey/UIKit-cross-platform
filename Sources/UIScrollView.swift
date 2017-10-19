@@ -35,23 +35,20 @@ open class UIScrollView: UIView {
         let translation = panGestureRecognizer.translation(in: self)
         panGestureRecognizer.setTranslation(.zero, in: self)
 
-<<<<<<< HEAD
         let newOffset = getBoundsCheckedContentOffset(
             x: contentOffset.x - translation.x,
             y: contentOffset.y - translation.y
-=======
-        let newX = contentOffset.x - translation.x
-        let newY = contentOffset.y - translation.y
-
-        // user can scroll starting at contentInset.left until contentInset.right
-        // visible area starts at e.g. contentOffset.x and goes until contentOffset.x + bounds.width
-        let newOffset = CGPoint(
-            x: min(max(newX, -contentInset.left), (contentSize.width + contentInset.right) - bounds.width),
-            y: min(max(newY, -contentInset.top), (contentSize.height + contentInset.bottom) - bounds.height)
->>>>>>> master
         )
 
         setContentOffset(newOffset, animated: false)
+    }
+
+    /// does some min/max checks to prevent newOffset being out of bounds
+    func getBoundsCheckedContentOffset(x: CGFloat, y: CGFloat) -> CGPoint {
+        return CGPoint(
+            x: min(max(x, -contentInset.left), (contentSize.width + contentInset.right) - bounds.width),
+            y: min(max(x, -contentInset.top), (contentSize.height + contentInset.bottom) - bounds.height)
+        )
     }
 
     private func onPanGestureStateChanged() {
