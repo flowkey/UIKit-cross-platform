@@ -235,6 +235,7 @@ open class UIView: UIResponder {
     }
 
     open func sizeToFit() {
+        subviews.forEach { $0.sizeToFit() }
         self.bounds.size = sizeThatFits(self.bounds.size)
         setNeedsLayout()
     }

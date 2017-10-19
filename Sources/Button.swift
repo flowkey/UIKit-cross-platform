@@ -31,9 +31,7 @@ open class Button: UIControl {
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         sizeToFitWasCalled = true
         updateLabelAndImageForCurrentState()
-        titleLabel?.sizeToFit()
-        imageView?.sizeToFit()
-        setNeedsLayout()
+        
         superview?.setNeedsLayout()
 
         guard let titleLabel = titleLabel, let imageView = imageView else {
