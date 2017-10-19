@@ -75,6 +75,7 @@ open class UIView: UIResponder {
     public func layoutIfNeeded() {
         if needsLayout {
             layoutSubviews()
+            needsLayout = false
         }
     }
 
