@@ -18,7 +18,7 @@ open class CALayer {
         }
     }
 
-    public var superlayer: CALayer?
+    internal (set) public var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer] = []
     public func addSublayer(_ layer: CALayer) {
         layer.removeFromSuperlayer()
@@ -42,6 +42,7 @@ open class CALayer {
     /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc)
     open var frame: CGRect = .zero {
         willSet (newFrame) {
+            guard newFrame != frame else { return }
             onWillSet(keyPath: .frame)
         }
         didSet {
@@ -53,6 +54,7 @@ open class CALayer {
 
     open var bounds: CGRect = .zero {
         willSet(newBounds) {
+            guard newBounds != bounds else { return }
             onWillSet(keyPath: .bounds)
         }
         didSet {
@@ -64,6 +66,7 @@ open class CALayer {
 
     public var opacity: Float = 1 {
         willSet(newOpacity) {
+            guard newOpacity != opacity else { return }
             onWillSet(keyPath: .opacity)
         }
     }
@@ -80,6 +83,7 @@ open class CALayer {
     public var shadowOffset: CGSize = .zero
     public var shadowRadius: CGFloat = 0
 
+    public var masksToBounds = false
 
     public required init() {}
 

@@ -76,7 +76,7 @@ extension CGRect {
     }
 
     public func insetBy(dx: CGFloat, dy: CGFloat) -> CGRect {
-        return CGRect(x: origin.x + dx, y: origin.y + dy, width: size.width + dx, height: size.height + dy)
+        return CGRect(x: origin.x + dx, y: origin.y + dy, width: size.width - dx * 2, height: size.height - dy * 2)
     }
 }
 
