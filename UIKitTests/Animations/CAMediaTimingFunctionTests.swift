@@ -40,7 +40,7 @@ class CAMediaTimingFunctionTests: XCTestCase {
         }
     }
 
-    func testCurveEasOutWhenUsingUIViewAnimateWithSpring() {
+    func testCurveEaseOutWhenUsingUIViewAnimateWithSpring() {
         let view = UIView()
         UIView.animate(
             withDuration: 0,
