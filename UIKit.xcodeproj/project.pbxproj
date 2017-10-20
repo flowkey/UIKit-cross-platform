@@ -17,13 +17,11 @@
 		5B840BB71F42FCBD0010AC95 /* AnimatableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */; };
 		5BA1FC4E1F6694CA005843B9 /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA1FC4D1F6694CA005843B9 /* UITextView.swift */; };
 		5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */; };
-		5BA7B40E1F45A6E10040CB58 /* CABasicAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */; };
 		5BBEECA51F39E7A6006E3416 /* CGRect+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */; };
 		5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */; };
 		5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */; };
 		5BD4762E1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD4762D1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift */; };
 		5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */; };
-		5BDE15E11F3DF7AE005620AA /* UIViewAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */; };
 		5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */; };
 		5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */; };
 		5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F06AE1F3210F200EFF087 /* UIViewController.swift */; };
@@ -856,9 +854,7 @@
 				834C94981F6BDE6200F5B40F /* ButtonLayoutingTests.swift in Sources */,
 				83F02DBE1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */,
-				5BA7B40E1F45A6E10040CB58 /* CABasicAnimationTests.swift in Sources */,
 				8323F2821F2FA42A00C121BB /* TestSetup.swift in Sources */,
-				5BDE15E11F3DF7AE005620AA /* UIViewAnimationTests.swift in Sources */,
 				83F02DB71F1798F200347AA8 /* Button.swift in Sources */,
 				83F02DB41F1798D100347AA8 /* loadCustomFont.swift in Sources */,
 				832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */,
