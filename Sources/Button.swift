@@ -28,12 +28,17 @@ open class Button: UIControl {
 
     private var sizeToFitWasCalled = false
 
-    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+    override open func sizeToFit() {
         sizeToFitWasCalled = true
         updateLabelAndImageForCurrentState()
-        
-        superview?.setNeedsLayout()
+        imageView?.sizeToFit()
+        titleLabel?.sizeToFit()
+        super.sizeToFit()
 
+        superview?.setNeedsLayout()
+    }
+
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
         guard let titleLabel = titleLabel, let imageView = imageView else {
             assertionFailure("titleLabel or imageView should always exist in UIKit-SDL Button")
             return size
