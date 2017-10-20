@@ -26,7 +26,6 @@ class ButtonLayoutingTests: XCTestCase {
         }
         let parentView = ParentView()
         parentView.addSubview(button)
-        button.setTitle("some Title", for: .normal)
         button.sizeToFit()
         parentView.layoutIfNeeded()
 
