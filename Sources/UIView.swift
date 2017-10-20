@@ -56,7 +56,7 @@ open class UIView: UIResponder {
         }
     }
 
-    internal var needsLayout = false
+    internal var needsLayout = true
     internal var needsDisplay = true
 
     /// Override this to draw to the layer's texture whenever `self.needsDisplay`
@@ -136,7 +136,6 @@ open class UIView: UIResponder {
 
     open func addSubview(_ view: UIView) {
         insertSubview(view, at: subviews.endIndex)
-        needsLayout = false
     }
 
     open func insertSubview(_ view: UIView, aboveSubview siblingSubview: UIView) {
@@ -236,7 +235,6 @@ open class UIView: UIResponder {
     }
 
     open func sizeToFit() {
-        subviews.forEach { $0.sizeToFit() }
         self.bounds.size = sizeThatFits(self.bounds.size)
         setNeedsLayout()
     }
