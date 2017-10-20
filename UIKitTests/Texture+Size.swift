@@ -15,6 +15,9 @@ extension Texture {
         gpuImage.w = UInt16(size.width)
         gpuImage.h = UInt16(size.height)
 
-        self.init(gpuImage: gpuImage)
+        let gpuImagePtr = UnsafeMutablePointer<GPU_Image>.allocate(capacity: 1)
+        gpuImagePtr.initialize(to: gpuImage)
+
+        self.init(imagePtr: gpuImagePtr)
     }
 }
