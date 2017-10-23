@@ -123,7 +123,7 @@ open class CALayer {
         }
         return CALayer.defaultAction(forKey: event)
     }
-    
+
     // TODO: remove this function after implementing CGImage to get font texture in UIImage extension for fonts
     open func convertToUIImage() -> UIImage? {
         guard let texture = self.texture else { return nil }

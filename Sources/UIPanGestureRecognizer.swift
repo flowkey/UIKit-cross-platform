@@ -6,14 +6,23 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import Foundation
+
 open class UIPanGestureRecognizer: UIGestureRecognizer {
-    private var initialTouchPoint: CGPoint = .zero // should probably be optional instead
+    private var initialTouchPoint: CGPoint?
+
     private var trackedTouch: UITouch?
+
+    private var timeSinceLastMovement: TimeInterval?
+    private var lastMovementTimestamp: TimeInterval?
 
     private let minimumTranslationThreshold: CGFloat = 5
 
     open func translation(in view: UIView?) -> CGPoint {
-        guard let trackedTouch = trackedTouch else { return .zero }
+        guard
+            let trackedTouch = trackedTouch,
+            let initialTouchPoint = initialTouchPoint
+        else { return .zero }
         let currentPosition = trackedTouch.location(in: self.view)
         let point = CGPoint(x: currentPosition.x - initialTouchPoint.x, y: currentPosition.y - initialTouchPoint.y)
         return self.view?.convert(point, to: view) ?? point
@@ -25,27 +34,61 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         initialTouchPoint = CGPoint(x: positionInTargetView.x + point.x, y: positionInTargetView.y + point.y)
     }
 
+    // The velocity of the pan gesture, which is expressed in points per second.
+    // The velocity is broken into horizontal and vertical components.
+    open func velocity(in view: UIView?) -> CGPoint {
+        guard
+            let curPos = trackedTouch?.positionInView,
+            let prevPos = trackedTouch?.previousPositionInView,
+            let timeSinceLastMovement = timeSinceLastMovement,
+            timeSinceLastMovement != 0.0
+        else {
+                return CGPoint.zero
+        }
+
+        // XXX: apple docs say velocity is in points per s (see above)
+        // here we use milliseconds though in order to get results in the same magnitude as in iOS
+        let timeDiffInMs = CGFloat(timeSinceLastMovement)
+
+        return CGPoint(
+            x: (curPos.x - prevPos.x) / timeDiffInMs,
+            y: (curPos.y - prevPos.y) / timeDiffInMs
+        )
+    }
+
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
         guard let firstTouch = touches.first else { return }
         state = .began
         trackedTouch = firstTouch
         initialTouchPoint = firstTouch.location(in: self.view)
+        lastMovementTimestamp = NSDate.timeIntervalSinceReferenceDate
     }
 
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesMoved(touches, with: event)
-        guard let trackedTouch = trackedTouch, touches.first == trackedTouch else {
+        guard
+            let trackedTouch = trackedTouch,
+            touches.first == trackedTouch,
+            let initialTouchPoint = initialTouchPoint
+        else {
             state = .failed
             return
         }
 
-        let currentLocation = trackedTouch.location(in: self.view)
+        // XXX: revisit this and decide which timer we want to use
+        let now = NSDate.timeIntervalSinceReferenceDate
 
-        if
-            state == .began,
-            (currentLocation.x - initialTouchPoint.x).magnitude >= minimumTranslationThreshold ||
-            (currentLocation.y - initialTouchPoint.y).magnitude >= minimumTranslationThreshold
+        if let before = lastMovementTimestamp {
+            timeSinceLastMovement = now - before
+        }
+        lastMovementTimestamp = now
+
+        let location = trackedTouch.location(in: self.view)
+
+        if  state == .began,
+            (location.x - initialTouchPoint.x).magnitude >= minimumTranslationThreshold ||
+            (location.y - initialTouchPoint.y).magnitude >= minimumTranslationThreshold
         {
             // Activate:
             state = .changed
@@ -65,11 +108,14 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     open override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesCancelled(touches, with: event)
+        state = .cancelled
         reset()
     }
 
     private func reset() {
-        self.trackedTouch = nil
+        trackedTouch = nil
+        lastMovementTimestamp = nil
+        timeSinceLastMovement = nil
         initialTouchPoint = .zero
         state = .possible
     }
