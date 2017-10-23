@@ -40,9 +40,9 @@ class UIScrollViewTests: XCTestCase {
     func testDelegateMethods() {
         class DelegationTestScrollView: UIScrollView, UIScrollViewDelegate {
 
-            let beginDraggingExpectation: XCTestExpectation?
-            let didScrollExpectation: XCTestExpectation?
-            let didEndDraggingExpectation: XCTestExpectation?
+            var beginDraggingExpectation: XCTestExpectation?
+            var didScrollExpectation: XCTestExpectation?
+            var didEndDraggingExpectation: XCTestExpectation?
 
             init(
                 beginDraggingExpectation: XCTestExpectation?,
@@ -62,6 +62,7 @@ class UIScrollViewTests: XCTestCase {
 
             func scrollViewDidScroll(_ scrollView: UIScrollView) {
                 self.didScrollExpectation?.fulfill()
+                self.didScrollExpectation = nil // assign nil to avoid multiple calls to didScrollExpectation?.fulfill
             }
 
             func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool) {
