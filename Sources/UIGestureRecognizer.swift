@@ -29,6 +29,14 @@ open class UIGestureRecognizer {
         didSet {
             if state == oldValue { return }
             onStateChanged?()
+            switch state {
+            case .failed, .cancelled:
+                // touchesCancelled(touches: Set<UITouch>, with: UIEvent)
+                state = .possible
+            case .recognized, .ended:
+                state = .possible
+            default: break
+            }
         }
     }
     public var onStateChanged: (() -> Void)? = nil
