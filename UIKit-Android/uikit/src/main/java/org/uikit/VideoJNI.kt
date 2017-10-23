@@ -11,6 +11,7 @@ import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -21,7 +22,7 @@ import org.libsdl.app.SDLActivity
  * Created by chris on 29.08.17.
  */
 
-fun runOnMainThread(block: () -> Unit) {
+private fun runOnMainThread(block: () -> Unit) {
     Handler(Looper.getMainLooper()).post(Runnable {
         kotlin.run(block)
     })
@@ -73,14 +74,15 @@ class VideoJNI(url: String) {
         })
 
         runOnMainThread {
-            videoPlayerLayout = SimpleExoPlayerView(context)
-            videoPlayerLayout?.player = videoPlayer
-            videoPlayerLayout?.useController = false
+            val videoPlayerLayout = SimpleExoPlayerView(context)
+            videoPlayerLayout.player = videoPlayer
+            videoPlayerLayout.useController = false
+            
+            videoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
 
-            val fixedWidthResizeMode = 1
-            videoPlayerLayout?.setResizeMode(fixedWidthResizeMode)
+            UIKitActivity.addChildLayout(videoPlayerLayout)
 
-            if (videoPlayerLayout != null) UIKitActivity.addChildLayout(videoPlayerLayout!!)
+            this.videoPlayerLayout = videoPlayerLayout
         }
     }
 
