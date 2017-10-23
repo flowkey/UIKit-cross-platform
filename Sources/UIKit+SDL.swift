@@ -39,7 +39,11 @@ final public class SDL { // XXX: only public for startRunLoop()
         return window
     }()
 
-    public static func initWithRootView(_ view: UIView) {
+    public static func initialize() {
+        SDL.window.clear() // do something to ensure window exists before anything else happens
+    }
+
+    public static func runWithRootView(_ view: UIView) {
         rootView.addSubview(view)
         startRunLoop()
     }
