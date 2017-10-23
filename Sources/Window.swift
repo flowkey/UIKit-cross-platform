@@ -120,7 +120,7 @@ extension SDLWindowFlags: OptionSet {}
             let deviceDensity: Int = try? jni.GetStaticField("DENSITY_DEVICE_STABLE", on: DisplayMetricsClass),
             let defaultDensity: Int = try? jni.GetStaticField("DENSITY_DEFAULT", on: DisplayMetricsClass)
         {
-            CGFloat(deviceDensity / defaultDensity)
+            return CGFloat(deviceDensity / defaultDensity)
         } else {
             return 2.0 // assume retina
         }

@@ -77,7 +77,7 @@ class VideoJNI(url: String) {
             val videoPlayerLayout = SimpleExoPlayerView(context)
             videoPlayerLayout.player = videoPlayer
             videoPlayerLayout.useController = false
-            
+
             videoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
 
             UIKitActivity.addChildLayout(videoPlayerLayout)

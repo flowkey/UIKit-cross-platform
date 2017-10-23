@@ -28,8 +28,8 @@ open class VideoPlayer: UIView {
     }
 
     public var onVideoEnded: (() -> Void)? {
-        get { return jni.onVideoEnded }
-        set { jni.onVideoEnded = newValue }
+        get { return jniVideo.onVideoEnded }
+        set { jniVideo.onVideoEnded = newValue }
     }
 
     public func play() {
@@ -48,7 +48,7 @@ open class VideoPlayer: UIView {
         jniVideo.seek(to: newTime)
     }
 
-    public var isMuted: Bool = false {
+    public var isMuted: Bool {
         get { return jniVideo.isMuted }
         set { jniVideo.isMuted = newValue }
     }
