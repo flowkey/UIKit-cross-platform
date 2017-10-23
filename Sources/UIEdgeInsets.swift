@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public struct UIEdgeInsets {
+public struct UIEdgeInsets: Equatable {
     public var top: CGFloat
     public var left: CGFloat
     public var bottom: CGFloat
