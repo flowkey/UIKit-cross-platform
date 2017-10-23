@@ -16,10 +16,11 @@ open class VideoPlayer: UIView {
 
     override open var frame: CGRect {
         willSet(newFrame) {
-            let scaledWidth = Double(newFrame.width * UIScreen.main.scale)
-            let scaledHeight = Double(newFrame.height * UIScreen.main.scale)
-            let scaledX = Double(newFrame.origin.x * UIScreen.main.scale)
-            let scaledY = Double(newFrame.origin.y * UIScreen.main.scale)
+            let scale = UIScreen.main.scale
+            let scaledWidth = Double(newFrame.width * scale)
+            let scaledHeight = Double(newFrame.height * scale)
+            let scaledX = Double(newFrame.origin.x * scale)
+            let scaledY = Double(newFrame.origin.y * scale)
 
             jniVideo.setSize(width: scaledWidth, height: scaledHeight)
             jniVideo.setOrigin(x: scaledX, y: scaledY)
@@ -27,9 +28,8 @@ open class VideoPlayer: UIView {
     }
 
     public var onVideoEnded: (() -> Void)? {
-        willSet(newValue) {
-            jniVideo.onVideoEnded = newValue
-        }
+        get { return jni.onVideoEnded }
+        set { jni.onVideoEnded = newValue }
     }
 
     public func play() {
@@ -49,7 +49,8 @@ open class VideoPlayer: UIView {
     }
 
     public var isMuted: Bool = false {
-        willSet { jniVideo.isMuted = newValue }
+        get { return jniVideo.isMuted }
+        set { jniVideo.isMuted = newValue }
     }
 
     public var rate: Double = 1 {
