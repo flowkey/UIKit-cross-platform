@@ -6,13 +6,13 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+// values from iOS
+let UIScrollViewDecelerationRateFast: CGFloat = 0.99
+let UIScrollViewDecelerationRateNormal: CGFloat = 0.998
+
 open class UIScrollView: UIView {
     open var delegate: UIScrollViewDelegate? // TODO: change this to individually settable callbacks
     open var panGestureRecognizer = UIPanGestureRecognizer()
-
-    public var scrollViewWillBeginDragging: (() -> Void)?
-    public var scrollViewDidScroll: (() -> Void)?
-    public var scrollViewDidEndDragging: ((_ willDecelerate: Bool) -> Void)?
 
     private var verticalScrollIndicator = CALayer()
     public var indicatorStyle: UIScrollViewIndicatorStyle = .white
@@ -20,7 +20,7 @@ open class UIScrollView: UIView {
     override public init(frame: CGRect) {
         super.init(frame: frame)
         panGestureRecognizer.onAction = self.onPan
-        panGestureRecognizer.onStateChanged = onPanGestureStateChanged
+        panGestureRecognizer.onStateChanged = self.onPanGestureStateChanged
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
 
@@ -29,30 +29,37 @@ open class UIScrollView: UIView {
         layer.addSublayer(verticalScrollIndicator)
     }
 
-    var lastOnPanTimestamp: Double = 0
+    open var isDecelerating: Bool = false
+
     private func onPan() {
         let translation = panGestureRecognizer.translation(in: self)
         panGestureRecognizer.setTranslation(.zero, in: self)
 
-        let newX = contentOffset.x - translation.x
-        let newY = contentOffset.y - translation.y
-
-        // user can scroll starting at contentInset.left until contentInset.right
-        // visible area starts at e.g. contentOffset.x and goes until contentOffset.x + bounds.width
-        let newOffset = CGPoint(
-            x: min(max(newX, -contentInset.left), (contentSize.width + contentInset.right) - bounds.width),
-            y: min(max(newY, -contentInset.top), (contentSize.height + contentInset.bottom) - bounds.height)
+        let newOffset = getBoundsCheckedContentOffset(
+            x: contentOffset.x - translation.x,
+            y: contentOffset.y - translation.y
         )
 
         setContentOffset(newOffset, animated: false)
+    }
+
+    /// does some min/max checks to prevent newOffset being out of bounds
+    func getBoundsCheckedContentOffset(x: CGFloat, y: CGFloat) -> CGPoint {
+        return CGPoint(
+            x: min(max(x, -contentInset.left), (contentSize.width + contentInset.right) - bounds.width),
+            y: min(max(x, -contentInset.top), (contentSize.height + contentInset.bottom) - bounds.height)
+        )
     }
 
     private func onPanGestureStateChanged() {
         switch panGestureRecognizer.state {
         case .began:
             delegate?.scrollViewWillBeginDragging(self)
+            cancelDeceleratingIfNeccessary()
         case .ended:
             delegate?.scrollViewDidEndDragging(self, willDecelerate: false) // TODO: fix me
+            startDecelerating()
+
             // XXX: Spring back with animation:
             //case .ended, .cancelled:
             //if contentOffset.x < contentInset.left {
