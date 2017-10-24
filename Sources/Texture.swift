@@ -18,6 +18,7 @@ internal class Texture {
         return CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
     }
 
+    /// general GPU_Image init for Texture without image scaling
     init?(ptr: UnsafeMutablePointer<GPU_Image>?) {
         guard let ptr = ptr else { return nil }
         rawPointer = ptr
@@ -26,6 +27,7 @@ internal class Texture {
         GPU_SetAnchor(rawPointer, 0, 0)
     }
 
+    /// specific init for image Texture including default image scaling
     convenience init?(imagePtr: UnsafeMutablePointer<GPU_Image>?, scale: Float = 2) {
         self.init(ptr: imagePtr)
         scaleImage(scale)
