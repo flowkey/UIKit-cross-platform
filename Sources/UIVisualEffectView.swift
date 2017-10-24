@@ -12,6 +12,6 @@ open class UIVisualEffectView: UIView {
         isUserInteractionEnabled = false
 
         // mocked to be always of style dark
-        backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        backgroundColor = UIColor.black.withAlphaComponent(0.85)
     }
 }

@@ -62,7 +62,7 @@ public final class AVPlayerLayer: CALayer {
         let pixelBytes = pixelData.assumingMemoryBound(to: UInt8.self)
 
         if texture?.size != CGSize(width: width, height: height) {
-            texture = Texture(width: width, height: height, format: GPU_FORMAT_RGBA)
+            texture = VideoTexture(width: width, height: height, format: GPU_FORMAT_RGBA)
         }
 
         // Swap R and B values to get RGBA pixels instead of BGRA:
