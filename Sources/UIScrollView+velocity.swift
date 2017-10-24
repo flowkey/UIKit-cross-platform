@@ -75,7 +75,11 @@ extension UIScrollView {
 
     func cancelDeceleratingIfNeccessary() {
         if !isDecelerating { return }
-        layer.removeAnimation(forKey: "bounds")
+
+        UIView.animate(withDuration: 0, animations: {
+            let currentX = layer.presentation?.bounds.origin.x ?? bounds.origin.x
+            setContentOffset(CGPoint(x: currentX, y: 0), animated: false)
+        })
         isDecelerating = false
     }
 }
