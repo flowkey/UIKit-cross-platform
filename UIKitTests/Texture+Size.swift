@@ -11,13 +11,12 @@
 extension Texture {
     convenience init?(size: CGSize) {
         var gpuImage = GPU_Image()
-
         gpuImage.w = UInt16(size.width)
         gpuImage.h = UInt16(size.height)
 
-        let gpuImagePtr = UnsafeMutablePointer<GPU_Image>.allocate(capacity: 1)
-        gpuImagePtr.initialize(to: gpuImage)
+        let gpuImagePointer = UnsafeMutablePointer<GPU_Image>.allocate(capacity: 1)
+        gpuImagePointer.initialize(to: gpuImage)
 
-        self.init(imagePtr: gpuImagePtr)
+        self.init(imagePtr: gpuImagePointer)
     }
 }

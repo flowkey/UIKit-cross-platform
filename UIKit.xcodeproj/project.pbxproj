@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		032A99F51F9DFF61002428A2 /* UIGestureRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032A99F41F9DFF61002428A2 /* UIGestureRecognizerTests.swift */; };
+		0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */; };
+		03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03760AE51F67E73300F36283 /* UIScrollViewTests.swift */; };
+		03C4872A1F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */; };
 		5B115C5E1F61DBF800AAB895 /* UIProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */; };
 		5B1D6F3E1F8E264F009CE5B4 /* NSMutableAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D961341F2635D5005176DC /* NSMutableAttributedString.swift */; };
 		5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */; };
@@ -172,6 +176,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		032A99F41F9DFF61002428A2 /* UIGestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIGestureRecognizerTests.swift; sourceTree = "<group>"; };
+		0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIScrollView+velocity.swift"; path = "Sources/UIScrollView+velocity.swift"; sourceTree = SOURCE_ROOT; };
+		03760AE51F67E73300F36283 /* UIScrollViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewTests.swift; sourceTree = "<group>"; };
+		03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPanGestureRecognizerTests.swift; sourceTree = "<group>"; };
 		5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIProgressView.swift; path = Sources/UIProgressView.swift; sourceTree = SOURCE_ROOT; };
 		5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CAMediaTimingFunction.swift; path = Sources/CAMediaTimingFunction.swift; sourceTree = SOURCE_ROOT; };
 		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = Sources/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
@@ -329,6 +337,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		03C487271F750C74004BAA0C /* Gestures */ = {
+			isa = PBXGroup;
+			children = (
+				032A99F41F9DFF61002428A2 /* UIGestureRecognizerTests.swift */,
+				03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */,
+			);
+			path = Gestures;
+			sourceTree = "<group>";
+		};
 		5BA7B40D1F45A6C30040CB58 /* Animations */ = {
 			isa = PBXGroup;
 			children = (
@@ -425,6 +442,7 @@
 				83AB7B591F2B679600C7997D /* UIPinchGestureRecognizer.swift */,
 				5C6AB7701ED680BC006F90AC /* UIResponder.swift */,
 				5C6AB75E1ED575CF006F90AC /* UIScrollView.swift */,
+				0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */,
 				5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */,
 				5C6AB7811EDC18BA006F90AC /* UITouch.swift */,
 				5C6AB7161ED3BECD006F90AC /* UIView.swift */,
@@ -447,6 +465,7 @@
 		5C27E7BB1ECB2F6500F5020D /* UIKitTests */ = {
 			isa = PBXGroup;
 			children = (
+				03C487271F750C74004BAA0C /* Gestures */,
 				83F02DBB1F179B0300347AA8 /* Button */,
 				5BA7B40D1F45A6C30040CB58 /* Animations */,
 				5C9037201F137FB70058E592 /* CGRectTests.swift */,
@@ -455,6 +474,7 @@
 				83F02DB01F17988F00347AA8 /* Texture+Size.swift */,
 				83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */,
 				5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */,
+				03760AE51F67E73300F36283 /* UIScrollViewTests.swift */,
 				8323F27F1F2FA2EE00C121BB /* TestSetup.swift */,
 				5CF2BEED1F8D1BD7009FCA1E /* UIFontTests.swift */,
 			);
@@ -820,6 +840,7 @@
 				5C3716B61F10050600B2C366 /* Timer.swift in Sources */,
 				5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
+				0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */,
 				83AB7B5A1F2B679600C7997D /* UIPinchGestureRecognizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -830,12 +851,15 @@
 			files = (
 				83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */,
 				834C94971F6BDE6200F5B40F /* ButtonLayoutingTests.swift in Sources */,
+				03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */,
 				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
+				03C4872A1F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift in Sources */,
 				5BD4762E1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift in Sources */,
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
 				5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */,
 				8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */,
 				5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */,
+				032A99F51F9DFF61002428A2 /* UIGestureRecognizerTests.swift in Sources */,
 				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
 				83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */,
 				83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */,
