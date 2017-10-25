@@ -15,10 +15,7 @@ internal class Texture {
     let size: CGSize
 
     /**
-     Initialize a `Texture` by passing a reference to a `GPU_Image`.
-
-     - parameter pointer:
-         Usually the result of the SDL_gpu's `GPU_*Image*` creation functions. May be null.
+     Initialize a `Texture` by passing a reference to a `GPU_Image`, which is usually the result of SDL_gpu's `GPU_*Image*` creation functions. May be null.
 
      - parameter scale:
          Values other than 1.0 will scale the given GPU_Image proportionally in both dimensions. e.g. A scale of 2.0 will internally change the reported size of a GPU_Image with dimensions (w: 100, 100) to (w: 50, h: 50), without changing the actual pixel buffers. The result is that SDL_gpu's blitted output will appear to take up less pixels at higher scale, but with a higher pixel density.
