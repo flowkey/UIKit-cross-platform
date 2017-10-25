@@ -33,21 +33,26 @@ final public class SDL { // XXX: only public for startRunLoop()
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
 
         let window = Window(size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT), options: windowOptions)
+
         rootView.frame.size = window.size
 
         return window
     }()
+
+    public static func initialize() {
+        SDL.window.clear() // do something to ensure window exists before anything else happens
+    }
+
+    public static func runWithRootView(_ view: UIView) {
+        rootView.addSubview(view)
+        startRunLoop()
+    }
 
     public static func startRunLoop() {
         if isRunning == false {
             isRunning = true
             _startRunLoop()
         }
-    }
-
-    public static func initialize() {
-        SDL.window.clear() // do something random to ensure that `SDL.window` exists
-        UIFont.loadSystemFonts()
     }
 
     private static var isRunning = false
@@ -83,6 +88,10 @@ final public class SDL { // XXX: only public for startRunLoop()
 
             window.clear()
             window.setShapeBlending(true)
+
+            // fixes video surface visibility with transparent & opaque views in SDLSurface above
+            // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
+            window.setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
             rootView.sdlRender()
             window.flip()
 

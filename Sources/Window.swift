@@ -7,10 +7,12 @@
 //
 
 import SDL
+import JNI
 
 internal final class Window {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
     let size: CGSize
+    let scale: CGFloat
 
     // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
     // The easiest solution is just to work in 1:1 pixels
@@ -18,6 +20,8 @@ internal final class Window {
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
 
         GPU_SetPreInitFlags(GPU_INIT_ENABLE_VSYNC)
+
+        UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
 
         var size = size
         if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
@@ -29,21 +33,20 @@ internal final class Window {
         rawPointer = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue)!
 
         #if os(Android)
-            GPU_SetVirtualResolution(rawPointer, UInt16(size.width / 2), UInt16(size.height / 2))
-            size.width /= 2
-            size.height /= 2
-            pixelCoordinateContentScale = 2
-        #else // Mac:
-            pixelCoordinateContentScale = 1
+            scale = getAndroidDeviceScale()
+
+            GPU_SetVirtualResolution(rawPointer, UInt16(size.width / scale), UInt16(size.height / scale))
+            size.width /= scale
+            size.height /= scale
+        #else
+            scale = 1.0 // for Mac
         #endif
         
         self.size = size
     }
 
-    private let pixelCoordinateContentScale: CGFloat
-
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
-        return CGPoint(x: inputX / pixelCoordinateContentScale, y: inputY / pixelCoordinateContentScale)
+        return CGPoint(x: inputX / scale, y: inputY / scale)
     }
 
     /// clippingRect behaves like an offset
@@ -62,6 +65,14 @@ internal final class Window {
         } else {
             GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
         }
+    }
+
+    func setShapeBlending(_ newValue: Bool) {
+        GPU_SetShapeBlending(newValue)
+    }
+
+    func setShapeBlendMode(_ newValue: GPU_BlendPresetEnum) {
+        GPU_SetShapeBlendMode(newValue)
     }
 
     func clear() {
@@ -90,10 +101,6 @@ internal final class Window {
         }
     }
 
-    func setShapeBlending(_ newValue: Bool) {
-        GPU_SetShapeBlending(newValue)
-    }
-
     func flip() {
         GPU_Flip(rawPointer)
     }
@@ -105,3 +112,17 @@ internal final class Window {
 }
 
 extension SDLWindowFlags: OptionSet {}
+
+#if os(Android)
+    fileprivate func getAndroidDeviceScale() -> CGFloat {
+        if
+            let DisplayMetricsClass = try? jni.FindClass(name: "android/util/DisplayMetrics"),
+            let deviceDensity: Int = try? jni.GetStaticField("DENSITY_DEVICE_STABLE", on: DisplayMetricsClass),
+            let defaultDensity: Int = try? jni.GetStaticField("DENSITY_DEFAULT", on: DisplayMetricsClass)
+        {
+            return CGFloat(deviceDensity / defaultDensity)
+        } else {
+            return 2.0 // assume retina
+        }
+    }
+#endif

@@ -9,25 +9,28 @@
 import SDL
 import Foundation
 
-internal final class Texture {
+internal class Texture {
     let rawPointer: UnsafeMutablePointer<GPU_Image>
 
-    var scale: Float
+    var scale = Float(SDL.window.scale)
 
     var size: CGSize {
         return CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
     }
 
-    init?(imagePtr: UnsafeMutablePointer<GPU_Image>?, scale: Float = 2) {
-        guard let ptr = imagePtr else {
-            return nil
-        }
+    /// general GPU_Image init for Texture without image scaling
+    init?(ptr: UnsafeMutablePointer<GPU_Image>?) {
+        guard let ptr = ptr else { return nil }
         rawPointer = ptr
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
         GPU_SetImageFilter(rawPointer, GPU_FILTER_NEAREST)
-        self.scale = scale
-        scaleImage(scale)
         GPU_SetAnchor(rawPointer, 0, 0)
+    }
+
+    /// specific init for image Texture including default image scaling
+    convenience init?(imagePtr: UnsafeMutablePointer<GPU_Image>?, scale: Float = 2) {
+        self.init(ptr: imagePtr)
+        scaleImage(scale)
     }
 
     convenience init?(imagePath: String) {
@@ -47,31 +50,22 @@ internal final class Texture {
         self.init(imagePtr: gpuImagePtr)
     }
 
-    convenience init?(width: Int, height: Int, format: GPU_FormatEnum) {
-        self.init(
-            imagePtr: GPU_CreateImage(UInt16(width), UInt16(height), format),
-            scale: 1
-        )
-    }
-
     func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
         var rect = GPU_Rect(x: 0, y: 0, w: Float(rawPointer.pointee.w), h: Float(rawPointer.pointee.h))
         GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * Int32(bytesPerPixel))
     }
 
-    private func scaleImage(_ scale: Float) {
+    private func scaleImage(_ scale: Float = 2) { // XXX: get scale this from image path
         var image = rawPointer.pointee
-
-        let scale = UInt16(scale)
-        self.scale = Float(scale) // rounded value
+        self.scale = scale
         
         // Setting the scale here allows the texture to render at the expected size automatically
-        image.h /= scale
-        image.w /= scale
-        image.texture_h /= scale
-        image.texture_w /= scale
-        image.base_h /= scale
-        image.base_w /= scale
+        image.h /= UInt16(scale)
+        image.w /= UInt16(scale)
+        image.texture_h /= UInt16(scale)
+        image.texture_w /= UInt16(scale)
+        image.base_h /= UInt16(scale)
+        image.base_w /= UInt16(scale)
 
         rawPointer.pointee = image
     }
