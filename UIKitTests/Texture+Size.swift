@@ -17,6 +17,6 @@ extension Texture {
         let gpuImagePointer = UnsafeMutablePointer<GPU_Image>.allocate(capacity: 1)
         gpuImagePointer.initialize(to: gpuImage)
 
-        self.init(imagePtr: gpuImagePointer)
+        self.init(gpuImagePointer)
     }
 }
