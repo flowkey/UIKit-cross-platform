@@ -107,4 +107,20 @@ class UIViewTests: XCTestCase {
         XCTAssertEqual(rootView.hitTest(CGPoint(x: 60, y: 60), with: nil), subview1subview1)
         XCTAssertNil(rootView.hitTest(CGPoint(x: -1, y: -1), with: nil))
     }
+
+    func testNeedsLayoutDefaultTrue() {
+        class ParentView: UIView {
+            override func layoutSubviews() {
+                super.layoutSubviews()
+                for view in subviews { view.frame.size = CGSize(width: 300, height: 100) }
+            }
+        }
+        let parentView = ParentView()
+        let subview = UIView(frame: .zero)
+        parentView.addSubview(subview)
+        parentView.layoutIfNeeded()
+
+        XCTAssertEqual(subview.frame.width, 300)
+        XCTAssertEqual(subview.frame.height, 100)
+    }
 }

@@ -20,10 +20,7 @@ extension UIView {
             needsDisplay = false
         }
 
-        if needsLayout {
-            layoutSubviews()
-            needsLayout = false
-        }
+        layoutIfNeeded()
 
         // Render layer and all sublayers
         let clipsToBounds = superview?.clipsToBounds ?? false
