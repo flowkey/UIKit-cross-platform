@@ -8,7 +8,7 @@
 
 internal final class VideoTexture: Texture {
     convenience init?(width: Int, height: Int, format: GPU_FormatEnum) {
-        self.init(ptr: GPU_CreateImage(UInt16(width), UInt16(height), format))
+        self.init(GPU_CreateImage(UInt16(width), UInt16(height), format), scale: 1.0)
     }
 }
 

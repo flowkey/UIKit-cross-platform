@@ -39,15 +39,24 @@ internal final class Window {
             size.width /= scale
             size.height /= scale
         #else
-            scale = 1.0 // for Mac
+            // Mac:
+            scale = CGFloat(rawPointer.pointee.base_h) / CGFloat(rawPointer.pointee.h)
         #endif
         
         self.size = size
     }
 
+    #if os(macOS)
+    // SDL scales our touch events for us on Mac, which means we need a special case for it:
+    func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
+        return CGPoint(x: inputX, y: inputY)
+    }
+    #else
+    // On all other platforms, we scale the touch events to the screen size manually:
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
         return CGPoint(x: inputX / scale, y: inputY / scale)
     }
+    #endif
 
     /// clippingRect behaves like an offset
     func blit(_ texture: Texture, at destination: CGPoint, opacity: Float, clippingRect: CGRect?) {
