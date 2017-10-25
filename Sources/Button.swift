@@ -26,15 +26,17 @@ open class Button: UIControl {
         }
     }
 
+    /// iOS strangely has different behaviour in layoutSubviews depending on whether sizeToFit was (ever) called beforehand
     private var sizeToFitWasCalled = false
 
     override open func sizeToFit() {
+        super.sizeToFit()
         sizeToFitWasCalled = true
         updateLabelAndImageForCurrentState()
         imageView?.sizeToFit()
         titleLabel?.sizeToFit()
-        super.sizeToFit()
 
+        // It seems weird to access the superview here but it matches the iOS behaviour
         superview?.setNeedsLayout()
     }
 
