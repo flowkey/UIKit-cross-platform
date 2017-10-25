@@ -47,12 +47,12 @@ internal final class Window {
     }
 
     #if os(macOS)
-    // SDL scales our touch events for us on Mac, which is confusing:
+    // SDL scales our touch events for us on Mac, which means we need a special case for it:
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
         return CGPoint(x: inputX, y: inputY)
     }
     #else
-    // Scale
+    // On all other platforms, we scale the touch events to the screen size manually:
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
         return CGPoint(x: inputX / scale, y: inputY / scale)
     }
