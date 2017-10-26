@@ -56,7 +56,8 @@ internal class Texture {
     }
     
     convenience init?(surface: UnsafeMutablePointer<SDLSurface>) {
-        self.init(GPU_CopyImageFromSurface(surface))
+        // currently not scaling Fonts & Icons so they stay the same size on the screen on higher resolution devices
+        self.init(GPU_CopyImageFromSurface(surface), scale: 2)
     }
 
     convenience init?(data: Data) {
