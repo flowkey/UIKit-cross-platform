@@ -67,7 +67,10 @@ internal class Texture {
             return GPU_LoadImage_RW(rw, false)
         }
 
-        self.init(gpuImagePtr)
+        // TODO: since all the sheets seem to have a scale factor of two, we have to pass this scale factor,
+        // otherwise on lower dpi screens they appear too big (e.g. on external Full HD screen with a windows scale of 1)
+        // maybe we should pass the scale factor into this init function?
+        self.init(gpuImagePtr, scale: 2)
     }
 
     func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
