@@ -10,28 +10,23 @@ import SDL
 import Foundation
 
 public class UIImage {
-    var texture: Texture
+    public let cgImage: CGImage
 
-    public let size: CGSize
-    public let scale: Double
+    public var size: CGSize { return cgImage.size }
+    public let scale: CGFloat
 
-    public init?(path: String) {
-        guard let texture = Texture(imagePath: path) else { return nil }
-        self.texture = texture
-        self.size = texture.size
-        scale = 2 // TODO: get from last path component
+    public init(cgImage: CGImage, scale: CGFloat) {
+        self.cgImage = cgImage
+        self.scale = scale
+    }
+
+    public convenience init?(path: String) {
+        guard let cgImage = CGImage(imagePath: path) else { return nil }
+        self.init(cgImage: cgImage, scale: 2.0) // TODO: get scale from last path component
     }
 
     public convenience init?(data: Data) {
-        guard let texture = Texture(data: data) else {
-            return nil
-        }
-        self.init(texture: texture)
-    }
-
-    init(texture: Texture) {
-        self.texture = texture
-        self.size = texture.size
-        scale = 2 // TODO: get from last path component
+        guard let cgImage = CGImage(data: data) else { return nil }
+        self.init(cgImage: cgImage, scale: 1)
     }
 }

@@ -18,6 +18,15 @@ extension CALayer {
         // Big performance optimization. Don't render anything that's entirely offscreen:
         if !absoluteFrame.intersects(SDL.rootView.bounds) { return }
 
+        if let mask = mask, let maskContents = mask.contents {
+//            GPU_FlushBlitBuffer();
+
+            ShaderProgram.mask.set(maskImage: maskContents)
+            ShaderProgram.mask.activate()
+
+//            SDL.window.blit(maskContents, at: absoluteFrame.origin, opacity: opacity, clippingRect: nil)
+        }
+
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
             SDL.window.fill(
@@ -49,10 +58,23 @@ extension CALayer {
             }
         }
 
-        if let texture = texture {
+        if let contents = contents {
             // Later use more advanced blit funcs (with rotation, scale etc)
-            SDL.window.blit(texture, at: absoluteFrame.origin, opacity: opacity, clippingRect: clippingRect)
+            SDL.window.blit(contents, at: absoluteFrame.origin, opacity: opacity, clippingRect: clippingRect)
         }
-        sublayers.forEach { ($0.presentation ?? $0).sdlRender(in: absoluteFrame.offsetBy(-bounds.origin), parentOpacity: opacity, clippingRect: clippingRect) }
+
+        if mask != nil {
+            ShaderProgram.deactivateAll()
+            GPU_ResetRendererState();
+        }
+
+        sublayers.forEach { sublayer in
+            let sublayerToRender = sublayer.presentation ?? sublayer
+            sublayerToRender.sdlRender(
+                in: absoluteFrame.offsetBy(-bounds.origin),
+                parentOpacity: opacity,
+                clippingRect: clippingRect
+            )
+        }
     }
 }

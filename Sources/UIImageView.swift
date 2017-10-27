@@ -7,6 +7,10 @@
 //
 
 open class UIImageView: UIView {
+    public var image: UIImage? {
+        didSet { updateTextureFromImage() }
+    }
+
     public init(image: UIImage? = nil) {
         self.image = image
         super.init(frame: .zero)
@@ -22,17 +26,11 @@ open class UIImageView: UIView {
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
-
         isUserInteractionEnabled = false
     }
 
     private func updateTextureFromImage() {
-        guard let image = image else { return }
-        layer.texture = image.texture
-    }
-
-    public var image: UIImage? {
-        didSet { updateTextureFromImage() }
+        layer.contents = image?.cgImage
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {

@@ -9,10 +9,14 @@
 import SDL
 import Foundation
 
-internal class Texture {
+public class CGImage {
     let rawPointer: UnsafeMutablePointer<GPU_Image>
     let scale: CGFloat
     let size: CGSize
+
+//    init?(width: Int, height: Int, bitsPerComponent: Int, bitsPerPixel: Int, bytesPerRow: Int, space: CGColorSpace, bitmapInfo: CGBitmapInfo, provider: CGDataProvider, decode: UnsafePointer<CGFloat>?, shouldInterpolate: Bool, intent: CGColorRenderingIntent) {
+//
+//    }
 
     /**
      Initialize a `Texture` by passing a reference to a `GPU_Image`, which is usually the result of SDL_gpu's `GPU_*Image*` creation functions. May be null.
@@ -22,7 +26,7 @@ internal class Texture {
 
          Defaults to `SDL.window.scale`.
      */
-    init?(_ pointer: UnsafeMutablePointer<GPU_Image>?, scale: CGFloat = SDL.window.scale) {
+    internal init?(_ pointer: UnsafeMutablePointer<GPU_Image>?, scale: CGFloat = SDL.window.scale) {
         guard let pointer = pointer else { return nil }
         self.scale = scale
         rawPointer = pointer
@@ -48,6 +52,8 @@ internal class Texture {
             width: Int(rawPointer.pointee.w),
             height: Int(rawPointer.pointee.h)
         )
+
+        GPU_GenerateMipmaps(rawPointer)
     }
 
     convenience init?(imagePath: String) {

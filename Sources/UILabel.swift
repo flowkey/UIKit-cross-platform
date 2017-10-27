@@ -55,7 +55,7 @@ open class UILabel: UIView {
     open override func draw() {
         super.draw()
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
-        textLayer.texture = font.render(text, color: textColor, wrapLength: wrapLength)
+        textLayer.contents = font.render(text, color: textColor, wrapLength: wrapLength)
         setNeedsLayout() // to realign text if needed
     }
 

@@ -59,20 +59,20 @@ internal final class Window {
     #endif
 
     /// clippingRect behaves like an offset
-    func blit(_ texture: Texture, at destination: CGPoint, opacity: Float, clippingRect: CGRect?) {
-        if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
+    func blit(_ image: CGImage, at destination: CGPoint, opacity: Float, clippingRect: CGRect?) {
+        if opacity < 1 { GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
 
         if let clippingRect = clippingRect {
             var clipGPU_Rect = GPU_Rect(clippingRect)
             GPU_Blit(
-                texture.rawPointer,
+                image.rawPointer,
                 &clipGPU_Rect,
                 rawPointer,
                 Float(destination.x + clippingRect.origin.x),
                 Float(destination.y + clippingRect.origin.y)
             )
         } else {
-            GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
+            GPU_Blit(image.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
         }
     }
 

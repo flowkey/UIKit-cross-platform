@@ -58,7 +58,7 @@ open class UIFont: Equatable {
     /// If we ever want to change the backend, we should only have to change the FontRenderer class:
     fileprivate let renderer: FontRenderer
 
-    internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> Texture? {
+    internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
         return renderer.render(text, color: color, wrapLength: Int(wrapLength * UIFont.contentScale))
     }
 }
