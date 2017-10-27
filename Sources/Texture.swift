@@ -55,22 +55,18 @@ internal class Texture {
         self.init(GPU_LoadImage(imagePath), scale: 2)
     }
     
-    convenience init?(surface: UnsafeMutablePointer<SDLSurface>) {
-        // currently not scaling Fonts & Icons so they stay the same size on the screen on higher resolution devices
-        self.init(GPU_CopyImageFromSurface(surface), scale: 2)
+    convenience init?(surface: UnsafeMutablePointer<SDLSurface>, scale: CGFloat) {
+        self.init(GPU_CopyImageFromSurface(surface), scale: scale)
     }
 
-    convenience init?(data: Data) {
+    convenience init?(data: Data, scale: CGFloat) {
         var data = data
         let gpuImagePtr = data.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<Int8>) -> UnsafeMutablePointer<GPU_Image>? in
             let rw = SDL_RWFromMem(ptr, Int32(data.count))
             return GPU_LoadImage_RW(rw, false)
         }
 
-        // TODO: since all the sheets seem to have a scale factor of two, we have to pass this scale factor,
-        // otherwise on lower dpi screens they appear too big (e.g. on external Full HD screen with a windows scale of 1)
-        // maybe we should pass the scale factor into this init function?
-        self.init(gpuImagePtr, scale: 2)
+        self.init(gpuImagePtr, scale: scale)
     }
 
     func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
