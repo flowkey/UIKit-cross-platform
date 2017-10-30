@@ -72,7 +72,6 @@
 		5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */; };
 		5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDB31B61F1CE8050081A605 /* Bundle.swift */; };
 		5CDC14CC1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */; };
-		5CDC14CF1FA0F008007CDCA3 /* CommonShaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDC14CE1FA0F008007CDCA3 /* CommonShaders.swift */; };
 		5CDC14D41FA104C5007CDCA3 /* CGBitmapInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDC14D31FA104C5007CDCA3 /* CGBitmapInfo.swift */; };
 		5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */; };
 		5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */; };
@@ -258,7 +257,6 @@
 		5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGDataProvider.swift; sourceTree = "<group>"; };
 		5CDB31B61F1CE8050081A605 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+mask.swift"; sourceTree = "<group>"; };
-		5CDC14CE1FA0F008007CDCA3 /* CommonShaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonShaders.swift; sourceTree = "<group>"; };
 		5CDC14D31FA104C5007CDCA3 /* CGBitmapInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CGBitmapInfo.swift; path = Sources/CGBitmapInfo.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIPanGestureRecognizer.swift; path = Sources/UIPanGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITapGestureRecognizer.swift; path = Sources/UITapGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
@@ -541,7 +539,6 @@
 		5C664CD11FA0DBDF008F41D6 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
-				5CDC14CE1FA0F008007CDCA3 /* CommonShaders.swift */,
 				5C664CD31FA0DBFC008F41D6 /* MaskingShaders.swift */,
 				5C664CD51FA0DF1D008F41D6 /* Shader.swift */,
 				5C664CD71FA0E640008F41D6 /* ShaderProgram.swift */,
@@ -890,7 +887,6 @@
 				5CDC14D41FA104C5007CDCA3 /* CGBitmapInfo.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
 				5B1D6F3E1F8E264F009CE5B4 /* NSMutableAttributedString.swift in Sources */,
-				5CDC14CF1FA0F008007CDCA3 /* CommonShaders.swift in Sources */,
 				83023EC81F9E31D400389F89 /* VideoTexture+Mac.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,

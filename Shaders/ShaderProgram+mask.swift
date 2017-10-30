@@ -21,7 +21,7 @@ class MaskShaderProgram: ShaderProgram {
 
     // we only need one MaskShaderProgram, which we can / should treat as a singleton
     fileprivate init() throws {
-        try super.init(vertexShader: .common, fragmentShader: .maskImageWithImage)
+        try super.init(vertexShader: .common, fragmentShader: .maskColourWithImage)
         maskMinX = UniformVariable("maskMinX", in: programRef)
         maskMinY = UniformVariable("maskMinY", in: programRef)
         maskWidth = UniformVariable("maskWidth", in: programRef)
