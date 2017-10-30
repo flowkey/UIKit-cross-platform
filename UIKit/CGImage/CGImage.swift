@@ -14,12 +14,8 @@ public class CGImage {
     let scale: CGFloat
     let size: CGSize
 
-//    init?(width: Int, height: Int, bitsPerComponent: Int, bitsPerPixel: Int, bytesPerRow: Int, space: CGColorSpace, bitmapInfo: CGBitmapInfo, provider: CGDataProvider, decode: UnsafePointer<CGFloat>?, shouldInterpolate: Bool, intent: CGColorRenderingIntent) {
-//
-//    }
-
     /**
-     Initialize a `Texture` by passing a reference to a `GPU_Image`, which is usually the result of SDL_gpu's `GPU_*Image*` creation functions. May be null.
+     Initialize a `CGImage` by passing a reference to a `GPU_Image`, which is usually the result of SDL_gpu's `GPU_*Image*` creation functions. May be null.
 
      - parameter scale:
          Values other than 1.0 will scale the given GPU_Image proportionally in both dimensions. e.g. A scale of 2.0 will internally change the reported size of a GPU_Image with dimensions (w: 100, 100) to (w: 50, h: 50), without changing the actual pixel buffers. The result is that SDL_gpu's blitted output will appear to take up less pixels at higher scale, but with a higher pixel density.
@@ -58,7 +54,7 @@ public class CGImage {
 
     convenience init?(imagePath: String) {
         // TODO: get scale factor from `imagePath` (e.g. @2x means scale == 2)
-        self.init(GPU_LoadImage(imagePath), scale: 2)
+        self.init(GPU_LoadImage(imagePath), scale: 2.0)
     }
     
     convenience init?(surface: UnsafeMutablePointer<SDLSurface>) {
