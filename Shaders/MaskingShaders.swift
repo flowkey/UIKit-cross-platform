@@ -31,20 +31,16 @@ extension FragmentShader {
     static let maskColourWithImage = try! FragmentShader(source: """
         in vec4 originalColour;
         in vec2 absolutePixelPos;
-
         out vec4 fragColor;
 
-        uniform float maskMinX;
-        uniform float maskMinY;
-        uniform float maskWidth;
-        uniform float maskHeight;
+        uniform vec4 maskFrame;
         uniform sampler2D maskTexture;
 
         void main(void)
         {
             vec2 maskCoordinate = vec2(
-                ((absolutePixelPos.x - maskMinX) / maskWidth),
-                ((absolutePixelPos.y - maskMinY) / maskHeight)
+                ((absolutePixelPos.x - maskFrame.x) / maskFrame.w),
+                ((absolutePixelPos.y - maskFrame.y) / maskFrame.z) // z == height
             );
 
             vec4 maskColour = texture(maskTexture, maskCoordinate);

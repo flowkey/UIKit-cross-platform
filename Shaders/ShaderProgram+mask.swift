@@ -13,7 +13,7 @@ extension ShaderProgram {
 }
 
 class MaskShaderProgram: ShaderProgram {
-    private var maskMinX: UniformVariable!
+    private var maskFrame: UniformVariable!
     private var maskMinY: UniformVariable!
     private var maskWidth: UniformVariable!
     private var maskHeight: UniformVariable!
@@ -22,19 +22,12 @@ class MaskShaderProgram: ShaderProgram {
     // we only need one MaskShaderProgram, which we can / should treat as a singleton
     fileprivate init() throws {
         try super.init(vertexShader: .common, fragmentShader: .maskColourWithImage)
-        maskMinX = UniformVariable("maskMinX", in: programRef)
-        maskMinY = UniformVariable("maskMinY", in: programRef)
-        maskWidth = UniformVariable("maskWidth", in: programRef)
-        maskHeight = UniformVariable("maskHeight", in: programRef)
+        maskFrame = UniformVariable("maskFrame", in: programRef)
         maskTexture = UniformVariable("maskTexture", in: programRef)
     }
 
     func set(maskImage: CGImage, frame: CGRect) {
-        maskMinX.set(Float(frame.origin.x))
-        maskMinY.set(Float(frame.origin.y))
-        maskWidth.set(Float(frame.size.width))
-        maskHeight.set(Float(frame.size.height))
-
+        maskFrame.set(frame)
         maskTexture.set(maskImage)
     }
 }
@@ -44,13 +37,16 @@ extension ShaderProgram {
         let location: ShaderVariableLocationID
         init(_ name: String, in programRef: UInt32) {
             location = GPU_GetUniformLocation(programRef, name)
-            if location == -1 {
-                fatalError("Couldn't find location of \(name)")
-            }
+            assert(location != -1, "Couldn't find location of UniformVariable \(name)")
         }
 
         func set(_ newValue: Float) {
             GPU_SetUniformf(location, newValue)
+        }
+
+        func set (_ newValue: CGRect) {
+            var vals = [Float(newValue.minX), Float(newValue.minY), Float(newValue.height), Float(newValue.width)]
+            GPU_SetUniformfv(location, 4, 1, &vals)
         }
 
         func set(_ newValue: CGImage) {
