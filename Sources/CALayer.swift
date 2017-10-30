@@ -104,6 +104,7 @@ open class CALayer {
         shadowOffset = layer.shadowOffset
         shadowRadius = layer.shadowRadius
         shadowOpacity = layer.shadowOpacity
+        mask = layer.mask
         contents = layer.contents // XXX: we should make a copy here
         sublayers = layer.sublayers
     }

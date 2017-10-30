@@ -14,13 +14,13 @@ extension VertexShader {
         in vec4 gpu_Color;
         uniform mat4 gpu_ModelViewProjectionMatrix;
 
-        out vec4 color;
-        out vec2 texCoord;
+        out vec4 originalColour;
+        out vec2 absolutePixelPos;
 
         void main(void)
         {
-            color = gpu_Color;
-            texCoord = vec2(gpu_TexCoord);
+            originalColour = gpu_Color;
+            absolutePixelPos = vec2(gpu_Vertex.xy);
             gl_Position = gpu_ModelViewProjectionMatrix * vec4(gpu_Vertex, 1.0);
         }
         """

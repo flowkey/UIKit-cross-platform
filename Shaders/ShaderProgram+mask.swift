@@ -13,32 +13,49 @@ extension ShaderProgram {
 }
 
 class MaskShaderProgram: ShaderProgram {
-    private var resolutionX: ShaderVariableLocationID = -1
-    private var resolutionY: ShaderVariableLocationID = -1
-    private var maskResolutionX: ShaderVariableLocationID = -1
-    private var maskResolutionY: ShaderVariableLocationID = -1
-    private var maskTexture: ShaderVariableLocationID = -1
+    private var maskMinX: UniformVariable!
+    private var maskMinY: UniformVariable!
+    private var maskWidth: UniformVariable!
+    private var maskHeight: UniformVariable!
+    private var maskTexture: UniformVariable!
 
     // we only need one MaskShaderProgram, which we can / should treat as a singleton
     fileprivate init() throws {
         try super.init(vertexShader: .common, fragmentShader: .maskImageWithImage)
-        resolutionX = GPU_GetUniformLocation(programRef, "resolution_x")
-        resolutionY = GPU_GetUniformLocation(programRef, "resolution_y")
-        maskResolutionX = GPU_GetUniformLocation(programRef, "mask_resolution_x")
-        maskResolutionY = GPU_GetUniformLocation(programRef, "mask_resolution_y")
-        maskTexture = GPU_GetUniformLocation(programRef, "mask_texture")
-
-        if //resolutionX == -1 || resolutionY == -1 || maskResolutionX == -1 || maskResolutionY == -1 ||
-            maskTexture == -1 {
-            fatalError("Couldn't find the location of required shader variables within the compiled shader")
-        }
+        maskMinX = UniformVariable("maskMinX", in: programRef)
+        maskMinY = UniformVariable("maskMinY", in: programRef)
+        maskWidth = UniformVariable("maskWidth", in: programRef)
+        maskHeight = UniformVariable("maskHeight", in: programRef)
+        maskTexture = UniformVariable("maskTexture", in: programRef)
     }
 
-    func set(maskImage: CGImage) {
-//        GPU_SetUniformf(maskResolutionX, Float(maskImage.size.width))
-//        GPU_SetUniformf(maskResolutionY, Float(maskImage.size.height))
+    func set(maskImage: CGImage, frame: CGRect) {
+        maskMinX.set(Float(frame.origin.x))
+        maskMinY.set(Float(frame.origin.y))
+        maskWidth.set(Float(frame.size.width))
+        maskHeight.set(Float(frame.size.height))
 
-        let textureUnit: Int32 = 1 // Texture unit 0 is the one used internally for SDL_gpu's blitting funcs
-        GPU_SetShaderImage(maskImage.rawPointer, maskTexture, textureUnit)
+        maskTexture.set(maskImage)
+    }
+}
+
+extension ShaderProgram {
+    struct UniformVariable {
+        let location: ShaderVariableLocationID
+        init(_ name: String, in programRef: UInt32) {
+            location = GPU_GetUniformLocation(programRef, name)
+            if location == -1 {
+                fatalError("Couldn't find location of \(name)")
+            }
+        }
+
+        func set(_ newValue: Float) {
+            GPU_SetUniformf(location, newValue)
+        }
+
+        func set(_ newValue: CGImage) {
+            let textureUnit: Int32 = 1 // Texture unit 0 is the one used internally for SDL_gpu's blitting funcs
+            GPU_SetShaderImage(newValue.rawPointer, location, textureUnit)
+        }
     }
 }
