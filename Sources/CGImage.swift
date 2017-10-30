@@ -56,7 +56,7 @@ public class CGImage {
         // TODO: get scale factor from `imagePath` (e.g. @2x means scale == 2)
         self.init(GPU_LoadImage(imagePath), scale: 2.0)
     }
-    
+
     convenience init?(surface: UnsafeMutablePointer<SDLSurface>) {
         self.init(GPU_CopyImageFromSurface(surface))
     }
