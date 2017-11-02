@@ -6,6 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import SDL
+
 private let systemFontName = "Roboto" // XXX: change this depending on platform?
 
 open class UIFont: Equatable {
@@ -13,7 +15,7 @@ open class UIFont: Equatable {
         return lhs.fontName == rhs.fontName && lhs.pointSize == rhs.pointSize
     }
 
-    fileprivate static let contentScale: CGFloat = 2.0 // TODO: Get from Window
+    fileprivate static let contentScale: CGFloat = SDL.window.scale
 
     fileprivate static var availableFontData: [String: CGDataProvider] = [:]
     static public var availableFonts: [String] {

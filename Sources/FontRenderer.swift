@@ -54,8 +54,7 @@ internal class FontRenderer {
 
         defer { surface.pointee.free() }
 
-        // currently using a fixed scale for Fonts & Icons so they stay the same size on the screen on higher resolution devices
-        return Texture(surface: surface, scale: 2)
+        return Texture(surface: surface)
     }
 }
 

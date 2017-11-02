@@ -55,8 +55,8 @@ internal class Texture {
         self.init(GPU_LoadImage(imagePath), scale: 2)
     }
     
-    convenience init?(surface: UnsafeMutablePointer<SDLSurface>, scale: CGFloat) {
-        self.init(GPU_CopyImageFromSurface(surface), scale: scale)
+    convenience init?(surface: UnsafeMutablePointer<SDLSurface>) {
+        self.init(GPU_CopyImageFromSurface(surface))
     }
 
     convenience init?(data: Data, scale: CGFloat) {
