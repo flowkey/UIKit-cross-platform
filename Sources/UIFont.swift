@@ -13,8 +13,6 @@ open class UIFont: Equatable {
         return lhs.fontName == rhs.fontName && lhs.pointSize == rhs.pointSize
     }
 
-    fileprivate static let contentScale: CGFloat = 2.0 // TODO: Get from Window
-
     fileprivate static var availableFontData: [String: CGDataProvider] = [:]
     static public var availableFonts: [String] {
         return Array(availableFontData.keys)
@@ -40,7 +38,7 @@ open class UIFont: Equatable {
             return nil
         }
 
-        guard let renderer = FontRenderer(fontData, size: Int32(size * UIFont.contentScale)) else {
+        guard let renderer = FontRenderer(fontData, size: Int32(size * UIScreen.main.scale)) else {
             print("Couldn't load font", name)
             return nil
         }
@@ -49,7 +47,7 @@ open class UIFont: Equatable {
         self.fontName = name
         self.familyName = renderer.getFontFamilyName() ?? "<unknown>"
         self.pointSize = size
-        self.lineHeight = CGFloat(renderer.getLineHeight()) / UIFont.contentScale
+        self.lineHeight = CGFloat(renderer.getLineHeight()) / UIScreen.main.scale
     }
 
     // MARK: Implementation details:
@@ -59,7 +57,7 @@ open class UIFont: Equatable {
     fileprivate let renderer: FontRenderer
 
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> Texture? {
-        return renderer.render(text, color: color, wrapLength: Int(wrapLength * UIFont.contentScale))
+        return renderer.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.main.scale))
     }
 }
 
@@ -128,12 +126,12 @@ extension String {
                 font.renderer.singleLineSize(of: self) :
                 font.renderer.multilineSize(
                     of: self,
-                    wrapLength: UInt(CGFloat(wrapLength) * UIFont.contentScale)
+                    wrapLength: UInt(CGFloat(wrapLength) * UIScreen.main.scale)
                 )
 
         return CGSize(
-            width: retinaResolutionSize.width / UIFont.contentScale,
-            height: retinaResolutionSize.height / UIFont.contentScale
+            width: retinaResolutionSize.width / UIScreen.main.scale,
+            height: retinaResolutionSize.height / UIScreen.main.scale
         )
     }
 }

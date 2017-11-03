@@ -53,6 +53,7 @@ internal class FontRenderer {
         }
 
         defer { surface.pointee.free() }
+
         return Texture(surface: surface)
     }
 }

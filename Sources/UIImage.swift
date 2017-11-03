@@ -23,7 +23,7 @@ public class UIImage {
     }
 
     public convenience init?(data: Data) {
-        guard let texture = Texture(data: data) else {
+        guard let texture = Texture(data: data, scale: 2) else {
             return nil
         }
         self.init(texture: texture)

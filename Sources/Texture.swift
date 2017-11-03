@@ -59,14 +59,14 @@ internal class Texture {
         self.init(GPU_CopyImageFromSurface(surface))
     }
 
-    convenience init?(data: Data) {
+    convenience init?(data: Data, scale: CGFloat) {
         var data = data
         let gpuImagePtr = data.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<Int8>) -> UnsafeMutablePointer<GPU_Image>? in
             let rw = SDL_RWFromMem(ptr, Int32(data.count))
             return GPU_LoadImage_RW(rw, false)
         }
 
-        self.init(gpuImagePtr)
+        self.init(gpuImagePtr, scale: scale)
     }
 
     func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
