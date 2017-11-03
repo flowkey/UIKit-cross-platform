@@ -23,8 +23,6 @@ public class UIImage {
     }
 
     public convenience init?(data: Data) {
-        // since all the sheets seem to have a scale factor of two, we have to pass this scale factor,
-        // otherwise on lower dpi screens they appear too big (e.g. on external Full HD screen with a windows scale of 1)
         guard let texture = Texture(data: data, scale: 2) else {
             return nil
         }
