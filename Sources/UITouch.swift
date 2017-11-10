@@ -22,12 +22,8 @@ public class UITouch {
     public var view: UIView?
     public var gestureRecognizers: [UIGestureRecognizer] = []
 
-    /*
-     * XXX: are these correctly named? should they not be named
-     * "absolutePosition" and "previousAbsolutePosition"?
-     * or to be even more consistent "absoluteLocation"
-     * and "previousAbsoluteLocation?
-     */
+    // XXX: since these are the backing store of location() and previousLocation(),
+    // why not name locationInView and previousLocationInView to be more consistent
     var positionInView: CGPoint
     var previousPositionInView: CGPoint
 
