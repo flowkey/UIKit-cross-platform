@@ -9,9 +9,8 @@
 public class UITouch {
     static var activeTouches = Set<UITouch>()
 
-    // XXX: remove UIView parameter from this initializer,
-    // since it's an optional?
-    init(at point: CGPoint, in view: UIView, touchId: Int) {
+    // using this to convert SDL touches into UIView touches
+    internal init(at point: CGPoint, in view: UIView, touchId: Int) {
         self.view = view
         positionInView = point
         previousPositionInView = point
