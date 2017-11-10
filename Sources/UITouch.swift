@@ -9,7 +9,8 @@
 public class UITouch {
     static var activeTouches = Set<UITouch>()
 
-    init(at point: CGPoint, in view: UIView, touchId: Int) {
+    // using this to convert SDL touches into UIView touches
+    internal init(at point: CGPoint, in view: UIView, touchId: Int) {
         self.view = view
         positionInView = point
         previousPositionInView = point
@@ -20,6 +21,8 @@ public class UITouch {
     public var view: UIView?
     public var gestureRecognizers: [UIGestureRecognizer] = []
 
+    // XXX: since these are the backing store of location() and previousLocation(),
+    // why not name locationInView and previousLocationInView to be more consistent
     var positionInView: CGPoint
     var previousPositionInView: CGPoint
 
