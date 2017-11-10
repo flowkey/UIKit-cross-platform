@@ -112,7 +112,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
         pgr.touchesBegan([mockTouch], with: UIEvent())
         XCTAssertEqual(pgr.translation(in: mockView), .zero)
 
-        // move touch, translation should be equal to touch point
+        // move touch, translation should be equal to touch position
         let touchPosition1 = CGPoint(x: 5, y: 5)
         mockTouch.previousPositionInView = .zero
         mockTouch.positionInView = touchPosition1
@@ -123,6 +123,20 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let newTranslation = CGPoint(x: 12, y: 13)
         pgr.setTranslation(newTranslation, in: mockView)
         XCTAssertEqual(pgr.translation(in: mockView), newTranslation)
+
+        // XXX: not sure if following extension makes any sense
+        // if so, it seems that it unveils a bug
+        let touchPosition2 = CGPoint(x: 10, y: 20)
+        mockTouch.previousPositionInView = touchPosition1
+        mockTouch.positionInView = touchPosition2
+        pgr.touchesMoved([mockTouch], with: UIEvent())
+
+        let actualTranslation = pgr.translation(in: mockView)
+        let expectedTranslation = CGPoint(
+           x: newTranslation.x + touchPosition2.x,
+           y: newTranslation.y + touchPosition2.y
+        )
+        XCTAssertEqual(actualTranslation, expectedTranslation) // XXX: not sure if its the right expectation
     }
 }
 
