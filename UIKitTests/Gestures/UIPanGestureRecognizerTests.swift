@@ -104,6 +104,26 @@ class UIPanGestureRecognizerTests: XCTestCase {
 
         wait(for: [velocityExp], timeout: 1.1)
     }
+
+    func testSetTranslation() {
+        let pgr = UIPanGestureRecognizer()
+
+        // begin touch, check initial translation
+        pgr.touchesBegan([mockTouch], with: UIEvent())
+        XCTAssertEqual(pgr.translation(in: mockView), .zero)
+
+        // move touch, translation should be equal to touch point
+        let touchPosition1 = CGPoint(x: 5, y: 5)
+        mockTouch.previousPositionInView = .zero
+        mockTouch.positionInView = touchPosition1
+        pgr.touchesMoved([mockTouch], with: UIEvent())
+        XCTAssertEqual(pgr.translation(in: mockView), touchPosition1)
+
+        // set translation to a new arbitrary value
+        let newTranslation = CGPoint(x: 12, y: 13)
+        pgr.setTranslation(newTranslation, in: mockView)
+        XCTAssertEqual(pgr.translation(in: mockView), newTranslation)
+    }
 }
 
 fileprivate extension CGFloat {
