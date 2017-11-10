@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		032A99F51F9DFF61002428A2 /* UIGestureRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032A99F41F9DFF61002428A2 /* UIGestureRecognizerTests.swift */; };
 		034898331FB5C11F00E8975C /* UITouchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CC73971FB5B2C6000A2C91 /* UITouchTests.swift */; };
 		0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */; };
 		03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03760AE51F67E73300F36283 /* UIScrollViewTests.swift */; };
@@ -180,7 +179,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		032A99F41F9DFF61002428A2 /* UIGestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIGestureRecognizerTests.swift; sourceTree = "<group>"; };
 		0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIScrollView+velocity.swift"; path = "Sources/UIScrollView+velocity.swift"; sourceTree = SOURCE_ROOT; };
 		03760AE51F67E73300F36283 /* UIScrollViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewTests.swift; sourceTree = "<group>"; };
 		03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPanGestureRecognizerTests.swift; sourceTree = "<group>"; };
@@ -350,7 +348,6 @@
 		03C487271F750C74004BAA0C /* Gestures */ = {
 			isa = PBXGroup;
 			children = (
-				032A99F41F9DFF61002428A2 /* UIGestureRecognizerTests.swift */,
 				03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */,
 				03CC73971FB5B2C6000A2C91 /* UITouchTests.swift */,
 			);
@@ -886,7 +883,6 @@
 				5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */,
 				8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */,
 				5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */,
-				032A99F51F9DFF61002428A2 /* UIGestureRecognizerTests.swift in Sources */,
 				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
 				83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */,
 				83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */,
