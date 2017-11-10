@@ -9,6 +9,8 @@
 public class UITouch {
     static var activeTouches = Set<UITouch>()
 
+    // XXX: remove UIView parameter from this initializer,
+    // since it's an optional?
     init(at point: CGPoint, in view: UIView, touchId: Int) {
         self.view = view
         positionInView = point
@@ -20,6 +22,12 @@ public class UITouch {
     public var view: UIView?
     public var gestureRecognizers: [UIGestureRecognizer] = []
 
+    /*
+     * XXX: are these correctly named? should they not be named
+     * "absolutePosition" and "previousAbsolutePosition"?
+     * or to be even more consistent "absoluteLocation"
+     * and "previousAbsoluteLocation?
+     */
     var positionInView: CGPoint
     var previousPositionInView: CGPoint
 
