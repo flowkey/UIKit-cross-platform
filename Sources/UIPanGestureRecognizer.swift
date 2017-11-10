@@ -41,8 +41,8 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     // The velocity is broken into horizontal and vertical components.
     open func velocity(in view: UIView?) -> CGPoint {
         guard
-            let curPos = trackedTouch?.location(in: nil),
-            let prevPos = trackedTouch?.previousLocation(in: nil),
+            let curPos = trackedTouch?.location(in: view),
+            let prevPos = trackedTouch?.previousLocation(in: view),
             let timeSinceLastMovement = timeSinceLastMovement,
             timeSinceLastMovement != 0.0
         else {
