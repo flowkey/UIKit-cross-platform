@@ -110,13 +110,13 @@ final public class SDL { // XXX: only public for startRunLoop()
             case SDL_QUIT:
                 shouldQuit = true
             case SDL_MOUSEBUTTONDOWN:
-                handleTouchDown(e.button)
+                handleTouchDown(.from(e.button))
                 eventWasHandled = true
             case SDL_MOUSEMOTION:
-                handleTouchMove(e.motion)
+                handleTouchMove(.from(e.motion))
                 eventWasHandled = true
             case SDL_MOUSEBUTTONUP:
-                handleTouchUp(e.button)
+                handleTouchUp(.from(e.button))
                 eventWasHandled = true
             default: break
             }

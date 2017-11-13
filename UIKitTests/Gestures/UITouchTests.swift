@@ -24,10 +24,7 @@ class UITouchTests: XCTestCase {
         XCTAssertEqual(touch.location(in: nil), position)
     }
 
-
-
     /*
      * ToDo: add tests where the views bounds are changed
      */
-
 }
