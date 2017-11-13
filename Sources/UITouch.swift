@@ -21,8 +21,8 @@ public class UITouch {
     public var view: UIView?
     public var gestureRecognizers: [UIGestureRecognizer] = []
 
-    // XXX: since these are the backing store of location() and previousLocation(),
-    // why not name locationInView and previousLocationInView to be more consistent
+    // XXX: since these are the backing stores of location() and previousLocation(),
+    // why not name them locationInView and previousLocationInView to be more consistent
     var positionInView: CGPoint
     var previousPositionInView: CGPoint
 
