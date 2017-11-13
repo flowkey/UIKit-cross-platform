@@ -28,28 +28,21 @@ fileprivate class TestPanGestureRecognizer: UIPanGestureRecognizer {
 }
 
 class UIPanGestureRecognizerTests: XCTestCase {
-    var mockTouch: UITouch!
     let mockView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100)))
-    override func setUp() {
-        mockTouch = UITouch(
-            at: CGPoint(x: 0, y: 0),
-            in: mockView,
-            touchId: 0
-        )
-    }
 
     func testPanGestureRecognizerStateEnded() {
         let endedExpectation = expectation(description: "State was ended")
         let pgr = TestPanGestureRecognizer(endedExp: endedExpectation)
 
-        pgr.touchesBegan([mockTouch], with: UIEvent())
+        let pos0 = CGPoint(x: 42, y: 12)
+        pgr.touchesBegan([UITouch(at: pos0, in: mockView, touchId: 0)], with: UIEvent())
         XCTAssert(pgr.state == .began)
 
-        mockTouch.positionInView = CGPoint(x: 100, y: 100)
-        pgr.touchesMoved([mockTouch], with: UIEvent())
+        let pos1 = CGPoint(x: 34, y: 45)
+        pgr.touchesMoved([UITouch(at: pos1, in: mockView, touchId: 0)], with: UIEvent())
         XCTAssert(pgr.state == .changed)
 
-        pgr.touchesEnded([mockTouch], with: UIEvent())
+        pgr.touchesEnded([UITouch(at: pos1, in: mockView, touchId: 0)], with: UIEvent())
 
         // expect that state was .ended at some point
         wait(for: [endedExpectation], timeout: 2)
@@ -62,14 +55,15 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let cancelledExpectation = expectation(description: "State was cancelled")
         let pgr = TestPanGestureRecognizer(cancelledExp: cancelledExpectation)
 
-        pgr.touchesBegan([mockTouch], with: UIEvent())
+        let pos0 = CGPoint(x: 12, y: 42)
+        pgr.touchesBegan([UITouch(at: pos0, in: mockView, touchId: 0)], with: UIEvent())
         XCTAssert(pgr.state == .began)
 
-        mockTouch.positionInView = CGPoint(x: 100, y: 100)
-        pgr.touchesMoved([mockTouch], with: UIEvent())
+        let pos1 = CGPoint(x: 23, y: 21)
+        pgr.touchesMoved([UITouch(at: pos1, in: mockView, touchId: 0)], with: UIEvent())
         XCTAssert(pgr.state == .changed)
 
-        pgr.touchesCancelled([mockTouch], with: UIEvent())
+        pgr.touchesCancelled([UITouch(at: pos1, in: mockView, touchId: 0)], with: UIEvent())
 
         // expect that state was .cancelled at some point
         wait(for: [cancelledExpectation], timeout: 1)
@@ -85,11 +79,13 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let pgr = UIPanGestureRecognizer()
         let velocityExp = expectation(description: "velocity is as expected")
 
-        self.mockTouch.previousPositionInView = CGPoint(x: 0, y: 0)
-        self.mockTouch.positionInView = CGPoint(x: touchPositionDiff, y: 0)
-        pgr.touchesBegan([mockTouch], with: UIEvent())
+        let touch = UITouch(at: .zero, in: mockView, touchId: 0)
+        pgr.touchesBegan([touch], with: UIEvent())
+
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + timeInterval) {
-            pgr.touchesMoved([self.mockTouch], with: UIEvent())
+            touch.previousPositionInView = CGPoint.zero
+            touch.positionInView = CGPoint(x: touchPositionDiff, y: 0)
+            pgr.touchesMoved([touch], with: UIEvent())
             let velocityX = pgr.velocity(in: self.mockView).x
             let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
 
@@ -129,6 +125,8 @@ fileprivate extension CGFloat {
     func isEqual(to value: CGFloat, percentalAccuracy: Double) -> Bool {
         let min = Double(value) - ((Double(value) * percentalAccuracy) / 100)
         let max = Double(value) + ((Double(value) * percentalAccuracy) / 100)
-        return (min ..< max)~=(Double(self)) // if in range
+        let isInRange = (min ..< max)~=(Double(self))
+        if !isInRange { print("$(self) is not in range of $(value)") }
+        return isInRange
     }
 }
