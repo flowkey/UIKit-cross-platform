@@ -29,8 +29,12 @@ internal final class Window {
             GPU_SetPreInitFlags(GPU_GetPreInitFlags() | GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)
             size = CGSize(width: CGFloat(displayMode.w), height: CGFloat(displayMode.h))
         }
-        
-        rawPointer = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue)!
+
+        guard let gpuTarget = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue) else {
+            print(SDLError())
+            fatalError("GPU_Init failed")
+        }
+        rawPointer = gpuTarget
 
         #if os(Android)
             scale = getAndroidDeviceScale()
@@ -115,7 +119,14 @@ internal final class Window {
     }
 
     deinit {
-        // GPU_FreeImage(rawPointer) // The docs state that we shouldn't try to free the GPU_Target ourselves..
+        // get and destroy existing Window because only one SDL_Window can exist on Android at the same time
+        guard let gpuContext = self.rawPointer.pointee.context else {
+            fatalError("window gpuContext not found")
+        }
+        let existingWindowID = gpuContext.pointee.windowID
+        let existingWindow = SDL_GetWindowFromID(existingWindowID)
+        SDL_DestroyWindow(existingWindow)
+
         GPU_Quit()
     }
 }
