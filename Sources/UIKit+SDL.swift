@@ -14,6 +14,8 @@ final public class SDL { // XXX: only public for startRunLoop()
     static var window: Window!
 
     public static func initialize() {
+        shouldQuit = false
+        self.isRunning = false
         self.window = nil // triggers Window deinit to destroy previous Window
 
         let windowOptions: SDLWindowFlags
