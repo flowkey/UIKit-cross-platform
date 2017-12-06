@@ -10,11 +10,12 @@ import SDL
 
 private var shouldQuit = false
 final public class SDL { // XXX: only public for startRunLoop()
-    static let rootView = UIWindow()
+    static var rootView: UIWindow!
     static var window: Window!
 
     public static func initialize() {
         shouldQuit = false
+        self.rootView = UIWindow()
         self.isRunning = false
         self.window = nil // triggers Window deinit to destroy previous Window
 
