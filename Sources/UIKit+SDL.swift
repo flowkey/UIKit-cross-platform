@@ -8,10 +8,12 @@
 
 import SDL
 
-private var shouldQuit = false
 final public class SDL { // XXX: only public for startRunLoop()
     static var rootView: UIWindow!
     static var window: Window!
+
+    public static var shouldQuit = false
+    private static var isRunning = false
 
     public static func initialize() {
         shouldQuit = false
@@ -57,8 +59,6 @@ final public class SDL { // XXX: only public for startRunLoop()
             _startRunLoop()
         }
     }
-
-    private static var isRunning = false
 
     private static func _startRunLoop() {
         var firstRender = true // screen is black until first touch if we don't check for this
