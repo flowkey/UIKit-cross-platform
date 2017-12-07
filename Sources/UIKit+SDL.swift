@@ -12,7 +12,7 @@ final public class SDL { // XXX: only public for startRunLoop()
     static var rootView: UIWindow!
     static var window: Window!
 
-    public static var shouldQuit = false
+    private static var shouldQuit = false
     private static var isRunning = false
 
     public static func initialize() {
