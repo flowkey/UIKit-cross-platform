@@ -17,11 +17,11 @@ class UITouchTests: XCTestCase {
 
         XCTAssertEqual(touch.location(in: view), .zero)
 
-        let position = CGPoint(x: 30, y: 30)
-        touch.updatePositionInView(position)
+        let location = CGPoint(x: 30, y: 30)
+        touch.updateLocationInView(location)
 
-        XCTAssertEqual(touch.location(in: view), position)
-        XCTAssertEqual(touch.location(in: nil), position)
+        XCTAssertEqual(touch.location(in: view), location)
+        XCTAssertEqual(touch.location(in: nil), location)
     }
 
     /*
