@@ -14,7 +14,7 @@ extension SDL {
 
         print("hit", hitView)
 
-        let currentTouch = UITouch(at: hitView.convert(point, from: rootView), in: hitView, touchId: Int(0))
+        let currentTouch = UITouch(at: point, in: hitView, touchId: Int(0))
         UITouch.activeTouches.insert(currentTouch)
 
         hitView.gestureRecognizers.forEach { gestureRecognizer in
@@ -32,8 +32,7 @@ extension SDL {
     static func handleTouchMove(_ point: CGPoint) {
         guard let touch = UITouch.activeTouches.first(where: { $0.touchId == Int(0) }) else { return }
 
-        touch.updateLocationInView(touch.view?.convert(point, from: rootView) ?? point)
-
+        touch.updateLocationInView(point)
         touch.gestureRecognizers.forEach { gestureRecognizer in
             gestureRecognizer.touchesMoved(UITouch.activeTouches, with: UIEvent())
         }
