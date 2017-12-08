@@ -74,14 +74,13 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesMoved(touches, with: event)
         guard
-            let trackedTouch = touches.first(where: { $0.touchId == trackedTouch?.touchId }),
+            let trackedTouch = trackedTouch,
+            touches.first == trackedTouch,
             let initialTouchPoint = initialTouchPoint
         else {
             state = .failed
             return
         }
-
-        self.trackedTouch = trackedTouch
 
         // XXX: revisit this and decide which timer we want to use
         let now = NSDate.timeIntervalSinceReferenceDate
