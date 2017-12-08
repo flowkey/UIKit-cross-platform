@@ -35,14 +35,17 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let pgr = TestPanGestureRecognizer(endedExp: endedExpectation)
 
         let pos0 = CGPoint(x: 42, y: 12)
-        pgr.touchesBegan([UITouch(at: pos0, in: mockView, touchId: 0)], with: UIEvent())
+        let touch = UITouch(at: pos0, in: mockView, touchId: 0)
+
+        pgr.touchesBegan([touch], with: UIEvent())
         XCTAssert(pgr.state == .began)
 
         let pos1 = CGPoint(x: 34, y: 45)
-        pgr.touchesMoved([UITouch(at: pos1, in: mockView, touchId: 0)], with: UIEvent())
+        touch.updatePositionInView(pos1)
+        pgr.touchesMoved([touch], with: UIEvent())
         XCTAssert(pgr.state == .changed)
 
-        pgr.touchesEnded([UITouch(at: pos1, in: mockView, touchId: 0)], with: UIEvent())
+        pgr.touchesEnded([touch], with: UIEvent())
 
         // expect that state was .ended at some point
         wait(for: [endedExpectation], timeout: 2)
@@ -56,14 +59,18 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let pgr = TestPanGestureRecognizer(cancelledExp: cancelledExpectation)
 
         let pos0 = CGPoint(x: 12, y: 42)
-        pgr.touchesBegan([UITouch(at: pos0, in: mockView, touchId: 0)], with: UIEvent())
+        let touch = UITouch(at: pos0, in: mockView, touchId: 0)
+
+        pgr.touchesBegan([touch], with: UIEvent())
         XCTAssert(pgr.state == .began)
 
         let pos1 = CGPoint(x: 23, y: 21)
-        pgr.touchesMoved([UITouch(at: pos1, in: mockView, touchId: 0)], with: UIEvent())
+        touch.updatePositionInView(pos1)
+        pgr.touchesMoved([touch], with: UIEvent())
         XCTAssert(pgr.state == .changed)
 
-        pgr.touchesCancelled([UITouch(at: pos1, in: mockView, touchId: 0)], with: UIEvent())
+
+        pgr.touchesCancelled([touch], with: UIEvent())
 
         // expect that state was .cancelled at some point
         wait(for: [cancelledExpectation], timeout: 1)
@@ -83,8 +90,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
         pgr.touchesBegan([touch], with: UIEvent())
 
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + timeInterval) {
-            touch.previousPositionInView = CGPoint.zero
-            touch.positionInView = CGPoint(x: touchPositionDiff, y: 0)
+            touch.updatePositionInView(CGPoint(x: touchPositionDiff, y: 0))
             pgr.touchesMoved([touch], with: UIEvent())
             let velocityX = pgr.velocity(in: self.mockView).x
             let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
@@ -106,12 +112,13 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let touchPosition1 = CGPoint(x: 10, y: 10)
 
         // begin touch, check initial translation
-        let touch0 = UITouch(at: touchPosition0, in: view, touchId: 0)
-        pgr.touchesBegan([touch0], with: UIEvent())
+        let touch = UITouch(at: touchPosition0, in: view, touchId: 0)
+        pgr.touchesBegan([touch], with: UIEvent())
         XCTAssertEqual(pgr.translation(in: view), touchPosition0)
 
         // move touch, translation should be equal to touch position
-        pgr.touchesMoved( [UITouch(at: touchPosition1, in: view, touchId: 0)], with: UIEvent())
+        touch.updatePositionInView(touchPosition1)
+        pgr.touchesMoved([touch], with: UIEvent())
         XCTAssertEqual(pgr.translation(in: view), touchPosition1)
 
         // set translation to a new arbitrary value

@@ -23,8 +23,13 @@ public class UITouch {
 
     // XXX: since these are the backing stores of location() and previousLocation(),
     // why not name them locationInView and previousLocationInView to be more consistent
-    var positionInView: CGPoint
-    var previousPositionInView: CGPoint
+    private var positionInView: CGPoint
+    private var previousPositionInView: CGPoint
+
+    func updatePositionInView(_ newPosition: CGPoint) {
+        previousPositionInView = positionInView
+        positionInView = newPosition
+    }
 
     // var window: UIWindow? // unused
 

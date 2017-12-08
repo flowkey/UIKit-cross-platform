@@ -26,7 +26,7 @@ class TouchHandlingTests: XCTestCase {
         UITouch.activeTouches = [ activeTouch ]
         let newPosition = CGPoint(x: 20, y: 20)
         SDL.handleTouchMove(newPosition)
-        XCTAssertEqual(activeTouch.positionInView, newPosition)
+        XCTAssertEqual(activeTouch.location(in: nil), newPosition)
     }
 
     func testSimpleTouchUp() {

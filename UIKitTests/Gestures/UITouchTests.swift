@@ -18,7 +18,7 @@ class UITouchTests: XCTestCase {
         XCTAssertEqual(touch.location(in: view), .zero)
 
         let position = CGPoint(x: 30, y: 30)
-        touch.positionInView = position
+        touch.updatePositionInView(position)
 
         XCTAssertEqual(touch.location(in: view), position)
         XCTAssertEqual(touch.location(in: nil), position)
