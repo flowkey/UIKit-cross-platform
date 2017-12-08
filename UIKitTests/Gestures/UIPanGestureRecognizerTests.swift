@@ -28,7 +28,11 @@ fileprivate class TestPanGestureRecognizer: UIPanGestureRecognizer {
 }
 
 class UIPanGestureRecognizerTests: XCTestCase {
-    let mockView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100)))
+    var mockView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100)))
+
+    override func setUp() {
+        mockView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100)))
+    }
 
     func testPanGestureRecognizerStateEnded() {
         let endedExpectation = expectation(description: "State was ended")
@@ -105,22 +109,27 @@ class UIPanGestureRecognizerTests: XCTestCase {
         wait(for: [velocityExp], timeout: 1.1)
     }
 
-    func testSetTranslation() {
+    func testTouchesMovedUpdatesTranslation() {
         let pgr = UIPanGestureRecognizer()
-        let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100)))
-        let location0 = CGPoint.zero
-        let location1 = CGPoint(x: 10, y: 10)
+
+        pgr.view = mockView
 
         // begin touch, check initial translation
-        let touch = UITouch(at: location0, in: view, touchId: 0)
+        let touch = UITouch(at: .zero, in: mockView, touchId: 0)
         pgr.touchesBegan([touch], with: UIEvent())
-        XCTAssertEqual(pgr.translation(in: view), location0)
+        XCTAssertEqual(pgr.translation(in: mockView), .zero)
 
         // move touch, translation should be equal to touch position
+        let location1 = CGPoint(x: 10, y: 10)
         touch.updateLocationInView(location1)
         pgr.touchesMoved([touch], with: UIEvent())
-        XCTAssertEqual(pgr.translation(in: view), location1)
+        XCTAssertEqual(pgr.translation(in: mockView), location1)
+    }
 
+    func testSetTranslation() {
+    
+        let pgr = UIPanGestureRecognizer()
+        pgr.view = mockView
         // set translation to a new arbitrary value
         let newTranslation = CGPoint(x: 12, y: 13)
         pgr.setTranslation(newTranslation, in: mockView)
