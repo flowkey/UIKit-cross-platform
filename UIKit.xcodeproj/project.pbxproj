@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		032A99F51F9DFF61002428A2 /* UIGestureRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032A99F41F9DFF61002428A2 /* UIGestureRecognizerTests.swift */; };
+		034898331FB5C11F00E8975C /* UITouchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CC73971FB5B2C6000A2C91 /* UITouchTests.swift */; };
+		034898501FB9C44000E8975C /* TouchHandlingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0348984F1FB9C44000E8975C /* TouchHandlingTests.swift */; };
 		0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */; };
 		03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03760AE51F67E73300F36283 /* UIScrollViewTests.swift */; };
 		03C4872A1F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */; };
@@ -179,10 +180,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		032A99F41F9DFF61002428A2 /* UIGestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIGestureRecognizerTests.swift; sourceTree = "<group>"; };
+		0348984F1FB9C44000E8975C /* TouchHandlingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchHandlingTests.swift; sourceTree = "<group>"; };
 		0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIScrollView+velocity.swift"; path = "Sources/UIScrollView+velocity.swift"; sourceTree = SOURCE_ROOT; };
 		03760AE51F67E73300F36283 /* UIScrollViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewTests.swift; sourceTree = "<group>"; };
 		03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPanGestureRecognizerTests.swift; sourceTree = "<group>"; };
+		03CC73971FB5B2C6000A2C91 /* UITouchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITouchTests.swift; sourceTree = "<group>"; };
 		5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIProgressView.swift; path = Sources/UIProgressView.swift; sourceTree = SOURCE_ROOT; };
 		5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CAMediaTimingFunction.swift; path = Sources/CAMediaTimingFunction.swift; sourceTree = SOURCE_ROOT; };
 		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = Sources/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
@@ -348,8 +350,9 @@
 		03C487271F750C74004BAA0C /* Gestures */ = {
 			isa = PBXGroup;
 			children = (
-				032A99F41F9DFF61002428A2 /* UIGestureRecognizerTests.swift */,
 				03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */,
+				03CC73971FB5B2C6000A2C91 /* UITouchTests.swift */,
+				0348984F1FB9C44000E8975C /* TouchHandlingTests.swift */,
 			);
 			path = Gestures;
 			sourceTree = "<group>";
@@ -693,7 +696,7 @@
 					};
 					833860AB1F0D55B3004DD55E = {
 						CreatedOnToolsVersion = 9.0;
-						DevelopmentTeam = 8AA348BVEZ;
+						DevelopmentTeam = FTSYMMN5B5;
 					};
 				};
 			};
@@ -878,11 +881,12 @@
 				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				03C4872A1F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift in Sources */,
 				5BD4762E1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift in Sources */,
+				034898331FB5C11F00E8975C /* UITouchTests.swift in Sources */,
+				034898501FB9C44000E8975C /* TouchHandlingTests.swift in Sources */,
 				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
 				5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */,
 				8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */,
 				5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */,
-				032A99F51F9DFF61002428A2 /* UIGestureRecognizerTests.swift in Sources */,
 				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
 				83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */,
 				83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */,
@@ -898,7 +902,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				83F02DBA1F179AE800347AA8 /* UIImage+testImage.swift in Sources */,
-				834C94981F6BDE6200F5B40F /* ButtonLayoutingTests.swift in Sources */,
 				83F02DBE1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */,
 				8323F2821F2FA42A00C121BB /* TestSetup.swift in Sources */,
@@ -1124,7 +1127,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 8AA348BVEZ;
+				DEVELOPMENT_TEAM = FTSYMMN5B5;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = iOSTestTarget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1144,7 +1147,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 8AA348BVEZ;
+				DEVELOPMENT_TEAM = FTSYMMN5B5;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = iOSTestTarget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;

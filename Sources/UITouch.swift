@@ -9,10 +9,11 @@
 public class UITouch {
     static var activeTouches = Set<UITouch>()
 
-    init(at point: CGPoint, in view: UIView, touchId: Int) {
+    // using this to convert SDL touches into UIView touches
+    internal init(at point: CGPoint, in view: UIView, touchId: Int) {
         self.view = view
-        positionInView = point
-        previousPositionInView = point
+        locationInView = point
+        previousLocationInView = point
         self.touchId = touchId
     }
 
@@ -20,17 +21,22 @@ public class UITouch {
     public var view: UIView?
     public var gestureRecognizers: [UIGestureRecognizer] = []
 
-    var positionInView: CGPoint
-    var previousPositionInView: CGPoint
+    private var locationInView: CGPoint
+    private var previousLocationInView: CGPoint
+
+    func updateLocationInView(_ newLocation: CGPoint) {
+        previousLocationInView = locationInView
+        locationInView = newLocation
+    }
 
     // var window: UIWindow? // unused
 
     public func location(in view: UIView?) -> CGPoint {
-        return self.view?.convert(positionInView, to: view) ?? positionInView
+        return self.view?.convert(locationInView, to: view) ?? locationInView
     }
 
     public func previousLocation(in view: UIView?) -> CGPoint {
-        return self.view?.convert(previousPositionInView, to: view) ?? previousPositionInView
+        return self.view?.convert(previousLocationInView, to: view) ?? previousLocationInView
     }
 
 }
@@ -38,7 +44,7 @@ public class UITouch {
 
 extension UITouch: Hashable {
     public var hashValue: Int {
-        return touchId.hashValue
+        return touchId
     }
 
     static public func == (lhs: UITouch, rhs: UITouch) -> Bool {
