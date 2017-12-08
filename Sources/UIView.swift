@@ -204,10 +204,12 @@ open class UIView: UIResponder {
 
     var gestureRecognizers: Set<UIGestureRecognizer> = []
     open func addGestureRecognizer(_ recognizer: UIGestureRecognizer) {
+        recognizer.view = self
         gestureRecognizers.insert(recognizer)
     }
 
     open func removeGestureRecognizer(_ recognizer: UIGestureRecognizer) {
+        recognizer.view = nil
         gestureRecognizers.remove(recognizer)
     }
 

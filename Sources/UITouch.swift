@@ -10,21 +10,20 @@ public class UITouch {
     static var activeTouches = Set<UITouch>()
 
     // using this to convert SDL touches into UIView touches
-    internal init(at point: CGPoint, in view: UIView, touchId: Int) {
-        self.view = view
+    internal init(at point: CGPoint, touchId: Int) {
         absoluteLocation = point
         previousAbsoluteLocation = point
         self.touchId = touchId
     }
 
     var touchId: Int
-    public var view: UIView?
+    internal(set) public var view: UIView?
     public var gestureRecognizers: [UIGestureRecognizer] = []
 
     private var absoluteLocation: CGPoint
     private var previousAbsoluteLocation: CGPoint
 
-    func updateLocationInView(_ newLocation: CGPoint) {
+    func updateAbsoluteLocation(_ newLocation: CGPoint) {
         previousAbsoluteLocation = absoluteLocation
         absoluteLocation = newLocation
     }
