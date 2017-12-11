@@ -99,7 +99,7 @@ extension FontRenderer {
         var textLineHeight: Int32 = 0
 
         var tok = UnsafeMutablePointer(mutating: text)
-        let end = UnsafeMutablePointer(mutating: text.advanced(by: Int(textLength)))
+        let end = tok + Int(textLength)
 
         var lines = [UnsafeMutablePointer<CChar>]()
         repeat {
