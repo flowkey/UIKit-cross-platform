@@ -91,7 +91,6 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         }
         lastMovementTimestamp = now
 
-
         let location = trackedTouch.location(in: self.view)
 
         if  state == .began,
