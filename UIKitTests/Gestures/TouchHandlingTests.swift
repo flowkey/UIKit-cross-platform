@@ -22,7 +22,7 @@ class TouchHandlingTests: XCTestCase {
     }
 
     func testSimpleTouchMove() {
-        let activeTouch = UITouch(at: CGPoint(x: 10, y: 10), in: SDL.rootView, touchId: 0)
+        let activeTouch = UITouch(at: CGPoint(x: 10, y: 10), touchId: 0)
         UITouch.activeTouches = [ activeTouch ]
         let newPosition = CGPoint(x: 20, y: 20)
         SDL.handleTouchMove(newPosition)
@@ -30,7 +30,7 @@ class TouchHandlingTests: XCTestCase {
     }
 
     func testSimpleTouchUp() {
-        let activeTouch = UITouch(at: CGPoint(x: 10, y: 10), in: SDL.rootView, touchId: 0)
+        let activeTouch = UITouch(at: CGPoint(x: 10, y: 10), touchId: 0)
         UITouch.activeTouches = [ activeTouch ]
         let touchUpPosition = CGPoint(x: 20, y: 20)
         SDL.handleTouchUp(touchUpPosition)
