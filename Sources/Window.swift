@@ -119,15 +119,17 @@ internal final class Window {
     }
 
     deinit {
+        defer { GPU_Quit() }
+
         // get and destroy existing Window because only one SDL_Window can exist on Android at the same time
         guard let gpuContext = self.rawPointer.pointee.context else {
-            fatalError("window gpuContext not found")
+            assertionFailure("window gpuContext not found")
+            return
         }
+
         let existingWindowID = gpuContext.pointee.windowID
         let existingWindow = SDL_GetWindowFromID(existingWindowID)
         SDL_DestroyWindow(existingWindow)
-
-        GPU_Quit()
     }
 }
 
