@@ -8,10 +8,19 @@
 
 import SDL
 
-private var shouldQuit = false
 final public class SDL { // XXX: only public for startRunLoop()
-    static let rootView = UIWindow()
-    static let window: Window = {
+    static var rootView: UIWindow!
+    static var window: Window!
+
+    private static var shouldQuit = false
+    private static var isRunning = false
+
+    public static func initialize() {
+        self.shouldQuit = false
+        self.rootView = UIWindow()
+        self.isRunning = false
+        self.window = nil // triggers Window deinit to destroy previous Window
+
         let windowOptions: SDLWindowFlags
 
         #if os(Android)
@@ -36,11 +45,7 @@ final public class SDL { // XXX: only public for startRunLoop()
 
         rootView.frame.size = window.size
 
-        return window
-    }()
-
-    public static func initialize() {
-        SDL.window.clear() // do something to ensure window exists before anything else happens
+        self.window = window
     }
 
     public static func runWithRootView(_ view: UIView) {
@@ -54,8 +59,6 @@ final public class SDL { // XXX: only public for startRunLoop()
             _startRunLoop()
         }
     }
-
-    private static var isRunning = false
 
     private static func _startRunLoop() {
         var firstRender = true // screen is black until first touch if we don't check for this
