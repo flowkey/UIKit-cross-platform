@@ -9,4 +9,4 @@
 import JNI
 
 @_silgen_name("Android_JNI_GetActivityClass")
-public func getActivityClass() -> JavaClass
+public func getActivityClass() -> JavaClass?

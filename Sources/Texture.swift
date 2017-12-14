@@ -7,6 +7,7 @@
 //
 
 import SDL
+import SDL_gpu
 import Foundation
 
 internal class Texture {

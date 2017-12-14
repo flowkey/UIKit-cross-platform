@@ -7,6 +7,7 @@
 //
 
 import SDL
+import SDL_gpu
 
 final public class SDL { // XXX: only public for startRunLoop()
     static var rootView: UIWindow!
@@ -42,6 +43,11 @@ final public class SDL { // XXX: only public for startRunLoop()
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
 
         let window = Window(size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT), options: windowOptions)
+        UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
+
+        if window.size == .zero {
+            preconditionFailure("You need window dimensions to run")
+        }
 
         rootView.frame.size = window.size
 
