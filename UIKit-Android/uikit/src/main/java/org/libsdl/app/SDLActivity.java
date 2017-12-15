@@ -62,8 +62,6 @@ public class SDLActivity extends Activity {
     protected static AudioTrack mAudioTrack;
     protected static AudioRecord mAudioRecord;
 
-    private static double density;
-
     /**
      * This method is called by SDL before loading the native shared libraries.
      * It can be overridden to provide names of shared libraries to be loaded.
@@ -81,6 +79,10 @@ public class SDLActivity extends Activity {
             // "SDL2_ttf",
             "main"
         };
+    }
+
+    protected double getDeviceDensity() {
+        return (double) getResources().getDisplayMetrics().density;
     }
 
     // Load the .so
@@ -125,8 +127,6 @@ public class SDLActivity extends Activity {
         Log.v(TAG, "Model: " + android.os.Build.MODEL);
         Log.v(TAG, "onCreate(): " + mSingleton);
         super.onCreate(savedInstanceState);
-
-        density = (double) getResources().getDisplayMetrics().density;
 
         SDLActivity.initialize();
         // So we can call stuff from static callbacks
