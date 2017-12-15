@@ -6,9 +6,12 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+#if os(macOS)
+import class Foundation.Bundle
+public typealias Bundle = Foundation.Bundle
+#elseif os(Android)
 import JNI
 
-#if os(Android)
 private func listFiles(inDirectory subpath: String) throws -> [String] {
     guard let activityClass = getActivityClass() else {
         assertionFailure("Couldn't find SDL Activity class")

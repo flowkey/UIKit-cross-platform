@@ -8,7 +8,6 @@
 
 import SDL
 import SDL_gpu
-import JNI
 
 internal final class Window {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
@@ -133,6 +132,8 @@ internal final class Window {
 extension SDLWindowFlags: OptionSet {}
 
 #if os(Android)
+    import JNI
+
     fileprivate func getAndroidDeviceScale() -> CGFloat {
         if
             let DisplayMetricsClass = try? jni.FindClass(name: "android/util/DisplayMetrics"),
