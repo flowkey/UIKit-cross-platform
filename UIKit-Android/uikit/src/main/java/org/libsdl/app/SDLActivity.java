@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import android.app.*;
 import android.content.*;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.view.*;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
@@ -78,6 +79,10 @@ public class SDLActivity extends Activity {
             // "SDL2_ttf",
             "main"
         };
+    }
+
+    protected double getDeviceDensity() {
+        return (double) getResources().getDisplayMetrics().density;
     }
 
     // Load the .so
