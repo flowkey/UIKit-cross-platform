@@ -18,7 +18,7 @@ private let loggingTag = "NativePlayer"
 
 @discardableResult
 @_silgen_name("__android_log_write")
-func android_log_write(_ prio: Int32, _ tag: UnsafePointer<CChar>, _ text: UnsafePointer<CChar>) -> Int32
+public func android_log_write(_ prio: Int32, _ tag: UnsafePointer<CChar>, _ text: UnsafePointer<CChar>) -> Int32
 
 // Replace `Swift.print` on Android (because the built-in one doesn't work there)
 public func print(_ items: Any...) {
