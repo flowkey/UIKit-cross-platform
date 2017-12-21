@@ -8,6 +8,11 @@
 
 import SDL
 import SDL_gpu
+import class Foundation.RunLoop
+import struct Foundation.Date
+
+private let timeBetweenFramesMS = 1000.0 / 60.0
+
 
 final public class SDL { // XXX: only public for startRunLoop()
     static var rootView: UIWindow!
@@ -43,7 +48,6 @@ final public class SDL { // XXX: only public for startRunLoop()
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
 
         let window = Window(size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT), options: windowOptions)
-        UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
 
         if window.size == .zero {
             preconditionFailure("You need window dimensions to run")
@@ -52,6 +56,7 @@ final public class SDL { // XXX: only public for startRunLoop()
         rootView.frame.size = window.size
 
         self.window = window
+        UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
     }
 
     public static func runWithRootView(_ view: UIView) {
@@ -77,7 +82,12 @@ final public class SDL { // XXX: only public for startRunLoop()
 
         var frameTimer = Timer()
         while (!shouldQuit) {
-            defer { frameTimer = Timer() } // reset for next frame
+            defer {
+                let remainingFrameTime = (timeBetweenFramesMS - frameTimer.getElapsedTimeInMilliseconds()) / 1000 // seconds
+                let endOfCurrentFrame = Date(timeIntervalSinceNow: remainingFrameTime)
+                RunLoop.current.run(until: endOfCurrentFrame)
+                frameTimer = Timer() // reset for next frame
+            }
 
             let eventWasHandled = handleEventsIfNeeded()
 
@@ -86,10 +96,6 @@ final public class SDL { // XXX: only public for startRunLoop()
             } else if !eventWasHandled && !firstRender && !UIView.animationsArePending {
                 // We can avoid updating the screen at all unless there is active touch input
                 // or animations are pending for execution
-
-                // Sleep to avoid 100% CPU load when nothing is happening!
-                // Normally this case is covered by the automatic VSYNC in window.flip():
-                sleepFor(milliseconds: (1000.0 / 60.0) - frameTimer.getElapsedTimeInMilliseconds())
                 continue
             }
 

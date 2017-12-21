@@ -1210,27 +1210,29 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             // This is the entry point to the C app.
             // Start up the C app thread and enable sensor input for the first time
 
-            final Thread sdlThread = new Thread(new SDLMain(), "SDLThread");
-            enableSensor(Sensor.TYPE_ACCELEROMETER, true);
-            sdlThread.start();
+            SDLActivity.nativeInit(SDLActivity.mSingleton.getArguments());
 
-            // Set up a listener thread to catch when the native thread ends
-            SDLActivity.mSDLThread = new Thread(new Runnable(){
-                @Override
-                public void run(){
-                    try {
-                        sdlThread.join();
-                    }
-                    catch(Exception e){}
-                    finally{
-                        // Native thread has finished
-                        if (! SDLActivity.mExitCalledFromJava) {
-                            SDLActivity.handleNativeExit();
-                        }
-                    }
-                }
-            }, "SDLThreadListener");
-            SDLActivity.mSDLThread.start();
+//            final Thread sdlThread = new Thread(new SDLMain(), "SDLThread");
+//            enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+//            sdlThread.start();
+//
+//            // Set up a listener thread to catch when the native thread ends
+//            SDLActivity.mSDLThread = new Thread(new Runnable(){
+//                @Override
+//                public void run(){
+//                    try {
+//                        sdlThread.join();
+//                    }
+//                    catch(Exception e){}
+//                    finally{
+//                        // Native thread has finished
+//                        if (! SDLActivity.mExitCalledFromJava) {
+//                            SDLActivity.handleNativeExit();
+//                        }
+//                    }
+//                }
+//            }, "SDLThreadListener");
+//            SDLActivity.mSDLThread.start();
         }
 
         if (SDLActivity.mHasFocus) {
