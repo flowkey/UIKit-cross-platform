@@ -19,7 +19,7 @@ internal final class Window {
     init(size: CGSize, options: SDLWindowFlags) {
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
 
-        GPU_SetPreInitFlags(GPU_INIT_ENABLE_VSYNC)
+        GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC)
 
         var size = size
         if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
@@ -44,8 +44,14 @@ internal final class Window {
             // Mac:
             scale = CGFloat(rawPointer.pointee.base_h) / CGFloat(rawPointer.pointee.h)
         #endif
+
         
         self.size = size
+
+        // Fixes video surface visibility with transparent & opaque views in SDLSurface above
+        // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
+        setShapeBlending(true)
+        setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
     }
 
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {

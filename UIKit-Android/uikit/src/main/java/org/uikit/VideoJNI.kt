@@ -1,8 +1,6 @@
 package org.uikit
 
 import android.net.Uri
-import android.os.Looper
-import android.os.Handler
 import android.widget.RelativeLayout
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -22,20 +20,14 @@ import org.libsdl.app.SDLActivity
  * Created by chris on 29.08.17.
  */
 
-private fun runOnMainThread(block: () -> Unit) {
-    Handler(Looper.getMainLooper()).post(Runnable {
-        kotlin.run(block)
-    })
-}
-
-class VideoJNI(url: String) {
-    val videoPlayer: SimpleExoPlayer
-    var videoPlayerLayout: SimpleExoPlayerView? = null
+class VideoJNI(activity: SDLActivity, url: String) {
+    private val videoPlayer: SimpleExoPlayer
+    private var videoPlayerLayout: SimpleExoPlayerView? = null
 
     external fun nativeOnVideoEnded() // calls onVideoEnded function in Swift
 
     init {
-        val context = SDLActivity.getContext()
+        val context = activity
 
         val bandwidthMeter = DefaultBandwidthMeter()
         val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
@@ -47,7 +39,7 @@ class VideoJNI(url: String) {
 
         // Produces DataSource instances through which media data is loaded.
         val dataSourceFactory = DefaultDataSourceFactory(context,
-                Util.getUserAgent(SDLActivity.getContext(), "com.flowkey.nativeplayersdl"))
+                Util.getUserAgent(context, "com.flowkey.nativeplayersdl"))
 
         // Produces Extractor instances for parsing the media data.
         val extractorsFactory = DefaultExtractorsFactory()
@@ -73,30 +65,23 @@ class VideoJNI(url: String) {
             override fun onPlayerError(error: ExoPlaybackException?) {}
         })
 
-        runOnMainThread {
-            val videoPlayerLayout = SimpleExoPlayerView(context)
-            videoPlayerLayout.player = videoPlayer
-            videoPlayerLayout.useController = false
+        val videoPlayerLayout = SimpleExoPlayerView(context)
+        videoPlayerLayout.player = videoPlayer
+        videoPlayerLayout.useController = false
 
-            videoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
+        videoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
+        activity.mLayout?.addView(videoPlayerLayout)
 
-            UIKitActivity.addChildLayout(videoPlayerLayout)
-
-            this.videoPlayerLayout = videoPlayerLayout
-        }
+        this.videoPlayerLayout = videoPlayerLayout
     }
 
     fun setSize(width: Int, height: Int) {
-        runOnMainThread {
-            videoPlayerLayout?.layoutParams = RelativeLayout.LayoutParams(width, height)
-        }
+        videoPlayerLayout?.layoutParams = RelativeLayout.LayoutParams(width, height)
     }
 
     fun setOrigin(x: Int, y: Int) {
-        runOnMainThread {
-            videoPlayerLayout?.left = x
-            videoPlayerLayout?.top = y
-        }
+        videoPlayerLayout?.left = x
+        videoPlayerLayout?.top = y
     }
 
     fun play() {

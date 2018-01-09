@@ -6,25 +6,23 @@
 //  Copyright © 2017 Geordie Jay. All rights reserved.
 //
 
+import JNI
 import SDL
 import SDL_gpu
-import class Foundation.RunLoop
+import CoreFoundation
 import struct Foundation.Date
 
-private let timeBetweenFramesMS = 1000.0 / 60.0
+private let maxFrameRenderTimeInSeconds = 1.0 / 60.0
 
-
-final public class SDL { // XXX: only public for startRunLoop()
-    static var rootView: UIWindow!
+final public class SDL { // Only public for rootView!
+    public private(set) static var rootView: UIWindow!
     static var window: Window!
 
-    private static var shouldQuit = false
-    private static var isRunning = false
+    fileprivate static var shouldQuit = false
 
     public static func initialize() {
         self.shouldQuit = false
         self.rootView = UIWindow()
-        self.isRunning = false
         self.window = nil // triggers Window deinit to destroy previous Window
 
         let windowOptions: SDLWindowFlags
@@ -59,61 +57,41 @@ final public class SDL { // XXX: only public for startRunLoop()
         UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
     }
 
-    public static func runWithRootView(_ view: UIView) {
-        rootView.addSubview(view)
-        startRunLoop()
+    private static var firstRender = true // screen is black until first touch if we don't check for this
+    private static var frameTimer = Timer()
+
+    /// Returns: time taken (in milliseconds) to render current frame
+    fileprivate static func render() -> Double {
+        doRender()
+
+        let remainingFrameTime = maxFrameRenderTimeInSeconds - frameTimer.elapsedTimeInSeconds
+        if !firstRender, remainingFrameTime > 0 {
+            CFRunLoopRunInMode(kCFRunLoopDefaultMode, remainingFrameTime, true)
+        }
+
+        let elapsedFrameTime = frameTimer.elapsedTimeInMilliseconds
+        frameTimer = Timer() // reset for next frame
+
+        return elapsedFrameTime
     }
 
-    public static func startRunLoop() {
-        if isRunning == false {
-            isRunning = true
-            _startRunLoop()
+    private static func doRender() {
+        let eventWasHandled = handleEventsIfNeeded()
+
+        if !DisplayLink.activeDisplayLinks.isEmpty {
+            DisplayLink.activeDisplayLinks.forEach { $0.callback() }
+        } else if !eventWasHandled && !firstRender && !UIView.animationsArePending {
+            // Sleep unless there are active touch inputs or pending animations
+            return
         }
-    }
 
-    private static func _startRunLoop() {
-        var firstRender = true // screen is black until first touch if we don't check for this
-        let fpsView = MeteringView(metric: "FPS")
-        fpsView.frame = CGRect(x: 0, y: 0, width: 150, height: 25)
-        fpsView.frame.maxX = rootView.bounds.maxX
-        fpsView.isUserInteractionEnabled = false
-        fpsView.sizeToFit()
-        rootView.addSubview(fpsView)
+        UIView.animateIfNeeded(at: frameTimer)
 
-        var frameTimer = Timer()
-        while (!shouldQuit) {
-            defer {
-                let remainingFrameTime = (timeBetweenFramesMS - frameTimer.getElapsedTimeInMilliseconds()) / 1000 // seconds
-                let endOfCurrentFrame = Date(timeIntervalSinceNow: remainingFrameTime)
-                RunLoop.current.run(until: endOfCurrentFrame)
-                frameTimer = Timer() // reset for next frame
-            }
+        window.clear()
+        rootView.sdlRender()
+        window.flip()
 
-            let eventWasHandled = handleEventsIfNeeded()
-
-            if !DisplayLink.activeDisplayLinks.isEmpty {
-                DisplayLink.activeDisplayLinks.forEach { $0.callback() }
-            } else if !eventWasHandled && !firstRender && !UIView.animationsArePending {
-                // We can avoid updating the screen at all unless there is active touch input
-                // or animations are pending for execution
-                continue
-            }
-
-            UIView.animateIfNeeded(at: frameTimer)
-
-            window.clear()
-            window.setShapeBlending(true)
-
-            // fixes video surface visibility with transparent & opaque views in SDLSurface above
-            // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
-            window.setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
-            rootView.sdlRender()
-            window.flip()
-
-            firstRender = false
-            let frameTime = frameTimer.getElapsedTimeInMilliseconds()
-            fpsView.addMeasurement(1000.0 / frameTime)
-        }
+        firstRender = false
     }
 
     private static func handleEventsIfNeeded() -> Bool {
@@ -141,8 +119,7 @@ final public class SDL { // XXX: only public for startRunLoop()
     }
 }
 
-private func measure(_ function: @autoclosure () -> Void) -> Double {
-    let timer = Timer()
-    function()
-    return timer.getElapsedTimeInMilliseconds()
+@_silgen_name("Java_org_libsdl_app_SDLActivity_render")
+public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, cls: JavaClass) -> JavaInt {
+    return JavaInt(SDL.render())
 }

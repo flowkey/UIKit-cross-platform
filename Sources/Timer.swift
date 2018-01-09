@@ -23,30 +23,31 @@ struct Timer {
         self.startTime = startTime
     }
 
-    func getElapsedTimeInMilliseconds() -> Double {
+    var elapsedTimeInMilliseconds: Double {
         var currentTime = timeval(tv_sec: 0, tv_usec: 0)
         gettimeofday(&currentTime, nil)
-        return max(0.001, currentTime.inMilliseconds() - startTime.inMilliseconds())
+        return max(0.001, currentTime.inMilliseconds - startTime.inMilliseconds)
+    }
+
+    var elapsedTimeInSeconds: Double {
+        var currentTime = timeval(tv_sec: 0, tv_usec: 0)
+        gettimeofday(&currentTime, nil)
+        return max(0.000001, currentTime.inSeconds - startTime.inSeconds)
     }
 }
 
-extension timeval {
-    func inMilliseconds() -> Double {
-        return (Double(self.tv_sec) * 1000) + (Double(self.tv_usec) / 1000)
+private extension timeval {
+    var inMilliseconds: Double {
+        return (Double(self.tv_sec) * 1_000) + (Double(self.tv_usec) / 1_000)
     }
-}
 
-func sleepFor(milliseconds ms: Double) {
-    if ms.isLessThanOrEqualTo(0.0) { return }
-    let seconds = Int(ms / 1000) // "floor" value - e.g. 3.7 doesn't round up to 4, instead becomes 3!
-    let remainingMilliseconds = ms.truncatingRemainder(dividingBy: 1000)
-    var time = timespec(tv_sec: seconds, tv_nsec: Int(remainingMilliseconds * 1_000_000))
-    nanosleep(&time, nil)
+    var inSeconds: Double {
+        return (Double(self.tv_sec) + Double(self.tv_usec) / 1_000_000)
+    }
 }
 
 extension Timer {
     static func -(lhs: Timer, rhs: Timer) -> Double {
-        return lhs.startTime.inMilliseconds() - rhs.startTime.inMilliseconds()
+        return lhs.startTime.inMilliseconds - rhs.startTime.inMilliseconds
     }
 }
-
