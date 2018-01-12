@@ -11,17 +11,19 @@ import SDL
 import SDL_gpu
 import CoreFoundation
 import struct Foundation.Date
+import class Foundation.Thread
 
 private let maxFrameRenderTimeInSeconds = 1.0 / 60.0
 
 final public class SDL { // Only public for rootView!
-    public private(set) static var rootView: UIWindow!
+    public private(set) static var rootView = UIWindow()
     static var window: Window!
 
     fileprivate static var shouldQuit = false
 
     public static func initialize() {
         self.shouldQuit = false
+        self.firstRender = true
         self.rootView = UIWindow()
         self.window = nil // triggers Window deinit to destroy previous Window
 
@@ -57,26 +59,40 @@ final public class SDL { // Only public for rootView!
         UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
     }
 
+    private static var onUnloadListeners: [() -> Void] = []
+    public static func onUnload(_ callback: @escaping () -> Void) {
+        onUnloadListeners.append(callback)
+    }
+
+    private static func unload() {
+        onUnloadListeners.forEach { $0() }
+        onUnloadListeners.removeAll()
+        DisplayLink.activeDisplayLinks.removeAll()
+        UIView.layersWithAnimations.removeAll()
+        UITouch.activeTouches.removeAll()
+        UIView.currentAnimationPrototype = nil
+    }
+
     private static var firstRender = true // screen is black until first touch if we don't check for this
     private static var frameTimer = Timer()
 
     /// Returns: time taken (in milliseconds) to render current frame
     fileprivate static func render() -> Double {
-        doRender()
+        doRender(at: frameTimer)
+        if shouldQuit { return -1.0 }
 
         let remainingFrameTime = maxFrameRenderTimeInSeconds - frameTimer.elapsedTimeInSeconds
         if !firstRender, remainingFrameTime > 0 {
             CFRunLoopRunInMode(kCFRunLoopDefaultMode, remainingFrameTime, true)
         }
 
-        let elapsedFrameTime = frameTimer.elapsedTimeInMilliseconds
-        frameTimer = Timer() // reset for next frame
-
-        return elapsedFrameTime
+        defer { frameTimer = Timer() } // reset for next frame - XXX: should we do this at the start of the frame instead?
+        return round(frameTimer.elapsedTimeInMilliseconds)
     }
 
-    private static func doRender() {
+    private static func doRender(at frameTimer: Timer) {
         let eventWasHandled = handleEventsIfNeeded()
+        if shouldQuit { return }
 
         if !DisplayLink.activeDisplayLinks.isEmpty {
             DisplayLink.activeDisplayLinks.forEach { $0.callback() }
@@ -101,7 +117,11 @@ final public class SDL { // Only public for rootView!
         while SDL_PollEvent(&e) == 1 {
             switch SDL_EventType(rawValue: e.type) {
             case SDL_QUIT:
+                print("SDL_QUIT was called")
                 shouldQuit = true
+                SDL.rootView = UIWindow()
+                window = nil
+                unload()
             case SDL_MOUSEBUTTONDOWN:
                 handleTouchDown(.from(e.button))
                 eventWasHandled = true
@@ -120,6 +140,6 @@ final public class SDL { // Only public for rootView!
 }
 
 @_silgen_name("Java_org_libsdl_app_SDLActivity_render")
-public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, cls: JavaClass) -> JavaInt {
+public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
     return JavaInt(SDL.render())
 }

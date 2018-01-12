@@ -9,10 +9,10 @@
 import JNI
 
 @_silgen_name("Android_JNI_GetActivityClass")
-public func getAndroidActivityClass() -> JavaClass
+public func getAndroidLayoutClass() -> JavaClass
 
 @_silgen_name("SDL_AndroidGetActivity")
-public func getAndroidActivity() -> JavaObject
+public func getAndroidLayout() -> JavaObject
 
 /// Wraps an `SDLActivity` `JavaObject` instance.
 /// We do this to allow calling of methods via the JNI that require an "org/libsdl/app/SDLActivity"

@@ -11,8 +11,6 @@ import Foundation
 open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var initialTouchPoint: CGPoint?
 
-    private var trackedTouch: UITouch?
-
     private var timeSinceLastMovement: TimeInterval?
     private var lastMovementTimestamp: TimeInterval?
 

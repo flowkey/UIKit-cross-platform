@@ -17,7 +17,7 @@ public class UITouch {
     }
 
     var touchId: Int
-    internal(set) public var view: UIView?
+    internal(set) public weak var view: UIView?
     public var gestureRecognizers: [UIGestureRecognizer] = []
 
     private var absoluteLocation: CGPoint
@@ -28,7 +28,7 @@ public class UITouch {
         absoluteLocation = newLocation
     }
 
-    // var window: UIWindow? // unused
+    // weak var window: UIWindow? // unused
 
     public func location(in view: UIView?) -> CGPoint {
         let origin = view?.absoluteOrigin() ?? .zero

@@ -16,18 +16,15 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import org.libsdl.app.SDLActivity
 
-/**
- * Created by chris on 29.08.17.
- */
-
-class VideoJNI(activity: SDLActivity, url: String) {
+@Suppress("unused")
+class VideoJNI(parent: SDLActivity, url: String) {
     private val videoPlayer: SimpleExoPlayer
-    private var videoPlayerLayout: SimpleExoPlayerView? = null
+    private var videoPlayerLayout: SimpleExoPlayerView
 
     external fun nativeOnVideoEnded() // calls onVideoEnded function in Swift
 
     init {
-        val context = activity
+        val context = parent.context
 
         val bandwidthMeter = DefaultBandwidthMeter()
         val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
@@ -51,6 +48,7 @@ class VideoJNI(activity: SDLActivity, url: String) {
         videoPlayer.addListener(object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 if (playbackState == Player.STATE_ENDED) {
+                    // XXX: Is this circular reference a problem for us?
                     nativeOnVideoEnded()
                 }
             }
@@ -65,23 +63,18 @@ class VideoJNI(activity: SDLActivity, url: String) {
             override fun onPlayerError(error: ExoPlaybackException?) {}
         })
 
-        val videoPlayerLayout = SimpleExoPlayerView(context)
+        videoPlayerLayout = SimpleExoPlayerView(context)
         videoPlayerLayout.player = videoPlayer
         videoPlayerLayout.useController = false
 
         videoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
-        activity.mLayout?.addView(videoPlayerLayout)
-
-        this.videoPlayerLayout = videoPlayerLayout
+        parent.addView(videoPlayerLayout)
     }
 
-    fun setSize(width: Int, height: Int) {
-        videoPlayerLayout?.layoutParams = RelativeLayout.LayoutParams(width, height)
-    }
-
-    fun setOrigin(x: Int, y: Int) {
-        videoPlayerLayout?.left = x
-        videoPlayerLayout?.top = y
+    fun setFrame(x: Int, y: Int, width: Int, height: Int) {
+        videoPlayerLayout.left = x
+        videoPlayerLayout.top = y
+        videoPlayerLayout.layoutParams = RelativeLayout.LayoutParams(width, height)
     }
 
     fun play() {
@@ -108,5 +101,9 @@ class VideoJNI(activity: SDLActivity, url: String) {
 
     fun setPlaybackRate(rate: Double) {
         videoPlayer.playbackParameters = PlaybackParameters(rate.toFloat(), 1.0F)
+    }
+
+    fun cleanup() {
+        videoPlayer.release()
     }
 }

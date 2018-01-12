@@ -13,8 +13,8 @@ public typealias Bundle = Foundation.Bundle
 import JNI
 
 private func listFiles(inDirectory subpath: String) throws -> [String] {
-    let activity = getAndroidActivity()
-    let assetManager = try jni.call("getAssets", on: activity, returningObjectType: "android.content.res.AssetManager")
+    let context = try jni.call("getContext", on: getAndroidLayout(), returningObjectType: "android.content.Context")
+    let assetManager = try jni.call("getAssets", on: context, returningObjectType: "android.content.res.AssetManager")
     return try jni.call("list", on: assetManager, with: [subpath])
 }
 
@@ -27,7 +27,7 @@ public struct Bundle {
             guard let ext = ext else { return allFiles }
             return allFiles.filter { $0.hasSuffix(ext) }
         } catch {
-            print("Failed to get directory listing:", error)
+            assertionFailure("Failed to get directory listing: \(error)")
             return []
         }
     }

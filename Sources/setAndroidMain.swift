@@ -17,11 +17,11 @@ public func setAndroidMain(_ main: (() -> Void)?) {
 }
 
 @_silgen_name("SDL_Android_Init")
-public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ cls: JavaClass)
+public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
 
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeInit")
-public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, cls: JavaClass, array: JavaObject) -> JavaInt {
-    SDLAndroidInit(env, cls)
+public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
+    SDLAndroidInit(env, view)
     SDL_SetMainReady()
 
     guard let androidMain = androidMain else {

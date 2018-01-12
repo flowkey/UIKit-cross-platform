@@ -9,7 +9,7 @@
 import SDL
 
 open class CALayer {
-    open var delegate: CALayerDelegate?
+    open weak var delegate: CALayerDelegate?
 
     var texture: Texture? {
         didSet {
@@ -18,7 +18,7 @@ open class CALayer {
         }
     }
 
-    internal (set) public var superlayer: CALayer?
+    internal (set) public weak var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer] = []
     public func addSublayer(_ layer: CALayer) {
         layer.removeFromSuperlayer()
