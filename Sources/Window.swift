@@ -142,11 +142,10 @@ extension SDLWindowFlags: OptionSet {}
 
     fileprivate func getAndroidDeviceScale() -> CGFloat {
         if
-            let DisplayMetricsClass = try? jni.FindClass(name: "android/util/DisplayMetrics"),
-            let deviceDensity: Int = try? jni.GetStaticField("DENSITY_DEVICE_STABLE", on: DisplayMetricsClass),
-            let defaultDensity: Int = try? jni.GetStaticField("DENSITY_DEFAULT", on: DisplayMetricsClass)
+            let parentLayout = SDL_GetLayout(),
+            let density: Float = try? jni.call("getDeviceDensity", on: parentLayout)
         {
-            return CGFloat(deviceDensity / defaultDensity)
+            return CGFloat(density)
         } else {
             return 2.0 // assume retina
         }

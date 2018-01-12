@@ -30,11 +30,13 @@ open class Button: UIControl {
     private var sizeToFitWasCalled = false
 
     override open func sizeToFit() {
-        super.sizeToFit()
-        sizeToFitWasCalled = true
         updateLabelAndImageForCurrentState()
+        sizeToFitWasCalled = true
+
         imageView?.sizeToFit()
         titleLabel?.sizeToFit()
+
+        super.sizeToFit()
 
         // It seems weird to access the superview here but it matches the iOS behaviour
         superview?.setNeedsLayout()

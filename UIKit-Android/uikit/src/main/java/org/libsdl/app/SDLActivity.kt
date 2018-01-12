@@ -76,6 +76,9 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         this.addView(surface)
     }
 
+    @Suppress("unused")
+    private fun getDeviceDensity(): Float = context.resources.displayMetrics.density
+
 
     // Events
 
