@@ -485,7 +485,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     // Sensors
     // Lazy to avoid accessing context before onCreate!
     private val mSensorManager: SensorManager by lazy { context!!.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
-    private val mDisplay: Display by lazy { (context!!.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay }
 
     // Keep track of the surface size to normalize touch events
     // Start with non-zero values to avoid potential division by zero
@@ -536,7 +535,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
         mWidth = width.toFloat()
         mHeight = height.toFloat()
-        this.onNativeResize(width, height, sdlFormat, mDisplay.refreshRate)
+        this.onNativeResize(width, height, sdlFormat, display.refreshRate)
         Log.v("SDL", "Window size: " + width + "x" + height)
 
 
@@ -721,7 +720,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
         val x: Float
         val y: Float
-        when (mDisplay.rotation) {
+        when (display.rotation) {
             ROTATION_90 -> {
                 x = -event.values[1]
                 y = event.values[0]

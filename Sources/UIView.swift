@@ -251,10 +251,6 @@ open class UIView: UIResponder {
     open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {}
     open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {}
     open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {}
-
-    deinit {
-        print("DEINITING", self)
-    }
 }
 
 

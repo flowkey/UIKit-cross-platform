@@ -18,8 +18,8 @@ private weak var globalJNIVideo: JNIVideo?
 
 class JNIVideo: JNIObject {
     init(url: String) throws {
-        let activity = JavaSDLActivity(getAndroidLayout())
-        try super.init("org.uikit.VideoJNI", arguments: [activity, url])
+        let parentView = JavaSDLView(getSDLView())
+        try super.init("org.uikit.VideoJNI", arguments: [parentView, url])
         globalJNIVideo = self
     }
 

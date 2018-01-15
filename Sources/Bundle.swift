@@ -13,7 +13,7 @@ public typealias Bundle = Foundation.Bundle
 import JNI
 
 private func listFiles(inDirectory subpath: String) throws -> [String] {
-    let context = try jni.call("getContext", on: getAndroidLayout(), returningObjectType: "android.content.Context")
+    let context = try jni.call("getContext", on: getSDLView(), returningObjectType: "android.content.Context")
     let assetManager = try jni.call("getAssets", on: context, returningObjectType: "android.content.res.AssetManager")
     return try jni.call("list", on: assetManager, with: [subpath])
 }

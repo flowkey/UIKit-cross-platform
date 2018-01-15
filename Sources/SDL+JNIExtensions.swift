@@ -9,15 +9,15 @@
 import JNI
 
 @_silgen_name("Android_JNI_GetActivityClass")
-public func getAndroidLayoutClass() -> JavaClass
+public func getSDLViewClass() -> JavaClass
 
 @_silgen_name("SDL_AndroidGetActivity")
-public func getAndroidLayout() -> JavaObject
+public func getSDLView() -> JavaObject
 
 /// Wraps an `SDLActivity` `JavaObject` instance.
 /// We do this to allow calling of methods via the JNI that require an "org/libsdl/app/SDLActivity"
 /// instead of just a "java/lang/Object".
-struct JavaSDLActivity: JavaParameterConvertible {
+struct JavaSDLView: JavaParameterConvertible {
     private let object: JavaObject
     init(_ object: JavaObject) {
         self.object = object
@@ -30,22 +30,22 @@ struct JavaSDLActivity: JavaParameterConvertible {
         return JavaParameter(object: self.object)
     }
 
-    static func fromStaticField(_ fieldID: JavaFieldID, of javaClass: JavaClass) throws -> JavaSDLActivity {
+    static func fromStaticField(_ fieldID: JavaFieldID, of javaClass: JavaClass) throws -> JavaSDLView {
         let jobject: JavaObject = try jni.GetStaticObjectField(of: javaClass, id: fieldID)
         return self.init(jobject)
     }
 
-    static func fromMethod(calling methodID: JavaMethodID, on object: JavaObject, args: [JavaParameter]) throws -> JavaSDLActivity {
+    static func fromMethod(calling methodID: JavaMethodID, on object: JavaObject, args: [JavaParameter]) throws -> JavaSDLView {
         let jObject = try jni.CallObjectMethod(methodID, on: object, parameters: args)
         return self.init(jObject)
     }
 
-    static func fromStaticMethod(calling methodID: JavaMethodID, on javaClass: JavaClass, args: [JavaParameter]) throws -> JavaSDLActivity {
+    static func fromStaticMethod(calling methodID: JavaMethodID, on javaClass: JavaClass, args: [JavaParameter]) throws -> JavaSDLView {
         let jObject = try jni.CallStaticObjectMethod(methodID, on: javaClass, parameters: args)
         return self.init(jObject)
     }
 
-    static func fromField(_ fieldID: JavaFieldID, on javaObject: JavaObject) throws -> JavaSDLActivity {
+    static func fromField(_ fieldID: JavaFieldID, on javaObject: JavaObject) throws -> JavaSDLView {
         let javaStringObject = try jni.GetObjectField(of: javaObject, id: fieldID)
         return self.init(javaStringObject)
     }
