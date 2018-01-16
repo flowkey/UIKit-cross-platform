@@ -25,16 +25,18 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     companion object {
         internal val COMMAND_CHANGE_TITLE = 1
         internal val COMMAND_SET_KEEP_SCREEN_ON = 5
+
+        // If we want to separate mouse and touch events.
+        // This is only toggled in native code when a hint is set!
+        // This is the only property that remains static - we probably won't use it at all long-term
+        // and it is a major overhaul to change the native C code (there are a lot of dependencies)
+        @JvmStatic private var mSeparateMouseAndTouch = false
     }
 
     // Keep track of the paused state
     private var mIsPaused = false
     private var mIsSurfaceReady = false
     private var mHasFocus = false
-
-    // If we want to separate mouse and touch events.
-    // This is only toggled in native code when a hint is set!
-    private var mSeparateMouseAndTouch = false
 
     // Main components
     private var mSurface: SurfaceView? = null
@@ -217,8 +219,9 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
 
-    // The code below is currently unused and is deprecated anyway.
-    // We should rethink this based on the up-to-date information at:
+    // The code below was unused and used a deprecated API anyway.
+    // It would be good to have some access to native dialogs though, so
+    // we should rethink it based on the up-to-date information at:
     // https://developer.android.com/guide/topics/ui/dialogs.html#FullscreenDialog
 
 //    /**
@@ -239,170 +242,9 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 //            buttonIds: IntArray,
 //            buttonTexts: Array<String>,
 //            colors: IntArray): Int {
-//
-//        messageboxSelection[0] = -1
-//
-//        // sanity checks
-//
-//        if (buttonFlags.size != buttonIds.size && buttonIds.size != buttonTexts.size) {
-//            return -1 // implementation broken
-//        }
-//
-//        // collect arguments for Dialog
-//
-//        val args = Bundle()
-//        args.putInt("flags", flags)
-//        args.putString("title", title)
-//        args.putString("message", message)
-//        args.putIntArray("buttonFlags", buttonFlags)
-//        args.putIntArray("buttonIds", buttonIds)
-//        args.putStringArray("buttonTexts", buttonTexts)
-//        args.putIntArray("colors", colors)
-//
-//        // trigger Dialog creation on UI thread
-//
-////        Handler(Looper.getMainLooper()).run {
-////            this.showDialog(dialogs++, args)
-////        }
-//
-//        // block the calling thread
-//
-//        synchronized(messageboxSelection) {
-//            try {
-//                (messageboxSelection as? Object)?.wait()
-//            } catch (ex: InterruptedException) {
-//                ex.printStackTrace()
-//                return -1
-//            }
-//
-//        }
-//
-//        // return selected value
-//
-//        return messageboxSelection[0]
 //    }
 
 //    override fun onCreateDialog(ignore: Int, args: Bundle): Dialog? {
-//        // TODO set values from "flags" to messagebox dialog
-//
-//        // get colors
-//
-//        val colors = args.getIntArray("colors")
-//        val backgroundColor: Int
-//        val textColor: Int
-//        val buttonBorderColor: Int
-//        val buttonBackgroundColor: Int
-//        val buttonSelectedColor: Int
-//        if (colors != null) {
-//            var i = -1
-//            backgroundColor = colors[++i]
-//            textColor = colors[++i]
-//            buttonBorderColor = colors[++i]
-//            buttonBackgroundColor = colors[++i]
-//            buttonSelectedColor = colors[++i]
-//        } else {
-//            backgroundColor = Color.TRANSPARENT
-//            textColor = Color.TRANSPARENT
-//            buttonBorderColor = Color.TRANSPARENT
-//            buttonBackgroundColor = Color.TRANSPARENT
-//            buttonSelectedColor = Color.TRANSPARENT
-//        }
-//
-//        // create dialog with title and a listener to wake up calling thread
-//
-//        val dialog = Dialog(this)
-//        dialog.setTitle(args.getString("title"))
-//        dialog.setCancelable(false)
-//        dialog.setOnDismissListener {
-//            synchronized(messageboxSelection) {
-//                (messageboxSelection as? Object)?.notify()
-//            }
-//        }
-//
-//        // create text
-//
-//        val message = TextView(this)
-//        message.gravity = Gravity.CENTER
-//        message.text = args.getString("message")
-//        if (textColor != Color.TRANSPARENT) {
-//            message.setTextColor(textColor)
-//        }
-//
-//        // create buttons
-//
-//        val buttonFlags = args.getIntArray("buttonFlags")
-//        val buttonIds = args.getIntArray("buttonIds")
-//        val buttonTexts = args.getStringArray("buttonTexts")
-//
-//        val mapping = SparseArray<Button>()
-//
-//        val buttons = LinearLayout(this)
-//        buttons.orientation = LinearLayout.HORIZONTAL
-//        buttons.gravity = Gravity.CENTER
-//        for (i in buttonTexts!!.indices) {
-//            val button = Button(this)
-//            val id = buttonIds!![i]
-//            button.setOnClickListener {
-//                messageboxSelection[0] = id
-//                dialog.dismiss()
-//            }
-//            if (buttonFlags!![i] != 0) {
-//                // see SDL_messagebox.h
-//                if (buttonFlags[i] and 0x00000001 != 0) {
-//                    mapping.put(KEYCODE_ENTER, button)
-//                }
-//                if (buttonFlags[i] and 0x00000002 != 0) {
-//                    mapping.put(111, button) /* API 11: KeyEvent.KEYCODE_ESCAPE */
-//                }
-//            }
-//            button.text = buttonTexts[i]
-//            if (textColor != Color.TRANSPARENT) {
-//                button.setTextColor(textColor)
-//            }
-//            if (buttonBorderColor != Color.TRANSPARENT) {
-//                // TODO set color for border of messagebox button
-//            }
-//            if (buttonBackgroundColor != Color.TRANSPARENT) {
-//                val drawable = button.background
-//                if (drawable == null) {
-//                    // setting the color this way removes the style
-//                    button.setBackgroundColor(buttonBackgroundColor)
-//                } else {
-//                    // setting the color this way keeps the style (gradient, padding, etc.)
-//                    drawable.setColorFilter(buttonBackgroundColor, PorterDuff.Mode.MULTIPLY)
-//                }
-//            }
-//            if (buttonSelectedColor != Color.TRANSPARENT) {
-//                // TODO set color for selected messagebox button
-//            }
-//            buttons.addView(button)
-//        }
-//
-//        // create content
-//
-//        val content = LinearLayout(this)
-//        content.orientation = LinearLayout.VERTICAL
-//        content.addView(message)
-//        content.addView(buttons)
-//        if (backgroundColor != Color.TRANSPARENT) {
-//            content.setBackgroundColor(backgroundColor)
-//        }
-//
-//        // add content to dialog and return
-//
-//        dialog.setContentView(content)
-//        dialog.setOnKeyListener(DialogInterface.OnKeyListener { _, keyCode, event ->
-//            val button = mapping.get(keyCode)
-//            if (button != null) {
-//                if (event.action == ACTION_UP) {
-//                    button.performClick()
-//                }
-//                return@OnKeyListener true // also for ignored actions
-//            }
-//            false
-//        })
-//
-//        return dialog
 //    }
 
     /** Called by onPause or surfaceDestroyed. Even if surfaceDestroyed
@@ -553,7 +395,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
             if (max / min < 1.20f) {
                 // Special Patch for Square Resolution: Black Berry Passport
-                Log.v("SDL", "Don't skip on such aspect-ratio. Could be a square resolution.")
+                Log.v("SDL", "Avoid skip on near-square aspect-ratio, just in case.")
             } else {
                 Log.v("SDL", "Surface is not ready. Skipping creation for now...")
                 return
