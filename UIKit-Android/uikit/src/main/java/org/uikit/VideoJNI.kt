@@ -72,9 +72,10 @@ class VideoJNI(parent: SDLActivity, url: String) {
     }
 
     fun setFrame(x: Int, y: Int, width: Int, height: Int) {
-        videoPlayerLayout.left = x
-        videoPlayerLayout.top = y
-        videoPlayerLayout.layoutParams = RelativeLayout.LayoutParams(width, height)
+        val layoutParams = RelativeLayout.LayoutParams(width, height)
+        layoutParams.setMargins(x, y, 0, 0)
+
+        videoPlayerLayout.layoutParams = layoutParams
     }
 
     fun play() {
