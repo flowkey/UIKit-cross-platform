@@ -29,6 +29,10 @@ open class Button: UIControl {
     /// iOS strangely has different behaviour in layoutSubviews depending on whether sizeToFit was (ever) called beforehand
     private var sizeToFitWasCalled = false
 
+    override open var isSelected: Bool {
+        didSet { self.setNeedsLayout() }
+    }
+
     override open func sizeToFit() {
         updateLabelAndImageForCurrentState()
         sizeToFitWasCalled = true
