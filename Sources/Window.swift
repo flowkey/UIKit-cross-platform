@@ -135,6 +135,27 @@ internal final class Window {
     }
 }
 
+#if os(macOS)
+import class AppKit.NSWindow
+extension Window {
+    var nsWindow: NSWindow {
+        let sdlWindowID = rawPointer.pointee.context.pointee.windowID
+        let sdlWindow = SDL_GetWindowFromID(sdlWindowID)
+        var info = SDL_SysWMinfo()
+
+        var version = SDL_version()
+        SDL_GetVersion(&version)
+
+        info.version.major = version.major
+        info.version.minor = version.minor
+        info.version.patch = version.patch
+
+        SDL_GetWindowWMInfo(sdlWindow, &info)
+        return info.info.cocoa.window.takeUnretainedValue()
+    }
+}
+#endif
+
 extension SDLWindowFlags: OptionSet {}
 
 #if os(Android)

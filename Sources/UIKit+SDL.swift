@@ -6,14 +6,13 @@
 //  Copyright © 2017 Geordie Jay. All rights reserved.
 //
 
-import JNI
 import SDL
 import SDL_gpu
 import CoreFoundation
 import struct Foundation.Date
 import class Foundation.Thread
 
-private let maxFrameRenderTimeInSeconds = 1.0 / 60.0
+private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
 
 final public class SDL { // Only public for rootView!
     public private(set) static var rootView = UIWindow()
@@ -47,7 +46,10 @@ final public class SDL { // Only public for rootView!
 
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
 
-        let window = Window(size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT), options: windowOptions)
+        let window = Window(
+            size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT),
+            options: windowOptions
+        )
 
         if window.size == .zero {
             preconditionFailure("You need window dimensions to run")
@@ -74,20 +76,13 @@ final public class SDL { // Only public for rootView!
     }
 
     private static var firstRender = true // screen is black until first touch if we don't check for this
-    private static var frameTimer = Timer()
 
     /// Returns: time taken (in milliseconds) to render current frame
-    fileprivate static func render() -> Double {
+    public static func render() -> Double {
+        let frameTimer = Timer()
         doRender(at: frameTimer)
         if shouldQuit { return -1.0 }
-
-        let remainingFrameTime = maxFrameRenderTimeInSeconds - frameTimer.elapsedTimeInSeconds
-        if !firstRender, remainingFrameTime > 0 {
-            CFRunLoopRunInMode(kCFRunLoopDefaultMode, remainingFrameTime, true)
-        }
-
-        defer { frameTimer = Timer() } // reset for next frame - XXX: should we do this at the start of the frame instead?
-        return round(frameTimer.elapsedTimeInMilliseconds)
+        return frameTimer.elapsedTimeInMilliseconds
     }
 
     private static func doRender(at frameTimer: Timer) {
@@ -122,6 +117,7 @@ final public class SDL { // Only public for rootView!
                 SDL.rootView = UIWindow()
                 window = nil
                 unload()
+                break
             case SDL_MOUSEBUTTONDOWN:
                 handleTouchDown(.from(e.button))
                 eventWasHandled = true
@@ -139,7 +135,21 @@ final public class SDL { // Only public for rootView!
     }
 }
 
+#if os(Android)
+import JNI
+
 @_silgen_name("Java_org_libsdl_app_SDLActivity_render")
 public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
-    return JavaInt(SDL.render())
+    let renderAndRunLoopTimer = Timer()
+    let timeTaken = SDL.render()
+    let remainingFrameTime = maxFrameRenderTimeInMilliseconds - timeTaken
+    if !SDL.firstRender, remainingFrameTime > 0 {
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, remainingFrameTime / 1000, true)
+    }
+
+    // XXX: This really should send back either a float or a nanosecond int value
+    // Because rounding up to 17 or down to 16 introduces too much variation for a fluid FPS
+    return JavaInt(renderAndRunLoopTimer.elapsedTimeInMilliseconds)
 }
+#endif
+
