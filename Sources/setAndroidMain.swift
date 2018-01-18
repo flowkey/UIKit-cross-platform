@@ -21,15 +21,14 @@ public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ cls: JavaClass
 
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeInit")
 public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, cls: JavaClass, array: JavaObject) -> JavaInt {
-
     SDLAndroidInit(env, cls)
     SDL_SetMainReady()
 
-    guard let main = androidMain else {
+    guard let androidMain = androidMain else {
         fatalError("No main function for Android set: Call setAndroidMain in JNI_OnLoad to set it")
     }
 
-    main()
+    androidMain()
 
     return 0
 }

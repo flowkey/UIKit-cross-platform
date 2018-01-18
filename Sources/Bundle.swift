@@ -6,11 +6,19 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+#if os(macOS)
+import class Foundation.Bundle
+public typealias Bundle = Foundation.Bundle
+#elseif os(Android)
 import JNI
 
-#if os(Android)
 private func listFiles(inDirectory subpath: String) throws -> [String] {
-    let context = try jni.callStatic("getContext", on: getActivityClass(), returningObjectType: "android.content.Context")
+    guard let activityClass = getActivityClass() else {
+        assertionFailure("Couldn't find SDL Activity class")
+        return []
+    }
+
+    let context = try jni.callStatic("getContext", on: activityClass, returningObjectType: "android.content.Context")
     let assetManager = try jni.call("getAssets", on: context, returningObjectType: "android.content.res.AssetManager")
 
     return try jni.call("list", on: assetManager, with: [subpath])
@@ -23,13 +31,7 @@ public struct Bundle {
         do {
             let allFiles = try listFiles(inDirectory: subpath ?? "")
             guard let ext = ext else { return allFiles }
-
-            let filteredFiles = allFiles.filter({ filename -> Bool in
-                let result = strcmp(String(filename.characters.suffix(ext.characters.count)), ext)
-                return result == 0 // 0 is an exact match
-            })
-
-            return filteredFiles
+            return allFiles.filter { $0.hasSuffix(ext) }
         } catch {
             print("Failed to get directory listing:", error)
             return []
@@ -37,7 +39,7 @@ public struct Bundle {
     }
 
     public func path(forResource filename: String, ofType ext: String) -> String? {
-        if ext.characters.first  == "." {
+        if ext.hasPrefix(".") {
             return filename + ext
         } else {
             return filename + "." + ext

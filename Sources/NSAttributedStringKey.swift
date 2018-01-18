@@ -35,7 +35,7 @@ public struct NSAttributedStringKey: Hashable, RawRepresentable {
 
 extension NSMutableAttributedString {
     open func addAttribute(_ name: NSAttributedStringKey, value: Any, range: NSRange) {
-        self.addAttribute(name.rawValue, value: value, range: range)
+        self.addAttribute(name, value: value, range: range)
     }
 
     open func addAttributes(_ attrs: [NSAttributedStringKey : Any], range: NSRange) {

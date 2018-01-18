@@ -7,6 +7,7 @@
 //
 
 import AVFoundation
+import var SDL_gpu.GPU_FORMAT_RGBA
 
 public final class AVPlayerLayer: CALayer {
     public convenience init(player: AVPlayer? = nil) {
