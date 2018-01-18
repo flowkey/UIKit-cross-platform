@@ -50,9 +50,19 @@ extension CALayer {
         }
 
         if let texture = texture {
-            // Later use more advanced blit funcs (with rotation, scale etc)
-            SDL.window.blit(texture, at: absoluteFrame.origin, opacity: opacity, clippingRect: clippingRect)
+            if transform.isIdentity {
+                // Later use more advanced blit funcs (with rotation, scale etc)
+                SDL.window.blit(texture, at: absoluteFrame.origin, opacity: opacity, clippingRect: clippingRect)
+            } else {
+                SDL.window.blitTransform(
+                    texture,
+                    at: absoluteFrame.origin,
+                    opacity: opacity,
+                    transform: transform
+                )
+            }
         }
+
         sublayers.forEach { ($0.presentation ?? $0).sdlRender(in: absoluteFrame.offsetBy(-bounds.origin), parentOpacity: opacity, clippingRect: clippingRect) }
     }
 }

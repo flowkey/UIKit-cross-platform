@@ -82,6 +82,20 @@ internal final class Window {
         }
     }
 
+    func blitTransform(_ texture: Texture, at destination: CGPoint, opacity: Float, transform: CGAffineTransform) {
+        if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
+        GPU_BlitTransform(
+            texture.rawPointer,
+            nil,
+            rawPointer,
+            Float(destination.x),
+            Float(destination.y),
+            0, // rotation in degrees
+            Float(transform.m11),
+            Float(transform.m22)
+        )
+    }
+
     func setShapeBlending(_ newValue: Bool) {
         GPU_SetShapeBlending(newValue)
     }

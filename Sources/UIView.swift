@@ -33,10 +33,9 @@ open class UIView: UIResponder {
         set { frame.midX = newValue.x; frame.midY = newValue.y }
     }
 
-    open var transform = CGAffineTransform() {
-        didSet {
-            print(self, "is trying to set a transform")
-        }
+    open var transform: CGAffineTransform {
+        get { return layer.transform }
+        set { layer.transform = newValue }
     }
 
     open var mask: UIView?

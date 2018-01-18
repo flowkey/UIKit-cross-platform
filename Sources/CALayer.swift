@@ -85,6 +85,8 @@ open class CALayer {
 
     public var masksToBounds = false
 
+    public var transform: CGAffineTransform = .identity
+
     public required init() {}
 
     public required init(layer: Any) {
