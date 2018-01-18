@@ -143,7 +143,8 @@ public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaOb
     let renderAndRunLoopTimer = Timer()
     let timeTaken = SDL.render()
     let remainingFrameTime = maxFrameRenderTimeInMilliseconds - timeTaken
-    if !SDL.firstRender, remainingFrameTime > 0 {
+   
+    if remainingFrameTime > 0 {
         CFRunLoopRunInMode(kCFRunLoopDefaultMode, remainingFrameTime / 1000, true)
     }
 
