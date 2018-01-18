@@ -17,10 +17,10 @@ fileprivate class TestPanGestureRecognizer: UIPanGestureRecognizer {
         stateCancelledExpectation = cancelledExp
         stateEndedExpectation = endedExp
         super.init()
-        self.onStateChanged = {
-            switch self.state {
-            case .ended: self.stateEndedExpectation?.fulfill()
-            case .cancelled: self.stateCancelledExpectation?.fulfill()
+        self.onStateChanged = { [weak self] in
+            switch self?.state {
+            case .ended: self?.stateEndedExpectation?.fulfill()
+            case .cancelled: self?.stateCancelledExpectation?.fulfill()
             default: break
             }
         }

@@ -11,7 +11,7 @@ let UIScrollViewDecelerationRateFast: CGFloat = 0.99
 let UIScrollViewDecelerationRateNormal: CGFloat = 0.998
 
 open class UIScrollView: UIView {
-    open var delegate: UIScrollViewDelegate? // TODO: change this to individually settable callbacks
+    open weak var delegate: UIScrollViewDelegate? // TODO: change this to individually settable callbacks
     open var panGestureRecognizer = UIPanGestureRecognizer()
 
     private var verticalScrollIndicator = CALayer()
@@ -19,8 +19,8 @@ open class UIScrollView: UIView {
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        panGestureRecognizer.onAction = self.onPan
-        panGestureRecognizer.onStateChanged = self.onPanGestureStateChanged
+        panGestureRecognizer.onAction = { [weak self] in self?.onPan() }
+        panGestureRecognizer.onStateChanged = { [weak self] in self?.onPanGestureStateChanged() }
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
 
@@ -137,7 +137,7 @@ open class UIScrollView: UIView {
     }
 }
 
-public protocol UIScrollViewDelegate {
+public protocol UIScrollViewDelegate: class {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
     func scrollViewDidScroll(_ scrollView: UIScrollView)
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)

@@ -99,7 +99,7 @@ open class UIView: UIResponder {
         set { layer.masksToBounds = newValue }
     }
 
-    public internal(set) var superview: UIView? {
+    public internal(set) weak var superview: UIView? {
         didSet {
             layer.superlayer = superview?.layer
             if superview != nil { didMoveToSuperview() }

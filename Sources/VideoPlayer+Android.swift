@@ -7,6 +7,9 @@
 //
 
 open class VideoPlayer: UIView {
+    deinit {
+        print("DEINITING VIDEOPLAYER")
+    }
     private var jniVideo: JNIVideo
 
     public init(url: String) {
@@ -16,14 +19,8 @@ open class VideoPlayer: UIView {
 
     override open var frame: CGRect {
         willSet(newFrame) {
-            let scale = UIScreen.main.scale
-            let scaledWidth = Double(newFrame.width * scale)
-            let scaledHeight = Double(newFrame.height * scale)
-            let scaledX = Double(newFrame.origin.x * scale)
-            let scaledY = Double(newFrame.origin.y * scale)
-
-            jniVideo.setSize(width: scaledWidth, height: scaledHeight)
-            jniVideo.setOrigin(x: scaledX, y: scaledY)
+            let scaledFrame = (newFrame * UIScreen.main.scale)
+            jniVideo.frame = scaledFrame
         }
     }
 

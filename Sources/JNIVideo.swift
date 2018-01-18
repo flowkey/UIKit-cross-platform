@@ -7,6 +7,7 @@
 //
 
 import JNI
+import func Foundation.round // For rounding CGFloats in .frame
 
 @_silgen_name("Java_org_uikit_VideoJNI_nativeOnVideoEnded")
 public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
@@ -17,20 +18,33 @@ private weak var globalJNIVideo: JNIVideo?
 
 class JNIVideo: JNIObject {
     init(url: String) throws {
-        try super.init("org.uikit.VideoJNI", arguments: [url])
+        let parentView = JavaSDLView(getSDLView())
+        try super.init("org.uikit.VideoJNI", arguments: [parentView, url])
         globalJNIVideo = self
     }
 
     deinit {
-        globalJNIVideo = nil
+        try? call(methodName: "cleanup")
     }
 
     var onVideoEnded: (() -> Void)?
 
     var isMuted: Bool = false {
         didSet {
-            let args = isMuted ? [0.0] : [1.0]
-            try! call(methodName: "setVolume", arguments: args)
+            let newVolume = isMuted ? 0.0 : 1.0
+            try! call(methodName: "setVolume", arguments: [newVolume])
+        }
+    }
+
+    var frame: CGRect {
+        get { return .zero } // FIXME: This would require returning a JavaObject with the various params
+        set {
+            try! call(methodName: "setFrame", arguments: [
+                Int(round(newValue.origin.x)),
+                Int(round(newValue.origin.y)),
+                Int(round(newValue.size.width)),
+                Int(round(newValue.size.height))
+            ])
         }
     }
 
@@ -52,13 +66,5 @@ class JNIVideo: JNIObject {
 
     func setPlaybackRate(to rate: Double) {
         try! call(methodName: "setPlaybackRate", arguments: [rate])
-    }
-
-    func setSize(width: Double, height: Double) {
-        try! call(methodName: "setSize", arguments: [Int(width), Int(height)])
-    }
-
-    func setOrigin(x: Double, y: Double) {
-        try! call(methodName: "setOrigin", arguments: [Int(x), Int(y)])
     }
 }

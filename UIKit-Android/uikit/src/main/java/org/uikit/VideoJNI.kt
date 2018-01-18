@@ -1,8 +1,6 @@
 package org.uikit
 
 import android.net.Uri
-import android.os.Looper
-import android.os.Handler
 import android.widget.RelativeLayout
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -18,24 +16,15 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import org.libsdl.app.SDLActivity
 
-/**
- * Created by chris on 29.08.17.
- */
-
-private fun runOnMainThread(block: () -> Unit) {
-    Handler(Looper.getMainLooper()).post(Runnable {
-        kotlin.run(block)
-    })
-}
-
-class VideoJNI(url: String) {
-    val videoPlayer: SimpleExoPlayer
-    var videoPlayerLayout: SimpleExoPlayerView? = null
+@Suppress("unused")
+class VideoJNI(parent: SDLActivity, url: String) {
+    private val videoPlayer: SimpleExoPlayer
+    private var videoPlayerLayout: SimpleExoPlayerView
 
     external fun nativeOnVideoEnded() // calls onVideoEnded function in Swift
 
     init {
-        val context = SDLActivity.getContext()
+        val context = parent.context
 
         val bandwidthMeter = DefaultBandwidthMeter()
         val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
@@ -47,7 +36,7 @@ class VideoJNI(url: String) {
 
         // Produces DataSource instances through which media data is loaded.
         val dataSourceFactory = DefaultDataSourceFactory(context,
-                Util.getUserAgent(SDLActivity.getContext(), "com.flowkey.nativeplayersdl"))
+                Util.getUserAgent(context, "com.flowkey.nativeplayersdl"))
 
         // Produces Extractor instances for parsing the media data.
         val extractorsFactory = DefaultExtractorsFactory()
@@ -59,6 +48,7 @@ class VideoJNI(url: String) {
         videoPlayer.addListener(object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 if (playbackState == Player.STATE_ENDED) {
+                    // XXX: Is this circular reference a problem for us?
                     nativeOnVideoEnded()
                 }
             }
@@ -73,30 +63,18 @@ class VideoJNI(url: String) {
             override fun onPlayerError(error: ExoPlaybackException?) {}
         })
 
-        runOnMainThread {
-            val videoPlayerLayout = SimpleExoPlayerView(context)
-            videoPlayerLayout.player = videoPlayer
-            videoPlayerLayout.useController = false
+        videoPlayerLayout = SimpleExoPlayerView(context)
+        videoPlayerLayout.player = videoPlayer
+        videoPlayerLayout.useController = false
 
-            videoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
-
-            UIKitActivity.addChildLayout(videoPlayerLayout)
-
-            this.videoPlayerLayout = videoPlayerLayout
-        }
+        videoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
+        parent.addView(videoPlayerLayout)
     }
 
-    fun setSize(width: Int, height: Int) {
-        runOnMainThread {
-            videoPlayerLayout?.layoutParams = RelativeLayout.LayoutParams(width, height)
-        }
-    }
-
-    fun setOrigin(x: Int, y: Int) {
-        runOnMainThread {
-            videoPlayerLayout?.left = x
-            videoPlayerLayout?.top = y
-        }
+    fun setFrame(x: Int, y: Int, width: Int, height: Int) {
+        videoPlayerLayout.left = x
+        videoPlayerLayout.top = y
+        videoPlayerLayout.layoutParams = RelativeLayout.LayoutParams(width, height)
     }
 
     fun play() {
@@ -123,5 +101,9 @@ class VideoJNI(url: String) {
 
     fun setPlaybackRate(rate: Double) {
         videoPlayer.playbackParameters = PlaybackParameters(rate.toFloat(), 1.0F)
+    }
+
+    fun cleanup() {
+        videoPlayer.release()
     }
 }

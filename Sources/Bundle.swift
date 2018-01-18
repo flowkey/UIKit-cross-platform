@@ -13,14 +13,8 @@ public typealias Bundle = Foundation.Bundle
 import JNI
 
 private func listFiles(inDirectory subpath: String) throws -> [String] {
-    guard let activityClass = getActivityClass() else {
-        assertionFailure("Couldn't find SDL Activity class")
-        return []
-    }
-
-    let context = try jni.callStatic("getContext", on: activityClass, returningObjectType: "android.content.Context")
+    let context = try jni.call("getContext", on: getSDLView(), returningObjectType: "android.content.Context")
     let assetManager = try jni.call("getAssets", on: context, returningObjectType: "android.content.res.AssetManager")
-
     return try jni.call("list", on: assetManager, with: [subpath])
 }
 
@@ -33,7 +27,7 @@ public struct Bundle {
             guard let ext = ext else { return allFiles }
             return allFiles.filter { $0.hasSuffix(ext) }
         } catch {
-            print("Failed to get directory listing:", error)
+            assertionFailure("Failed to get directory listing: \(error)")
             return []
         }
     }

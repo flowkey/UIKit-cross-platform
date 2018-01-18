@@ -19,7 +19,7 @@ internal final class Window {
     init(size: CGSize, options: SDLWindowFlags) {
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
 
-        GPU_SetPreInitFlags(GPU_INIT_ENABLE_VSYNC)
+        GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC)
 
         var size = size
         if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
@@ -44,8 +44,14 @@ internal final class Window {
             // Mac:
             scale = CGFloat(rawPointer.pointee.base_h) / CGFloat(rawPointer.pointee.h)
         #endif
+
         
         self.size = size
+
+        // Fixes video surface visibility with transparent & opaque views in SDLSurface above
+        // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
+        setShapeBlending(true)
+        setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
     }
 
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
@@ -129,16 +135,35 @@ internal final class Window {
     }
 }
 
+#if os(macOS)
+import class AppKit.NSWindow
+extension Window {
+    var nsWindow: NSWindow {
+        let sdlWindowID = rawPointer.pointee.context.pointee.windowID
+        let sdlWindow = SDL_GetWindowFromID(sdlWindowID)
+        var info = SDL_SysWMinfo()
+
+        var version = SDL_version()
+        SDL_GetVersion(&version)
+
+        info.version.major = version.major
+        info.version.minor = version.minor
+        info.version.patch = version.patch
+
+        SDL_GetWindowWMInfo(sdlWindow, &info)
+        return info.info.cocoa.window.takeUnretainedValue()
+    }
+}
+#endif
+
 extension SDLWindowFlags: OptionSet {}
 
 #if os(Android)
     import JNI
 
     fileprivate func getAndroidDeviceScale() -> CGFloat {
-        if
-            let mainActivity = SDL_AndroidGetActivity(),
-            let density: Double = try? jni.call("getDeviceDensity", on: mainActivity)
-        {
+        let sdlView = getSDLView()
+        if let density: Float = try? jni.call("getDeviceDensity", on: sdlView) {
             return CGFloat(density)
         } else {
             return 2.0 // assume retina

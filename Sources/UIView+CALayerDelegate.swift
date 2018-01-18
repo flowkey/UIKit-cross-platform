@@ -22,6 +22,6 @@ extension UIView: CALayerDelegate {
     }
 }
 
-public protocol CALayerDelegate {
+public protocol CALayerDelegate: class {
     func action(forKey event: String) -> CABasicAnimation?
 }
