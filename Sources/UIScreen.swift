@@ -17,5 +17,15 @@ public class UIScreen {
 }
 
 public extension UIScreen {
-    public static let main = UIScreen(size: SDL.window.size, scale: SDL.window.scale)
+    public static let main: UIScreen = {
+        #if DEBUG // Use a fallback value e.g. in XCTests, so we don't need to initialize all of SDL
+        let windowSize = SDL.window?.size ?? CGSize(width: 1024, height: 768)
+        let windowScale = SDL.window?.scale ?? 2.0
+        #else
+        let windowSize = SDL.window?.size ?? preconditionFailure("No window found")
+        let windowScale = SDL.window?.scale ?? preconditionFailure("No window found")
+        #endif
+
+        return UIScreen(size: windowSize, scale: windowScale)
+    }()
 }
