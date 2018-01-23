@@ -94,17 +94,17 @@ class UIViewTests: XCTestCase {
         rootView.bounds = CGRect(x: -10, y: -10, width: 100, height: 100)
 
         let subview1 = UIView()
-        subview1.frame = CGRect(x: 40, y: 40, width: 10, height: 10)
+        subview1.frame = CGRect(x: 40, y: 40, width: 20, height: 20)
 
         let subview1subview1 = UIView()
-        subview1subview1.frame = CGRect(x: 10, y: 10, width: 1, height: 1)
+        subview1subview1.frame = CGRect(x: 10, y: 10, width: 5, height: 5)
 
         rootView.addSubview(subview1)
         subview1.addSubview(subview1subview1)
 
         XCTAssertEqual(rootView.hitTest(CGPoint(x: 0, y: 0), with: nil), rootView)
-        XCTAssertEqual(rootView.hitTest(CGPoint(x: 55, y: 55), with: nil), subview1)
-        XCTAssertEqual(rootView.hitTest(CGPoint(x: 60, y: 60), with: nil), subview1subview1)
+        XCTAssertEqual(rootView.hitTest(CGPoint(x: 50, y: 50), with: nil), subview1)
+        XCTAssertEqual(rootView.hitTest(CGPoint(x: 62.5, y: 62.5), with: nil), subview1subview1)
         XCTAssertNil(rootView.hitTest(CGPoint(x: -1, y: -1), with: nil))
     }
 

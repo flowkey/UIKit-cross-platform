@@ -6,14 +6,14 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
+@_exported import SDL
 
 extension CALayer {
-    final func sdlRender(in parentAbsoluteFrame: CGRect = CGRect(), parentOpacity: Float = 1, clippingRect: CGRect?) {
+    final func sdlRender(at parentAbsoluteOrigin: CGPoint = .zero, parentOpacity: Float = 1) {
         let opacity = parentOpacity * self.opacity
-        if isHidden || opacity < 0.01 { return } // could be a hidden sublayer of a visible layer
+        if isHidden || opacity < 0.01 { return }
 
-        let absoluteFrame = frame.offsetBy(parentAbsoluteFrame.origin)
+        let absoluteFrame = frame.offsetBy(parentAbsoluteOrigin)
         
         // Big performance optimization. Don't render anything that's entirely offscreen:
         if !absoluteFrame.intersects(SDL.rootView.bounds) { return }
@@ -27,7 +27,7 @@ extension CALayer {
             )
         }
 
-        if borderWidth > 0 {
+        if !borderWidth.isZero {
             SDL.window.outline(
                 absoluteFrame,
                 lineColor: borderColor.withAlphaComponent(CGFloat(opacity)),
@@ -51,8 +51,12 @@ extension CALayer {
 
         if let texture = texture {
             if transform.isIdentity {
-                // Later use more advanced blit funcs (with rotation, scale etc)
-                SDL.window.blit(texture, at: absoluteFrame.origin, opacity: opacity, clippingRect: clippingRect)
+                SDL.window.blit(
+                    texture,
+                    at: absoluteFrame.origin,
+                    opacity: opacity,
+                    clippingRect: (masksToBounds ? superlayer?.bounds : nil)
+                )
             } else {
                 SDL.window.blitTransform(
                     texture,
@@ -63,6 +67,11 @@ extension CALayer {
             }
         }
 
-        sublayers.forEach { ($0.presentation ?? $0).sdlRender(in: absoluteFrame.offsetBy(-bounds.origin), parentOpacity: opacity, clippingRect: clippingRect) }
+        sublayers?.forEach {
+            ($0.presentation ?? $0).sdlRender(
+                at: absoluteFrame.origin.offsetBy(-bounds.origin),
+                parentOpacity: opacity
+            )
+        }
     }
 }

@@ -22,8 +22,9 @@ public extension UIScreen {
         let windowSize = SDL.window?.size ?? CGSize(width: 1024, height: 768)
         let windowScale = SDL.window?.scale ?? 2.0
         #else
-        let windowSize = SDL.window?.size ?? preconditionFailure("No window found")
-        let windowScale = SDL.window?.scale ?? preconditionFailure("No window found")
+        // These will crash if window doesn't exist:
+        let windowSize = SDL.window.size
+        let windowScale = SDL.window.scale
         #endif
 
         return UIScreen(size: windowSize, scale: windowScale)
