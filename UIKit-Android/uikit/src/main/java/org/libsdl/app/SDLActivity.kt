@@ -31,6 +31,13 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // This is the only property that remains static - we probably won't use it at all long-term
         // and it is a major overhaul to change the native C code (there are a lot of dependencies)
         @JvmStatic private var mSeparateMouseAndTouch = false
+
+        // Only needed for Android < 6.0, also not certain it does anything useful:
+        init {
+            System.loadLibrary("swiftCore")
+            System.loadLibrary("swiftSwiftOnoneSupport")
+            System.loadLibrary("dispatch")
+        }
     }
 
     // Keep track of the paused state
@@ -78,7 +85,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         this.addView(surface)
     }
 
-    @Suppress("unused")
+    @Suppress("unused") // accessed via JNI
     private fun getDeviceDensity(): Float = context.resources.displayMetrics.density
 
 
