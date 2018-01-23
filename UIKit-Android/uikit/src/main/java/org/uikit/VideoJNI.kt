@@ -1,7 +1,6 @@
 package org.uikit
 
 import android.net.Uri
-import android.util.Log
 import android.widget.RelativeLayout
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
