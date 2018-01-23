@@ -1,6 +1,7 @@
 package org.uikit
 
 import android.net.Uri
+import android.util.Log
 import android.widget.RelativeLayout
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -47,8 +48,7 @@ class VideoJNI(parent: SDLActivity, url: String) {
 
         videoPlayer.addListener(object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                if (playbackState == Player.STATE_ENDED) {
-                    // XXX: Is this circular reference a problem for us?
+                if (!playWhenReady && playbackState == Player.STATE_ENDED) {
                     nativeOnVideoEnded()
                 }
             }
