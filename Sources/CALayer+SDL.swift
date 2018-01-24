@@ -27,7 +27,7 @@ extension CALayer {
             )
         }
 
-        if !borderWidth.isZero {
+        if borderWidth > 0 {
             SDL.window.outline(
                 absoluteFrame,
                 lineColor: borderColor.withAlphaComponent(CGFloat(opacity)),
