@@ -135,7 +135,13 @@ open class UIView: UIResponder {
         // If sibling is not found, just add to end of array
         let index = subviews.index(of: siblingSubview)?.advanced(by: 1) ?? subviews.endIndex
         insertSubviewWithoutTouchingLayer(view, at: index)
-        layer.insertSublayer(view.layer, above: siblingSubview.layer)
+
+        // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
+        if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
+            layer.insertSublayer(view.layer, at: layerIndex + 1)
+        } else {
+            layer.addSublayer(view.layer)
+        }
     }
 
     open func insertSubview(_ view: UIView, belowSubview siblingSubview: UIView) {
@@ -143,7 +149,13 @@ open class UIView: UIResponder {
         // If sibling is not found, just add to end of array
         let index = subviews.index(of: siblingSubview) ?? subviews.endIndex
         insertSubviewWithoutTouchingLayer(view, at: index)
-        layer.insertSublayer(view.layer, below: siblingSubview.layer)
+
+        // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
+        if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
+            layer.insertSublayer(view.layer, at: layerIndex)
+        } else {
+            layer.addSublayer(view.layer)
+        }
     }
 
     open func insertSubview(_ view: UIView, at index: Int) {
@@ -158,7 +170,6 @@ open class UIView: UIResponder {
         } else {
             // The given index was greater than that of any existing subview, meaning:
             // We didn't replace any view. Just push the new layer to the end of the sublayers array.
-            // XXX: Maybe we should assert instead, not sure of iOS behaviour if `index` is out of bounds
             layer.addSublayer(view.layer)
         }
     }

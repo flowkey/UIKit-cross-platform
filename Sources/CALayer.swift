@@ -30,14 +30,18 @@ open class CALayer {
     }
 
     open func insertSublayer(_ layer: CALayer, above sibling: CALayer) {
-        let sublayers = self.sublayers ?? []
-        let insertIndex = sublayers.index(of: sibling)?.advanced(by: 1) ?? sublayers.endIndex
-        insertSublayer(layer, at: insertIndex)
+        guard let sublayers = sublayers, let insertIndex = sublayers.index(of: sibling) else {
+            preconditionFailure("self.sublayers must exist and contain sibling CALayer '\(sibling)'")
+        }
+
+        insertSublayer(layer, at: insertIndex.advanced(by: 1))
     }
 
     open func insertSublayer(_ layer: CALayer, below sibling: CALayer) {
-        let sublayers = self.sublayers ?? []
-        let insertIndex = sublayers.index(of: sibling) ?? sublayers.endIndex
+        guard let sublayers = sublayers, let insertIndex = sublayers.index(of: sibling) else {
+            preconditionFailure("self.sublayers must exist and contain sibling CALayer '\(sibling)'")
+        }
+
         insertSublayer(layer, at: insertIndex)
     }
 
