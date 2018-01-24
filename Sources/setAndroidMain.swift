@@ -10,6 +10,8 @@
 import SDL
 import CJNI
 
+public var onNativeInitCompleted: (()->Void)?
+
 @_silgen_name("SDL_Android_Init")
 public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
 
@@ -18,6 +20,9 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
     SDLAndroidInit(env, view)
     SDL_SetMainReady()
     SDL.initialize()
+    
+    onNativeInitCompleted?()
+    
     return 0
 }
 #endif
