@@ -47,7 +47,7 @@ open class UIScrollView: UIView {
     func getBoundsCheckedContentOffset(x: CGFloat, y: CGFloat) -> CGPoint {
         return CGPoint(
             x: min(max(x, -contentInset.left), (contentSize.width + contentInset.right) - bounds.width),
-            y: min(max(x, -contentInset.top), (contentSize.height + contentInset.bottom) - bounds.height)
+            y: min(max(y, -contentInset.top), (contentSize.height + contentInset.bottom) - bounds.height)
         )
     }
 
