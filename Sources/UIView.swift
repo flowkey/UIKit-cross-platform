@@ -98,10 +98,12 @@ open class UIView: UIResponder {
         set { layer.masksToBounds = newValue }
     }
 
-    public internal(set) weak var superview: UIView? {
+    public internal(set) var superview: UIView? {
+        // willSet {
+        // XXX: We should call willMoveToSuperview(newValue) here, but we haven't implemented it yet
+        // }
         didSet {
-            layer.superlayer = superview?.layer
-            if superview != nil { didMoveToSuperview() }
+            didMoveToSuperview()
         }
     }
 
@@ -124,26 +126,75 @@ open class UIView: UIResponder {
 
     // MARK: Subviews, Superviews
 
-    open func insertSubview(_ view: UIView, at index: Int) {
-        view.removeFromSuperview()
-
-        subviews.insert(view, at: min(index, subviews.endIndex))
-        // min ensures no array out of bounds if view is removed from superview
-        
-        view.superview = self
-    }
-
     open func addSubview(_ view: UIView) {
-        insertSubview(view, at: subviews.endIndex)
+        insertSubviewWithoutTouchingLayer(view, at: subviews.endIndex)
+        layer.addSublayer(view.layer)
     }
 
     open func insertSubview(_ view: UIView, aboveSubview siblingSubview: UIView) {
-        insertSubview(view, at: subviews.index(of: siblingSubview)?.advanced(by: 1) ?? subviews.endIndex)
+        // If sibling is not found, just add to end of array
+        let index = subviews.index(of: siblingSubview)?.advanced(by: 1) ?? subviews.endIndex
+        insertSubviewWithoutTouchingLayer(view, at: index)
+
+        // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
+        if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
+            layer.insertSublayer(view.layer, at: layerIndex + 1)
+        } else {
+            layer.addSublayer(view.layer)
+        }
+    }
+
+    open func insertSubview(_ view: UIView, belowSubview siblingSubview: UIView) {
+        // Inserting an object at index 0 pushes the existing object at index 0 to index 1
+        // If sibling is not found, just add to end of array
+        let index = subviews.index(of: siblingSubview) ?? subviews.endIndex
+        insertSubviewWithoutTouchingLayer(view, at: index)
+
+        // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
+        if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
+            layer.insertSublayer(view.layer, at: layerIndex)
+        } else {
+            layer.addSublayer(view.layer)
+        }
+    }
+
+    open func insertSubview(_ view: UIView, at index: Int) {
+        insertSubviewWithoutTouchingLayer(view, at: index)
+
+        // XXX: This might not cover all cases yet. Managing these two hierarchies is complex...
+        let indexOfViewWeJustPushedForwardInArray = index + 1
+        if index == 0 {
+            layer.insertSublayer(view.layer, at: 0)
+        } else if let currentSubview = safeGetSubview(index: indexOfViewWeJustPushedForwardInArray) {
+            layer.insertSublayer(view.layer, below: currentSubview.layer)
+        } else {
+            // The given index was greater than that of any existing subview, meaning:
+            // We didn't replace any view. Just push the new layer to the end of the sublayers array.
+            layer.addSublayer(view.layer)
+        }
+    }
+
+    private func safeGetSubview(index: Int) -> UIView? {
+        guard index >= subviews.startIndex, index < subviews.endIndex else { return nil }
+        return subviews[index]
+    }
+
+    /// Adds a subview without touching the view's layer or any of its sublayers.
+    /// We need to be able to add layers at an index that isn't directly related to its subview index.
+    private func insertSubviewWithoutTouchingLayer(_ view: UIView, at index: Int) {
+        // ensure index is always in bounds:
+        let index = max(subviews.startIndex, min(index, subviews.endIndex))
+        if view.superview != nil { removeFromSuperview() }
+        subviews.insert(view, at: index)
+        view.superview = self
     }
 
     open func removeFromSuperview() {
         guard let superview = superview else { return }
-        superview.subviews = superview.subviews.filter{ view in view != self }
+        self.layer.removeFromSuperlayer()
+
+        superview.subviews = superview.subviews.filter { $0 != self }
+        self.superview = nil
     }
 
     /// Called when the view was added to a non-nil subview
@@ -201,7 +252,7 @@ open class UIView: UIResponder {
     // MARK: Event handling
     // Reference: http://smnh.me/hit-testing-in-ios/
 
-    var gestureRecognizers: Set<UIGestureRecognizer> = []
+    internal var gestureRecognizers: Set<UIGestureRecognizer> = []
     open func addGestureRecognizer(_ recognizer: UIGestureRecognizer) {
         recognizer.view = self
         gestureRecognizers.insert(recognizer)

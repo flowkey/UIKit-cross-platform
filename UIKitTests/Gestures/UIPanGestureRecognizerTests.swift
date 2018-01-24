@@ -18,7 +18,8 @@ fileprivate class TestPanGestureRecognizer: UIPanGestureRecognizer {
         stateEndedExpectation = endedExp
         super.init()
         self.onStateChanged = { [weak self] in
-            switch self?.state {
+            guard let state = self?.state else { return }
+            switch state {
             case .ended: self?.stateEndedExpectation?.fulfill()
             case .cancelled: self?.stateCancelledExpectation?.fulfill()
             default: break

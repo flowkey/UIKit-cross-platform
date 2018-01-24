@@ -99,7 +99,8 @@ final public class SDL { // Only public for rootView!
         UIView.animateIfNeeded(at: frameTimer)
 
         window.clear()
-        rootView.sdlRender()
+        rootView.sdlDrawAndLayoutTreeIfNeeded()
+        rootView.layer.sdlRender()
         window.flip()
 
         firstRender = false
