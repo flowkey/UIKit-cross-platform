@@ -10,3 +10,4 @@ public protocol AnimatableProperty {}
 
 extension CGRect: AnimatableProperty {}
 extension Float: AnimatableProperty {}
+extension CGAffineTransform: AnimatableProperty {}

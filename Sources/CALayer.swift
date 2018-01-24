@@ -100,6 +100,13 @@ open class CALayer {
         }
     }
 
+    public var transform: CGAffineTransform = .identity {
+        willSet(newTransform) {
+            guard newTransform != transform else { return }
+            onWillSet(keyPath: .transform)
+        }
+    }
+
     public var isHidden = false
     public var cornerRadius: CGFloat = 0
 
@@ -113,8 +120,6 @@ open class CALayer {
     public var shadowRadius: CGFloat = 0
 
     public var masksToBounds = false
-
-    public var transform: CGAffineTransform = .identity
 
     public required init() {}
 

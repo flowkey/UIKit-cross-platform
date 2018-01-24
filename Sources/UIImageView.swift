@@ -52,7 +52,7 @@ open class UIImageView: UIView {
             let scaleX = bounds.width / image.size.width
             let scaleY = bounds.height / image.size.height
             let minScale = min(scaleX, scaleY)
-            layer.transform = CGAffineTransform(scaleByX: minScale, byY: minScale)
+            layer.transform = CGAffineTransform(scale: minScale)
 
         case .stretch:
             let scaleX = bounds.width / image.size.width
@@ -68,7 +68,7 @@ open class UIImageView: UIView {
         return CGSize(width: image.size.width, height: image.size.height)
     }
 
-    open var contentMode: UIContentMode = .stretch // XXX: Not sure this is true. In any case it's not implemented yet.
+    open var contentMode: UIContentMode = .stretch
 }
 
 public enum UIContentMode {
