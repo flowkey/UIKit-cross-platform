@@ -98,14 +98,12 @@ open class UIView: UIResponder {
         set { layer.masksToBounds = newValue }
     }
 
-    private weak var _superview: UIView?
     public internal(set) var superview: UIView? {
-        get { return _superview }
-        set {
-            removeFromSuperview()
-            _superview = newValue
-            layer.superlayer = newValue?.layer
-            if superview != nil { didMoveToSuperview() } // XXX: should this always be called?
+        // willSet {
+        // XXX: We should call willMoveToSuperview(newValue) here, but we haven't implemented it yet
+        // }
+        didSet {
+            didMoveToSuperview()
         }
     }
 
@@ -175,16 +173,17 @@ open class UIView: UIResponder {
     private func insertSubviewWithoutTouchingLayer(_ view: UIView, at index: Int) {
         // ensure index is always in bounds:
         let index = max(subviews.startIndex, min(index, subviews.endIndex))
+        if view.superview != nil { removeFromSuperview() }
         subviews.insert(view, at: index)
         view.superview = self
     }
 
     open func removeFromSuperview() {
         guard let superview = superview else { return }
-        superview.subviews = superview.subviews.filter { $0 != self }
-        _superview = nil // NOTE: we directly access the storage here to avoid an infinite loop
-
         self.layer.removeFromSuperlayer()
+
+        superview.subviews = superview.subviews.filter { $0 != self }
+        self.superview = nil
     }
 
     /// Called when the view was added to a non-nil subview

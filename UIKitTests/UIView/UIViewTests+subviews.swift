@@ -154,4 +154,25 @@ class UIViewSubviewTests: XCTestCase {
         XCTAssertEqual(view.subviews, [subview1, subview3, subview2])
         XCTAssertEqual(view.layer.sublayers!, [subview1.layer, sublayer, subview3.layer, subview2.layer])
     }
+
+
+    func testDidMoveToSuperview() {
+        class TestView: UIView {
+            static var didMoveToSuperviewWasCalled = false
+            override func didMoveToSuperview() {
+                TestView.didMoveToSuperviewWasCalled = true
+            }
+        }
+
+        let view = UIView()
+        let subview = TestView()
+
+        view.addSubview(subview)
+        XCTAssertTrue(TestView.didMoveToSuperviewWasCalled)
+
+        TestView.didMoveToSuperviewWasCalled = false
+
+        subview.removeFromSuperview()
+        XCTAssertTrue(TestView.didMoveToSuperviewWasCalled)
+    }
 }
