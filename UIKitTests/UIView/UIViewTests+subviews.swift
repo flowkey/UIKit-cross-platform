@@ -188,9 +188,9 @@ class UIViewSubviewTests: XCTestCase {
         let layer = CALayer()
         layer.addSublayer(CALayer())
 
-        let sublayer = CALayer()
-        layer.insertSublayer(sublayer, at: 999)
+        let anotherLayer = CALayer()
+        layer.insertSublayer(anotherLayer, at: 999)
 
-        XCTAssertEqual(layer.sublayers?.last, sublayer)
+        XCTAssertEqual(layer.sublayers?.last, anotherLayer)
     }
 }
