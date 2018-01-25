@@ -8,9 +8,14 @@
 
 extension CABasicAnimation {
     func progress(for currentTime: Timer) -> CGFloat {
-        let elapsedTime = max(CGFloat(currentTime - self.timer) - (delay * 1000), 0)
-        let linearProgress = min(elapsedTime / (duration * 1000), 1)
+        let elapsedTimeInMs = max(CGFloat(currentTime - self.timer) - (delay * 1000), 0)
+        let durationInMs = duration * 1000
 
+        if durationInMs - elapsedTimeInMs <= 0 {
+            return 1
+        }
+
+        let linearProgress = min(elapsedTimeInMs / (durationInMs), 1)
         return ease(x: linearProgress)
     }
 
@@ -18,3 +23,4 @@ extension CABasicAnimation {
         return timingFunction?[at: x] ?? x
     }
 }
+
