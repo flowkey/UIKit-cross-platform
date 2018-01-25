@@ -21,11 +21,12 @@ open class CALayer {
     internal (set) public weak var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer]?
 
-    // In iOS not public API!
-    internal func insertSublayer(_ layer: CALayer, at index: Int) {
+    open func insertSublayer(_ layer: CALayer, at index: Int) {
         layer.removeFromSuperlayer()
         if sublayers == nil { sublayers = [] }
-        sublayers?.insert(layer, at: index) // optional in case of race conditions
+
+        let sublayersCount = sublayers?.count ?? 0
+        sublayers?.insert(layer, at: (index <= sublayersCount) ? index : sublayersCount)
         layer.superlayer = self
     }
 
