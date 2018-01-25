@@ -138,7 +138,7 @@ open class UIView: UIResponder {
 
         // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
         if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
-            layer.insertSublayer(view.layer, at: layerIndex + 1)
+            layer.insertSublayer(view.layer, at: UInt32(layerIndex + 1))
         } else {
             layer.addSublayer(view.layer)
         }
@@ -152,7 +152,7 @@ open class UIView: UIResponder {
 
         // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
         if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
-            layer.insertSublayer(view.layer, at: layerIndex)
+            layer.insertSublayer(view.layer, at: UInt32(layerIndex))
         } else {
             layer.addSublayer(view.layer)
         }
