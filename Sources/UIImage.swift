@@ -7,6 +7,7 @@
 //
 
 import SDL
+import SDL_gpu
 import Foundation
 
 public class UIImage {
@@ -21,12 +22,28 @@ public class UIImage {
     }
 
     public convenience init?(path: String) {
-        guard let cgImage = CGImage(imagePath: path) else { return nil }
-        self.init(cgImage: cgImage, scale: 1.0) // TODO: get scale from last path component
+        guard let cgImage = CGImage(GPU_LoadImage(path)) else { return nil }
+
+        let scale: CGFloat
+        if path.dropLast(4).hasSuffix("@2x") {
+            scale = 2.0
+        } else if path.dropLast(4).hasSuffix("@3x") {
+            scale = 3.0
+        } else {
+            scale = 1.0
+        }
+
+        self.init(cgImage: cgImage, scale: scale)
     }
 
     public convenience init?(data: Data) {
-        guard let cgImage = CGImage(data: data, scale: UIScreen.main.scale) else { return nil }
-        self.init(cgImage: cgImage, scale: UIScreen.main.scale)
+        var data = data
+        let gpuImagePtr = data.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<Int8>) -> UnsafeMutablePointer<GPU_Image>? in
+            let rw = SDL_RWFromMem(ptr, Int32(data.count))
+            return GPU_LoadImage_RW(rw, false)
+        }
+
+        guard let cgImage = CGImage(gpuImagePtr) else { return nil }
+        self.init(cgImage: cgImage, scale: 1.0) // matches iOS
     }
 }

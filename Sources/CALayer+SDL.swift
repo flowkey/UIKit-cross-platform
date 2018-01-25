@@ -54,23 +54,15 @@ extension CALayer {
             }
         }
 
-        // XXX: It probably makes sense to always send the transform at let `blit` decide what to do
         if let contents = contents {
-            if transform.isIdentity {
-                SDL.window.blit(
-                    contents,
-                    at: absoluteFrame.origin,
-                    opacity: opacity,
-                    clippingRect: (masksToBounds ? superlayer?.bounds : nil)
-                )
-            } else {
-                SDL.window.blitTransform(
-                    contents,
-                    at: absoluteFrame.origin,
-                    opacity: opacity,
-                    transform: transform
-                )
-            }
+            SDL.window.blit(
+                contents,
+                at: absoluteFrame.origin,
+                scaleX: Float((1 / contentsScale) * transform.m11),
+                scaleY: Float((1 / contentsScale) * transform.m22),
+                opacity: opacity,
+                clippingRect: (masksToBounds ? superlayer?.bounds : nil)
+            )
         }
 
         if mask != nil {

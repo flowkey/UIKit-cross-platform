@@ -11,13 +11,17 @@ import SDL
 open class CALayer {
     open weak var delegate: CALayerDelegate?
 
-    public var contents: CGImage? {
+    open var contents: CGImage? {
         didSet {
-            if let newSize = contents?.size {
-                self.bounds.size = newSize
+            if let contents = self.contents {
+                self.bounds.size = contents.size / contentsScale
             }
         }
     }
+
+    /// Defaults to 1.0 but if the layer is associated with a view,
+    /// the view sets this value to match the screen.
+    open var contentsScale: CGFloat = 1.0
 
     internal (set) public weak var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer]?
@@ -143,6 +147,7 @@ open class CALayer {
         shadowOpacity = layer.shadowOpacity
         mask = layer.mask
         contents = layer.contents // XXX: we should make a copy here
+        contentsScale = layer.contentsScale
         sublayers = layer.sublayers
     }
 

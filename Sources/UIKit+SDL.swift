@@ -15,7 +15,7 @@ import class Foundation.Thread
 private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
 
 final public class SDL { // Only public for rootView!
-    public private(set) static var rootView = UIWindow()
+    public private(set) static var rootView: UIWindow!
     static var window: Window!
 
     fileprivate static var shouldQuit = false
@@ -23,7 +23,6 @@ final public class SDL { // Only public for rootView!
     public static func initialize() {
         self.shouldQuit = false
         self.firstRender = true
-        self.rootView = UIWindow()
         self.window = nil // triggers Window deinit to destroy previous Window
 
         let windowOptions: SDLWindowFlags
@@ -55,9 +54,8 @@ final public class SDL { // Only public for rootView!
             preconditionFailure("You need window dimensions to run")
         }
 
-        rootView.frame.size = window.size
-
         self.window = window
+        self.rootView = UIWindow(frame: CGRect(origin: .zero, size: window.size))
         UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
     }
 

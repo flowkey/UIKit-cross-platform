@@ -12,7 +12,7 @@ import SDL_gpu
 
 internal final class VideoTexture: CGImage {
     convenience init?(width: Int, height: Int, format: GPU_FormatEnum) {
-        self.init(GPU_CreateImage(UInt16(width), UInt16(height), format), scale: 1.0)
+        self.init(GPU_CreateImage(UInt16(width), UInt16(height), format))
     }
 }
 
