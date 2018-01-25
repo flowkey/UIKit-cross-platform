@@ -176,11 +176,21 @@ class UIViewSubviewTests: XCTestCase {
         XCTAssertTrue(TestView.didMoveToSuperviewWasCalled)
     }
 
-    func testAddSubviewAtUnrealisticIndex() {
+    func testInsertSubviewAtUnrealisticIndex() {
         let view = UIView()
         let subview = UIView()
 
         view.insertSubview(subview, at: 999)
         XCTAssertEqual(view.subviews, [subview])
+    }
+
+    func testInsertSublayerAtUnrealisticIndex() {
+        let layer = CALayer()
+        layer.addSublayer(CALayer())
+
+        let sublayer = CALayer()
+        layer.insertSublayer(sublayer, at: 999)
+
+        XCTAssertEqual(layer.sublayers?.last, sublayer)
     }
 }
