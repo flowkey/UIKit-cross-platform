@@ -26,7 +26,7 @@ public class UIImage {
     }
 
     public convenience init?(data: Data) {
-        guard let cgImage = CGImage(data: data, scale: 1) else { return nil }
-        self.init(cgImage: cgImage, scale: 1)
+        guard let cgImage = CGImage(data: data, scale: UIScreen.main.scale) else { return nil }
+        self.init(cgImage: cgImage, scale: UIScreen.main.scale)
     }
 }
