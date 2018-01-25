@@ -79,13 +79,11 @@ class UIScrollViewTests: XCTestCase {
             didScrollExpectation: didScrollExpectation,
             didEndDraggingExpectation: didEndDraggingExpectation
         )
-        
 
-        let mockView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100)))
-        let mockTouch = UITouch(at: CGPoint(x: 0, y: 0), in: mockView, touchId: 0)
+        let mockTouch = UITouch(at: CGPoint(x: 0, y: 0), touchId: 0)
 
         scrollView.panGestureRecognizer.touchesBegan([mockTouch], with: UIEvent())
-        mockTouch.positionInView = CGPoint(x: 100, y: 100)
+        mockTouch.updateAbsoluteLocation(CGPoint(x: 100, y: 100))
         scrollView.panGestureRecognizer.touchesMoved([mockTouch], with: UIEvent())
         scrollView.panGestureRecognizer.touchesEnded([mockTouch], with: UIEvent())
 

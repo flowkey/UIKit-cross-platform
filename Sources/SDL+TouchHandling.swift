@@ -9,13 +9,13 @@
 // TODO: This urgently needs tests!
 
 extension SDL {
-    static func handleTouchDown(_ event: SDL_MouseButtonEvent) {
-        let point = CGPoint.from(event)
+    static func handleTouchDown(_ point: CGPoint) {
         guard let hitView = rootView.hitTest(point, with: nil) else { return }
 
         print("hit", hitView)
 
-        let currentTouch = UITouch(at: hitView.convert(point, from: rootView), in: hitView, touchId: Int(0))
+        let currentTouch = UITouch(at: point, touchId: 0)
+        currentTouch.view = hitView
         UITouch.activeTouches.insert(currentTouch)
 
         hitView.gestureRecognizers.forEach { gestureRecognizer in
@@ -30,14 +30,10 @@ extension SDL {
         }
     }
 
-    static func handleTouchMove(_ event: SDL_MouseMotionEvent) {
+    static func handleTouchMove(_ point: CGPoint) {
         guard let touch = UITouch.activeTouches.first(where: { $0.touchId == Int(0) }) else { return }
 
-        touch.previousPositionInView = touch.positionInView
-
-        let point = CGPoint.from(event)
-        touch.positionInView = touch.view?.convert(point, from: rootView) ?? point
-
+        touch.updateAbsoluteLocation(point)
         touch.gestureRecognizers.forEach { gestureRecognizer in
             gestureRecognizer.touchesMoved(UITouch.activeTouches, with: UIEvent())
         }
@@ -49,7 +45,7 @@ extension SDL {
         }
     }
 
-    static func handleTouchUp(_ event: SDL_MouseButtonEvent) {
+    static func handleTouchUp(_ point: CGPoint) {
         guard let touch = UITouch.activeTouches.first(where: {$0.touchId == Int(0) }) else { return }
 
         touch.gestureRecognizers.forEach { gestureRecognizer in

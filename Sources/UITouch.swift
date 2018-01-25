@@ -9,28 +9,35 @@
 public class UITouch {
     static var activeTouches = Set<UITouch>()
 
-    init(at point: CGPoint, in view: UIView, touchId: Int) {
-        self.view = view
-        positionInView = point
-        previousPositionInView = point
+    // using this to convert SDL touches into UIView touches
+    internal init(at point: CGPoint, touchId: Int) {
+        absoluteLocation = point
+        previousAbsoluteLocation = point
         self.touchId = touchId
     }
 
     var touchId: Int
-    public var view: UIView?
+    internal(set) public weak var view: UIView?
     public var gestureRecognizers: [UIGestureRecognizer] = []
 
-    var positionInView: CGPoint
-    var previousPositionInView: CGPoint
+    private var absoluteLocation: CGPoint
+    private var previousAbsoluteLocation: CGPoint
 
-    // var window: UIWindow? // unused
+    func updateAbsoluteLocation(_ newLocation: CGPoint) {
+        previousAbsoluteLocation = absoluteLocation
+        absoluteLocation = newLocation
+    }
+
+    // weak var window: UIWindow? // unused
 
     public func location(in view: UIView?) -> CGPoint {
-        return self.view?.convert(positionInView, to: view) ?? positionInView
+        let origin = view?.absoluteOrigin() ?? .zero
+        return absoluteLocation.offsetBy(-origin)
     }
 
     public func previousLocation(in view: UIView?) -> CGPoint {
-        return self.view?.convert(previousPositionInView, to: view) ?? previousPositionInView
+        let origin = view?.absoluteOrigin() ?? .zero
+        return previousAbsoluteLocation.offsetBy(-origin)
     }
 
 }
@@ -38,7 +45,7 @@ public class UITouch {
 
 extension UITouch: Hashable {
     public var hashValue: Int {
-        return touchId.hashValue
+        return touchId
     }
 
     static public func == (lhs: UITouch, rhs: UITouch) -> Bool {

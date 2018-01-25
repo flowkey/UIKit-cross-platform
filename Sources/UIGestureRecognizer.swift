@@ -24,7 +24,9 @@ open class UIGestureRecognizer {
     public var isEnabled = true {
         didSet { if !isEnabled { state = .cancelled } }
     }
-    public var delegate: UIGestureRecognizerDelegate?
+    public weak var delegate: UIGestureRecognizerDelegate?
+    internal weak var trackedTouch: UITouch?
+
     public var state: UIGestureRecognizerState = .possible {
         didSet {
             if state == oldValue { return }
@@ -52,7 +54,7 @@ open class UIGestureRecognizer {
         // TODO: Not implemented
     }
 
-    weak public var view: UIView?
+    public weak var view: UIView?
     public var cancelsTouchesInView = true
     public var delaysTouchesBegan = false
     public var delaysTouchesEnded = true

@@ -87,6 +87,11 @@ extension CALayer {
             let endOpacity = animation.toValue as? Float ?? self.opacity
             presentation.opacity = startOpacity + ((endOpacity - startOpacity)) * Float(progress)
 
+        case .transform:
+            guard let startTransform = animation.fromValue as? CGAffineTransform else { return }
+            let endTransform = animation.toValue as? CGAffineTransform ?? self.transform
+            presentation.transform = (startTransform + (endTransform - startTransform) * progress)
+
         case .unknown: break
         }
     }
@@ -108,6 +113,7 @@ extension CALayer {
         case .frame: return frame
         case .opacity: return opacity
         case .bounds: return bounds
+        case .transform: return transform
         case .unknown: return nil
         }
     }

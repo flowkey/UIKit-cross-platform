@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL.gpu
+import SDL_gpu
 
 // A ShaderProgram consists of a VertexShader and a FragmentShader linked together
 // This is a class because Shaders need to be freed after use

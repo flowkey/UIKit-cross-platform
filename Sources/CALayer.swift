@@ -9,7 +9,7 @@
 import SDL
 
 open class CALayer {
-    open var delegate: CALayerDelegate?
+    open weak var delegate: CALayerDelegate?
 
     public var contents: CGImage? {
         didSet {
@@ -19,17 +19,46 @@ open class CALayer {
         }
     }
 
-    internal (set) public var superlayer: CALayer?
-    internal (set) public var sublayers: [CALayer] = []
-    public func addSublayer(_ layer: CALayer) {
+    internal (set) public weak var superlayer: CALayer?
+    internal (set) public var sublayers: [CALayer]?
+
+    // In iOS not public API!
+    internal func insertSublayer(_ layer: CALayer, at index: Int) {
         layer.removeFromSuperlayer()
-        sublayers.append(layer)
+        if sublayers == nil { sublayers = [] }
+        sublayers?.insert(layer, at: index) // optional in case of race conditions
+        layer.superlayer = self
     }
 
-    public func removeFromSuperlayer() {
-        if let superlayer = superlayer {
-            superlayer.sublayers = superlayer.sublayers.filter { $0 != self }
+    open func insertSublayer(_ layer: CALayer, above sibling: CALayer) {
+        guard let sublayers = sublayers, let insertIndex = sublayers.index(of: sibling) else {
+            preconditionFailure("self.sublayers must exist and contain sibling CALayer '\(sibling)'")
         }
+
+        insertSublayer(layer, at: insertIndex.advanced(by: 1))
+    }
+
+    open func insertSublayer(_ layer: CALayer, below sibling: CALayer) {
+        guard let sublayers = sublayers, let insertIndex = sublayers.index(of: sibling) else {
+            preconditionFailure("self.sublayers must exist and contain sibling CALayer '\(sibling)'")
+        }
+
+        insertSublayer(layer, at: insertIndex)
+    }
+
+    open func addSublayer(_ layer: CALayer) {
+        insertSublayer(layer, at: sublayers?.endIndex ?? 0)
+    }
+
+    open func removeFromSuperlayer() {
+        if let superlayer = superlayer {
+            superlayer.sublayers = superlayer.sublayers?.filter { $0 != self }
+            if superlayer.sublayers?.isEmpty == true {
+                superlayer.sublayers = nil
+            }
+        }
+
+        superlayer = nil
     }
 
     public var backgroundColor: CGColor?
@@ -69,6 +98,13 @@ open class CALayer {
         willSet(newOpacity) {
             guard newOpacity != opacity else { return }
             onWillSet(keyPath: .opacity)
+        }
+    }
+
+    public var transform: CGAffineTransform = .identity {
+        willSet(newTransform) {
+            guard newTransform != transform else { return }
+            onWillSet(keyPath: .transform)
         }
     }
 

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SDL.gpu
+import SDL_gpu
 
 
 class VertexShader: Shader {

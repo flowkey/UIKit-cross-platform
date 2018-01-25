@@ -8,24 +8,19 @@
 
 import UIKit
 
-func loadCustomFont(name: String, fontExtension: String) -> Bool {
-    let fileManager = FileManager.default
-
-    let bundleURL = Bundle.init(identifier: "com.flowkey.UIKit.iOSTestTarget")!.bundleURL
-
-    do {
-        let contents = try fileManager.contentsOfDirectory(at: bundleURL, includingPropertiesForKeys: [], options: .skipsHiddenFiles)
-        for url in contents {
-            if url.pathExtension == fontExtension {
+// wrap this in a class which we can use to find "this" bundle
+class FontLoader {
+    static func loadBundledFonts() {
+        Bundle(for: FontLoader.self)
+            .urls(forResourcesWithExtension: "ttf", subdirectory: nil)?
+            .forEach { url in
                 let fontData = NSData(contentsOf: url)!
-                let provider = CGDataProvider.init(data: fontData)!
-                if let font = CGFont.init(provider) {
+                let provider = CGDataProvider(data: fontData)!
+                if let font = CGFont(provider) {
                     CTFontManagerRegisterGraphicsFont(font, nil)
+                } else {
+                    print("Failed to load \(url.absoluteString)")
                 }
-            }
         }
-    } catch {
-        print("error: \(error)")
     }
-    return true
 }

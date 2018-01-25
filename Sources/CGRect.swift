@@ -6,6 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import SDL_gpu
+
 public struct CGRect {
     public var origin: CGPoint
     public var size: CGSize

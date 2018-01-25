@@ -22,11 +22,11 @@ public class UIImage {
 
     public convenience init?(path: String) {
         guard let cgImage = CGImage(imagePath: path) else { return nil }
-        self.init(cgImage: cgImage, scale: 2.0) // TODO: get scale from last path component
+        self.init(cgImage: cgImage, scale: 1.0) // TODO: get scale from last path component
     }
 
     public convenience init?(data: Data) {
-        guard let cgImage = CGImage(data: data) else { return nil }
+        guard let cgImage = CGImage(data: data, scale: 1) else { return nil }
         self.init(cgImage: cgImage, scale: 1)
     }
 }

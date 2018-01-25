@@ -10,27 +10,14 @@
 import SDL
 import CJNI
 
-private var androidMain: (() -> Void)?
-
-public func setAndroidMain(_ main: (() -> Void)?) {
-    androidMain = main
-}
-
 @_silgen_name("SDL_Android_Init")
-func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ cls: JavaClass)
+public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
 
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeInit")
-public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, cls: JavaClass, array: JavaObject) -> JavaInt {
-
-    SDLAndroidInit(env, cls)
+public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
+    SDLAndroidInit(env, view)
     SDL_SetMainReady()
-
-    guard let main = androidMain else {
-        fatalError("No main function for Android set: Call setAndroidMain in JNI_OnLoad to set it")
-    }
-
-    main()
-
+    SDL.initialize()
     return 0
 }
 #endif
