@@ -6,6 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import SDL_gpu
+
 internal final class VideoTexture: Texture {
     convenience init?(width: Int, height: Int, format: GPU_FormatEnum) {
         self.init(GPU_CreateImage(UInt16(width), UInt16(height), format), scale: 1.0)

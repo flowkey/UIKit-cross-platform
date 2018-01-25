@@ -7,6 +7,7 @@
 //
 
 @testable import UIKit
+import SDL_gpu
 
 extension Texture {
     convenience init?(size: CGSize) {

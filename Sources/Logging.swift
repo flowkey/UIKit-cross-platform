@@ -14,7 +14,7 @@ import Glibc
 import Darwin.C.stdio
 #endif
 
-private let loggingTag = "NativePlayer"
+private let loggingTag = "Swift"
 
 @discardableResult
 @_silgen_name("__android_log_write")

@@ -6,21 +6,16 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public struct CGAffineTransform {
-    public var a: CGFloat = 0
-    public var b: CGFloat = 0
-    public var c: CGFloat = 0
-    public var d: CGFloat = 0
-    public var tx: CGFloat = 0
-    public var ty: CGFloat = 0
+import struct Foundation.AffineTransform
+public typealias CGAffineTransform = AffineTransform
 
+public extension CGAffineTransform {
     public init(scaleX: CGFloat, y: CGFloat) {
-
+        self.init(scaleByX: scaleX, byY: y)
     }
 
-    public init() {
-
+    public var isIdentity: Bool {
+        return self == .identity
     }
 
-    public static let identity = CGAffineTransform()
 }

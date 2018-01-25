@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL.ttf
+import SDL_ttf
 
 private func initSDL_ttf() -> Bool {
     return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
@@ -52,8 +52,7 @@ internal class FontRenderer {
             return nil
         }
 
-        defer { surface.pointee.free() }
-
+        defer { SDL_FreeSurface(surface) }
         return Texture(surface: surface)
     }
 }
@@ -99,7 +98,7 @@ extension FontRenderer {
         var textLineHeight: Int32 = 0
 
         var tok = UnsafeMutablePointer(mutating: text)
-        let end = UnsafeMutablePointer(mutating: text.advanced(by: Int(textLength)))
+        let end = tok + Int(textLength)
 
         var lines = [UnsafeMutablePointer<CChar>]()
         repeat {

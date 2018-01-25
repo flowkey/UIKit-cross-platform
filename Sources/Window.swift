@@ -7,7 +7,7 @@
 //
 
 import SDL
-import JNI
+import SDL_gpu
 
 internal final class Window {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
@@ -19,9 +19,7 @@ internal final class Window {
     init(size: CGSize, options: SDLWindowFlags) {
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
 
-        GPU_SetPreInitFlags(GPU_INIT_ENABLE_VSYNC)
-
-        UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
+        GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC)
 
         var size = size
         if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
@@ -29,8 +27,12 @@ internal final class Window {
             GPU_SetPreInitFlags(GPU_GetPreInitFlags() | GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)
             size = CGSize(width: CGFloat(displayMode.w), height: CGFloat(displayMode.h))
         }
-        
-        rawPointer = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue)!
+
+        guard let gpuTarget = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue) else {
+            print(SDLError())
+            fatalError("GPU_Init failed")
+        }
+        rawPointer = gpuTarget
 
         #if os(Android)
             scale = getAndroidDeviceScale()
@@ -42,21 +44,25 @@ internal final class Window {
             // Mac:
             scale = CGFloat(rawPointer.pointee.base_h) / CGFloat(rawPointer.pointee.h)
         #endif
+
         
         self.size = size
+
+        // Fixes video surface visibility with transparent & opaque views in SDLSurface above
+        // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
+        setShapeBlending(true)
+        setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
     }
 
-    #if os(macOS)
-    // SDL scales our touch events for us on Mac, which means we need a special case for it:
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
-        return CGPoint(x: inputX, y: inputY)
+        #if os(macOS)
+            // Here SDL scales our touch events for us, which means we need a special case for it:
+            return CGPoint(x: inputX, y: inputY)
+        #else
+            // On all other platforms, we scale the touch events to the screen size manually:
+            return CGPoint(x: inputX / scale, y: inputY / scale)
+        #endif
     }
-    #else
-    // On all other platforms, we scale the touch events to the screen size manually:
-    func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
-        return CGPoint(x: inputX / scale, y: inputY / scale)
-    }
-    #endif
 
     /// clippingRect behaves like an offset
     func blit(_ texture: Texture, at destination: CGPoint, opacity: Float, clippingRect: CGRect?) {
@@ -74,6 +80,20 @@ internal final class Window {
         } else {
             GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
         }
+    }
+
+    func blitTransform(_ texture: Texture, at destination: CGPoint, opacity: Float, transform: CGAffineTransform) {
+        if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
+        GPU_BlitTransform(
+            texture.rawPointer,
+            nil,
+            rawPointer,
+            Float(destination.x),
+            Float(destination.y),
+            0, // rotation in degrees
+            Float(transform.m11),
+            Float(transform.m22)
+        )
     }
 
     func setShapeBlending(_ newValue: Bool) {
@@ -115,21 +135,50 @@ internal final class Window {
     }
 
     deinit {
-        // GPU_FreeImage(rawPointer) // The docs state that we shouldn't try to free the GPU_Target ourselves..
-        GPU_Quit()
+        defer { GPU_Quit() }
+
+        // get and destroy existing Window because only one SDL_Window can exist on Android at the same time
+        guard let gpuContext = self.rawPointer.pointee.context else {
+            assertionFailure("window gpuContext not found")
+            return
+        }
+
+        let existingWindowID = gpuContext.pointee.windowID
+        let existingWindow = SDL_GetWindowFromID(existingWindowID)
+        SDL_DestroyWindow(existingWindow)
     }
 }
+
+#if os(macOS)
+import class AppKit.NSWindow
+extension Window {
+    var nsWindow: NSWindow {
+        let sdlWindowID = rawPointer.pointee.context.pointee.windowID
+        let sdlWindow = SDL_GetWindowFromID(sdlWindowID)
+        var info = SDL_SysWMinfo()
+
+        var version = SDL_version()
+        SDL_GetVersion(&version)
+
+        info.version.major = version.major
+        info.version.minor = version.minor
+        info.version.patch = version.patch
+
+        SDL_GetWindowWMInfo(sdlWindow, &info)
+        return info.info.cocoa.window.takeUnretainedValue()
+    }
+}
+#endif
 
 extension SDLWindowFlags: OptionSet {}
 
 #if os(Android)
+    import JNI
+
     fileprivate func getAndroidDeviceScale() -> CGFloat {
-        if
-            let DisplayMetricsClass = try? jni.FindClass(name: "android/util/DisplayMetrics"),
-            let deviceDensity: Int = try? jni.GetStaticField("DENSITY_DEVICE_STABLE", on: DisplayMetricsClass),
-            let defaultDensity: Int = try? jni.GetStaticField("DENSITY_DEFAULT", on: DisplayMetricsClass)
-        {
-            return CGFloat(deviceDensity / defaultDensity)
+        let sdlView = getSDLView()
+        if let density: Float = try? jni.call("getDeviceDensity", on: sdlView) {
+            return CGFloat(density)
         } else {
             return 2.0 // assume retina
         }

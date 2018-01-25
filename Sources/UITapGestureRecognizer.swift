@@ -14,8 +14,6 @@ open class UITapGestureRecognizer: UIGestureRecognizer {
         self.onPress = onPress
     }
 
-    var trackedTouch: UITouch?
-
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
         trackedTouch = touches.first
