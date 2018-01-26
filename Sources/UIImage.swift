@@ -24,10 +24,11 @@ public class UIImage {
     public convenience init?(path: String) {
         guard let cgImage = CGImage(GPU_LoadImage(path)) else { return nil }
 
+        let pathWithoutExtension = String(path.dropLast(4))
         let scale: CGFloat
-        if path.dropLast(4).hasSuffix("@2x") {
+        if pathWithoutExtension.hasSuffix("@2x") {
             scale = 2.0
-        } else if path.dropLast(4).hasSuffix("@3x") {
+        } else if pathWithoutExtension.hasSuffix("@3x") {
             scale = 3.0
         } else {
             scale = 1.0

@@ -9,13 +9,13 @@
 extension VertexShader {
     static let common = try! VertexShader(source:
         """
-        in vec3 gpu_Vertex;
-        in vec2 gpu_TexCoord;
-        in vec4 gpu_Color;
+        \(`in`) vec3 gpu_Vertex;
+        \(`in`) vec2 gpu_TexCoord;
+        \(`in`) vec4 gpu_Color;
         uniform mat4 gpu_ModelViewProjectionMatrix;
 
-        out vec4 originalColour;
-        out vec2 absolutePixelPos;
+        \(`out`) vec4 originalColour;
+        \(`out`) vec2 absolutePixelPos;
 
         void main(void)
         {
@@ -29,9 +29,10 @@ extension VertexShader {
 
 extension FragmentShader {
     static let maskColourWithImage = try! FragmentShader(source: """
-        in vec4 originalColour;
-        in vec2 absolutePixelPos;
-        out vec4 fragColor;
+        \(`in`) vec4 originalColour;
+        \(`in`) vec2 absolutePixelPos;
+
+        \(fragColorDefinition)
 
         uniform vec4 maskFrame;
         uniform sampler2D maskTexture;
@@ -43,8 +44,8 @@ extension FragmentShader {
                 ((absolutePixelPos.y - maskFrame.y) / maskFrame.z) // z == height
             );
 
-            vec4 maskColour = texture(maskTexture, maskCoordinate);
-            fragColor = vec4(originalColour.rgb, originalColour.a * maskColour.a);
+            vec4 maskColour = \(texture)(maskTexture, maskCoordinate);
+            \(fragColor) = vec4(originalColour.rgb, originalColour.a * maskColour.a);
         }
         """
     )

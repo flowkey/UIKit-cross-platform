@@ -116,7 +116,7 @@ final public class SDL { // Only public for rootView!
                 SDL.rootView = UIWindow()
                 window = nil
                 unload()
-                break
+                return true
             case SDL_MOUSEBUTTONDOWN:
                 handleTouchDown(.from(e.button))
                 eventWasHandled = true
