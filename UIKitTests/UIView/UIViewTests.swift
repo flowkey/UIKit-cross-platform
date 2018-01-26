@@ -71,6 +71,7 @@ class UIViewTests: XCTestCase {
 
         subview1.frame = CGRect(x: 10, y: 10, width: 10, height: 10)
         subview1subview1.frame = CGRect(x: 5, y: 5, width: 5, height: 5)
+
         rootView.addSubview(subview1)
         subview1.addSubview(subview1subview1)
 
@@ -82,7 +83,7 @@ class UIViewTests: XCTestCase {
         let subview1 = UIView()
         let subview1subview1 = UIView()
 
-        rootView.bounds = CGRect(x: 10, y: 10, width: 100, height: 100) // rootview bounds non-zero
+        rootView.bounds = CGRect(x: 10, y: 10, width: 100, height: 100) // non-zero bounds
         subview1.frame = CGRect(x: 20, y: 20, width: 10, height: 10)
         subview1subview1.frame = CGRect(x: 5, y: 5, width: 5, height: 5)
 
@@ -92,39 +93,36 @@ class UIViewTests: XCTestCase {
         XCTAssertEqual(subview1subview1.absoluteOrigin(), CGPoint(x: 15, y: 15))
     }
 
-    func testAbsoluteOriginWithNonZeroRootViewAndSubViewWBounds() {
+    func testAbsoluteOriginWithNonZeroSubViewBounds() {
         let rootView = UIView()
         let subview1 = UIView()
         let subview1subview1 = UIView()
 
-        rootView.bounds = CGRect(x: 10, y: 10, width: 100, height: 100) // non-zero bounds
         subview1.frame = CGRect(x: 20, y: 20, width: 10, height: 10)
-        subview1.bounds.origin = CGPoint(x: 10, y: 10)                  // non-zero bounds
+        subview1.bounds.origin = CGPoint(x: 10, y: 10) // non-zero bounds
         subview1subview1.frame = CGRect(x: 5, y: 5, width: 5, height: 5)
 
         rootView.addSubview(subview1)
         subview1.addSubview(subview1subview1)
 
-        XCTAssertEqual(subview1subview1.absoluteOrigin(), CGPoint(x: 5, y: 5))
+        XCTAssertEqual(subview1subview1.absoluteOrigin(), CGPoint(x: 15, y: 15))
     }
 
-    func testConvertFrom() {
+
+    func testCoordinateSystemConversion() {
         let rootView = UIView()
         let subview1 = UIView()
         let subview1subview1 = UIView()
 
-        rootView.bounds = CGRect(x: 10, y: 10, width: 100, height: 100)
         subview1.frame = CGRect(x: 20, y: 20, width: 10, height: 10)
-        subview1.bounds.origin = CGPoint(x: 10, y: 10)
         subview1subview1.frame = CGRect(x: 5, y: 5, width: 5, height: 5)
 
         rootView.addSubview(subview1)
         subview1.addSubview(subview1subview1)
 
-        XCTAssertEqual(
-            subview1subview1.absoluteOrigin(),
-            rootView.convert(.zero, from: subview1subview1)
-        )
+        let expectedPoint = CGPoint(x: 25, y: 25)
+        XCTAssertEqual(expectedPoint, subview1subview1.absoluteOrigin())
+        XCTAssertEqual(expectedPoint, rootView.convert(.zero, from: subview1subview1))
     }
 
     func testConvertWithNilView() {
