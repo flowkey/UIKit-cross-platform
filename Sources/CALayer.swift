@@ -11,12 +11,17 @@ import SDL
 open class CALayer {
     open weak var delegate: CALayerDelegate?
 
-    var texture: Texture? {
+    open var contents: CGImage? {
         didSet {
-            let newSize = texture?.size ?? .zero
-            self.bounds.size = newSize
+            if let contents = self.contents {
+                self.bounds.size = contents.size / contentsScale
+            }
         }
     }
+
+    /// Defaults to 1.0 but if the layer is associated with a view,
+    /// the view sets this value to match the screen.
+    open var contentsScale: CGFloat = 1.0
 
     internal (set) public weak var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer]?
@@ -120,6 +125,7 @@ open class CALayer {
     public var shadowOffset: CGSize = .zero
     public var shadowRadius: CGFloat = 0
 
+    public var mask: CALayer?
     public var masksToBounds = false
 
     public required init() {}
@@ -139,7 +145,9 @@ open class CALayer {
         shadowOffset = layer.shadowOffset
         shadowRadius = layer.shadowRadius
         shadowOpacity = layer.shadowOpacity
-        texture = layer.texture
+        mask = layer.mask
+        contents = layer.contents // XXX: we should make a copy here
+        contentsScale = layer.contentsScale
         sublayers = layer.sublayers
     }
 
@@ -163,8 +171,8 @@ open class CALayer {
 
     // TODO: remove this function after implementing CGImage to get font texture in UIImage extension for fonts
     open func convertToUIImage() -> UIImage? {
-        guard let texture = self.texture else { return nil }
-        return UIImage(texture: texture)
+        guard let contents = self.contents else { return nil }
+        return UIImage(cgImage: contents, scale: SDL.window.scale)
     }
 
     var presentation: CALayer?

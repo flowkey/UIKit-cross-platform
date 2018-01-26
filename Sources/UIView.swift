@@ -119,6 +119,7 @@ open class UIView: UIResponder {
 
     public init(frame: CGRect) {
         self.layer = type(of: self).layerClass.init()
+        self.layer.contentsScale = UIScreen.main.scale
         self.layer.delegate = self
         self.frame = frame
     }

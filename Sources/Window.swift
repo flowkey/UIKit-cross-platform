@@ -65,35 +65,34 @@ internal final class Window {
     }
 
     /// clippingRect behaves like an offset
-    func blit(_ texture: Texture, at destination: CGPoint, opacity: Float, clippingRect: CGRect?) {
-        if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
+    func blit(_ image: CGImage, at destination: CGPoint, scaleX: Float, scaleY: Float, opacity: Float, clippingRect: CGRect?) {
+        if opacity < 1 { GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
 
+        // The only difference between these two is/should be whether we pass a clipping rect:
         if let clippingRect = clippingRect {
             var clipGPU_Rect = GPU_Rect(clippingRect)
-            GPU_Blit(
-                texture.rawPointer,
+            GPU_BlitTransform(
+                image.rawPointer,
                 &clipGPU_Rect,
-                rawPointer,
+                self.rawPointer,
                 Float(destination.x + clippingRect.origin.x),
-                Float(destination.y + clippingRect.origin.y)
+                Float(destination.y + clippingRect.origin.y),
+                0, // rotation in degrees
+                scaleX,
+                scaleY
             )
         } else {
-            GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
+            GPU_BlitTransform(
+                image.rawPointer,
+                nil,
+                self.rawPointer,
+                Float(destination.x),
+                Float(destination.y),
+                0, // rotation in degrees
+                scaleX,
+                scaleY
+            )
         }
-    }
-
-    func blitTransform(_ texture: Texture, at destination: CGPoint, opacity: Float, transform: CGAffineTransform) {
-        if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
-        GPU_BlitTransform(
-            texture.rawPointer,
-            nil,
-            rawPointer,
-            Float(destination.x),
-            Float(destination.y),
-            0, // rotation in degrees
-            Float(transform.m11),
-            Float(transform.m22)
-        )
     }
 
     func setShapeBlending(_ newValue: Bool) {

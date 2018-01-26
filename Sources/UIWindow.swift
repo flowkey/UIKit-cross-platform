@@ -10,8 +10,4 @@ public class UIWindow: UIView {
     public static var main: UIWindow {
         return SDL.rootView
     }
-
-    internal init() {
-        super.init(frame: .zero)
-    }
 }
