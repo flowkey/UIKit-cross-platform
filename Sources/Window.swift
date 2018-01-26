@@ -16,12 +16,25 @@ internal final class Window {
 
     // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
     // The easiest solution is just to work in 1:1 pixels
-    init(size: CGSize, options: SDLWindowFlags) {
-        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
+    init() {
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
 
+    #if os(Android)
+        // height/width are determined by the window when fullscreen:
+        var size = CGSize.zero
+        let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
+    #else
+        // This corresponds to the Samsung S7 screen at its 1080p 1.5x Retina resolution:
+        var size = CGSize(width: 2560 / 3.0, height: 1440 / 3.0)
+        let options: SDLWindowFlags = [
+            SDL_WINDOW_ALLOW_HIGHDPI,
+            //SDL_WINDOW_FULLSCREEN
+        ]
+    #endif
+
+        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
         GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC)
 
-        var size = size
         if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
             // Fix fullscreen resolution on Mac and make Android easier to reason about:
             GPU_SetPreInitFlags(GPU_GetPreInitFlags() | GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)

@@ -73,7 +73,7 @@ extension ShaderProgram {
             GPU_SetUniformf(location, newValue)
         }
 
-        func set (_ newValue: CGRect) {
+        func set(_ newValue: CGRect) {
             var vals = [Float(newValue.minX), Float(newValue.minY), Float(newValue.height), Float(newValue.width)]
             GPU_SetUniformfv(location, 4, 1, &vals)
         }

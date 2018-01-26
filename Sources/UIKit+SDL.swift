@@ -25,31 +25,7 @@ final public class SDL { // Only public for rootView!
         self.firstRender = true
         self.window = nil // triggers Window deinit to destroy previous Window
 
-        let windowOptions: SDLWindowFlags
-
-        #if os(Android)
-            // height/width are determined by the window when fullscreen:
-            let SCREEN_WIDTH = 0
-            let SCREEN_HEIGHT = 0
-
-            windowOptions = [SDL_WINDOW_FULLSCREEN]
-        #else
-            // This corresponds to the Samsung S7 screen at its 1080p 1.5x Retina resolution:
-            let SCREEN_WIDTH = 2560 / 3
-            let SCREEN_HEIGHT = 1440 / 3
-            windowOptions = [
-                SDL_WINDOW_ALLOW_HIGHDPI,
-                //SDL_WINDOW_FULLSCREEN
-            ]
-        #endif
-
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
-
-        let window = Window(
-            size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT),
-            options: windowOptions
-        )
-
+        let window = Window()
         if window.size == .zero {
             preconditionFailure("You need window dimensions to run")
         }
