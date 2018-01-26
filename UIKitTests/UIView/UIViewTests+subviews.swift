@@ -186,8 +186,8 @@ class UIViewSubviewTests: XCTestCase {
 
     func testInsertSublayerAtUnrealisticIndex() {
         let layer = CALayer()
-
         let anotherLayer = CALayer()
+
         layer.insertSublayer(anotherLayer, at: 999)
 
         XCTAssertEqual(layer.sublayers?.last, anotherLayer)
