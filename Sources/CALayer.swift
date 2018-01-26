@@ -21,11 +21,12 @@ open class CALayer {
     internal (set) public weak var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer]?
 
-    // In iOS not public API!
-    internal func insertSublayer(_ layer: CALayer, at index: Int) {
+    open func insertSublayer(_ layer: CALayer, at index: UInt32) {
         layer.removeFromSuperlayer()
         if sublayers == nil { sublayers = [] }
-        sublayers?.insert(layer, at: index) // optional in case of race conditions
+
+        let endIndex = sublayers?.endIndex ?? 0
+        sublayers?.insert(layer, at: min(Int(index), endIndex))
         layer.superlayer = self
     }
 
@@ -34,7 +35,7 @@ open class CALayer {
             preconditionFailure("self.sublayers must exist and contain sibling CALayer '\(sibling)'")
         }
 
-        insertSublayer(layer, at: insertIndex.advanced(by: 1))
+        insertSublayer(layer, at: UInt32(insertIndex.advanced(by: 1)))
     }
 
     open func insertSublayer(_ layer: CALayer, below sibling: CALayer) {
@@ -42,11 +43,11 @@ open class CALayer {
             preconditionFailure("self.sublayers must exist and contain sibling CALayer '\(sibling)'")
         }
 
-        insertSublayer(layer, at: insertIndex)
+        insertSublayer(layer, at: UInt32(insertIndex))
     }
 
     open func addSublayer(_ layer: CALayer) {
-        insertSublayer(layer, at: sublayers?.endIndex ?? 0)
+        insertSublayer(layer, at: UInt32(sublayers?.endIndex ?? 0))
     }
 
     open func removeFromSuperlayer() {
