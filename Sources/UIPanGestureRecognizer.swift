@@ -66,7 +66,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         guard let firstTouch = touches.first else { return }
         state = .began
         trackedTouch = firstTouch
-        initialTouchPoint = firstTouch.location(in: nil)
+        initialTouchPoint = firstTouch.location(in: self.view?.superview)
         lastMovementTimestamp = NSDate.timeIntervalSinceReferenceDate
     }
 
@@ -89,7 +89,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         }
         lastMovementTimestamp = now
 
-        let location = trackedTouch.location(in: nil)
+        let location = trackedTouch.location(in: self.view?.superview)
 
         if  state == .began,
             (location.x - initialTouchPoint.x).magnitude >= minimumTranslationThreshold ||
