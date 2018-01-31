@@ -8,16 +8,6 @@
 
 extension UIScrollView {
 
-    fileprivate static let maxVelocity = 1200.0 // hand tuned value
-
-    // fine tuning of initial velocity with an easing curve
-    fileprivate func easedVelocity(_ velocity: Double) -> Double {
-        let normalizedVelocity = min(abs(velocity), UIScrollView.maxVelocity) / UIScrollView.maxVelocity
-        let easedVelocity = Double(CAMediaTimingFunction.easeInQuad(CGFloat(normalizedVelocity)))
-        let denormalizedVelocity = easedVelocity * UIScrollView.maxVelocity
-        return denormalizedVelocity
-    }
-
     func startDecelerating() {
         let decelerationRate = UIScrollViewDecelerationRateNormal * 1000
 
@@ -25,11 +15,10 @@ extension UIScrollView {
         let gestureVelocity = Double(panGestureRecognizer.velocity(in: self).x)
         if gestureVelocity == 0 { return }
 
-        let initialVelocity = easedVelocity(gestureVelocity)
 
         // calculate time it would take until deceleration is complete (final velocity = 0)
         var animationTime = time(
-            initialVelocity: initialVelocity,
+            initialVelocity: gestureVelocity,
             acceleration: Double(-decelerationRate),
             finalVelocity: 0
         )
@@ -38,7 +27,7 @@ extension UIScrollView {
         let distanceToMove = distance(
             acceleration: Double(-decelerationRate),
             time: Double(animationTime),
-            initialVelocity: initialVelocity
+            initialVelocity: gestureVelocity
         )
 
         // determine scroll direction
@@ -59,7 +48,7 @@ extension UIScrollView {
             newOffset = boundsCheckedOffset
             // time it takes until reaching bounds from current position
             animationTime = time(
-                initialVelocity: initialVelocity,
+                initialVelocity: gestureVelocity,
                 accleration: Double(decelerationRate),
                 distance: Double(abs(contentOffset.x - boundsCheckedOffset.x))
             )
