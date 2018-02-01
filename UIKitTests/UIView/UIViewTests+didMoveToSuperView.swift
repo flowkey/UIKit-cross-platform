@@ -12,12 +12,12 @@ import XCTest
 class UIViewDidMoveToSuperViewTests: XCTestCase {
     private var view = UIView()
     private var subview = TestView()
-    private var testCallBackWasCalled = false
+    private var testCallbackWasCalled = false
 
     override func setUp() {
         view = UIView()
         subview = TestView()
-        testCallBackWasCalled = false
+        testCallbackWasCalled = false
     }
 
     private func sublayerHasBeenInserted() -> Bool {
@@ -27,45 +27,45 @@ class UIViewDidMoveToSuperViewTests: XCTestCase {
     func testInsertLayerBeforeDidMoveToSuperViewWasCalledWhenAddingSubviews() {
         subview.onDidMoveToSuperView = {
             XCTAssertTrue(self.sublayerHasBeenInserted())
-            self.testCallBackWasCalled = true
+            self.testCallbackWasCalled = true
         }
 
         view.addSubview(subview)
 
-        XCTAssertTrue(testCallBackWasCalled)
+        XCTAssertTrue(testCallbackWasCalled)
     }
 
     func testInsertLayerBeforeDidMoveToSuperViewWasCalledWhenInsertingSubviewsAtIndex() {
         subview.onDidMoveToSuperView = {
             XCTAssertTrue(self.sublayerHasBeenInserted())
-            self.testCallBackWasCalled = true
+            self.testCallbackWasCalled = true
         }
 
         view.insertSubview(subview, at: 0)
 
-        XCTAssertTrue(testCallBackWasCalled)
+        XCTAssertTrue(testCallbackWasCalled)
     }
 
     func testInsertLayerBeforeDidMoveToSuperViewWasCalledWhenInsertingAboveSubview() {
         subview.onDidMoveToSuperView = {
             XCTAssertTrue(self.sublayerHasBeenInserted())
-            self.testCallBackWasCalled = true
+            self.testCallbackWasCalled = true
         }
 
         view.insertSubview(subview, aboveSubview: view)
 
-        XCTAssertTrue(testCallBackWasCalled)
+        XCTAssertTrue(testCallbackWasCalled)
     }
 
     func testInsertLayerBeforeDidMoveToSuperViewWasCalledWhenInsertingBelowSubview() {
         subview.onDidMoveToSuperView = {
             XCTAssertTrue(self.sublayerHasBeenInserted())
-            self.testCallBackWasCalled = true
+            self.testCallbackWasCalled = true
         }
 
         view.insertSubview(subview, belowSubview: view)
 
-        XCTAssertTrue(testCallBackWasCalled)
+        XCTAssertTrue(testCallbackWasCalled)
     }
 
 }
