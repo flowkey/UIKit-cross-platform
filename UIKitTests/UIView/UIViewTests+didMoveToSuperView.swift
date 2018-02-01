@@ -12,62 +12,42 @@ import XCTest
 class UIViewDidMoveToSuperViewTests: XCTestCase {
     private var view = UIView()
     private var subview = TestView()
-    private var testCallbackWasCalled = false
+    private var onDidMoveToSuperViewWasCalled = false
 
     override func setUp() {
         view = UIView()
         subview = TestView()
-        testCallbackWasCalled = false
-    }
+        onDidMoveToSuperViewWasCalled = false
 
-    private func sublayerHasBeenInserted() -> Bool {
-        return (self.view.layer.sublayers?.contains(self.subview.layer)) ?? false
-    }
-
-    func testInsertLayerBeforeDidMoveToSuperViewWasCalledWhenAddingSubviews() {
         subview.onDidMoveToSuperView = {
-            XCTAssertTrue(self.sublayerHasBeenInserted())
-            self.testCallbackWasCalled = true
+            XCTAssertEqual(self.subview.layer.superlayer, self.view.layer)
+            self.onDidMoveToSuperViewWasCalled = true
         }
-
+    }
+  
+    func testLayersAreInsertedWhenDidMoveToSuperviewWasCalledOnAddSubview() {
         view.addSubview(subview)
 
-        XCTAssertTrue(testCallbackWasCalled)
+        XCTAssertTrue(onDidMoveToSuperViewWasCalled)
     }
 
     func testInsertLayerBeforeDidMoveToSuperViewWasCalledWhenInsertingSubviewsAtIndex() {
-        subview.onDidMoveToSuperView = {
-            XCTAssertTrue(self.sublayerHasBeenInserted())
-            self.testCallbackWasCalled = true
-        }
-
         view.insertSubview(subview, at: 0)
 
-        XCTAssertTrue(testCallbackWasCalled)
+        XCTAssertTrue(onDidMoveToSuperViewWasCalled)
     }
 
     func testInsertLayerBeforeDidMoveToSuperViewWasCalledWhenInsertingAboveSubview() {
-        subview.onDidMoveToSuperView = {
-            XCTAssertTrue(self.sublayerHasBeenInserted())
-            self.testCallbackWasCalled = true
-        }
-
         view.insertSubview(subview, aboveSubview: view)
 
-        XCTAssertTrue(testCallbackWasCalled)
+        XCTAssertTrue(onDidMoveToSuperViewWasCalled)
     }
 
     func testInsertLayerBeforeDidMoveToSuperViewWasCalledWhenInsertingBelowSubview() {
-        subview.onDidMoveToSuperView = {
-            XCTAssertTrue(self.sublayerHasBeenInserted())
-            self.testCallbackWasCalled = true
-        }
-
         view.insertSubview(subview, belowSubview: view)
 
-        XCTAssertTrue(testCallbackWasCalled)
+        XCTAssertTrue(onDidMoveToSuperViewWasCalled)
     }
-
 }
 
 fileprivate class TestView: UIView {
