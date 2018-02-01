@@ -10,10 +10,8 @@ import XCTest
 @testable import UIKit
 
 class TouchHandlingTests: XCTestCase {
-
-    override func setUp() {
-        SDL.initialize()
-        SDL.rootView.frame = CGRect(x: 0, y: 0, width: 1000, height: 1000)
+    override static func setUp() {
+        SDL.rootView = UIWindow(frame: CGRect(origin: .zero, size: CGSize(width: 1000, height: 1000)))
     }
 
     func testSimpleTouchdown() {
