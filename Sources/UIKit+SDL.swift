@@ -15,7 +15,7 @@ import class Foundation.Thread
 private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
 
 final public class SDL { // Only public for rootView!
-    public private(set) static var rootView: UIWindow!
+    public internal(set) static var rootView: UIWindow!
     static var window: Window!
 
     fileprivate static var shouldQuit = false
@@ -115,6 +115,8 @@ final public class SDL { // Only public for rootView!
                     default:
                         break
                     }
+                if e.key.keysym.scancode.rawValue == 270 {
+                    onHardwareBackButtonPress?()
                 }
             default: break
             }
@@ -124,13 +126,13 @@ final public class SDL { // Only public for rootView!
     }
 }
 
-
 extension SDL {
     public static var onPressPlus: (() -> Void)?
     public static var onPressMinus: (() -> Void)?
 }
 
 extension SDL_Keymod: OptionSet {}
+public var onHardwareBackButtonPress: (() -> Void)?
 
 #if os(Android)
 import JNI
