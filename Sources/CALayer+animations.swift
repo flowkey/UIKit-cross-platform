@@ -63,9 +63,9 @@ extension CALayer {
                 animation.animationGroup?.animationDidStop(finished: true)
                 removeAnimation(forKey: key)
             }
-
-            self.presentation = animations.isEmpty ? nil : presentation
         }
+
+        self.presentation = animations.isEmpty ? nil : presentation
     }
 
     private func update(_ presentation: CALayer, for animation: CABasicAnimation, with progress: CGFloat) {
