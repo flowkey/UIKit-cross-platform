@@ -22,12 +22,11 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             let initialTouchPoint = initialTouchPoint
         else { return .zero }
 
-        let positionInTargetView = trackedTouch.location(in: self.view)
-        let translation = CGPoint(
+        let positionInTargetView = trackedTouch.location(in: view)
+        return CGPoint(
             x: positionInTargetView.x - initialTouchPoint.x,
             y: positionInTargetView.y - initialTouchPoint.y
         )
-        return self.view?.convert(translation, to: view) ?? translation
     }
 
     open func setTranslation(_ translation: CGPoint, in view: UIView?) {
