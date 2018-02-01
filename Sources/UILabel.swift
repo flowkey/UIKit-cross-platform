@@ -55,7 +55,8 @@ open class UILabel: UIView {
     open override func draw() {
         super.draw()
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
-        textLayer.texture = font.render(text, color: textColor, wrapLength: wrapLength)
+        textLayer.contentsScale = UIScreen.main.scale
+        textLayer.contents = font.render(text, color: textColor, wrapLength: wrapLength)
         setNeedsLayout() // to realign text if needed
     }
 
@@ -73,15 +74,14 @@ open class UILabel: UIView {
     }
 
     open override func layoutSubviews() {
-        layout(&textLayer.frame, in: self.bounds)
         super.layoutSubviews()
-    }
-
-    private func layout(_ rect: inout CGRect, in bounds: CGRect) {
         switch textAlignment {
-        case .left: rect.minX = bounds.minX
-        case .center: rect.midX = bounds.midX
-        case .right: rect.maxX = bounds.maxX
+        case .left:
+            textLayer.frame.minX = bounds.minX
+        case .center:
+            textLayer.frame.midX = bounds.midX
+        case .right:
+            textLayer.frame.maxX = bounds.maxX
         }
     }
 }

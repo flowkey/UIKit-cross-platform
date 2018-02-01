@@ -16,7 +16,12 @@ extension CALayer {
         let absoluteFrame = frame.offsetBy(parentAbsoluteOrigin)
         
         // Big performance optimization. Don't render anything that's entirely offscreen:
-        if !absoluteFrame.intersects(SDL.rootView.bounds) { return }
+        guard absoluteFrame.intersects(SDL.rootView.bounds) else { return }
+
+        if let mask = mask, let maskContents = mask.contents {
+            ShaderProgram.mask.activate()
+            ShaderProgram.mask.set(maskImage: maskContents, frame: absoluteFrame) // must be set after activation
+        }
 
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
@@ -49,22 +54,19 @@ extension CALayer {
             }
         }
 
-        if let texture = texture {
-            if transform.isIdentity {
-                SDL.window.blit(
-                    texture,
-                    at: absoluteFrame.origin,
-                    opacity: opacity,
-                    clippingRect: (masksToBounds ? superlayer?.bounds : nil)
-                )
-            } else {
-                SDL.window.blitTransform(
-                    texture,
-                    at: absoluteFrame.origin,
-                    opacity: opacity,
-                    transform: transform
-                )
-            }
+        if let contents = contents {
+            SDL.window.blit(
+                contents,
+                at: absoluteFrame.origin,
+                scaleX: Float((1 / contentsScale) * transform.m11),
+                scaleY: Float((1 / contentsScale) * transform.m22),
+                opacity: opacity,
+                clippingRect: (masksToBounds ? superlayer?.bounds : nil)
+            )
+        }
+
+        if mask != nil {
+            ShaderProgram.deactivateAll()
         }
 
         sublayers?.forEach {

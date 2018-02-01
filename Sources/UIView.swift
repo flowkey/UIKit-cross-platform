@@ -119,6 +119,7 @@ open class UIView: UIResponder {
 
     public init(frame: CGRect) {
         self.layer = type(of: self).layerClass.init()
+        self.layer.contentsScale = UIScreen.main.scale
         self.layer.delegate = self
         self.frame = frame
     }
@@ -235,13 +236,11 @@ open class UIView: UIResponder {
     }
 
     func absoluteOrigin() -> CGPoint {
-        var view = self
-        var origin = frame.origin
-        while let superview = view.superview {
-            view = superview
-            origin = superview.frame.origin.offsetBy(-superview.bounds.origin).offsetBy(origin)
+        guard let superview = superview else {
+            return frame.origin
         }
-        return origin
+
+        return frame.origin.offsetBy(-superview.bounds.origin).offsetBy(superview.absoluteOrigin())
     }
 
     public func convert(_ point: CGPoint, from view: UIView?) -> CGPoint {

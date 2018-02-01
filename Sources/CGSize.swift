@@ -24,6 +24,15 @@ public struct CGSize {
 }
 
 
+extension CGSize {
+    public static func / (lhs: CGSize, rhs: CGFloat) -> CGSize {
+        return CGSize(
+            width: lhs.width / rhs,
+            height: lhs.height / rhs
+        )
+    }
+}
+
 extension CGSize: Equatable {
     public static func == (lhs: CGSize, rhs: CGSize) -> Bool {
         return lhs.width == rhs.width && lhs.height == rhs.height

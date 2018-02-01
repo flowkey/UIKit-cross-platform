@@ -40,7 +40,7 @@ internal class FontRenderer {
         return String(cString: cStringFamilyName)
     }
 
-    func render(_ text: String?, color: UIColor, wrapLength: Int = 0) -> Texture? {
+    func render(_ text: String?, color: UIColor, wrapLength: Int = 0) -> CGImage? {
         guard let text = text else { return nil }
         let unicode16Text = text.toUTF16()
 
@@ -53,7 +53,7 @@ internal class FontRenderer {
         }
 
         defer { SDL_FreeSurface(surface) }
-        return Texture(surface: surface)
+        return CGImage(surface: surface)
     }
 }
 
