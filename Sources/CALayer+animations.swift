@@ -10,7 +10,7 @@ extension CALayer {
     open func add(_ animation: CABasicAnimation, forKey key: String) {
         let copy = CABasicAnimation(from: animation)
         copy.animationGroup?.queuedAnimations += 1
-        copy.timer = Timer()
+        copy.creationTime = Timer()
 
         // animation.fromValue is optional, set it to currently visible state if nil
         if copy.fromValue == nil, let keyPath = copy.keyPath {

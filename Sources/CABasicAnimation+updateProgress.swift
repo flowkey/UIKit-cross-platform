@@ -8,16 +8,16 @@
 
 extension CABasicAnimation {
     func progress(for currentTime: Timer) -> CGFloat {
-        let elapsedTimeInMs = max(CGFloat(currentTime - timer) - (delay * 1000), 0)
+        let elapsedTimeMinusDelayInMs = max(CGFloat(currentTime - creationTime) - (delay * 1000), 0)
         let durationInMs = duration * 1000
+        let animationHasStarted = elapsedTimeMinusDelayInMs > 0
 
         // prevents a division by zero when animating with duration: 0
-        // additionally we have to check elapsedTime because of a potential delay
-        if elapsedTimeInMs > 0 && durationInMs <= 0 {
+        if animationHasStarted && durationInMs <= 0 {
             return 1
         }
 
-        let linearProgress = min(elapsedTimeInMs / (durationInMs), 1)
+        let linearProgress = min(elapsedTimeMinusDelayInMs / (durationInMs), 1)
         return ease(x: linearProgress)
     }
 
