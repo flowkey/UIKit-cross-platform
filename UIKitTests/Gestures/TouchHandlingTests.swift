@@ -12,6 +12,7 @@ import XCTest
 class TouchHandlingTests: XCTestCase {
 
     override func setUp() {
+        SDL.initialize()
         SDL.rootView.frame = CGRect(x: 0, y: 0, width: 1000, height: 1000)
     }
 
