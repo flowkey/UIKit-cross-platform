@@ -15,7 +15,7 @@ import class Foundation.Thread
 private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
 
 final public class SDL { // Only public for rootView!
-    public private(set) static var rootView: UIWindow!
+    public static var rootView: UIWindow!
     static var window: Window!
 
     fileprivate static var shouldQuit = false
