@@ -22,12 +22,11 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             let initialTouchPoint = initialTouchPoint
         else { return .zero }
 
-        let positionInTargetView = trackedTouch.location(in: self.view)
-        let translation = CGPoint(
+        let positionInTargetView = trackedTouch.location(in: view)
+        return CGPoint(
             x: positionInTargetView.x - initialTouchPoint.x,
             y: positionInTargetView.y - initialTouchPoint.y
         )
-        return self.view?.convert(translation, to: view) ?? translation
     }
 
     open func setTranslation(_ translation: CGPoint, in view: UIView?) {
@@ -48,7 +47,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             let timeSinceLastMovement = timeSinceLastMovement,
             timeSinceLastMovement != 0.0
         else {
-                return CGPoint.zero
+            return CGPoint.zero
         }
 
         // XXX: apple docs say velocity is in points per s (see above)
@@ -66,7 +65,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         guard let firstTouch = touches.first else { return }
         state = .began
         trackedTouch = firstTouch
-        initialTouchPoint = firstTouch.location(in: self.view)
+        initialTouchPoint = firstTouch.location(in: self.view?.superview)
         lastMovementTimestamp = NSDate.timeIntervalSinceReferenceDate
     }
 
@@ -89,7 +88,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         }
         lastMovementTimestamp = now
 
-        let location = trackedTouch.location(in: self.view)
+        let location = trackedTouch.location(in: self.view?.superview)
 
         if  state == .began,
             (location.x - initialTouchPoint.x).magnitude >= minimumTranslationThreshold ||
