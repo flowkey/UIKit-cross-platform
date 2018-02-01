@@ -106,7 +106,12 @@ open class UIScrollView: UIView {
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         // TODO: animate
         contentOffset = point
+
+        // otherwise everything subscribing to scrollViewDidScroll is impliciltly animated from velocity scroll
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
         delegate?.scrollViewDidScroll(self)
+        CATransaction.commit()
     }
 
     override open func layoutSubviews() {
