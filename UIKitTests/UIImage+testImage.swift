@@ -20,7 +20,7 @@ extension UIImage {
             testImage = UIGraphicsGetImageFromCurrentImageContext()!
             UIGraphicsEndImageContext()
         #else
-            testImage = UIImage(texture: Texture(size: size)!)
+            testImage = UIImage(cgImage: CGImage(size: size)!, scale: 1)
         #endif
         return testImage
     }
