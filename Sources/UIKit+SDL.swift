@@ -102,6 +102,10 @@ final public class SDL { // Only public for rootView!
             case SDL_MOUSEBUTTONUP:
                 handleTouchUp(.from(e.button))
                 eventWasHandled = true
+            case SDL_KEYUP:
+                if e.key.keysym.scancode.rawValue == 270 {
+                    onHardwareBackButtonPress?()
+                }
             default: break
             }
         }
@@ -109,6 +113,8 @@ final public class SDL { // Only public for rootView!
         return eventWasHandled
     }
 }
+
+public var onHardwareBackButtonPress: (() -> Void)?
 
 #if os(Android)
 import JNI
