@@ -7,11 +7,20 @@
 //
 
 @_exported import SDL
+import SDL_gpu
 
 extension CALayer {
     final func sdlRender(at parentAbsoluteOrigin: CGPoint = .zero, parentOpacity: Float = 1) {
         let opacity = parentOpacity * self.opacity
         if isHidden || opacity < 0.01 { return }
+
+        if !CATransform3DEqualToTransform(transform, CATransform3DIdentity) {
+            withUnsafeMutablePointer(to: &transform.storage) { pointerToTuple in
+                pointerToTuple.withMemoryRebound(to: Float.self, capacity: 16) { pointerToFirstTransformFloat in
+                    GPU_MultMatrix(pointerToFirstTransformFloat)
+                }
+            }
+        }
 
         let absoluteFrame = frame.offsetBy(parentAbsoluteOrigin)
         
@@ -58,8 +67,8 @@ extension CALayer {
             SDL.window.blit(
                 contents,
                 at: absoluteFrame.origin,
-                scaleX: Float((1 / contentsScale) * transform.m11),
-                scaleY: Float((1 / contentsScale) * transform.m22),
+                scaleX: Float(1 / contentsScale),
+                scaleY: Float(1 / contentsScale),
                 opacity: opacity,
                 clippingRect: (masksToBounds ? superlayer?.bounds : nil)
             )
@@ -70,10 +79,18 @@ extension CALayer {
         }
 
         sublayers?.forEach {
+            var currentTransform = CATransform3D(unsafePointer: GPU_GetCurrentMatrix())
+
             ($0.presentation ?? $0).sdlRender(
                 at: absoluteFrame.origin.offsetBy(-bounds.origin),
                 parentOpacity: opacity
             )
+
+            withUnsafeMutablePointer(to: &currentTransform.storage) { pointerToTuple in
+                pointerToTuple.withMemoryRebound(to: Float.self, capacity: 16) { pointerToFirstTransformFloat in
+                    GPU_MatrixCopy(GPU_GetCurrentMatrix(), pointerToFirstTransformFloat)
+                }
+            }
         }
     }
 }

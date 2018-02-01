@@ -88,9 +88,10 @@ extension CALayer {
             presentation.opacity = startOpacity + ((endOpacity - startOpacity)) * Float(progress)
 
         case .transform:
-            guard let startTransform = animation.fromValue as? CGAffineTransform else { return }
-            let endTransform = animation.toValue as? CGAffineTransform ?? self.transform
-            presentation.transform = (startTransform + (endTransform - startTransform) * progress)
+            guard let startTransform = animation.fromValue as? CATransform3D else { return }
+            let endTransform = animation.toValue as? CATransform3D ?? self.transform
+            // This is the same calculation as the others, but has to be written out because CATransform3D is a tuple
+            presentation.transform = startTransform + ((endTransform - startTransform) * Float(progress))
 
         case .unknown: break
         }

@@ -103,6 +103,19 @@ extension CGRect {
         offsetCopy.origin = self.origin.offsetBy(CGPoint(x: dx, y: dy))
         return offsetCopy
     }
+
+    public func applying(_ t: CGAffineTransform) -> CGRect {
+        // Note we don't yet apply rotation here!
+        // iOS returns the smallest bounding box around the resulting 4 points.
+        // By comparison, we only apply scale and transform for now!!
+
+        return CGRect(
+            x: origin.x + t.tX,
+            y: origin.y + t.tY,
+            width: size.width * t.m11,
+            height: size.height * t.m22
+        )
+    }
 }
 
 extension GPU_Rect {

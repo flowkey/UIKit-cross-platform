@@ -51,12 +51,12 @@ open class UIImageView: UIView {
             let scaleX = bounds.width / scaledImageSize.width
             let scaleY = bounds.height / scaledImageSize.height
             let minScale = min(scaleX, scaleY)
-            layer.transform = CGAffineTransform(scale: minScale)
+            transform = CGAffineTransform(scale: minScale)
 
         case .stretch:
             let scaleX = bounds.width / scaledImageSize.width
             let scaleY = bounds.height / scaledImageSize.height
-            layer.transform = CGAffineTransform(scaleByX: scaleX, byY: scaleY)
+            transform = CGAffineTransform(scaleByX: scaleX, byY: scaleY)
 
         default: break
         }

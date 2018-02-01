@@ -34,8 +34,12 @@ open class UIView: UIResponder {
     }
 
     open var transform: CGAffineTransform {
-        get { return layer.transform }
-        set { layer.transform = newValue }
+        get { return CATransform3DGetAffineTransform(layer.transform) }
+        set {
+            layer.transform = CATransform3DMakeAffineTransform(newValue)
+            frame = frame.applying(newValue)
+            setNeedsLayout()
+        }
     }
 
     open var mask: UIView?

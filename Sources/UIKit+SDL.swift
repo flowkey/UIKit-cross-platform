@@ -73,6 +73,8 @@ final public class SDL { // Only public for rootView!
         UIView.animateIfNeeded(at: frameTimer)
 
         window.clear()
+        GPU_MatrixMode(GPU_MODELVIEW)
+        GPU_LoadIdentity()
         rootView.sdlDrawAndLayoutTreeIfNeeded()
         rootView.layer.sdlRender()
         window.flip()
@@ -102,6 +104,18 @@ final public class SDL { // Only public for rootView!
             case SDL_MOUSEBUTTONUP:
                 handleTouchUp(.from(e.button))
                 eventWasHandled = true
+            case SDL_KEYUP:
+                let keyModifier = SDL_Keymod(UInt32(e.key.keysym.mod))
+                if keyModifier.contains(KMOD_LSHIFT) || keyModifier.contains(KMOD_RSHIFT) {
+                    switch e.key.keysym.sym {
+                    case 61: // plus/equals key
+                        SDL.onPressPlus?()
+                    case 45: // minus/dash key
+                        SDL.onPressMinus?()
+                    default:
+                        break
+                    }
+                }
             default: break
             }
         }
@@ -109,6 +123,14 @@ final public class SDL { // Only public for rootView!
         return eventWasHandled
     }
 }
+
+
+extension SDL {
+    public static var onPressPlus: (() -> Void)?
+    public static var onPressMinus: (() -> Void)?
+}
+
+extension SDL_Keymod: OptionSet {}
 
 #if os(Android)
 import JNI

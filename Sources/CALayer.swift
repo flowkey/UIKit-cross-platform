@@ -106,11 +106,15 @@ open class CALayer {
         }
     }
 
-    public var transform: CGAffineTransform = .identity {
+    public var transform: CATransform3D = CATransform3DIdentity {
         willSet(newTransform) {
-            guard newTransform != transform else { return }
+            guard !CATransform3DEqualToTransform(newTransform, transform) else { return }
             onWillSet(keyPath: .transform)
         }
+    }
+
+    final public func affineTransform() -> CGAffineTransform {
+        return CATransform3DGetAffineTransform(transform)
     }
 
     public var isHidden = false
