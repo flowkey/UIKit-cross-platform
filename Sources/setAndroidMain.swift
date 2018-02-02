@@ -10,7 +10,10 @@
 import SDL
 import CJNI
 
-public var onNativeInitCompleted: (()->Void)?
+private var onNativeInitCompleted: (()->Void)?
+public func setOnNativeInitCompleted(_ callback: (()->Void)?) {
+    onNativeInitCompleted = callback
+}
 
 @_silgen_name("SDL_Android_Init")
 public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
