@@ -123,4 +123,19 @@ class UIViewTests: XCTestCase {
         XCTAssertEqual(subview.frame.width, 300)
         XCTAssertEqual(subview.frame.height, 100)
     }
+
+    func testPreventReferenceCycles() {
+        var view: UIView? = .init()
+        var subview: UIView? = .init()
+        view?.addSubview(subview!)
+        weak var weakViewReference = view
+        weak var weakSubviewReference = subview
+
+        view = nil
+        subview = nil
+
+        XCTAssertNil(weakViewReference)
+        XCTAssertNil(weakSubviewReference)
+    }
+
 }
