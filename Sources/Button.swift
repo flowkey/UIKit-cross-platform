@@ -91,7 +91,15 @@ open class Button: UIControl {
         imageView.isHidden = true
         addSubview(imageView)
         self.imageView = imageView
+
+        tapGestureRecognizer.onTouchesBegan = {
+            self.isHighlighted = true
+        }
         
+        tapGestureRecognizer.onTouchesEnded = {
+            self.isHighlighted = false
+        }
+
         tapGestureRecognizer.view = self
         addGestureRecognizer(tapGestureRecognizer)
     }
