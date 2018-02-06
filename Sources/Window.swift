@@ -10,6 +10,7 @@ import SDL
 import SDL_gpu
 
 internal final class Window {
+
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
     let size: CGSize
     let scale: CGFloat
@@ -31,7 +32,6 @@ internal final class Window {
             //SDL_WINDOW_FULLSCREEN
         ]
     #endif
-
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
         GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC)
 
@@ -64,7 +64,10 @@ internal final class Window {
         // Fixes video surface visibility with transparent & opaque views in SDLSurface above
         // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
         setShapeBlending(true)
-        setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
+
+        let uikit = GPU_BlendMode.uikit
+        GPU_SetShapeBlendFunction(uikit.source_color, uikit.dest_color, uikit.source_alpha, uikit.dest_alpha)
+        GPU_SetShapeBlendEquation(uikit.color_equation, uikit.alpha_equation)
     }
 
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
@@ -196,3 +199,15 @@ extension SDLWindowFlags: OptionSet {}
         }
     }
 #endif
+
+extension GPU_BlendMode {
+    static let uikit = GPU_BlendMode(
+        source_color: GPU_FUNC_SRC_ALPHA,
+        dest_color: GPU_FUNC_ONE_MINUS_SRC_ALPHA,
+        source_alpha: GPU_FUNC_ONE_MINUS_DST_ALPHA,
+        dest_alpha: GPU_FUNC_ONE,
+        color_equation: GPU_EQ_ADD,
+        alpha_equation: GPU_EQ_ADD
+    )
+}
+
