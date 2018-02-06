@@ -124,7 +124,7 @@ class UIViewTests: XCTestCase {
         XCTAssertEqual(subview.frame.height, 100)
     }
 
-    func testPreventReferenceCycles() {
+    func testPreventStrongReferenceCyclesBetweenSubviews() {
         var view: UIView? = .init()
         var subview: UIView? = .init()
         view?.addSubview(subview!)
