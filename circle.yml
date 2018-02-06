@@ -1,0 +1,21 @@
+machine:
+  xcode:
+    version: "9.0"
+
+checkout:
+  post:
+    - git submodule sync --recursive
+    - git submodule update --recursive --init
+
+test:
+  override:
+    - set -o pipefail &&
+      xcodebuild
+        CODE_SIGNING_REQUIRED=NO
+        CODE_SIGN_IDENTITY=""
+        PROVISIONING_PROFILE=""
+        -sdk "macosx10.13"
+        -scheme "UIKit"
+        clean build test |
+      tee $CIRCLE_ARTIFACTS/xcode_raw.log |
+      xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
