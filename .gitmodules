@@ -1,6 +1,6 @@
 [submodule "SDL"]
 	path = SDL
-	url = https://github.com/flowkey/SDL2-SwiftPackageManager
+	url = git@github.com:flowkey/SDL2-SwiftPackageManager.git
 [submodule "swift-jni"]
 	path = swift-jni
-	url = https://github.com/SwiftAndroid/swift-jni
+	url = git@github.com:SwiftAndroid/swift-jni.git
