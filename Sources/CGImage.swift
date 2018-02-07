@@ -24,16 +24,7 @@ public class CGImage {
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
         GPU_SetImageFilter(rawPointer, GPU_FILTER_NEAREST)
         GPU_SetAnchor(rawPointer, 0, 0)
-
-        let blendMode = GPU_BlendMode.uikit
-        GPU_SetBlendFunction(
-            rawPointer,
-            blendMode.source_color,
-            blendMode.dest_color,
-            blendMode.source_alpha,
-            blendMode.dest_alpha
-        )
-        GPU_SetBlendEquation(rawPointer, blendMode.color_equation, blendMode.alpha_equation)
+        GPU_SetBlendMode(rawPointer, GPU_BLEND_NORMAL_FACTOR_ALPHA)
 
         // Post-scale size.
         // e.g. If the pixel buffer contains 100x100 pixels at scale 2.0, size will be 50x50:
