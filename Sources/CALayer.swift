@@ -11,21 +11,27 @@ import SDL
 open class CALayer {
     open weak var delegate: CALayerDelegate?
 
-    var texture: Texture? {
+    open var contents: CGImage? {
         didSet {
-            let newSize = texture?.size ?? .zero
-            self.bounds.size = newSize
+            if let contents = self.contents {
+                self.bounds.size = contents.size / contentsScale
+            }
         }
     }
+
+    /// Defaults to 1.0 but if the layer is associated with a view,
+    /// the view sets this value to match the screen.
+    open var contentsScale: CGFloat = 1.0
 
     internal (set) public weak var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer]?
 
-    // In iOS not public API!
-    internal func insertSublayer(_ layer: CALayer, at index: Int) {
+    open func insertSublayer(_ layer: CALayer, at index: UInt32) {
         layer.removeFromSuperlayer()
         if sublayers == nil { sublayers = [] }
-        sublayers?.insert(layer, at: index) // optional in case of race conditions
+
+        let endIndex = sublayers?.endIndex ?? 0
+        sublayers?.insert(layer, at: min(Int(index), endIndex))
         layer.superlayer = self
     }
 
@@ -34,7 +40,7 @@ open class CALayer {
             preconditionFailure("self.sublayers must exist and contain sibling CALayer '\(sibling)'")
         }
 
-        insertSublayer(layer, at: insertIndex.advanced(by: 1))
+        insertSublayer(layer, at: UInt32(insertIndex.advanced(by: 1)))
     }
 
     open func insertSublayer(_ layer: CALayer, below sibling: CALayer) {
@@ -42,11 +48,11 @@ open class CALayer {
             preconditionFailure("self.sublayers must exist and contain sibling CALayer '\(sibling)'")
         }
 
-        insertSublayer(layer, at: insertIndex)
+        insertSublayer(layer, at: UInt32(insertIndex))
     }
 
     open func addSublayer(_ layer: CALayer) {
-        insertSublayer(layer, at: sublayers?.endIndex ?? 0)
+        insertSublayer(layer, at: UInt32(sublayers?.endIndex ?? 0))
     }
 
     open func removeFromSuperlayer() {
@@ -119,6 +125,7 @@ open class CALayer {
     public var shadowOffset: CGSize = .zero
     public var shadowRadius: CGFloat = 0
 
+    public var mask: CALayer?
     public var masksToBounds = false
 
     public required init() {}
@@ -138,8 +145,11 @@ open class CALayer {
         shadowOffset = layer.shadowOffset
         shadowRadius = layer.shadowRadius
         shadowOpacity = layer.shadowOpacity
-        texture = layer.texture
+        mask = layer.mask
+        contents = layer.contents // XXX: we should make a copy here
+        contentsScale = layer.contentsScale
         sublayers = layer.sublayers
+        transform = layer.transform
     }
 
     open func copy() -> Any {
@@ -162,8 +172,8 @@ open class CALayer {
 
     // TODO: remove this function after implementing CGImage to get font texture in UIImage extension for fonts
     open func convertToUIImage() -> UIImage? {
-        guard let texture = self.texture else { return nil }
-        return UIImage(texture: texture)
+        guard let contents = self.contents else { return nil }
+        return UIImage(cgImage: contents, scale: SDL.window.scale)
     }
 
     var presentation: CALayer?

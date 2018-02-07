@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/flowkey/UIKit-SDL.svg?style=svg)](https://circleci.com/gh/flowkey/UIKit-SDL)
+
 # UIKit-SDL
 API-match UIView-based hierarchies built in UIKit on Mac/Linux/Android using SDL2
 

@@ -9,11 +9,11 @@
 @testable import UIKit
 import SDL_gpu
 
-extension Texture {
+extension CGImage {
     convenience init?(size: CGSize) {
         var gpuImage = GPU_Image()
         gpuImage.w = UInt16(size.width)
         gpuImage.h = UInt16(size.height)
-        self.init(&gpuImage, scale: 1)
+        self.init(&gpuImage)
     }
 }

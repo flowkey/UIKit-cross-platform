@@ -15,7 +15,7 @@ import class Foundation.Thread
 private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
 
 final public class SDL { // Only public for rootView!
-    public private(set) static var rootView = UIWindow()
+    public internal(set) static var rootView: UIWindow!
     static var window: Window!
 
     fileprivate static var shouldQuit = false
@@ -23,41 +23,15 @@ final public class SDL { // Only public for rootView!
     public static func initialize() {
         self.shouldQuit = false
         self.firstRender = true
-        self.rootView = UIWindow()
         self.window = nil // triggers Window deinit to destroy previous Window
 
-        let windowOptions: SDLWindowFlags
-
-        #if os(Android)
-            // height/width are determined by the window when fullscreen:
-            let SCREEN_WIDTH = 0
-            let SCREEN_HEIGHT = 0
-
-            windowOptions = [SDL_WINDOW_FULLSCREEN]
-        #else
-            // This corresponds to the Samsung S7 screen at its 1080p 1.5x Retina resolution:
-            let SCREEN_WIDTH = 2560 / 3
-            let SCREEN_HEIGHT = 1440 / 3
-            windowOptions = [
-                SDL_WINDOW_ALLOW_HIGHDPI,
-                //SDL_WINDOW_FULLSCREEN
-            ]
-        #endif
-
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
-
-        let window = Window(
-            size: CGSize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT),
-            options: windowOptions
-        )
-
+        let window = Window()
         if window.size == .zero {
             preconditionFailure("You need window dimensions to run")
         }
 
-        rootView.frame.size = window.size
-
         self.window = window
+        self.rootView = UIWindow(frame: CGRect(origin: .zero, size: window.size))
         UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
     }
 
@@ -118,7 +92,7 @@ final public class SDL { // Only public for rootView!
                 SDL.rootView = UIWindow()
                 window = nil
                 unload()
-                break
+                return true
             case SDL_MOUSEBUTTONDOWN:
                 handleTouchDown(.from(e.button))
                 eventWasHandled = true
@@ -128,6 +102,10 @@ final public class SDL { // Only public for rootView!
             case SDL_MOUSEBUTTONUP:
                 handleTouchUp(.from(e.button))
                 eventWasHandled = true
+            case SDL_KEYUP:
+                if e.key.keysym.scancode.rawValue == 270 {
+                    onHardwareBackButtonPress?()
+                }
             default: break
             }
         }
@@ -135,6 +113,8 @@ final public class SDL { // Only public for rootView!
         return eventWasHandled
     }
 }
+
+public var onHardwareBackButtonPress: (() -> Void)?
 
 #if os(Android)
 import JNI

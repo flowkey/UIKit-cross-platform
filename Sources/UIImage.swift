@@ -7,31 +7,44 @@
 //
 
 import SDL
+import SDL_gpu
 import Foundation
 
 public class UIImage {
-    var texture: Texture
+    public let cgImage: CGImage
 
-    public let size: CGSize
-    public let scale: Double
+    public var size: CGSize { return cgImage.size }
+    public let scale: CGFloat
 
-    public init?(path: String) {
-        guard let texture = Texture(imagePath: path) else { return nil }
-        self.texture = texture
-        self.size = texture.size
-        scale = 2 // TODO: get from last path component
+    public init(cgImage: CGImage, scale: CGFloat) {
+        self.cgImage = cgImage
+        self.scale = scale
+    }
+
+    public convenience init?(path: String) {
+        guard let cgImage = CGImage(GPU_LoadImage(path)) else { return nil }
+
+        let pathWithoutExtension = String(path.dropLast(4))
+        let scale: CGFloat
+        if pathWithoutExtension.hasSuffix("@2x") {
+            scale = 2.0
+        } else if pathWithoutExtension.hasSuffix("@3x") {
+            scale = 3.0
+        } else {
+            scale = 1.0
+        }
+
+        self.init(cgImage: cgImage, scale: scale)
     }
 
     public convenience init?(data: Data) {
-        guard let texture = Texture(data: data, scale: 2) else {
-            return nil
+        var data = data
+        let gpuImagePtr = data.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<Int8>) -> UnsafeMutablePointer<GPU_Image>? in
+            let rw = SDL_RWFromMem(ptr, Int32(data.count))
+            return GPU_LoadImage_RW(rw, false)
         }
-        self.init(texture: texture)
-    }
 
-    init(texture: Texture) {
-        self.texture = texture
-        self.size = texture.size
-        scale = 2 // TODO: get from last path component
+        guard let cgImage = CGImage(gpuImagePtr) else { return nil }
+        self.init(cgImage: cgImage, scale: 1.0) // matches iOS
     }
 }

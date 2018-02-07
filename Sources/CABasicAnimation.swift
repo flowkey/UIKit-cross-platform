@@ -33,7 +33,7 @@ public class CABasicAnimation: CAAction {
         keyPath = animation.keyPath
         duration = animation.duration
         delay = animation.delay
-        timer = animation.timer
+        creationTime = animation.creationTime
         fillMode = animation.fillMode
         fromValue = animation.fromValue
         toValue = animation.toValue
@@ -61,5 +61,5 @@ public class CABasicAnimation: CAAction {
     public var toValue: AnimatableProperty?
 
     var animationGroup: UIViewAnimationGroup?
-    var timer = Timer()
+    var creationTime = Timer()
 }

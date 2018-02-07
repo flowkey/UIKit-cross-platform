@@ -56,7 +56,7 @@ open class UIFont: Equatable {
     /// If we ever want to change the backend, we should only have to change the FontRenderer class:
     fileprivate let renderer: FontRenderer
 
-    internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> Texture? {
+    internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
         return renderer.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.main.scale))
     }
 }
@@ -85,7 +85,7 @@ extension UIFont {
             case 0.1 ..< 0.3: return "medium"
             case 0.3 ..< 0.5: return "bold"
             case 0.5 ..< 1.0: return "black"
-            default: preconditionFailure("Invalid font weight. Value has to be between -1 and 1")
+            default: preconditionFailure("Invalid font weight. Value must be between -1 and 1")
             }
         }
     }

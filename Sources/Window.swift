@@ -16,12 +16,25 @@ internal final class Window {
 
     // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
     // The easiest solution is just to work in 1:1 pixels
-    init(size: CGSize, options: SDLWindowFlags) {
-        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
+    init() {
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
 
+    #if os(Android)
+        // height/width are determined by the window when fullscreen:
+        var size = CGSize.zero
+        let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
+    #else
+        // This corresponds to the Samsung S7 screen at its 1080p 1.5x Retina resolution:
+        var size = CGSize(width: 2560 / 3.0, height: 1440 / 3.0)
+        let options: SDLWindowFlags = [
+            SDL_WINDOW_ALLOW_HIGHDPI,
+            //SDL_WINDOW_FULLSCREEN
+        ]
+    #endif
+
+        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
         GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC)
 
-        var size = size
         if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
             // Fix fullscreen resolution on Mac and make Android easier to reason about:
             GPU_SetPreInitFlags(GPU_GetPreInitFlags() | GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)
@@ -65,35 +78,34 @@ internal final class Window {
     }
 
     /// clippingRect behaves like an offset
-    func blit(_ texture: Texture, at destination: CGPoint, opacity: Float, clippingRect: CGRect?) {
-        if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
+    func blit(_ image: CGImage, at destination: CGPoint, scaleX: Float, scaleY: Float, opacity: Float, clippingRect: CGRect?) {
+        if opacity < 1 { GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
 
+        // The only difference between these two is/should be whether we pass a clipping rect:
         if let clippingRect = clippingRect {
             var clipGPU_Rect = GPU_Rect(clippingRect)
-            GPU_Blit(
-                texture.rawPointer,
+            GPU_BlitTransform(
+                image.rawPointer,
                 &clipGPU_Rect,
-                rawPointer,
+                self.rawPointer,
                 Float(destination.x + clippingRect.origin.x),
-                Float(destination.y + clippingRect.origin.y)
+                Float(destination.y + clippingRect.origin.y),
+                0, // rotation in degrees
+                scaleX,
+                scaleY
             )
         } else {
-            GPU_Blit(texture.rawPointer, nil, rawPointer, Float(destination.x), Float(destination.y))
+            GPU_BlitTransform(
+                image.rawPointer,
+                nil,
+                self.rawPointer,
+                Float(destination.x),
+                Float(destination.y),
+                0, // rotation in degrees
+                scaleX,
+                scaleY
+            )
         }
-    }
-
-    func blitTransform(_ texture: Texture, at destination: CGPoint, opacity: Float, transform: CGAffineTransform) {
-        if opacity < 1 { GPU_SetRGBA(texture.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
-        GPU_BlitTransform(
-            texture.rawPointer,
-            nil,
-            rawPointer,
-            Float(destination.x),
-            Float(destination.y),
-            0, // rotation in degrees
-            Float(transform.m11),
-            Float(transform.m22)
-        )
     }
 
     func setShapeBlending(_ newValue: Bool) {
