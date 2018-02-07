@@ -200,6 +200,7 @@ extension SDLWindowFlags: OptionSet {}
     }
 #endif
 
+// equals GPU_BLEND_NORMAL_FACTOR_ALPHA
 extension GPU_BlendMode {
     static let uikit = GPU_BlendMode(
         source_color: GPU_FUNC_SRC_ALPHA,
