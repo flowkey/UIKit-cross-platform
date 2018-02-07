@@ -24,6 +24,7 @@ public class CGImage {
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
         GPU_SetImageFilter(rawPointer, GPU_FILTER_NEAREST)
         GPU_SetAnchor(rawPointer, 0, 0)
+        GPU_SetBlendMode(rawPointer, GPU_BLEND_NORMAL_FACTOR_ALPHA)
 
         // Post-scale size.
         // e.g. If the pixel buffer contains 100x100 pixels at scale 2.0, size will be 50x50:
