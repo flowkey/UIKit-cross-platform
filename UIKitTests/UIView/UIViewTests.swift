@@ -125,17 +125,14 @@ class UIViewTests: XCTestCase {
     }
 
     func testPreventStrongReferenceCyclesBetweenSubviews() {
-        var view: UIView? = .init()
-        var subview: UIView? = .init()
-        view?.addSubview(subview!)
-        weak var weakViewReference = view
-        weak var weakSubviewReference = subview
+        var view: UIView? = UIView()
+        view!.addSubview(UIView())
+
+        weak var subview = view?.subviews.first
+        XCTAssertNotNil(subview)
 
         view = nil
-        subview = nil
-
-        XCTAssertNil(weakViewReference)
-        XCTAssertNil(weakSubviewReference)
+        XCTAssertNil(subview)
     }
 
 }
