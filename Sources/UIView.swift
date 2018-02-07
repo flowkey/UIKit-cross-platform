@@ -98,7 +98,7 @@ open class UIView: UIResponder {
         set { layer.masksToBounds = newValue }
     }
 
-    public internal(set) var superview: UIView? {
+    public internal(set) weak var superview: UIView? {
         // willSet {
         // XXX: We should call willMoveToSuperview(newValue) here, but we haven't implemented it yet
         // }
