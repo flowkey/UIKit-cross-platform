@@ -10,7 +10,6 @@ import SDL
 import SDL_gpu
 
 internal final class Window {
-
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
     let size: CGSize
     let scale: CGFloat
@@ -65,9 +64,14 @@ internal final class Window {
         // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
         setShapeBlending(true)
 
-        let uikit = GPU_BlendMode.uikit
-        GPU_SetShapeBlendFunction(uikit.source_color, uikit.dest_color, uikit.source_alpha, uikit.dest_alpha)
-        GPU_SetShapeBlendEquation(uikit.color_equation, uikit.alpha_equation)
+        let blendMode = GPU_BlendMode.uikit
+        GPU_SetShapeBlendFunction(
+            blendMode.source_color,
+            blendMode.dest_color,
+            blendMode.source_alpha,
+            blendMode.dest_alpha
+        )
+        GPU_SetShapeBlendEquation(blendMode.color_equation, blendMode.alpha_equation)
     }
 
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
@@ -200,8 +204,8 @@ extension SDLWindowFlags: OptionSet {}
     }
 #endif
 
-// equals GPU_BLEND_NORMAL_FACTOR_ALPHA
 extension GPU_BlendMode {
+    // equals GPU_BLEND_NORMAL_FACTOR_ALPHA
     static let uikit = GPU_BlendMode(
         source_color: GPU_FUNC_SRC_ALPHA,
         dest_color: GPU_FUNC_ONE_MINUS_SRC_ALPHA,
