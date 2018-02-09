@@ -137,19 +137,19 @@ class UIViewTests: XCTestCase {
 
     func testViewTreeNeedsDisplayReturnsTrue() {
         let view = UIView()
-        let subview1 = UIView()
-        view.addSubview(subview1)
+        let subview = UIView()
+        view.addSubview(subview)
 
         view.sdlDrawAndLayoutTreeIfNeeded()
-        subview1.setNeedsDisplay()
+        subview.setNeedsDisplay()
 
         XCTAssertTrue(view.treeNeedsDisplay)
     }
 
     func testViewTreeNeedsDisplayReturnsFalse() {
         let view = UIView()
-        let subview1 = UIView()
-        view.addSubview(subview1)
+        let subview = UIView()
+        view.addSubview(subview)
 
         view.sdlDrawAndLayoutTreeIfNeeded()
 
