@@ -59,13 +59,25 @@ final public class SDL { // Only public for rootView!
         return frameTimer.elapsedTimeInMilliseconds
     }
 
+    private static func needsDisplay(view: UIView) -> Bool {
+        if view.subviews.isEmpty {
+            return view.needsDisplay
+        }
+        return view.needsDisplay || view.subviews.contains(where: { SDL.needsDisplay(view: $0) })
+    }
+
     private static func doRender(at frameTimer: Timer) {
         let eventWasHandled = handleEventsIfNeeded()
         if shouldQuit { return }
 
         if !DisplayLink.activeDisplayLinks.isEmpty {
             DisplayLink.activeDisplayLinks.forEach { $0.callback() }
-        } else if !eventWasHandled && !firstRender && !UIView.animationsArePending {
+        } else if
+            !SDL.needsDisplay(view: rootView) &&
+            !eventWasHandled &&
+            !firstRender &&
+            !UIView.animationsArePending
+        {
             // Sleep unless there are active touch inputs or pending animations
             return
         }
