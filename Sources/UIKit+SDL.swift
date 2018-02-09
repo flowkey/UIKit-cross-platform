@@ -59,13 +59,6 @@ final public class SDL { // Only public for rootView!
         return frameTimer.elapsedTimeInMilliseconds
     }
 
-    private static func needsDisplay(view: UIView) -> Bool {
-        if view.subviews.isEmpty {
-            return view.needsDisplay
-        }
-        return view.needsDisplay || view.subviews.contains(where: { SDL.needsDisplay(view: $0) })
-    }
-
     private static func doRender(at frameTimer: Timer) {
         let eventWasHandled = handleEventsIfNeeded()
         if shouldQuit { return }
@@ -73,7 +66,7 @@ final public class SDL { // Only public for rootView!
         if !DisplayLink.activeDisplayLinks.isEmpty {
             DisplayLink.activeDisplayLinks.forEach { $0.callback() }
         } else if
-            !SDL.needsDisplay(view: rootView) &&
+            !rootView.treeNeedsDisplay &&
             !eventWasHandled &&
             !firstRender &&
             !UIView.animationsArePending
@@ -147,3 +140,11 @@ public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaOb
 }
 #endif
 
+extension UIView {
+    var treeNeedsDisplay: Bool {
+        if subviews.isEmpty {
+            return needsDisplay
+        }
+        return needsDisplay || subviews.contains(where: { $0.treeNeedsDisplay })
+    }
+}
