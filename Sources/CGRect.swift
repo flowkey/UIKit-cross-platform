@@ -105,15 +105,39 @@ extension CGRect {
     }
 
     public func applying(_ t: CGAffineTransform) -> CGRect {
-        // Note we don't yet apply rotation here!
-        // iOS returns the smallest bounding box around the resulting 4 points.
-        // By comparison, we only apply scale and transform for now!!
+        if t.isIdentity { return self }
 
+        let oldPoints: [CGPoint] = [
+            CGPoint(x: self.minX, y: self.minY), // top left
+            CGPoint(x: self.maxX, y: self.minY), // top right
+            CGPoint(x: self.minX, y: self.maxY), // bottom left
+            CGPoint(x: self.maxX, y: self.maxY)  // bottom right
+        ]
+
+        let newPoints = oldPoints.map { oldPoint in
+            CGPoint(
+                x: oldPoint.x * t.m11 + oldPoint.y * t.m21 + t.tX,
+                y: oldPoint.x * t.m12 + oldPoint.y * t.m22 + t.tY
+            )
+        }
+
+        // TODO: Put all of this "inline" to avoid the overhead of multiple arrays and loops
+        let result = newPoints.reduce((minX: CGFloat.greatestFiniteMagnitude, minY: CGFloat.greatestFiniteMagnitude, maxX: -CGFloat.greatestFiniteMagnitude, maxY: -CGFloat.greatestFiniteMagnitude)) { result, point in
+            return (
+                minX: min(result.minX, point.x),
+                minY: min(result.minY, point.y),
+                maxX: max(result.maxX, point.x),
+                maxY: max(result.maxY, point.y)
+            )
+        }
+
+        // XXX: What happens if the point that was furthest left is now on the right (because of a rotation)?
+        // i.e. Should do we return a normalised rect or one with a negative width?
         return CGRect(
-            x: origin.x + t.tX,
-            y: origin.y + t.tY,
-            width: size.width * t.m11,
-            height: size.height * t.m22
+            x: result.minX,
+            y: result.minY,
+            width: result.maxX - result.minX,
+            height: result.maxY - result.minY
         )
     }
 }
@@ -124,6 +148,12 @@ extension GPU_Rect {
         self.h = Float(cgRect.size.height)
         self.x = Float(cgRect.origin.x)
         self.y = Float(cgRect.origin.y)
+    }
+}
+
+extension CGRect: CustomStringConvertible {
+    public var description: String {
+        return "(\(origin.x), \(origin.y), \(width), \(height))"
     }
 }
 

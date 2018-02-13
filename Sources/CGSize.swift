@@ -33,6 +33,12 @@ extension CGSize {
     }
 }
 
+extension CGSize: CustomStringConvertible {
+    public var description: String {
+        return "(\(width), \(height))"
+    }
+}
+
 extension CGSize: Equatable {
     public static func == (lhs: CGSize, rhs: CGSize) -> Bool {
         return lhs.width == rhs.width && lhs.height == rhs.height

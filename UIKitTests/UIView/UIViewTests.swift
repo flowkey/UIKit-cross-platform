@@ -67,6 +67,7 @@ class UIViewTests: XCTestCase {
     func testAbsoluteOrigin() {
         let rootView = UIView()
         rootView.bounds = CGRect(x: 15, y: -5, width: 100, height: 100)
+        rootView.frame.origin = .zero // without this frame will be different according to its position
 
         let subview1 = UIView()
         subview1.frame = CGRect(x: 20, y: 10, width: 10, height: 10)

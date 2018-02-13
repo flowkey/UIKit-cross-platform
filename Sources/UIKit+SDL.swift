@@ -112,17 +112,35 @@ final public class SDL { // Only public for rootView!
                         SDL.onPressPlus?()
                     case 45: // minus/dash key
                         SDL.onPressMinus?()
+                    case 118: // "V"
+                        SDL.rootView.printViewHierarchy()
                     default:
+                        print(e.key.keysym.sym)
                         break
                     }
+                }
                 if e.key.keysym.scancode.rawValue == 270 {
                     onHardwareBackButtonPress?()
                 }
-            default: break
+            default:
+                break
             }
         }
 
         return eventWasHandled
+    }
+}
+
+extension UIView {
+    func printViewHierarchy(depth: Int = 0) {
+        if self.isHidden || self.alpha < 0.01 { return }
+        let indentation = (0 ..< depth).reduce("") { result, _ in result + "  " }
+        print(indentation + "💩 " + self.description.replacingOccurrences(of: "\n", with: "\n" + indentation))
+
+        let newDepth = depth + 1
+        for subview in subviews {
+            subview.printViewHierarchy(depth: newDepth)
+        }
     }
 }
 

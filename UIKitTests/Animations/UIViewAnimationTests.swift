@@ -31,14 +31,14 @@ class UIViewAnimationTests: XCTestCase {
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
 
-        if let presentation = view.layer.presentation {
-            XCTAssertEqual(
-                presentation.frame.rounded(accuracy: 0.01),
-                CGRect(x: 15, y: 15, width: 15, height: 15)
-            )
-        } else {
-            XCTFail("presentation must be defined")
+        guard let presentation = view.layer.presentation else {
+            return XCTFail("presentation must be defined")
         }
+
+        XCTAssertEqual(
+            presentation.frame.rounded(accuracy: 0.01),
+            CGRect(x: 15, y: 15, width: 15, height: 15)
+        )
     }
 
     func testCanAnimateOpacity() {

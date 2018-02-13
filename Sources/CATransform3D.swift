@@ -54,6 +54,12 @@ public struct CATransform3D {
     public var m42: Float { return storage.m42 }
     public var m43: Float { return storage.m43 }
     public var m44: Float { return storage.m44 }
+
+    mutating func withUnsafeMutablePointer(_ closure: ((UnsafeMutablePointer<Float>) -> Void)) -> Void {
+        Swift.withUnsafeMutablePointer(to: &self.storage) { pointerToTuple in
+            pointerToTuple.withMemoryRebound(to: Float.self, capacity: 16, closure)
+        }
+    }
 }
 
 extension CATransform3D {
@@ -83,9 +89,20 @@ public func CATransform3DEqualToTransform(_ a: CATransform3D, _ b: CATransform3D
         a.m41 == b.m41 && a.m42 == b.m42 && a.m43 == b.m43 && a.m44 == b.m44
 }
 
-extension CATransform3D {
+extension CATransform3D: Equatable {
     public static func == (_ lhs: CATransform3D, _ rhs: CATransform3D) -> Bool {
         return CATransform3DEqualToTransform(lhs, rhs)
+    }
+}
+
+extension CATransform3D: CustomStringConvertible {
+    public var description: String {
+        return """
+        \(m11)\t\t\(m12)\t\t\(m13)\t\t\(m14)
+        \(m21)\t\t\(m22)\t\t\(m23)\t\t\(m24)
+        \(m31)\t\t\(m32)\t\t\(m33)\t\t\(m34)
+        \(m41)\t\t\(m42)\t\t\(m43)\t\t\(m44)
+        """
     }
 }
 

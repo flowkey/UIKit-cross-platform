@@ -68,34 +68,59 @@ open class CALayer {
 
     public var backgroundColor: CGColor?
 
-    public var position: CGPoint {
-        // Note: this should be based on the CALayer's anchor point: (midX, midY) is just the default (0.5, 0.5) point:
-        get { return CGPoint(x: frame.midX, y: frame.midY) }
-        set { frame.midX = newValue.x; frame.midY = newValue.y }
+    open var position: CGPoint = .zero
+
+    /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc YET)
+    open var frame: CGRect {
+        get {
+            // Create a rectangle based on `bounds.size` * `transform` at `position` offset by `anchorPoint`
+
+            // These dimensions are in the superview's coordinates, like `frame` itself:
+            let transformedBounds = bounds.applying(self.affineTransform())
+
+            let anchorPointOffset = CGPoint(
+                x: transformedBounds.width * anchorPoint.x,
+                y: transformedBounds.height * anchorPoint.y
+            )
+
+            return CGRect(
+                x: position.x - anchorPointOffset.x,
+                y: position.y - anchorPointOffset.y,
+                width: transformedBounds.width,
+                height: transformedBounds.height
+            )
+        }
+        set {
+            guard let inverseTransform = affineTransform().inverted() else {
+                assertionFailure("You tried to set the frame of a CALayer whose transform cannot be inverted. This is undefined behaviour.")
+                return
+            }
+
+            let nonTransformedFrame = newValue.applying(inverseTransform)
+
+            // If we are shrinking the view with a transform and then setting a
+            // new frame, the layer's actual `bounds` is bigger (and vice-versa):
+            let scaledWidth = nonTransformedFrame.width
+            let scaledHeight = nonTransformedFrame.height
+
+            bounds.size = CGSize(width: scaledWidth, height: scaledHeight)
+
+
+            // Position is unscaled, because `position` is in the superview's coordinate
+            // system and so can be set regardless of the current transform.
+            position = CGPoint(
+                x: newValue.origin.x + (newValue.width * anchorPoint.x),
+                y: newValue.origin.y + (newValue.height * anchorPoint.y)
+            )
+        }
     }
 
-    /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc)
-    open var frame: CGRect = .zero {
-        willSet (newFrame) {
-            guard newFrame != frame else { return }
-            onWillSet(keyPath: .frame)
-        }
-        didSet {
-            if bounds.size != frame.size {
-                bounds.size = frame.size
-            }
-        }
-    }
+    open var anchorPoint = CGPoint.defaultAnchorPoint
 
     open var bounds: CGRect = .zero {
         willSet(newBounds) {
             guard newBounds != bounds else { return }
             onWillSet(keyPath: .bounds)
-        }
-        didSet {
-            if frame.size != bounds.size {
-                frame.size = bounds.size
-            }
         }
     }
 
@@ -108,9 +133,13 @@ open class CALayer {
 
     public var transform: CATransform3D = CATransform3DIdentity {
         willSet(newTransform) {
-            guard !CATransform3DEqualToTransform(newTransform, transform) else { return }
+            if newTransform == transform { return }
             onWillSet(keyPath: .transform)
         }
+    }
+
+    final public func setAffineTransform(_ t: CGAffineTransform) {
+        self.transform = CATransform3DMakeAffineTransform(t)
     }
 
     final public func affineTransform() -> CGAffineTransform {
@@ -136,8 +165,10 @@ open class CALayer {
 
     public required init(layer: Any) {
         guard let layer = layer as? CALayer else { fatalError() }
-        frame = layer.frame
         bounds = layer.bounds
+        transform = layer.transform
+        position = layer.position
+        anchorPoint = layer.anchorPoint
         opacity = layer.opacity
         backgroundColor = layer.backgroundColor
         isHidden = layer.isHidden
@@ -152,6 +183,7 @@ open class CALayer {
         mask = layer.mask
         contents = layer.contents // XXX: we should make a copy here
         contentsScale = layer.contentsScale
+        superlayer = layer.superlayer
         sublayers = layer.sublayers
     }
 
@@ -176,7 +208,7 @@ open class CALayer {
     // TODO: remove this function after implementing CGImage to get font texture in UIImage extension for fonts
     open func convertToUIImage() -> UIImage? {
         guard let contents = self.contents else { return nil }
-        return UIImage(cgImage: contents, scale: SDL.window.scale)
+        return UIImage(cgImage: contents, scale: contentsScale)
     }
 
     var presentation: CALayer?
@@ -187,13 +219,29 @@ open class CALayer {
     }
 }
 
+extension CGPoint {
+    static let defaultAnchorPoint = CGPoint(x: 0.5, y: 0.5)
+}
+
+extension CALayer: CustomStringConvertible {
+    public var description: String {
+        let anchorPointDescription = (anchorPoint != .defaultAnchorPoint) ? "\n- anchorPoint: \(anchorPoint)" : ""
+        let colourDescription = (backgroundColor != nil) ? "\n- backgroundColor: \(backgroundColor!)" : ""
+        return """
+            \(type(of: self))
+                - frame: \(frame),
+                - bounds: \(bounds),
+                - position: \(position)\(anchorPointDescription)\(colourDescription)
+            """
+    }
+}
+
 extension CALayer: Hashable {
     public var hashValue: Int {
         return ObjectIdentifier(self).hashValue
     }
 
     public static func == (lhs: CALayer, rhs: CALayer) -> Bool {
-        return lhs.hashValue == rhs.hashValue
+        return lhs === rhs
     }
 }
-

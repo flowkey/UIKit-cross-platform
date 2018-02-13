@@ -14,22 +14,26 @@ extension CALayer {
         let opacity = parentOpacity * self.opacity
         if isHidden || opacity < 0.01 { return }
 
-        if !CATransform3DEqualToTransform(transform, CATransform3DIdentity) {
-            withUnsafeMutablePointer(to: &transform.storage) { pointerToTuple in
-                pointerToTuple.withMemoryRebound(to: Float.self, capacity: 16) { pointerToFirstTransformFloat in
-                    GPU_MultMatrix(pointerToFirstTransformFloat)
-                }
-            }
-        }
+        // Make translate matrix, multiply by current matrix
 
-        let absoluteFrame = frame.offsetBy(parentAbsoluteOrigin)
-        
+        // XXXXXX `frame` already includes current transform, maybe we actually need bounds, position, anchorPoint?
+//        let parentBoundsOrigin = superlayer?.bounds.origin ?? .zero
+//        let offset = frame.offsetBy(-parentBoundsOrigin)
+
+
+        // multiply that result by layer's transform
+        // check that at least one of the points fall within UIScreen.main.bounds
+
+        // absoluteFrame is then bounds, because of the transform that has been applied!!
+
+        let absoluteFrame = frame.offsetBy(parentAbsoluteOrigin) // frame already includes transform
+
         // Big performance optimization. Don't render anything that's entirely offscreen:
         guard absoluteFrame.intersects(SDL.rootView.bounds) else { return }
 
         if let mask = mask, let maskContents = mask.contents {
-            ShaderProgram.mask.activate()
-            ShaderProgram.mask.set(maskImage: maskContents, frame: absoluteFrame) // must be set after activation
+            ShaderProgram.mask.activate() // must activate before setting parameters (below)!
+            ShaderProgram.mask.set(maskImage: maskContents, frame: absoluteFrame)
         }
 
         if let backgroundColor = backgroundColor {
@@ -63,6 +67,10 @@ extension CALayer {
             }
         }
 
+        if transform != CATransform3DIdentity {
+            transform.withUnsafeMutablePointer(GPU_MultMatrix)
+        }
+
         if let contents = contents {
             SDL.window.blit(
                 contents,
@@ -86,10 +94,8 @@ extension CALayer {
                 parentOpacity: opacity
             )
 
-            withUnsafeMutablePointer(to: &currentTransform.storage) { pointerToTuple in
-                pointerToTuple.withMemoryRebound(to: Float.self, capacity: 16) { pointerToFirstTransformFloat in
-                    GPU_MatrixCopy(GPU_GetCurrentMatrix(), pointerToFirstTransformFloat)
-                }
+            currentTransform.withUnsafeMutablePointer { currentTransformPointer in
+                GPU_MatrixCopy(GPU_GetCurrentMatrix(), currentTransformPointer)
             }
         }
     }

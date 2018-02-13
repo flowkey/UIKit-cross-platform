@@ -36,8 +36,7 @@ open class UIView: UIResponder {
     open var transform: CGAffineTransform {
         get { return CATransform3DGetAffineTransform(layer.transform) }
         set {
-            layer.transform = CATransform3DMakeAffineTransform(newValue)
-            frame = frame.applying(newValue)
+            layer.setAffineTransform(newValue)
             setNeedsLayout()
         }
     }
@@ -304,6 +303,16 @@ open class UIView: UIResponder {
     open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {}
     open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {}
     open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {}
+}
+
+extension UIView: CustomStringConvertible {
+    public var description: String {
+        return """
+            \(type(of: self))
+            - transform: \(transform.description)
+            - layer: \(layer.description)
+            """
+    }
 }
 
 

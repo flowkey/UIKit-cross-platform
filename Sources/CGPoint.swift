@@ -26,6 +26,12 @@ public struct CGPoint {
     }
 }
 
+extension CGPoint: CustomStringConvertible {
+    public var description: String {
+        return "(\(x), \(y))"
+    }
+}
+
 extension CGPoint {
     internal func offsetBy(_ other: CGPoint) -> CGPoint {
         return CGPoint(x: self.x + other.x, y: self.y + other.y)
