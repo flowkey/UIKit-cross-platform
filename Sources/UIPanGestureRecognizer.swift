@@ -142,11 +142,3 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         recentVelocities = [CGPoint](repeating: .zero, count: recentVelocityCount)
     }
 }
-
-typealias Vector2 = CGPoint
-
-private extension Vector2 {
-    var normLength: CGFloat {
-        return sqrt(pow(self.x, 2) + pow(self.y, 2))
-    }
-}
