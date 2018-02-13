@@ -113,7 +113,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             state = .changed
         }
 
-        trackVelocity(in: nil)
+        trackVelocity(in: self.view)
 
         if state == .changed {
             onAction?()
