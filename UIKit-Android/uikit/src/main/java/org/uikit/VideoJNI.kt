@@ -1,7 +1,6 @@
 package org.uikit
 
 import android.net.Uri
-import android.util.Log
 import android.widget.RelativeLayout
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -21,7 +20,7 @@ import org.libsdl.app.SDLActivity
 class VideoJNI(parent: SDLActivity, url: String) {
     private val videoPlayer: SimpleExoPlayer
     private var videoPlayerLayout: SimpleExoPlayerView
-    private var listener: Player.EventListener? = null
+    private var listener: Player.EventListener
 
     external fun nativeOnVideoEnded() // calls onVideoEnded function in Swift
 
@@ -110,8 +109,6 @@ class VideoJNI(parent: SDLActivity, url: String) {
 
     fun cleanup() {
         videoPlayer.removeListener(listener)
-        listener = null
-
         videoPlayer.release()
     }
 }
