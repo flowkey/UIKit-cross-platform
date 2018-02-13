@@ -48,7 +48,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     open func velocity(in view: UIView?) -> CGPoint {
         guard 
             let lastVelocity = recentVelocities.last,
-            lastVelocity.absoluteValue > velocityThreshold
+            lastVelocity.normLength > velocityThreshold
         else { return .zero }
 
         return recentVelocities.mean()
@@ -143,8 +143,10 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     }
 }
 
-private extension CGPoint {
-    var absoluteValue: CGFloat {
+typealias Vector2 = CGPoint
+
+private extension Vector2 {
+    var normLength: CGFloat {
         return sqrt(pow(self.x, 2) + pow(self.y, 2))
     }
 }
