@@ -20,6 +20,7 @@ import org.libsdl.app.SDLActivity
 class VideoJNI(parent: SDLActivity, url: String) {
     private val videoPlayer: SimpleExoPlayer
     private var videoPlayerLayout: SimpleExoPlayerView
+    private var listener: Player.EventListener
 
     external fun nativeOnVideoEnded() // calls onVideoEnded function in Swift
 
@@ -45,7 +46,8 @@ class VideoJNI(parent: SDLActivity, url: String) {
         val videoSource = ExtractorMediaSource(regularVideoSourceUri, dataSourceFactory, extractorsFactory, null, null)
         videoPlayer.prepare(videoSource)
 
-        videoPlayer.addListener(object: Player.EventListener {
+
+        listener = object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 if (!playWhenReady && playbackState == Player.STATE_ENDED) {
                     nativeOnVideoEnded()
@@ -60,7 +62,9 @@ class VideoJNI(parent: SDLActivity, url: String) {
             override fun onRepeatModeChanged(repeatMode: Int) {}
             override fun onTimelineChanged(timeline: Timeline?, manifest: Any?) {}
             override fun onPlayerError(error: ExoPlaybackException?) {}
-        })
+        }
+
+        videoPlayer.addListener(listener)
 
         videoPlayerLayout = SimpleExoPlayerView(context)
         videoPlayerLayout.player = videoPlayer
@@ -104,6 +108,7 @@ class VideoJNI(parent: SDLActivity, url: String) {
     }
 
     fun cleanup() {
+        videoPlayer.removeListener(listener)
         videoPlayer.release()
     }
 }

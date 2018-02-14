@@ -11,6 +11,7 @@ import SDL_gpu
 import CoreFoundation
 import struct Foundation.Date
 import class Foundation.Thread
+import JNI
 
 private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
 
@@ -92,6 +93,9 @@ final public class SDL { // Only public for rootView!
                 SDL.rootView = UIWindow()
                 window = nil
                 unload()
+                #if os(Android)
+                try? jni.call("removeCallbacks", on: getSDLView())
+                #endif
                 return true
             case SDL_MOUSEBUTTONDOWN:
                 handleTouchDown(.from(e.button))
@@ -117,8 +121,6 @@ final public class SDL { // Only public for rootView!
 public var onHardwareBackButtonPress: (() -> Void)?
 
 #if os(Android)
-import JNI
-
 @_silgen_name("Java_org_libsdl_app_SDLActivity_render")
 public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
     let renderAndRunLoopTimer = Timer()
