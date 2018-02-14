@@ -37,9 +37,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private var mIsPaused = false
     private var mIsSurfaceReady = false
     private var mHasFocus = false
+    private var mHandler: Handler? = null
+    private var mRunnable: Runnable? = null
 
     // Main components
-    private var mSurface: SurfaceView? = null
+    private var mSurface: SurfaceView
 
     // Handler for the messages
     private val commandHandler by lazy { SDLCommandHandler(this.context) }
@@ -62,25 +64,34 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         System.loadLibrary("SDL2")
 
         // Set up the surface
-        val surface = SurfaceView(context)
+        mSurface = SurfaceView(context)
 
         // Enables the alpha value for colors on the SDLSurface
         // which makes the VideoJNI SurfaceView behind it visible
-        surface.holder.setFormat(PixelFormat.RGBA_8888)
-        surface.isFocusable = true
-        surface.isFocusableInTouchMode = true
-        surface.requestFocus()
-        surface.holder.addCallback(this)
-        surface.setOnKeyListener(this)
-        surface.setOnTouchListener(this)
-        mSurface = surface
+        mSurface.holder?.setFormat(PixelFormat.RGBA_8888)
+        mSurface.isFocusable = true
+        mSurface.isFocusableInTouchMode = true
+        mSurface.requestFocus()
 
-        this.addView(surface)
+        mSurface.holder?.addCallback(this)
+        mSurface.setOnTouchListener(this)
+
+        this.addView(mSurface)
+    }
+
+    @Suppress("unused") // accessed via JNI
+    fun removeCallbacks() {
+        mSurface.setOnTouchListener(null)
+        mSurface.holder?.removeCallback(this)
+        nativeSurface.release()
+
+        mHandler?.removeCallbacks(mRunnable)
+        mHandler = null
+        mRunnable = null
     }
 
     @Suppress("unused") // accessed via JNI
     private fun getDeviceDensity(): Float = context.resources.displayMetrics.density
-
 
     // Events
 
@@ -415,12 +426,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
             this.nativeInit()
             enableSensor(Sensor.TYPE_ACCELEROMETER, true)
 
-            val handler = Handler(Looper.getMainLooper())
-            var runnable: Runnable? = null
+            mHandler = Handler(Looper.getMainLooper())
 
             val maxFrameTime = 1000.0 / 60.0
 
-            runnable = Runnable {
+            mRunnable = Runnable {
                 val timeTaken = this.render()
                 if (timeTaken == -1) {
                     // SDL_Quit was called
@@ -430,10 +440,9 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
                 }
 
                 val timeUntilNextFrame = (maxFrameTime - timeTaken).toLong()
-                handler.postDelayed(runnable, timeUntilNextFrame)
+                mHandler?.postDelayed(mRunnable, timeUntilNextFrame)
             }
-
-            handler.post(runnable)
+            mHandler?.post(mRunnable)
         }
 
         if (mHasFocus) {
@@ -445,7 +454,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         Log.v("SDL", "surfaceDestroyed()")
         // Call this *before* setting mIsSurfaceReady to 'false'
-//        handlePause()
+        //handlePause()
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
 
