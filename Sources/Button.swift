@@ -92,12 +92,12 @@ open class Button: UIControl {
         addSubview(imageView)
         self.imageView = imageView
 
-        tapGestureRecognizer.onTouchesBegan = {
-            self.isHighlighted = true
+        tapGestureRecognizer.onTouchesBegan = { [weak self] in
+            self?.isHighlighted = true
         }
         
-        tapGestureRecognizer.onTouchesEnded = {
-            self.isHighlighted = false
+        tapGestureRecognizer.onTouchesEnded = { [weak self] in
+            self?.isHighlighted = false
         }
 
         tapGestureRecognizer.view = self
