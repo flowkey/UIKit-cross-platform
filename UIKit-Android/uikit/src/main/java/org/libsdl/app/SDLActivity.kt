@@ -319,7 +319,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     /** Called by SDL using JNI. */
     @Suppress("unused")
-    private val nativeSurface: Surface get() = this.mSurface!!.holder.surface
+    private val nativeSurface: Surface get() = this.mSurface.holder.surface
 
 
     // Input
@@ -347,12 +347,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private var isRunning = false
 
     private fun handleSurfaceResume() {
-        val surface = mSurface ?: return
-        surface.isFocusable = true
-        surface.isFocusableInTouchMode = true
-        surface.requestFocus()
-        surface.setOnKeyListener(this)
-        surface.setOnTouchListener(this)
+        mSurface.isFocusable = true
+        mSurface.isFocusableInTouchMode = true
+        mSurface.requestFocus()
+        mSurface.setOnKeyListener(this)
+        mSurface.setOnTouchListener(this)
         enableSensor(Sensor.TYPE_ACCELEROMETER, true)
     }
 
