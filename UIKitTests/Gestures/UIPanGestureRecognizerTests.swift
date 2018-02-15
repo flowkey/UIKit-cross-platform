@@ -89,25 +89,15 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let timeInterval = 1.0
 
         let recognizer = UIPanGestureRecognizer()
-        let velocityExp = expectation(description: "velocity is as expected")
-
         let touch = UITouch(at: .zero, touchId: 0)
         recognizer.touchesBegan([touch], with: UIEvent())
 
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + timeInterval) {
-            touch.updateAbsoluteLocation(CGPoint(x: touchPositionDiff, y: 0))
-            recognizer.touchesMoved([touch], with: UIEvent())
-            let velocityX = recognizer.velocity(in: self.mockView).x
-            let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
+        touch.updateAbsoluteLocation(CGPoint(x: touchPositionDiff, y: 0))
+        recognizer.touchesMoved([touch], with: UIEvent())
 
-            // we can not predict the exact velocity since we use DispatchTime.now
-            // because of this we allow some deviation of a few percent
-            if velocityX.isEqual(to: expectedVelocityX, percentalAccuracy: 5.0) {
-                velocityExp.fulfill()
-            }
-        }
-
-        wait(for: [velocityExp], timeout: 1.1)
+        let velocityX = recognizer.velocity(in: self.mockView, for: timeInterval).x
+        let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
+        XCTAssertEqual(velocityX, expectedVelocityX, accuracy: 0.001)
     }
 
     func testTouchesMovedUpdatesTranslation() {
