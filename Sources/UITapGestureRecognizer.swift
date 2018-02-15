@@ -7,10 +7,12 @@
 //
 
 open class UITapGestureRecognizer: UIGestureRecognizer {
-    public typealias OnPressCallback = (() -> Void)
-    var onPress: OnPressCallback?
 
-    public init(onPress: OnPressCallback? = nil) {
+    var onTouchesBegan: (() -> Void)?
+    var onTouchesEnded: (() -> Void)?
+    var onPress: (() -> Void)?
+
+    public init(onPress: (() -> Void)? = nil) {
         self.onPress = onPress
     }
 
@@ -18,6 +20,7 @@ open class UITapGestureRecognizer: UIGestureRecognizer {
         super.touchesBegan(touches, with: event)
         trackedTouch = touches.first
         self.state = .began
+        onTouchesBegan?()
     }
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -31,5 +34,6 @@ open class UITapGestureRecognizer: UIGestureRecognizer {
                 self.state = .failed
             }
         }
+        onTouchesEnded?()
     }
 }

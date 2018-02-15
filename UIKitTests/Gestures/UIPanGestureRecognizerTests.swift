@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import UIKit
+import Foundation
 
 fileprivate class TestPanGestureRecognizer: UIPanGestureRecognizer {
     let stateCancelledExpectation: XCTestExpectation?
@@ -80,30 +81,37 @@ class UIPanGestureRecognizerTests: XCTestCase {
         XCTAssert(pgr.state == .possible)
     }
 
-    func testVelocity() {
-        let touchPositionDiff: CGFloat = 50
-        let timeInterval = 1.0
+    func testVelocityTracker() {
+        // test data
+        let timestampsAndTranslations = Array(zip( // Array so we can .count
+            [TimeInterval(100), TimeInterval(100), TimeInterval(100)],
+            [CGPoint(x: 100, y: 100), CGPoint(x:100, y:100), CGPoint(x: 100, y: 100)]
+        ))
 
-        let pgr = UIPanGestureRecognizer()
-        let velocityExp = expectation(description: "velocity is as expected")
-
-        let touch = UITouch(at: .zero, touchId: 0)
-        pgr.touchesBegan([touch], with: UIEvent())
-
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + timeInterval) {
-            touch.updateAbsoluteLocation(CGPoint(x: touchPositionDiff, y: 0))
-            pgr.touchesMoved([touch], with: UIEvent())
-            let velocityX = pgr.velocity(in: self.mockView).x
-            let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
-
-            // we can not predict the exact velocity since we use DispatchTime.now
-            // because of this we allow some deviation of a few percent
-            if velocityX.isEqual(to: expectedVelocityX, percentalAccuracy: 5.0) {
-                velocityExp.fulfill()
-            }
+        // create velocity tracker and track test data
+        let velocityTracker = VelocityTracker(bufferSize: timestampsAndTranslations.count)
+        timestampsAndTranslations.forEach {
+            velocityTracker.track(timeInterval: $0, translation: $1)
         }
 
-        wait(for: [velocityExp], timeout: 1.1)
+        // calculate expected velocity from test data by summing single velocities and calculate mean velocity
+        let summedVelocity = timestampsAndTranslations.reduce(CGPoint.zero, { prev, tuple in
+            let (timeInterval, translation) = tuple
+            guard timeInterval != 0 else {
+                return .zero
+            }
+            let singleVelocity = CGPoint(
+                x: translation.x / CGFloat(timeInterval),
+                y: translation.y / CGFloat(timeInterval)
+            )
+            return CGPoint(x: prev.x + singleVelocity.x, y: prev.y + singleVelocity.y)
+        })
+        let expectedMeanVelocity = CGPoint(
+            x: summedVelocity.x / CGFloat(timestampsAndTranslations.count),
+            y: summedVelocity.y / CGFloat(timestampsAndTranslations.count)
+        )
+
+        XCTAssertEqual(expectedMeanVelocity, velocityTracker.mean)
     }
 
     func testSetTranslation() {

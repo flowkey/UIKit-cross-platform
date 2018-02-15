@@ -79,7 +79,7 @@ internal final class Window {
 
     /// clippingRect behaves like an offset
     func blit(_ image: CGImage, at destination: CGPoint, scaleX: Float, scaleY: Float, opacity: Float, clippingRect: CGRect?) {
-        if opacity < 1 { GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
+        GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8())
 
         // The only difference between these two is/should be whether we pass a clipping rect:
         if let clippingRect = clippingRect {
