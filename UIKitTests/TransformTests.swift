@@ -69,4 +69,51 @@ class TransformTests: XCTestCase {
 
         XCTAssertEqual(transformFromBuffer, uikitTranslation)
     }
+
+    func testConcatIsEqualToGPUMatrixMultiply() {
+        let translation: (x: Float, y: Float, z: Float) = (34, 56, 12)
+        let scaleFactor: Float = 2.0
+        var buffer = [Float](repeating: 0.0, count: 16)
+        GPU_MatrixIdentity(&buffer)
+        GPU_MatrixTranslate(&buffer, translation.x, translation.y, translation.z)
+        GPU_MatrixScale(&buffer, scaleFactor, scaleFactor, scaleFactor)
+
+        let uikitMatrix = UIKit.CATransform3DIdentity
+            .concat(CATransform3DMakeTranslation(CGFloat(translation.x), CGFloat(translation.y), CGFloat(translation.z)))
+            .concat(CATransform3DMakeScale(CGFloat(scaleFactor), CGFloat(scaleFactor), CGFloat(scaleFactor)))
+
+        let transformFromBuffer = CATransform3D(unsafePointer: buffer)
+        XCTAssertEqual(transformFromBuffer, uikitMatrix)
+    }
+
+    func testSDLGpuMatrixPerformance() {
+        var matrixA = [Float](repeating: 0.0, count: 16)
+        GPU_MatrixTranslate(&matrixA, 20, 20, 20)
+        GPU_MatrixScale(&matrixA, 20, 20, 20)
+
+        var matrixB = [Float](repeating: 0.0, count: 16)
+        GPU_MatrixScale(&matrixB, 20, 20, 20)
+        GPU_MatrixTranslate(&matrixB, 20, 20, 20)
+
+        var result = [Float](repeating: 0.0, count: 16)
+        measure {
+            for _ in 0 ..< 1000 {
+                GPU_Multiply4x4(&result, &matrixA, &matrixB)
+            }
+        }
+    }
+
+    func testUIKitGPUMatrixPerformance() {
+        let translation = UIKit.CATransform3DMakeTranslation(20, 20, 20)
+        let scale = UIKit.CATransform3DMakeScale(20, 20, 20)
+
+        let matrixA = translation.concat(scale)
+        let matrixB = scale.concat(translation)
+
+        measure {
+            for _ in 0 ..< 1000 {
+                _ = matrixA.concat(matrixB)
+            }
+        }
+    }
 }

@@ -142,6 +142,38 @@ extension CGRect {
     }
 }
 
+extension CGRect {
+    // This doesn't exist in iOS but it's useful for debugging our rendering
+    internal func applying(_ t: CATransform3D) -> CGRect {
+        if t == CATransform3DIdentity { return self }
+
+        var topLeft = [Float(self.minX), Float(self.minY), 0]
+        var topRight = [Float(self.maxX), Float(self.minY), 0]
+        var bottomLeft = [Float(self.minX), Float(self.maxY), 0]
+        var bottomRight = [Float(self.maxX), Float(self.maxY), 0]
+
+        t.asNonMutatingPointer { transform in
+            GPU_VectorApplyMatrix(&topLeft, transform)
+            GPU_VectorApplyMatrix(&topRight, transform)
+            GPU_VectorApplyMatrix(&bottomLeft, transform)
+            GPU_VectorApplyMatrix(&bottomRight, transform)
+        }
+
+        let newMinX = min(topLeft[0], topRight[0], bottomLeft[0], bottomRight[0])
+        let newMinY = min(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1])
+
+        let newMaxX = max(topLeft[0], topRight[0], bottomLeft[0], bottomRight[0])
+        let newMaxY = max(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1])
+
+        return CGRect(
+            x: CGFloat(newMinX),
+            y: CGFloat(newMinY),
+            width: CGFloat(newMaxX - newMinX),
+            height: CGFloat(newMaxY - newMinY)
+        )
+    }
+}
+
 extension GPU_Rect {
     init(_ cgRect: CGRect) {
         self.w = Float(cgRect.size.width)

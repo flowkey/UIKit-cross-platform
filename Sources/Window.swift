@@ -10,6 +10,8 @@ import SDL
 import SDL_gpu
 
 internal final class Window {
+    var printThisLoop = false // XXX: REMOVE ME!!
+
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
     let size: CGSize
     let scale: CGFloat
@@ -79,7 +81,7 @@ internal final class Window {
 
     /// clippingRect behaves like an offset
     func blit(_ image: CGImage, at destination: CGPoint, scaleX: Float, scaleY: Float, opacity: Float, clippingRect: CGRect?) {
-        if opacity < 1 { GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8()) }
+        GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8())
 
         // The only difference between these two is/should be whether we pass a clipping rect:
         if let clippingRect = clippingRect {
@@ -120,6 +122,12 @@ internal final class Window {
         GPU_Clear(rawPointer)
     }
 
+    var clippingRect: CGRect = .zero {
+        didSet {
+            GPU_SetClipRect(rawPointer, GPU_Rect(clippingRect))
+        }
+    }
+
     func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
         if cornerRadius >= 1 {
             GPU_RectangleRoundFilled(rawPointer, GPU_Rect(rect), cornerRadius: Float(cornerRadius), color: color.sdlColor)
@@ -144,6 +152,12 @@ internal final class Window {
 
     func flip() {
         GPU_Flip(rawPointer)
+        printThisLoop = false
+    }
+
+    var isCameraEnabled: Bool {
+        get { return GPU_IsCameraEnabled(rawPointer) }
+        set { GPU_EnableCamera(rawPointer, newValue) }
     }
 
     deinit {

@@ -76,6 +76,8 @@
 		5CB6E1B72031D801001FEAC9 /* CGRect+TransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB6E1B52031D801001FEAC9 /* CGRect+TransformTests.swift */; };
 		5CB6E1C02031ECCE001FEAC9 /* TransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB6E1BF2031ECCE001FEAC9 /* TransformTests.swift */; };
 		5CB6E1C12031EDF2001FEAC9 /* SDL_gpu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF8C4201635AF00D989BC /* SDL_gpu.framework */; };
+		5CB6E1C32033460C001FEAC9 /* CATransform3D+SDL_gpu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB6E1C22033460C001FEAC9 /* CATransform3D+SDL_gpu.swift */; };
+		5CB6E1C52035BC4F001FEAC9 /* CGPoint+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB6E1C42035BC4E001FEAC9 /* CGPoint+animations.swift */; };
 		5CCF1BD32017821E00AAF598 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CCF1BD22017821E00AAF598 /* AVFoundation.framework */; };
 		5CCF1C00201A292400AAF598 /* VideoTexture+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */; };
 		5CCF1C0A201B887400AAF598 /* CATransform3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCF1C09201B887400AAF598 /* CATransform3D.swift */; };
@@ -315,6 +317,8 @@
 		5CAF2D1D1EE6FD29004C6380 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		5CB6E1B52031D801001FEAC9 /* CGRect+TransformTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+TransformTests.swift"; sourceTree = "<group>"; };
 		5CB6E1BF2031ECCE001FEAC9 /* TransformTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformTests.swift; sourceTree = "<group>"; };
+		5CB6E1C22033460C001FEAC9 /* CATransform3D+SDL_gpu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CATransform3D+SDL_gpu.swift"; sourceTree = "<group>"; };
+		5CB6E1C42035BC4E001FEAC9 /* CGPoint+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+animations.swift"; sourceTree = "<group>"; };
 		5CCF1BD22017821E00AAF598 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5CCF1C09201B887400AAF598 /* CATransform3D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CATransform3D.swift; sourceTree = "<group>"; };
 		5CCF1C12202382FF00AAF598 /* CALayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CALayerTests.swift; sourceTree = "<group>"; };
@@ -460,6 +464,7 @@
 				5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */,
 				5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */,
 				5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */,
+				5CB6E1C42035BC4E001FEAC9 /* CGPoint+animations.swift */,
 				5B5239D21F586BAA004043B4 /* UIView+CALayerDelegate.swift */,
 				5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */,
 			);
@@ -504,6 +509,7 @@
 				5C6AB7111ED3BECD006F90AC /* CALayer.swift */,
 				5C6AB77D1ED71867006F90AC /* CATransaction.swift */,
 				5CCF1C09201B887400AAF598 /* CATransform3D.swift */,
+				5CB6E1C22033460C001FEAC9 /* CATransform3D+SDL_gpu.swift */,
 				5BA87A942018FC980080C876 /* CATransform3D+animations.swift */,
 				83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */,
 				83E5F7EA1EF8156400279C59 /* CGImage.swift */,
@@ -991,6 +997,7 @@
 				5C6AB71E1ED3BECD006F90AC /* UIView.swift in Sources */,
 				5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */,
 				5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */,
+				5CB6E1C52035BC4F001FEAC9 /* CGPoint+animations.swift in Sources */,
 				5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */,
 				8333B2C01F1D11B800D98662 /* NSAttributedString.swift in Sources */,
 				838545631F26458100B64986 /* UIVisualEffect.swift in Sources */,
@@ -1026,6 +1033,7 @@
 				5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */,
 				5BA87A9C2018FC990080C876 /* CATransform3D+animations.swift in Sources */,
 				5C6AB71F1ED3BECD006F90AC /* UIWindow.swift in Sources */,
+				5CB6E1C32033460C001FEAC9 /* CATransform3D+SDL_gpu.swift in Sources */,
 				83667C8D1F4D8A6F00780EA6 /* VideoPlayer+Mac.swift in Sources */,
 				5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */,
 				83CC3CD11F275DB600144E85 /* NSRange.swift in Sources */,

@@ -9,5 +9,6 @@
 public protocol AnimatableProperty {}
 
 extension CGRect: AnimatableProperty {}
+extension CGPoint: AnimatableProperty {}
 extension Float: AnimatableProperty {}
 extension CATransform3D: AnimatableProperty {}

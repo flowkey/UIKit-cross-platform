@@ -7,14 +7,15 @@
 //
 
 public enum AnimationKeyPath: String, ExpressibleByStringLiteral {
-    case frame, opacity, bounds, transform, unknown
+    case opacity, bounds, transform, position, anchorPoint, unknown
 
     public init(stringLiteral value: String) {
         switch value {
-        case "frame": self = .frame
         case "opacity": self = .opacity
         case "bounds": self = .bounds
         case "transform": self = .transform
+        case "position": self = .position
+        case "anchorPoint": self = .anchorPoint
         default:
             assertionFailure("unknown AnimationKeyPath")
             self = .unknown

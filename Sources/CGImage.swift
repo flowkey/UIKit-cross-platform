@@ -25,13 +25,7 @@ public class CGImage {
         GPU_SetImageFilter(rawPointer, GPU_FILTER_NEAREST)
         GPU_SetAnchor(rawPointer, 0, 0)
 
-        // Post-scale size.
-        // e.g. If the pixel buffer contains 100x100 pixels at scale 2.0, size will be 50x50:
-        size = CGSize(
-            width: Int(rawPointer.pointee.w),
-            height: Int(rawPointer.pointee.h)
-        )
-
+        size = CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
         GPU_GenerateMipmaps(rawPointer)
     }
 

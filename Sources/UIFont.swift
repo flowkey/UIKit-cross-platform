@@ -33,12 +33,13 @@ open class UIFont: Equatable {
 
     public init?(name: String, size: CGFloat) {
         let name = name.lowercased()
+        let size = Int32(size * UIScreen.main.scale)
         guard let fontData = UIFont.availableFontData[name] else {
             print("Tried to load \(name) but it wasn't in UIFont.availableFonts")
             return nil
         }
 
-        guard let renderer = FontRenderer(fontData, size: Int32(size * UIScreen.main.scale)) else {
+        guard let renderer = FontRenderer(fontData, size: size) else {
             print("Couldn't load font", name)
             return nil
         }
@@ -46,7 +47,7 @@ open class UIFont: Equatable {
         self.renderer = renderer
         self.fontName = name
         self.familyName = renderer.getFontFamilyName() ?? "<unknown>"
-        self.pointSize = size
+        self.pointSize = CGFloat(size)
         self.lineHeight = CGFloat(renderer.getLineHeight()) / UIScreen.main.scale
     }
 

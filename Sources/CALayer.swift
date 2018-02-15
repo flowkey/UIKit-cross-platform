@@ -66,9 +66,7 @@ open class CALayer {
         superlayer = nil
     }
 
-    public var backgroundColor: CGColor?
-
-    open var position: CGPoint = .zero
+    open var backgroundColor: CGColor?
 
     /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc YET)
     open var frame: CGRect {
@@ -91,31 +89,38 @@ open class CALayer {
             )
         }
         set {
-            guard let inverseTransform = affineTransform().inverted() else {
-                assertionFailure("You tried to set the frame of a CALayer whose transform cannot be inverted. This is undefined behaviour.")
-                return
-            }
-
-            let nonTransformedFrame = newValue.applying(inverseTransform)
-
-            // If we are shrinking the view with a transform and then setting a
-            // new frame, the layer's actual `bounds` is bigger (and vice-versa):
-            let scaledWidth = nonTransformedFrame.width
-            let scaledHeight = nonTransformedFrame.height
-
-            bounds.size = CGSize(width: scaledWidth, height: scaledHeight)
-
-
             // Position is unscaled, because `position` is in the superview's coordinate
             // system and so can be set regardless of the current transform.
             position = CGPoint(
                 x: newValue.origin.x + (newValue.width * anchorPoint.x),
                 y: newValue.origin.y + (newValue.height * anchorPoint.y)
             )
+
+            guard let inverseTransform = affineTransform().inverted() else {
+                assertionFailure("You tried to set the frame of a CALayer whose transform cannot be inverted. This is undefined behaviour.")
+                return
+            }
+
+            // If we are shrinking the view with a transform and then setting a
+            // new frame, the layer's actual `bounds` is bigger (and vice-versa):
+            let nonTransformedBoundSize = newValue.applying(inverseTransform).size
+            bounds.size = nonTransformedBoundSize
         }
     }
 
-    open var anchorPoint = CGPoint.defaultAnchorPoint
+    open var position: CGPoint = .zero {
+        willSet(newPosition) {
+            guard newPosition != position else { return }
+            onWillSet(keyPath: .position)
+        }
+    }
+
+    open var anchorPoint = CGPoint.defaultAnchorPoint {
+        willSet(newAnchorPoint) {
+            guard newAnchorPoint != anchorPoint else { return }
+            onWillSet(keyPath: .anchorPoint)
+        }
+    }
 
     open var bounds: CGRect = .zero {
         willSet(newBounds) {

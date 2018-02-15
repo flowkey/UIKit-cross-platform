@@ -32,6 +32,7 @@ final public class SDL { // Only public for rootView!
 
         self.window = window
         self.rootView = UIWindow(frame: CGRect(origin: .zero, size: window.size))
+        self.rootView.backgroundColor = .purple
         UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
     }
 
@@ -73,11 +74,20 @@ final public class SDL { // Only public for rootView!
         UIView.animateIfNeeded(at: frameTimer)
 
         window.clear()
+
+        GPU_MatrixMode(GPU_PROJECTION)
+        GPU_LoadIdentity()
+
         GPU_MatrixMode(GPU_MODELVIEW)
         GPU_LoadIdentity()
+
+        window.clippingRect = rootView.bounds
         rootView.sdlDrawAndLayoutTreeIfNeeded()
         rootView.layer.sdlRender()
         window.flip()
+
+        assert(CATransform3D(unsafePointer: GPU_GetCurrentMatrix()) == CATransform3DIdentity,
+               "We always return to the previous matrix after rendering a layer (and its sublayers), so something went wrong here")
 
         firstRender = false
     }
@@ -112,6 +122,8 @@ final public class SDL { // Only public for rootView!
                         SDL.onPressPlus?()
                     case 45: // minus/dash key
                         SDL.onPressMinus?()
+                    case 112: // "P"
+                        SDL.window.printThisLoop = true
                     case 118: // "V"
                         SDL.rootView.printViewHierarchy()
                     default:
