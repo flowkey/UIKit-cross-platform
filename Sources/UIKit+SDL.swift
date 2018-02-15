@@ -48,6 +48,7 @@ final public class SDL { // Only public for rootView!
         UIView.layersWithAnimations.removeAll()
         UITouch.activeTouches.removeAll()
         UIView.currentAnimationPrototype = nil
+        UIFont.fontRendererCache.removeAll()
     }
 
     private static var firstRender = true // screen is black until first touch if we don't check for this
@@ -90,7 +91,7 @@ final public class SDL { // Only public for rootView!
             case SDL_QUIT:
                 print("SDL_QUIT was called")
                 shouldQuit = true
-                SDL.rootView = UIWindow()
+                SDL.rootView = nil
                 window = nil
                 unload()
                 #if os(Android)
