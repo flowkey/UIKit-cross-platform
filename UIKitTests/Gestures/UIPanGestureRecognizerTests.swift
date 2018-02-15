@@ -87,12 +87,10 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let touch = UITouch(at: .zero, touchId: 0)
         recognizer.touchesBegan([touch], with: UIEvent())
 
-        // manipulate lastMovementTimestamp to fake a velocity scroll
-        recognizer.lastMovementTimestamp = NSDate.timeIntervalSinceReferenceDate - timeInterval
         touch.updateAbsoluteLocation(CGPoint(x: touchPositionDiff, y: 0))
         recognizer.touchesMoved([touch], with: UIEvent())
 
-        let velocityX = recognizer.velocity(in: self.mockView).x
+        let velocityX = recognizer.velocity(in: self.mockView, for: timeInterval).x
         let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
         XCTAssertEqual(velocityX, expectedVelocityX, accuracy: 0.001)
     }

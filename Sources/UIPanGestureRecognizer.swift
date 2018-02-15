@@ -11,7 +11,7 @@ import Foundation
 open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var initialTouchPoint: CGPoint?
 
-    var lastMovementTimestamp: TimeInterval?
+    private var lastMovementTimestamp: TimeInterval?
     private var timeSinceLastMovement: TimeInterval?
 
     private let minimumTranslationThreshold: CGFloat = 5
@@ -40,11 +40,10 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     // The velocity of the pan gesture, which is expressed in points per second.
     // The velocity is broken into horizontal and vertical components.
-    open func velocity(in view: UIView?) -> CGPoint {
+    func velocity(in view: UIView?, for timeSinceLastMovement: TimeInterval) -> CGPoint {
         guard
             let curPos = trackedTouch?.location(in: view),
             let prevPos = trackedTouch?.previousLocation(in: view),
-            let timeSinceLastMovement = timeSinceLastMovement,
             timeSinceLastMovement != 0.0
         else {
             return CGPoint.zero
@@ -58,6 +57,10 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             x: (curPos.x - prevPos.x) / timeDiffInMs,
             y: (curPos.y - prevPos.y) / timeDiffInMs
         )
+    }
+
+    open func velocity(in view: UIView?) -> CGPoint {
+        return velocity(in: view, for: timeSinceLastMovement ?? 0)
     }
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
