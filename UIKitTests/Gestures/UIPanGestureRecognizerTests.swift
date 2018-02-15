@@ -83,27 +83,18 @@ class UIPanGestureRecognizerTests: XCTestCase {
     func testVelocity() {
         let touchPositionDiff: CGFloat = 50
         let timeInterval = 1.0
-
-        let pgr = UIPanGestureRecognizer()
-        let velocityExp = expectation(description: "velocity is as expected")
-
+        let recognizer = UIPanGestureRecognizer()
         let touch = UITouch(at: .zero, touchId: 0)
-        pgr.touchesBegan([touch], with: UIEvent())
+        recognizer.touchesBegan([touch], with: UIEvent())
 
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + timeInterval) {
-            touch.updateAbsoluteLocation(CGPoint(x: touchPositionDiff, y: 0))
-            pgr.touchesMoved([touch], with: UIEvent())
-            let velocityX = pgr.velocity(in: self.mockView).x
-            let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
+        // manipulate lastMovementTimestamp to fake a velocity scroll
+        recognizer.lastMovementTimestamp = NSDate.timeIntervalSinceReferenceDate - timeInterval
+        touch.updateAbsoluteLocation(CGPoint(x: touchPositionDiff, y: 0))
+        recognizer.touchesMoved([touch], with: UIEvent())
 
-            // we can not predict the exact velocity since we use DispatchTime.now
-            // because of this we allow some deviation of a few percent
-            if velocityX.isEqual(to: expectedVelocityX, percentalAccuracy: 5.0) {
-                velocityExp.fulfill()
-            }
-        }
-
-        wait(for: [velocityExp], timeout: 1.1)
+        let velocityX = recognizer.velocity(in: self.mockView).x
+        let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
+        XCTAssertEqual(velocityX, expectedVelocityX, accuracy: 0.001)
     }
 
     func testSetTranslation() {

@@ -11,8 +11,8 @@ import Foundation
 open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var initialTouchPoint: CGPoint?
 
+    var lastMovementTimestamp: TimeInterval?
     private var timeSinceLastMovement: TimeInterval?
-    private var lastMovementTimestamp: TimeInterval?
 
     private let minimumTranslationThreshold: CGFloat = 5
 
