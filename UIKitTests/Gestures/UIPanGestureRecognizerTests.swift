@@ -98,22 +98,8 @@ class UIPanGestureRecognizerTests: XCTestCase {
             velocityTracker.track(timeInterval: $0, translation: $1)
         }
 
-        // calculate expected velocity from test data by summing single velocities and calculate mean velocity
-        let summedVelocity = timestampsAndTranslations.reduce(CGPoint.zero, { prev, tuple in
-            let (timeInterval, translation) = tuple
-            guard timeInterval != 0 else {
-                return .zero
-            }
-            let singleVelocity = CGPoint(
-                x: translation.x / CGFloat(timeInterval),
-                y: translation.y / CGFloat(timeInterval)
-            )
-            return CGPoint(x: prev.x + singleVelocity.x, y: prev.y + singleVelocity.y)
-        })
-        let expectedMeanVelocity = CGPoint(
-            x: summedVelocity.x / CGFloat(timestampsAndTranslations.count),
-            y: summedVelocity.y / CGFloat(timestampsAndTranslations.count)
-        )
+        // calculate expected velocity from test data
+        let expectedMeanVelocity = calculateVelocityMean(from: timestampsAndTranslations)
 
         XCTAssertEqual(expectedMeanVelocity, velocityTracker.mean)
     }
@@ -179,4 +165,22 @@ fileprivate extension CGFloat {
         if !isInRange { print("$(self) is not in range of $(value)") }
         return isInRange
     }
+}
+
+fileprivate func calculateVelocityMean(from timestampsAndTranslations: [(TimeInterval, CGPoint)]) -> CGPoint {
+    let summedVelocity = timestampsAndTranslations.reduce(CGPoint.zero, { prev, tuple in
+        let (timeInterval, translation) = tuple
+        guard timeInterval != 0 else {
+            return .zero
+        }
+        let singleVelocity = CGPoint(
+            x: translation.x / CGFloat(timeInterval),
+            y: translation.y / CGFloat(timeInterval)
+        )
+        return CGPoint(x: prev.x + singleVelocity.x, y: prev.y + singleVelocity.y)
+    })
+    return CGPoint(
+        x: summedVelocity.x / CGFloat(timestampsAndTranslations.count),
+        y: summedVelocity.y / CGFloat(timestampsAndTranslations.count)
+    )
 }
