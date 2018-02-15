@@ -38,6 +38,8 @@ open class UIView: UIResponder {
         set { layer.transform = newValue }
     }
 
+    open let safeAreaInsets: UIEdgeInsets = .zero
+
     open var mask: UIView?
 
     open var isHidden: Bool {
