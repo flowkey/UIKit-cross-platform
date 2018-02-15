@@ -157,16 +157,6 @@ class UIPanGestureRecognizerTests: XCTestCase {
     }
 }
 
-fileprivate extension CGFloat {
-    func isEqual(to value: CGFloat, percentalAccuracy: Double) -> Bool {
-        let min = Double(value) - ((Double(value) * percentalAccuracy) / 100)
-        let max = Double(value) + ((Double(value) * percentalAccuracy) / 100)
-        let isInRange = (min ..< max)~=(Double(self))
-        if !isInRange { print("$(self) is not in range of $(value)") }
-        return isInRange
-    }
-}
-
 fileprivate func calculateVelocityMean(from timestampsAndTranslations: [(TimeInterval, CGPoint)]) -> CGPoint {
     let summedVelocity = timestampsAndTranslations.reduce(CGPoint.zero, { prev, tuple in
         let (timeInterval, translation) = tuple
