@@ -87,18 +87,25 @@ class TransformTests: XCTestCase {
     }
 
     func testSDLGpuMatrixPerformance() {
-        var matrixA = [Float](repeating: 0.0, count: 16)
+        let identity: [Float] = [1.0, 0, 0, 0,
+                                 0, 1.0, 0, 0,
+                                 0, 0, 1.0, 0,
+                                 0, 0, 0, 1.0]
+
+        var matrixA = identity
         GPU_MatrixTranslate(&matrixA, 20, 20, 20)
         GPU_MatrixScale(&matrixA, 20, 20, 20)
 
-        var matrixB = [Float](repeating: 0.0, count: 16)
+        var matrixB = identity
         GPU_MatrixScale(&matrixB, 20, 20, 20)
         GPU_MatrixTranslate(&matrixB, 20, 20, 20)
 
-        var result = [Float](repeating: 0.0, count: 16)
+        let expectedResult: [Float] = [400.0, 0.0, 0.0, 0.0, 0.0, 400.0, 0.0, 0.0, 0.0, 0.0, 400.0, 0.0, 8020.0, 8020.0, 8020.0, 1.0]
+        var result = identity
         measure {
             for _ in 0 ..< 1000 {
                 GPU_Multiply4x4(&result, &matrixA, &matrixB)
+                XCTAssertEqual(result, expectedResult)
             }
         }
     }
@@ -110,9 +117,11 @@ class TransformTests: XCTestCase {
         let matrixA = translation.concat(scale)
         let matrixB = scale.concat(translation)
 
+        let expectedResult = UIKit.CATransform3D(m11: 400, m12: 0, m13: 0, m14: 0, m21: 0, m22: 400, m23: 0, m24: 0, m31: 0, m32: 0, m33: 400, m34: 0, m41: 8020, m42: 8020, m43: 8020, m44: 1)
         measure {
             for _ in 0 ..< 1000 {
-                _ = matrixA.concat(matrixB)
+                let result = matrixA.concat(matrixB)
+                XCTAssertEqual(result, expectedResult)
             }
         }
     }

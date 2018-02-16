@@ -23,7 +23,7 @@ class UIViewAnimationTests: XCTestCase {
 
         view.frame = frameToStartFrom
 
-        UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
+        UIView.animate(withDuration: 5.0, delay: 0, options: [], animations: {
             view.frame = expectedFrame
         })
 
@@ -73,7 +73,7 @@ class UIViewAnimationTests: XCTestCase {
 
         // animating bounds consists of bounds.origin and frame.size animation
         // because mutating frame mutates bounds and vice versa
-        XCTAssertEqual(view.layer.animations.count, 2)
+        XCTAssertEqual(view.layer.animations.count, 1)
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
 
@@ -238,14 +238,14 @@ class UIViewAnimationTests: XCTestCase {
         let view = UIView()
 
         UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
-            view.frame.origin.x = 10
+            view.bounds.origin.x = 10
         })
         UIView.animateIfNeeded(at: Timer(startingAt: 5000))
         UIView.animate(withDuration: 10, delay: 5, options: [.beginFromCurrentState], animations: {
-            view.frame.origin.x = 20
+            view.bounds.origin.x = 20
         })
 
-        let fromValue = view.layer.animations["frame"]?.fromValue as? CGRect
+        let fromValue = view.layer.animations["bounds"]?.fromValue as? CGRect
         XCTAssertEqual(fromValue?.origin.x ?? -1, CGFloat(5), accuracy: 0.01)
     }
 
@@ -293,7 +293,7 @@ class UIViewAnimationTests: XCTestCase {
             view.frame.origin.x = 200
         })
 
-        XCTAssertTrue((view.layer.animations["frame"]?.animationGroup?
+        XCTAssertTrue((view.layer.animations["position"]?.animationGroup?
             .options.contains(.allowUserInteraction) ?? false))
         XCTAssertTrue(view.animationsAllowUserInteraction)
     }

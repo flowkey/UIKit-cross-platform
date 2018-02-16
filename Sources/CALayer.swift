@@ -68,26 +68,27 @@ open class CALayer {
 
     open var backgroundColor: CGColor?
 
+    final internal func frame(with transform: CATransform3D) -> CGRect {
+        // Create a rectangle based on `bounds.size` * `transform` at `position` offset by `anchorPoint`
+
+        let transformedBounds = bounds.applying(transform)
+
+        let anchorPointOffset = CGPoint(
+            x: transformedBounds.width * anchorPoint.x,
+            y: transformedBounds.height * anchorPoint.y
+        )
+
+        return CGRect(
+            x: position.x - anchorPointOffset.x,
+            y: position.y - anchorPointOffset.y,
+            width: transformedBounds.width,
+            height: transformedBounds.height
+        )
+    }
+
     /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc YET)
     open var frame: CGRect {
-        get {
-            // Create a rectangle based on `bounds.size` * `transform` at `position` offset by `anchorPoint`
-
-            // These dimensions are in the superview's coordinates, like `frame` itself:
-            let transformedBounds = bounds.applying(self.affineTransform())
-
-            let anchorPointOffset = CGPoint(
-                x: transformedBounds.width * anchorPoint.x,
-                y: transformedBounds.height * anchorPoint.y
-            )
-
-            return CGRect(
-                x: position.x - anchorPointOffset.x,
-                y: position.y - anchorPointOffset.y,
-                width: transformedBounds.width,
-                height: transformedBounds.height
-            )
-        }
+        get { return frame(with: self.transform) }
         set {
             // Position is unscaled, because `position` is in the superview's coordinate
             // system and so can be set regardless of the current transform.

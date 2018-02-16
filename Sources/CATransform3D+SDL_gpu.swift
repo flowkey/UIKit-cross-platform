@@ -11,6 +11,7 @@ import SDL_gpu
 extension CATransform3D {
     // Set's SDL_GPU's current matrix
     internal func setAsSDLgpuMatrix() {
+        GPU_FlushBlitBuffer()
         let currentMatrix = UnsafeMutableBufferPointer(start: GPU_GetCurrentMatrix(), count: 16)
         currentMatrix[0] = m11
         currentMatrix[1] = m12

@@ -29,7 +29,37 @@ public struct UIColor: Equatable {
         self.alpha = alpha.normalisedToUInt8()
     }
 
-    // mocked!
+    // from wikipedia: https://en.wikipedia.org/wiki/HSL_and_HSV
+    public init(hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat) {
+        let c = (1 - ((2 * brightness) - 1).magnitude) * saturation
+        let x = c * (1 - (hue.remainder(dividingBy: 2) - 1).magnitude)
+
+        let m = brightness - (0.5 * c)
+
+        let r: CGFloat
+        let g: CGFloat
+        let b: CGFloat
+        let hueDash = hue * 6
+        if hueDash < 1 {
+            (r,g,b) = (c,x,0)
+        } else if hueDash < 2 {
+            (r,g,b) = (x,c,0)
+        } else if hueDash < 3 {
+            (r,g,b) = (0,c,x)
+        } else if hueDash < 4 {
+            (r,g,b) = (0,x,c)
+        } else if hueDash < 5 {
+            (r,g,b) = (x,0,c)
+        } else if hueDash < 6 {
+            (r,g,b) = (c,0,x)
+        } else {
+            (r,g,b) = (0,0,0)
+        }
+
+        self.init(red: r + m, green: g + m, blue: b + m, alpha: alpha)
+    }
+
+    // FIXME: mocked!
     public init(patternImage: UIImage?) {
         // TODO: define a color object for specified Quartz color reference https://developer.apple.com/documentation/uikit/uicolor/1621933-init
         self.red = 255
