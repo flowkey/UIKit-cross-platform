@@ -275,10 +275,11 @@ open class UIView: UIResponder {
 
         // reversing allows us to return the view with the highest z-index in the shortest amount of time:
         for subview in subviews.reversed() {
-            if
-                let hitView = subview.hitTest(subview.convert(point, from: self), with: event),
-                event is TouchEvent && !hitView.gestureRecognizers.isEmpty
-            {
+            if let hitView = subview.hitTest(subview.convert(point, from: self), with: event) {
+
+                // TouchEvents bubble through subviews until a recognizer is found
+                if event is TouchEvent && hitView.gestureRecognizers.isEmpty { continue }
+
                 return hitView
             }
         }
