@@ -6,4 +6,4 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public struct UIEvent {}
+public class UIEvent {}

@@ -277,7 +277,7 @@ open class UIView: UIResponder {
         for subview in subviews.reversed() {
             if
                 let hitView = subview.hitTest(subview.convert(point, from: self), with: event),
-                !hitView.gestureRecognizers.isEmpty
+                event is TouchEvent && !hitView.gestureRecognizers.isEmpty
             {
                 return hitView
             }
