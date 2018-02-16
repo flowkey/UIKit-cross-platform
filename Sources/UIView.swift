@@ -265,12 +265,20 @@ open class UIView: UIResponder {
     }
 
     open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard !isHidden, isUserInteractionEnabled, animationsAllowUserInteraction,
-            alpha > 0.01, self.point(inside: point, with: event) else { return nil }
+        guard
+            !isHidden,
+            isUserInteractionEnabled,
+            animationsAllowUserInteraction,
+            alpha > 0.01,
+            self.point(inside: point, with: event)
+        else { return nil }
 
         // reversing allows us to return the view with the highest z-index in the shortest amount of time:
         for subview in subviews.reversed() {
-            if let hitView = subview.hitTest(subview.convert(point, from: self), with: event) {
+            if
+                let hitView = subview.hitTest(subview.convert(point, from: self), with: event),
+                !hitView.gestureRecognizers.isEmpty
+            {
                 return hitView
             }
         }
