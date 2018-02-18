@@ -23,6 +23,14 @@ open class CALayer {
     /// the view sets this value to match the screen.
     open var contentsScale: CGFloat = 1.0
 
+    open var contentsGravity: String = "resize" {
+        didSet {
+            if !CALayer.validContentsGravityOptions.contains(contentsGravity) {
+                contentsGravity = "center"
+            }
+        }
+    }
+
     internal (set) public weak var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer]?
 
@@ -68,27 +76,23 @@ open class CALayer {
 
     open var backgroundColor: CGColor?
 
-    final internal func frame(with transform: CATransform3D) -> CGRect {
-        // Create a rectangle based on `bounds.size` * `transform` at `position` offset by `anchorPoint`
-
-        let transformedBounds = bounds.applying(transform)
-
-        let anchorPointOffset = CGPoint(
-            x: transformedBounds.width * anchorPoint.x,
-            y: transformedBounds.height * anchorPoint.y
-        )
-
-        return CGRect(
-            x: position.x - anchorPointOffset.x,
-            y: position.y - anchorPointOffset.y,
-            width: transformedBounds.width,
-            height: transformedBounds.height
-        )
-    }
-
-    /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc YET)
     open var frame: CGRect {
-        get { return frame(with: self.transform) }
+        get {
+            // Create a rectangle based on `bounds.size` * `transform` at `position` offset by `anchorPoint`
+            let transformedBounds = bounds.applying(transform)
+
+            let anchorPointOffset = CGPoint(
+                x: transformedBounds.width * anchorPoint.x,
+                y: transformedBounds.height * anchorPoint.y
+            )
+
+            return CGRect(
+                x: position.x - anchorPointOffset.x,
+                y: position.y - anchorPointOffset.y,
+                width: transformedBounds.width,
+                height: transformedBounds.height
+            )
+        }
         set {
             // Position is unscaled, because `position` is in the superview's coordinate
             // system and so can be set regardless of the current transform.
@@ -116,12 +120,16 @@ open class CALayer {
         }
     }
 
+    open var zPosition: CGFloat = 0.0
+
     open var anchorPoint = CGPoint.defaultAnchorPoint {
         willSet(newAnchorPoint) {
             guard newAnchorPoint != anchorPoint else { return }
             onWillSet(keyPath: .anchorPoint)
         }
     }
+
+    open var anchorPointZ: CGFloat = 0.0
 
     open var bounds: CGRect = .zero {
         willSet(newBounds) {

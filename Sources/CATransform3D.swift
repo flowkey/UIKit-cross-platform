@@ -69,6 +69,17 @@ extension CATransform3D {
     }
 }
 
+internal extension CATransform3D {
+    func applyToVector(x: CGFloat, y: CGFloat, z: CGFloat) -> (x: CGFloat, y: CGFloat, z: CGFloat) {
+        let newX: CGFloat = (CGFloat(m11) * x) + (CGFloat(m12) * y) + (CGFloat(m13) * z) + CGFloat(m14)
+        let newY: CGFloat = (CGFloat(m21) * x) + (CGFloat(m22) * y) + (CGFloat(m23) * z) + CGFloat(m24)
+        let newZ: CGFloat = (CGFloat(m31) * x) + (CGFloat(m32) * y) + (CGFloat(m33) * z) + CGFloat(m34)
+        let newW: CGFloat = (CGFloat(m41) * x) + (CGFloat(m42) * y) + (CGFloat(m43) * z) + CGFloat(m44)
+
+        return (x: newX / newW, y: newY / newW, z: newZ / newW)
+    }
+}
+
 public let CATransform3DIdentity = CATransform3D(
     m11: 1.0, m12: 0.0, m13: 0.0, m14: 0.0,
     m21: 0.0, m22: 1.0, m23: 0.0, m24: 0.0,
@@ -87,6 +98,11 @@ public func CATransform3DEqualToTransform(_ a: CATransform3D, _ b: CATransform3D
 extension CATransform3D: Equatable {
     public static func == (_ lhs: CATransform3D, _ rhs: CATransform3D) -> Bool {
         return CATransform3DEqualToTransform(lhs, rhs)
+    }
+
+    // This isn't public API on iOS, although it'd probably be quite useful
+    internal static func * (_ lhs: CATransform3D, _ rhs: CATransform3D) -> CATransform3D {
+        return lhs.concat(rhs)
     }
 }
 

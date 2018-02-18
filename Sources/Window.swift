@@ -28,7 +28,7 @@ internal final class Window {
     #else
         // This corresponds to the Samsung S7 screen at its 1080p 1.5x Retina resolution:
         var size = CGSize(width: 2560 / 3.0, height: 1440 / 3.0)
-        size = CGSize(width: 512, height: 512)
+//        size = CGSize(width: 512, height: 512)
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
             //SDL_WINDOW_FULLSCREEN
@@ -81,7 +81,8 @@ internal final class Window {
     }
 
     /// clippingRect behaves like an offset
-    func blit(_ image: CGImage, at destination: CGPoint, scaleX: Float, scaleY: Float, opacity: Float, clippingRect: CGRect?) {
+    func blit(_ image: CGImage, anchorPoint: CGPoint, scaleX: Float, scaleY: Float, opacity: Float, clippingRect: CGRect?) {
+        GPU_SetAnchor(image.rawPointer, Float(anchorPoint.x), Float(anchorPoint.y))
         GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8())
 
         // The only difference between these two is/should be whether we pass a clipping rect:
@@ -91,8 +92,8 @@ internal final class Window {
                 image.rawPointer,
                 &clipGPU_Rect,
                 self.rawPointer,
-                Float(destination.x + clippingRect.origin.x),
-                Float(destination.y + clippingRect.origin.y),
+                Float(clippingRect.origin.x),
+                Float(clippingRect.origin.y),
                 0, // rotation in degrees
                 scaleX,
                 scaleY
@@ -102,8 +103,8 @@ internal final class Window {
                 image.rawPointer,
                 nil,
                 self.rawPointer,
-                Float(destination.x),
-                Float(destination.y),
+                0,
+                0,
                 0, // rotation in degrees
                 scaleX,
                 scaleY

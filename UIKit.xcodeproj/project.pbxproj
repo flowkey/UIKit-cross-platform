@@ -67,6 +67,7 @@
 		5C6AB77E1ED71867006F90AC /* CATransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77D1ED71867006F90AC /* CATransaction.swift */; };
 		5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */; };
 		5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7811EDC18BA006F90AC /* UITouch.swift */; };
+		5C8E6A21203A089A00D1DBE0 /* CALayer+ContentsGravity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E6A20203A089A00D1DBE0 /* CALayer+ContentsGravity.swift */; };
 		5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
 		5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037241F138B8A0058E592 /* MeteringView.swift */; };
 		5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */; };
@@ -309,6 +310,7 @@
 		5C6AB77D1ED71867006F90AC /* CATransaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CATransaction.swift; path = Sources/CATransaction.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewTests.swift; sourceTree = "<group>"; };
 		5C6AB7811EDC18BA006F90AC /* UITouch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITouch.swift; path = Sources/UITouch.swift; sourceTree = SOURCE_ROOT; };
+		5C8E6A20203A089A00D1DBE0 /* CALayer+ContentsGravity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+ContentsGravity.swift"; sourceTree = "<group>"; };
 		5C9037201F137FB70058E592 /* CGRectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGRectTests.swift; sourceTree = "<group>"; };
 		5C9037241F138B8A0058E592 /* MeteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MeteringView.swift; path = Sources/MeteringView.swift; sourceTree = SOURCE_ROOT; };
 		5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "AVPlayerLayer+Mac.swift"; path = "Sources/AVPlayerLayer+Mac.swift"; sourceTree = SOURCE_ROOT; };
@@ -507,6 +509,7 @@
 				5C6AB7101ED3BECD006F90AC /* Button.swift */,
 				5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */,
 				5C6AB7111ED3BECD006F90AC /* CALayer.swift */,
+				5C8E6A20203A089A00D1DBE0 /* CALayer+ContentsGravity.swift */,
 				5C6AB77D1ED71867006F90AC /* CATransaction.swift */,
 				5CCF1C09201B887400AAF598 /* CATransform3D.swift */,
 				5CB6E1C22033460C001FEAC9 /* CATransform3D+SDL_gpu.swift */,
@@ -1034,6 +1037,7 @@
 				5BA87A9C2018FC990080C876 /* CATransform3D+animations.swift in Sources */,
 				5C6AB71F1ED3BECD006F90AC /* UIWindow.swift in Sources */,
 				5CB6E1C32033460C001FEAC9 /* CATransform3D+SDL_gpu.swift in Sources */,
+				5C8E6A21203A089A00D1DBE0 /* CALayer+ContentsGravity.swift in Sources */,
 				83667C8D1F4D8A6F00780EA6 /* VideoPlayer+Mac.swift in Sources */,
 				5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */,
 				83CC3CD11F275DB600144E85 /* NSRange.swift in Sources */,

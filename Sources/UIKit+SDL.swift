@@ -32,7 +32,6 @@ final public class SDL { // Only public for rootView!
 
         self.window = window
         self.rootView = UIWindow(frame: CGRect(origin: .zero, size: window.size))
-        self.rootView.backgroundColor = .purple
         UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
     }
 

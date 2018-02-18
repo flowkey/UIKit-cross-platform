@@ -33,45 +33,32 @@ open class UIImageView: UIView {
         }
     }
 
-//    open override func layoutSubviews() {
-//        super.layoutSubviews()
-//        guard let image = image else { return }
-//        let scaledImageSize = image.size / image.scale
-//
-//        switch contentMode {
-//        case .center:
-//            layer.frame = CGRect(
-//                origin: CGPoint(
-//                    x: (bounds.width - scaledImageSize.width) / 2,
-//                    y: (bounds.height - scaledImageSize.height) / 2),
-//                size: scaledImageSize
-//            )
-//
-//        case .scaleAspectFit:
-//            let scaleX = bounds.width / scaledImageSize.width
-//            let scaleY = bounds.height / scaledImageSize.height
-//            let minScale = min(scaleX, scaleY)
-//            transform = CGAffineTransform(scale: minScale)
-//
-//        case .stretch:
-//            let scaleX = bounds.width / scaledImageSize.width
-//            let scaleY = bounds.height / scaledImageSize.height
-//            transform = CGAffineTransform(scaleByX: scaleX, byY: scaleY)
-//
-//        default: break
-//        }
-//    }
-
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         guard let image = image else { return .zero }
         return image.size / image.scale
     }
 
-    open var contentMode: UIContentMode = .stretch
+    open var contentMode: UIContentMode = .scaleToFill {
+        didSet {
+            switch contentMode {
+            case .scaleToFill:
+                layer.contentsGravity = "resize"
+            case .scaleAspectFill:
+                layer.contentsGravity = "resizeAspectFill"
+            case .scaleAspectFit:
+                layer.contentsGravity = "resizeAspect"
+            case .center:
+                layer.contentsGravity = "center"
+            default:
+                assertionFailure("The contentMode you tried to set (\(contentMode)) hasn't been implemented yet!")
+            }
+        }
+    }
 }
 
 public enum UIContentMode {
-    case left, right, top, bottom
-    case center, stretch, contain
-    case scaleAspectFit
+    case left, right, top, bottom // Not implemented!
+    case center
+    case scaleToFill // resize / stretch
+    case scaleAspectFit, scaleAspectFill
 }

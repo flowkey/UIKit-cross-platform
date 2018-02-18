@@ -65,6 +65,7 @@ open class UILabel: UIView {
         layer.addSublayer(textLayer)
         isUserInteractionEnabled = false
         textLayer.disableAnimations = true
+        textLayer.contentsGravity = "center"
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {

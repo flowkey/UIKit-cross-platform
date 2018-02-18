@@ -22,8 +22,7 @@ public class CGImage {
         rawPointer = pointer
 
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
-        GPU_SetImageFilter(rawPointer, GPU_FILTER_NEAREST)
-        GPU_SetAnchor(rawPointer, 0, 0)
+        GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR)
 
         size = CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
         GPU_GenerateMipmaps(rawPointer)

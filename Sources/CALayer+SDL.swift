@@ -6,24 +6,35 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-@_exported import SDL
 import SDL_gpu
 
 extension CALayer {
-    final func sdlRender(in parentAbsoluteOrigin: CGPoint = .zero, parentOpacity: Float = 1) {
-        let opacity = self.opacity * parentOpacity
+    final func sdlRender(parentAbsoluteOpacity: Float = 1) {
+        let opacity = self.opacity * parentAbsoluteOpacity
         if isHidden || opacity < 0.01 { return }
 
-        let absoluteFrame = frame.offsetBy(parentAbsoluteOrigin)
+        let parentTransform = CATransform3D(unsafePointer: GPU_GetCurrentMatrix())
+        let matrixAtPosition = parentTransform * CATransform3DMakeTranslation(position.x, position.y, zPosition)
+        let modelViewTransform = matrixAtPosition * transform
+        modelViewTransform.setAsSDLgpuMatrix()
+
+
+        // Untransformed origin in own coordinates
+        let origin = CGPoint(
+            x: -(bounds.width * anchorPoint.x),
+            y: -(bounds.height * anchorPoint.y)
+        )
+
+        let rect = CGRect(origin: origin, size: bounds.size)
 
         // Big performance optimization. Don't render anything that's entirely offscreen:
-        guard absoluteFrame.intersects(SDL.rootView.bounds) else { return }
+//        guard absoluteFrame.intersects(SDL.rootView.bounds) else { return }
 
         if SDL.window.printThisLoop {
             print("--------------------------------")
             print(self.delegate ?? self)
-            print(absoluteFrame)
-            print("at \(parentAbsoluteOrigin))")
+            print(modelViewTransform)
+            print(rect)
             print()
         }
 
@@ -35,7 +46,7 @@ extension CALayer {
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
             SDL.window.fill(
-                absoluteFrame,
+                rect,
                 with: backgroundColor.withAlphaComponent(CGFloat(backgroundColorOpacity)),
                 cornerRadius: cornerRadius
             )
@@ -43,7 +54,7 @@ extension CALayer {
 
         if borderWidth > 0 {
             SDL.window.outline(
-                absoluteFrame,
+                rect,
                 lineColor: borderColor.withAlphaComponent(CGFloat(opacity)),
                 lineThickness: borderWidth,
                 cornerRadius: cornerRadius
@@ -55,7 +66,7 @@ extension CALayer {
 
             if absoluteShadowOpacity > 0.01 {
                 SDL.window.fill(
-                    shadowPath.offsetBy(absoluteFrame.origin),
+                    shadowPath.offsetBy(origin),
                     with: shadowColor.withAlphaComponent(CGFloat(absoluteShadowOpacity)),
                     cornerRadius: 2
                 )
@@ -63,11 +74,12 @@ extension CALayer {
         }
 
         if let contents = contents {
+            let gravityScale = contentsScaleForGravity()
             SDL.window.blit(
                 contents,
-                at: absoluteFrame.origin,
-                scaleX: Float(1 / contentsScale),
-                scaleY: Float(1 / contentsScale),
+                anchorPoint: anchorPoint,
+                scaleX: Float(gravityScale.x / contentsScale),
+                scaleY: Float(gravityScale.y / contentsScale),
                 opacity: opacity,
                 clippingRect: (masksToBounds ? superlayer?.bounds : nil)
             )
@@ -77,19 +89,40 @@ extension CALayer {
             ShaderProgram.deactivateAll()
         }
 
-        let parentTransform = CATransform3D(unsafePointer: GPU_GetCurrentMatrix())
-        let modelViewTransform = parentTransform.concat(self.transform)
-        modelViewTransform.setAsSDLgpuMatrix()
-
-        // This can be written more succinctly, but the current form is easier to step through when debugging:
         if let sublayers = sublayers {
-            let boundsOffsetOrigin = absoluteFrame.origin.offsetBy(-bounds.origin)
+            // We have to put the absolute translation matrix back to `origin` so we can translate to the next `position` in the sublayers
+            // We subtract `bounds` as usual to get the scrolling effect.
+            let matrixAtFrameOrigin = modelViewTransform * CATransform3DMakeTranslation(origin.x - bounds.origin.x, origin.y - bounds.origin.y, -zPosition)
+            matrixAtFrameOrigin.setAsSDLgpuMatrix()
+
             for sublayer in sublayers {
-                (sublayer.presentation ?? sublayer).sdlRender(in: boundsOffsetOrigin, parentOpacity: opacity)
+                (sublayer.presentation ?? sublayer).sdlRender(parentAbsoluteOpacity: opacity)
             }
         }
 
-        // Remove current transform from the stack
+        // Essentially pops any transforms we added from the transform stack and returns to where we started
         parentTransform.setAsSDLgpuMatrix()
+    }
+
+    private func contentsScaleForGravity() -> (x: CGFloat, y: CGFloat) {
+        let scaledContentsSize = CGSize(
+            width: contents!.size.width / contentsScale,
+            height: contents!.size.height / contentsScale
+        )
+
+        switch contentsGravity {
+        case "resize":
+            return (bounds.width / scaledContentsSize.width, bounds.height / scaledContentsSize.height)
+        case "resizeAspectFill":
+            let scale = max(bounds.width / scaledContentsSize.width, bounds.height / scaledContentsSize.height)
+            return (scale, scale)
+        case "resizeAspect":
+            let scale = min(bounds.width / scaledContentsSize.width, bounds.height / scaledContentsSize.height)
+            return (scale, scale)
+        case "center":
+            fallthrough // this is what we normally do anyway:
+        default:
+            return (1.0, 1.0)
+        }
     }
 }
