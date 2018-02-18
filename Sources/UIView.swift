@@ -278,7 +278,7 @@ open class UIView: UIResponder {
             if let hitView = subview.hitTest(subview.convert(point, from: self), with: event) {
 
                 // TouchEvents bubble through subviews until a recognizer is found
-                if event is TouchEvent && hitView.gestureRecognizers.isEmpty { continue }
+                if event?.type == .touches && hitView.gestureRecognizers.isEmpty { continue }
 
                 return hitView
             }

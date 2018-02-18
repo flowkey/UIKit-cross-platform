@@ -8,12 +8,9 @@
 
 // TODO: This urgently needs tests!
 
-
-class TouchEvent: UIEvent {}
-
 extension SDL {
     static func handleTouchDown(_ point: CGPoint) {
-        guard let hitView = rootView.hitTest(point, with: TouchEvent()) else { return }
+        guard let hitView = rootView.hitTest(point, with: UIEvent()) else { return }
 
         print("hit", hitView)
 
