@@ -28,6 +28,8 @@
 		5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */; };
 		5BD4762E1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD4762D1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift */; };
 		5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */; };
+		5BEEF828202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */; };
+		5BEEF829202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */; };
 		5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */; };
 		5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */; };
 		5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F06AE1F3210F200EFF087 /* UIViewController.swift */; };
@@ -265,6 +267,7 @@
 		5BD4762D1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAMediaTimingFunctionTests.swift; sourceTree = "<group>"; };
 		5BD476341F4D94F40055EE27 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Logging.swift; path = Sources/Logging.swift; sourceTree = SOURCE_ROOT; };
 		5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewAnimationTests.swift; sourceTree = "<group>"; };
+		5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewTests+didMoveToSuperView.swift"; sourceTree = "<group>"; };
 		5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CABasicAnimationPrototype.swift; path = Sources/CABasicAnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
 		5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimationPrototype.swift; path = Sources/CASpringAnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
 		5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNI.xcodeproj; path = "swift-jni/JNI.xcodeproj"; sourceTree = "<group>"; };
@@ -674,6 +677,7 @@
 			children = (
 				5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */,
 				5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */,
+				5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */,
 			);
 			path = UIView;
 			sourceTree = "<group>";
@@ -1103,6 +1107,7 @@
 				5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */,
 				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
 				83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */,
+				5BEEF828202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */,
 				83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */,
 				5CFFFA1A20174BF200D989BC /* Imports.swift in Sources */,
 				837335901F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift in Sources */,
@@ -1118,6 +1123,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5CB6E1B72031D801001FEAC9 /* CGRect+TransformTests.swift in Sources */,
+				5BEEF829202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */,
 				83F02DBA1F179AE800347AA8 /* UIImage+testImage.swift in Sources */,
 				83F02DBE1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */,

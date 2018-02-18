@@ -11,6 +11,7 @@ import SDL_gpu
 import CoreFoundation
 import struct Foundation.Date
 import class Foundation.Thread
+import JNI
 
 private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
 
@@ -47,6 +48,7 @@ final public class SDL { // Only public for rootView!
         UIView.layersWithAnimations.removeAll()
         UITouch.activeTouches.removeAll()
         UIView.currentAnimationPrototype = nil
+        UIFont.fontRendererCache.removeAll()
     }
 
     private static var firstRender = true // screen is black until first touch if we don't check for this
@@ -100,9 +102,12 @@ final public class SDL { // Only public for rootView!
             case SDL_QUIT:
                 print("SDL_QUIT was called")
                 shouldQuit = true
-                SDL.rootView = UIWindow()
+                SDL.rootView = nil
                 window = nil
                 unload()
+                #if os(Android)
+                try? jni.call("removeCallbacks", on: getSDLView())
+                #endif
                 return true
             case SDL_MOUSEBUTTONDOWN:
                 handleTouchDown(.from(e.button))
@@ -164,8 +169,6 @@ extension SDL_Keymod: OptionSet {}
 public var onHardwareBackButtonPress: (() -> Void)?
 
 #if os(Android)
-import JNI
-
 @_silgen_name("Java_org_libsdl_app_SDLActivity_render")
 public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
     let renderAndRunLoopTimer = Timer()

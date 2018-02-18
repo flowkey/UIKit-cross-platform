@@ -199,6 +199,7 @@ open class CALayer {
         contentsScale = layer.contentsScale
         superlayer = layer.superlayer
         sublayers = layer.sublayers
+        transform = layer.transform
     }
 
     open func copy() -> Any {

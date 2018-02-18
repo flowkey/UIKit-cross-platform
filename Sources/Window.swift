@@ -28,7 +28,6 @@ internal final class Window {
     #else
         // This corresponds to the Samsung S7 screen at its 1080p 1.5x Retina resolution:
         var size = CGSize(width: 2560 / 3.0, height: 1440 / 3.0)
-//        size = CGSize(width: 512, height: 512)
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
             //SDL_WINDOW_FULLSCREEN

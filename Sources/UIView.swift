@@ -41,6 +41,8 @@ open class UIView: UIResponder {
         }
     }
 
+    open let safeAreaInsets: UIEdgeInsets = .zero
+
     open var mask: UIView?
 
     open var isHidden: Bool {
@@ -101,7 +103,7 @@ open class UIView: UIResponder {
         set { layer.masksToBounds = newValue }
     }
 
-    public internal(set) var superview: UIView? {
+    public internal(set) weak var superview: UIView? {
         // willSet {
         // XXX: We should call willMoveToSuperview(newValue) here, but we haven't implemented it yet
         // }
@@ -131,40 +133,38 @@ open class UIView: UIResponder {
     // MARK: Subviews, Superviews
 
     open func addSubview(_ view: UIView) {
-        insertSubviewWithoutTouchingLayer(view, at: subviews.endIndex)
         layer.addSublayer(view.layer)
+        insertSubviewWithoutTouchingLayer(view, at: subviews.endIndex)
     }
 
     open func insertSubview(_ view: UIView, aboveSubview siblingSubview: UIView) {
-        // If sibling is not found, just add to end of array
-        let index = subviews.index(of: siblingSubview)?.advanced(by: 1) ?? subviews.endIndex
-        insertSubviewWithoutTouchingLayer(view, at: index)
-
         // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
         if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
             layer.insertSublayer(view.layer, at: UInt32(layerIndex + 1))
         } else {
             layer.addSublayer(view.layer)
         }
+
+        // If sibling is not found, just add to end of array
+        let index = subviews.index(of: siblingSubview)?.advanced(by: 1) ?? subviews.endIndex
+        insertSubviewWithoutTouchingLayer(view, at: index)
     }
 
     open func insertSubview(_ view: UIView, belowSubview siblingSubview: UIView) {
-        // Inserting an object at index 0 pushes the existing object at index 0 to index 1
-        // If sibling is not found, just add to end of array
-        let index = subviews.index(of: siblingSubview) ?? subviews.endIndex
-        insertSubviewWithoutTouchingLayer(view, at: index)
-
         // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
         if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
             layer.insertSublayer(view.layer, at: UInt32(layerIndex))
         } else {
             layer.addSublayer(view.layer)
         }
+
+        // Inserting an object at index 0 pushes the existing object at index 0 to index 1
+        // If sibling is not found, just add to end of array
+        let index = subviews.index(of: siblingSubview) ?? subviews.endIndex
+        insertSubviewWithoutTouchingLayer(view, at: index)
     }
 
     open func insertSubview(_ view: UIView, at index: Int) {
-        insertSubviewWithoutTouchingLayer(view, at: index)
-
         // XXX: This might not cover all cases yet. Managing these two hierarchies is complex...
         let indexOfViewWeJustPushedForwardInArray = index + 1
         if index == 0 {
@@ -176,6 +176,8 @@ open class UIView: UIResponder {
             // We didn't replace any view. Just push the new layer to the end of the sublayers array.
             layer.addSublayer(view.layer)
         }
+
+        insertSubviewWithoutTouchingLayer(view, at: index)
     }
 
     private func safeGetSubview(index: Int) -> UIView? {

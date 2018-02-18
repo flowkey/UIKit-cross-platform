@@ -35,6 +35,7 @@ open class UIProgressView: UIView {
     override open func layoutSubviews() {
         super.layoutSubviews()
         progressLayer.frame = bounds
+        progressLayer.cornerRadius = layer.cornerRadius
         progressLayer.frame.width = bounds.width * CGFloat(progress)
     }
 }
