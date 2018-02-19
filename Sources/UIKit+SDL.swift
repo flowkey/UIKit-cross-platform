@@ -76,9 +76,6 @@ final public class SDL { // Only public for rootView!
 
         window.clear()
 
-        GPU_MatrixMode(GPU_PROJECTION)
-        GPU_LoadIdentity()
-
         GPU_MatrixMode(GPU_MODELVIEW)
         GPU_LoadIdentity()
 
@@ -86,9 +83,6 @@ final public class SDL { // Only public for rootView!
         rootView.sdlDrawAndLayoutTreeIfNeeded()
         rootView.layer.sdlRender()
         window.flip()
-
-        assert(CATransform3D(unsafePointer: GPU_GetCurrentMatrix()) == CATransform3DIdentity,
-               "We always return to the previous matrix after rendering a layer (and its sublayers), so something went wrong here")
 
         firstRender = false
     }

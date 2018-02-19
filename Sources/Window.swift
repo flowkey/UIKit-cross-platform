@@ -123,8 +123,12 @@ internal final class Window {
         GPU_Clear(rawPointer)
     }
 
-    var clippingRect: CGRect = .zero {
+    var clippingRect: CGRect? {
         didSet {
+            guard let clippingRect = clippingRect else {
+                return GPU_UnsetClip(rawPointer)
+            }
+
             GPU_SetClipRect(rawPointer, GPU_Rect(clippingRect))
         }
     }
