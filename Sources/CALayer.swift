@@ -94,8 +94,7 @@ open class CALayer {
             )
         }
         set {
-            // Position is unscaled, because `position` is in the superview's coordinate
-            // system and so can be set regardless of the current transform.
+            // `position` is set untransformed because it is in the superview's coordinate system:
             position = CGPoint(
                 x: newValue.origin.x + (newValue.width * anchorPoint.x),
                 y: newValue.origin.y + (newValue.height * anchorPoint.y)
