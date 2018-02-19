@@ -34,7 +34,7 @@ open class UIView: UIResponder {
     }
 
     open var transform: CGAffineTransform {
-        get { return CATransform3DGetAffineTransform(layer.transform) }
+        get { return layer.affineTransform() }
         set {
             layer.setAffineTransform(newValue)
             setNeedsLayout()

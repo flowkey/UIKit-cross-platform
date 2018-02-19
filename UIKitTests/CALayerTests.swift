@@ -53,12 +53,21 @@ class CALayerTests: XCTestCase {
         let layer = CALayer()
 
         layer.frame = testFrame
-        layer.bounds.size = CGSize(width: 1000, height: 1000)
+        layer.bounds.size = CGSize(width: 256, height: 512) // Random values to catch swapped x/y errors
 
-        // Bounds size expands from layer.anchorPoint which is per default in the middle of the frame.
-        // This means that increasing bounds.size by 900 in each dimension effectively moves frame.origin
-        // up and left by 450 in each dimension:
-        XCTAssertEqual(layer.frame.origin.x, -400.0, accuracy: accuracy)
-        XCTAssertEqual(layer.frame.origin.y, -400.0, accuracy: accuracy)
+        // Bounds size expands from layer.anchorPoint which is per default the middle of the frame.
+        // i.e. Increasing bounds.size in each dimension moves frame.origin up and left:
+        let sizeDelta = CGSize(
+            width: layer.bounds.width - testFrame.width,
+            height: layer.bounds.height - testFrame.height
+        )
+
+        let expectedSize = CGSize(
+            width: testFrame.origin.x - (sizeDelta.width * layer.anchorPoint.x),
+            height: testFrame.origin.y - (sizeDelta.height * layer.anchorPoint.y)
+        )
+
+        XCTAssertEqual(layer.frame.origin.x, expectedSize.width, accuracy: accuracy)
+        XCTAssertEqual(layer.frame.origin.y, expectedSize.height, accuracy: accuracy)
     }
 }
