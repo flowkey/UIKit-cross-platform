@@ -147,23 +147,15 @@ extension CGRect {
     internal func applying(_ t: CATransform3D) -> CGRect {
         if t == CATransform3DIdentity { return self }
 
-        var topLeft = [Float(self.minX), Float(self.minY), 0]
-        var topRight = [Float(self.maxX), Float(self.minY), 0]
-        var bottomLeft = [Float(self.minX), Float(self.maxY), 0]
-        var bottomRight = [Float(self.maxX), Float(self.maxY), 0]
+        let topLeft = t.applyToVector(x: minX, y: minY, z: 0)
+        let topRight = t.applyToVector(x: maxX, y: minY, z: 0)
+        let bottomLeft = t.applyToVector(x: minX, y: maxY, z: 0)
+        let bottomRight = t.applyToVector(x: maxX, y: maxY, z: 0)
 
-        t.asNonMutatingPointer { transform in
-            GPU_VectorApplyMatrix(&topLeft, transform)
-            GPU_VectorApplyMatrix(&topRight, transform)
-            GPU_VectorApplyMatrix(&bottomLeft, transform)
-            GPU_VectorApplyMatrix(&bottomRight, transform)
-        }
-
-        let newMinX = min(topLeft[0], topRight[0], bottomLeft[0], bottomRight[0])
-        let newMinY = min(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1])
-
-        let newMaxX = max(topLeft[0], topRight[0], bottomLeft[0], bottomRight[0])
-        let newMaxY = max(topLeft[1], topRight[1], bottomLeft[1], bottomRight[1])
+        let newMinX = min(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x)
+        let newMinY = min(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
+        let newMaxX = max(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x)
+        let newMaxY = max(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
 
         return CGRect(
             x: CGFloat(newMinX),

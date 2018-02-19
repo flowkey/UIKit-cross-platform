@@ -29,32 +29,10 @@ public struct CATransform3D {
         self.m41 = 0.0; self.m42 = 0.0; self.m43 = 0.0; self.m44 = 0.0;
     }
 
-    public var m11: Float
-    public var m12: Float
-    public var m13: Float
-    public var m14: Float
-
-    public var m21: Float
-    public var m22: Float
-    public var m23: Float
-    public var m24: Float
-
-    public var m31: Float
-    public var m32: Float
-    public var m33: Float
-    public var m34: Float
-
-    public var m41: Float
-    public var m42: Float
-    public var m43: Float
-    public var m44: Float
-
-    func asNonMutatingPointer(_ closure: ((UnsafeMutablePointer<Float>) -> Void)) -> Void {
-        var copy = [m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44]
-        copy.withUnsafeMutableBufferPointer { buffer in
-            closure(buffer.baseAddress!)
-        }
-    }
+    public var m11: Float; public var m12: Float; public var m13: Float; public var m14: Float
+    public var m21: Float; public var m22: Float; public var m23: Float; public var m24: Float
+    public var m31: Float; public var m32: Float; public var m33: Float; public var m34: Float
+    public var m41: Float; public var m42: Float; public var m43: Float; public var m44: Float
 }
 
 extension CATransform3D {
