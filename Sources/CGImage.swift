@@ -22,6 +22,7 @@ public class CGImage {
         rawPointer = pointer
 
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
+        GPU_SetBlendMode(rawPointer, GPU_BLEND_NORMAL_FACTOR_ALPHA)
         GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR)
 
         size = CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))

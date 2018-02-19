@@ -37,7 +37,9 @@ open class UIView: UIResponder {
         get { return layer.affineTransform() }
         set {
             layer.setAffineTransform(newValue)
-            setNeedsLayout()
+
+            // XXX: This doesn't actually happen on iOS but the subviews get layouted somehow anyway
+            needsLayout = true
         }
     }
 
