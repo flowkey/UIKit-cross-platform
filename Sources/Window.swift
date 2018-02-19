@@ -79,8 +79,14 @@ internal final class Window {
         #endif
     }
 
-    /// clippingRect behaves like an offset
-    func blit(_ image: CGImage, anchorPoint: CGPoint, scaleX: Float, scaleY: Float, opacity: Float, clippingRect: CGRect?) {
+    func blit(
+        _ image: CGImage,
+        anchorPoint: CGPoint,
+        scaleX: Float,
+        scaleY: Float,
+        opacity: Float,
+        clippingRect: CGRect? // clippingRect behaves like an offset
+    ) {
         GPU_SetAnchor(image.rawPointer, Float(anchorPoint.x), Float(anchorPoint.y))
         GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8())
 
