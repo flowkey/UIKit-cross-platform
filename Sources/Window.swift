@@ -160,11 +160,6 @@ internal final class Window {
         printThisLoop = false
     }
 
-    var isCameraEnabled: Bool {
-        get { return GPU_IsCameraEnabled(rawPointer) }
-        set { GPU_EnableCamera(rawPointer, newValue) }
-    }
-
     deinit {
         defer { GPU_Quit() }
 
