@@ -6,10 +6,4 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-enum UIEventType: Int {
-    case touches
-}
-
-public class UIEvent {
-    var type: UIEventType = .touches
-}
+public struct UIEvent {}
