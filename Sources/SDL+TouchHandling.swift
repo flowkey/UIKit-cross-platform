@@ -10,7 +10,7 @@
 
 extension SDL {
     static func handleTouchDown(_ point: CGPoint) {
-        guard let hitView = rootView.hitTest(point, with: UIEvent()) else { return }
+        guard let hitView = rootView.hitTest(point, with: nil) else { return }
 
         print("hit", hitView)
 
