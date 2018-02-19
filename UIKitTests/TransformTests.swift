@@ -87,10 +87,8 @@ class TransformTests: XCTestCase {
     }
 
     func testSDLGpuMatrixPerformance() {
-        let identity: [Float] = [1.0, 0, 0, 0,
-                                 0, 1.0, 0, 0,
-                                 0, 0, 1.0, 0,
-                                 0, 0, 0, 1.0]
+        var identity = [Float](repeating: 0.0, count: 16)
+        GPU_MatrixIdentity(&identity)
 
         var matrixA = identity
         GPU_MatrixTranslate(&matrixA, 20, 20, 20)
