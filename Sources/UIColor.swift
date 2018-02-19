@@ -86,7 +86,7 @@ extension UIColor {
     public static let red = UIColor(red: 1, green: 0, blue: 0)
     public static let green = UIColor(red: 0, green: 1, blue: 0)
     public static let blue = UIColor(red: 0, green: 0, blue: 1)
-    public static let purple = UIColor(red: 1, green: 0, blue: 1)
+    public static let purple = UIColor(red: 0.5, green: 0, blue: 0.5)
     public static let orange = UIColor(red: 1, green: 0.5, blue: 0)
     public static let lightGray = UIColor(red: 2.0 / 3.0, green: 2.0 / 3.0, blue: 2.0 / 3.0)
     public static let clear = white.withAlphaComponent(0.0)
