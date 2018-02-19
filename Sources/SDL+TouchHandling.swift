@@ -18,14 +18,14 @@ extension SDL {
         currentTouch.view = hitView
         UITouch.activeTouches.insert(currentTouch)
 
-        hitView.gestureRecognizers.forEach { gestureRecognizer in
-            gestureRecognizer.touchesBegan(UITouch.activeTouches, with: UIEvent())
-            currentTouch.gestureRecognizers.append(gestureRecognizer)
-        }
-
         if !currentTouch.hasBeenCancelledByAGestureRecognizer {
             for responder in hitView.responderChain {
                 responder.touchesBegan([currentTouch], with: nil)
+
+                guard let responder = responder as? UIView else { return }
+                responder.gestureRecognizers.forEach {
+                    $0.touchesBegan(UITouch.activeTouches, with: UIEvent())
+                }
             }
         }
     }
@@ -34,13 +34,16 @@ extension SDL {
         guard let touch = UITouch.activeTouches.first(where: { $0.touchId == Int(0) }) else { return }
 
         touch.updateAbsoluteLocation(point)
-        touch.gestureRecognizers.forEach { gestureRecognizer in
-            gestureRecognizer.touchesMoved(UITouch.activeTouches, with: UIEvent())
-        }
 
         if let hitView = touch.view, !touch.hasBeenCancelledByAGestureRecognizer {
             for responder in hitView.responderChain {
                 responder.touchesMoved([touch], with: nil)
+
+                guard let responder = responder as? UIView else { return }
+                responder.gestureRecognizers.forEach {
+                    $0.touchesMoved(UITouch.activeTouches, with: UIEvent())
+                }
+
             }
         }
     }
@@ -48,14 +51,14 @@ extension SDL {
     static func handleTouchUp(_ point: CGPoint) {
         guard let touch = UITouch.activeTouches.first(where: {$0.touchId == Int(0) }) else { return }
 
-        touch.gestureRecognizers.forEach { gestureRecognizer in
-            // TODO: make only the touches that have actually ended end, same with moved and started above
-            gestureRecognizer.touchesEnded([touch], with: UIEvent())
-        }
-
         if let hitView = touch.view, !touch.hasBeenCancelledByAGestureRecognizer {
             for responder in hitView.responderChain {
                 responder.touchesEnded([touch], with: nil)
+
+                guard let responder = responder as? UIView else { return }
+                responder.gestureRecognizers.forEach {
+                    $0.touchesEnded(UITouch.activeTouches, with: UIEvent())
+                }
             }
         }
         

@@ -18,7 +18,7 @@ public class UITouch {
 
     var touchId: Int
     internal(set) public weak var view: UIView?
-    public var gestureRecognizers: [UIGestureRecognizer] = []
+    public var gestureRecognizers = Set<UIGestureRecognizer>()
 
     private var absoluteLocation: CGPoint
     private var previousAbsoluteLocation: CGPoint
