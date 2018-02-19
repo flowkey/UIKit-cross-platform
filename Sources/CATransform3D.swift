@@ -153,6 +153,7 @@ public func CATransform3DMakeTranslation(_ tx: CGFloat, _ ty: CGFloat, _ tz: CGF
 }
 
 public func CATransform3DConcat(_ a: CATransform3D, _ b: CATransform3D) -> CATransform3D {
+    if a == CATransform3DIdentity { return b }
     if b == CATransform3DIdentity { return a }
 
     var result = CATransform3D()

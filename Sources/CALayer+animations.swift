@@ -85,8 +85,7 @@ extension CALayer {
         case .bounds:
             guard let startBounds = animation.fromValue as? CGRect else { return }
             let endBounds = animation.toValue as? CGRect ?? self.bounds
-            // animate origin only, because setting bounds.size updates frame.size
-            presentation.bounds.origin = (startBounds + (endBounds - startBounds) * progress).origin
+            presentation.bounds = (startBounds + (endBounds - startBounds) * progress)
 
         case .opacity:
             guard let startOpacity = animation.fromValue as? Float else { return }
@@ -96,7 +95,6 @@ extension CALayer {
         case .transform:
             guard let startTransform = animation.fromValue as? CATransform3D else { return }
             let endTransform = animation.toValue as? CATransform3D ?? self.transform
-            // This is the same calculation as the others, but has to be written out because CATransform3D is a tuple
             presentation.transform = startTransform + ((endTransform - startTransform) * Float(progress))
 
         case .unknown: break
