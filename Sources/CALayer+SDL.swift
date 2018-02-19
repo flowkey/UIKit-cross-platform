@@ -18,14 +18,12 @@ extension CALayer {
         let modelViewTransform = matrixAtPosition * transform
         modelViewTransform.setAsSDLgpuMatrix()
 
-
-        // Untransformed origin in own coordinates
-        let origin = CGPoint(
+        let deltaFromAnchorPointToOrigin = CGPoint(
             x: -(bounds.width * anchorPoint.x),
             y: -(bounds.height * anchorPoint.y)
         )
 
-        let rect = CGRect(origin: origin, size: bounds.size)
+        let renderedBoundsRelativeToAnchorPoint = CGRect(origin: deltaFromAnchorPointToOrigin, size: bounds.size)
 
         // Big performance optimization. Don't render anything that's entirely offscreen:
 //        guard absoluteFrame.intersects(SDL.rootView.bounds) else { return }
@@ -34,7 +32,7 @@ extension CALayer {
             print("--------------------------------")
             print(self.delegate ?? self)
             print(modelViewTransform)
-            print(rect)
+            print(renderedBoundsRelativeToAnchorPoint)
             print()
         }
 
@@ -46,7 +44,7 @@ extension CALayer {
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
             SDL.window.fill(
-                rect,
+                renderedBoundsRelativeToAnchorPoint,
                 with: backgroundColor.withAlphaComponent(CGFloat(backgroundColorOpacity)),
                 cornerRadius: cornerRadius
             )
@@ -54,7 +52,7 @@ extension CALayer {
 
         if borderWidth > 0 {
             SDL.window.outline(
-                rect,
+                renderedBoundsRelativeToAnchorPoint,
                 lineColor: borderColor.withAlphaComponent(CGFloat(opacity)),
                 lineThickness: borderWidth,
                 cornerRadius: cornerRadius
@@ -66,7 +64,7 @@ extension CALayer {
 
             if absoluteShadowOpacity > 0.01 {
                 SDL.window.fill(
-                    shadowPath.offsetBy(origin),
+                    shadowPath.offsetBy(deltaFromAnchorPointToOrigin),
                     with: shadowColor.withAlphaComponent(CGFloat(absoluteShadowOpacity)),
                     cornerRadius: 2
                 )
@@ -90,9 +88,12 @@ extension CALayer {
         }
 
         if let sublayers = sublayers {
-            // We have to put the absolute translation matrix back to `origin` so we can translate to the next `position` in the sublayers
-            // We subtract `bounds` as usual to get the scrolling effect.
-            let matrixAtFrameOrigin = modelViewTransform * CATransform3DMakeTranslation(origin.x - bounds.origin.x, origin.y - bounds.origin.y, -zPosition)
+            // `position` is always relative from the parent's origin, but the global GPU matrix is currently
+            // focused on `position` rather than the origin (which in turn is relative to `anchorPoint`).
+            // So: translate back to `origin` so we can translate to the next `position` in the sublayers.
+            // We also subtract `bounds` as usual to get the scrolling effect.
+            let translationFromAnchorPointToOrigin = CATransform3DMakeTranslation(deltaFromAnchorPointToOrigin.x - bounds.origin.x, deltaFromAnchorPointToOrigin.y - bounds.origin.y, -zPosition)
+            let matrixAtFrameOrigin = modelViewTransform * translationFromAnchorPointToOrigin
             matrixAtFrameOrigin.setAsSDLgpuMatrix()
 
             for sublayer in sublayers {
