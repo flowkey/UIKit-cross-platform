@@ -85,36 +85,21 @@ internal final class Window {
         scaleX: Float,
         scaleY: Float,
         opacity: Float,
-        clippingRect: CGRect? // clippingRect behaves like an offset
+        offset: CGPoint
     ) {
         GPU_SetAnchor(image.rawPointer, Float(anchorPoint.x), Float(anchorPoint.y))
         GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8())
 
-        // The only difference between these two is/should be whether we pass a clipping rect:
-        if let clippingRect = clippingRect {
-            var clipGPU_Rect = GPU_Rect(clippingRect)
-            GPU_BlitTransform(
-                image.rawPointer,
-                &clipGPU_Rect,
-                self.rawPointer,
-                Float(clippingRect.origin.x),
-                Float(clippingRect.origin.y),
-                0, // rotation in degrees
-                scaleX,
-                scaleY
-            )
-        } else {
-            GPU_BlitTransform(
-                image.rawPointer,
-                nil,
-                self.rawPointer,
-                0,
-                0,
-                0, // rotation in degrees
-                scaleX,
-                scaleY
-            )
-        }
+        GPU_BlitTransform(
+            image.rawPointer,
+            nil,
+            self.rawPointer,
+            Float(offset.x),
+            Float(offset.y),
+            0, // rotation in degrees
+            scaleX,
+            scaleY
+        )
     }
 
     func setShapeBlending(_ newValue: Bool) {
