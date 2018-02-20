@@ -6,10 +6,18 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public enum NSTextAlignment: String {
+public enum NSTextAlignment: Int {
     case center
     case left
     case right
+
+    internal func contentsGravity() -> CALayer.ContentsGravity {
+        switch self {
+        case .left: return .left
+        case .center: return .center
+        case .right: return .right
+        }
+    }
 }
 
 open class UILabel: UIView {
@@ -36,7 +44,7 @@ open class UILabel: UIView {
     }
 
     private func updateLayerContentsGravityFromTextAlignment() {
-        layer.contentsGravity = textAlignment.rawValue
+        layer.contentsGravityEnum = textAlignment.contentsGravity()
     }
 
     public var font: UIFont = .systemFont(ofSize: 16) {
