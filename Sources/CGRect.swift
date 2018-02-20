@@ -177,10 +177,10 @@ extension CGRect {
 
 extension GPU_Rect {
     init(_ cgRect: CGRect) {
-        self.w = Float(cgRect.size.width)
-        self.h = Float(cgRect.size.height)
-        self.x = Float(cgRect.origin.x)
-        self.y = Float(cgRect.origin.y)
+        self.w = Float(round(cgRect.size.width))
+        self.h = Float(round(cgRect.size.height))
+        self.x = Float(round(cgRect.origin.x))
+        self.y = Float(round(cgRect.origin.y))
     }
 }
 
