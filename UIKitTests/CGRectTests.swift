@@ -79,5 +79,42 @@ class CGRectTests: XCTestCase {
         XCTAssert(a.intersects(b))
         XCTAssert(b.intersects(a))
     }
+
+    func testIntersectionIsCommutative() {
+        let a = CGRect(x: 0, y: 0, width: 100, height: 100)
+        let b = CGRect(x: 25, y: 25, width: 50, height: 50)
+
+        let intersectionA = a.intersection(b)
+        let intersectionB = b.intersection(a)
+
+        XCTAssertEqual(intersectionA, intersectionB)
+    }
+
+    func testIntersectionWithConcentricRects() {
+        let a = CGRect(x: 0, y: 0, width: 100, height: 100)
+        let b = CGRect(x: 25, y: 25, width: 50, height: 50)
+
+        let intersection = a.intersection(b)
+
+        XCTAssertEqual(intersection, CGRect(x: 25, y: 25, width: 50, height: 50))
+    }
+
+    func testIntersectionWithPartiallyOverlappingRects() {
+        let a = CGRect(x: 0, y: 0, width: 100, height: 100)
+        let b = CGRect(x: 75, y: 75, width: 50, height: 50)
+
+        let intersection = a.intersection(b)
+
+        XCTAssertEqual(intersection, CGRect(x: 75, y: 75, width: 25, height: 25))
+    }
+
+    func testIntersectionWithNoOverlap() {
+        let a = CGRect(x: 0, y: 0, width: 100, height: 100)
+        let b = CGRect(x: 125, y: 125, width: 50, height: 50)
+
+        let intersection = a.intersection(b)
+
+        XCTAssert(intersection.isNull)
+    }
 }
 

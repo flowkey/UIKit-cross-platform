@@ -27,6 +27,9 @@ public struct CGRect {
         self.size = CGSize(width: width, height: height)
     }
 
+    public var isNull: Bool { return self == .null }
+
+    public static let null = CGRect(x: .infinity, y: .infinity, width: 0, height: 0)
     public static let zero = CGRect()
 }
 
@@ -104,7 +107,7 @@ extension CGRect {
             // The intersection rectangle has dimensions, i.e. there is an intersection:
             return CGRect(x: largestMinX, y: largestMinY, width: width, height: height)
         } else {
-            return .zero
+            return .null
         }
     }
 }
