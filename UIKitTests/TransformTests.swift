@@ -86,6 +86,21 @@ class TransformTests: XCTestCase {
         XCTAssertEqual(transformFromBuffer, uikitMatrix)
     }
 
+    func testTransformVectorMultiply() {
+        let scaleX = CGFloat(arc4random_uniform(100))
+        let scaleY = CGFloat(arc4random_uniform(100))
+        let scaleZ = CGFloat(arc4random_uniform(100))
+
+        let scale = UIKit.CATransform3DMakeScale(scaleX, scaleY, scaleZ)
+        let translation = UIKit.CATransform3DMakeTranslation(10.0, 10.0, 10.0)
+        let transform = translation * scale // translation applied first, so translation is absolute / unscaled
+        let scaledVector = transform.transformingVector(x: 1.0, y: 1.0, z: 1.0) // so post-scale value == scale
+
+        XCTAssertEqual(scaledVector.x, scaleX + 10.0)
+        XCTAssertEqual(scaledVector.y, scaleY + 10.0)
+        XCTAssertEqual(scaledVector.z, scaleZ + 10.0)
+    }
+
     func testSDLGpuMatrixPerformance() {
         var identity = [Float](repeating: 0.0, count: 16)
         GPU_MatrixIdentity(&identity)

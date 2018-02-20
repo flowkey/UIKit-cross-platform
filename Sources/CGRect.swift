@@ -89,6 +89,24 @@ extension CGRect {
 
         return true
     }
+
+    public func intersection(_ other: CGRect) -> CGRect {
+        let largestMinX = max(self.minX, other.minX)
+        let largestMinY = max(self.minY, other.minY)
+
+        let smallestMaxX = min(self.maxX, other.maxX)
+        let smallestMaxY = min(self.maxY, other.maxY)
+
+        let width = smallestMaxX - largestMinX
+        let height = smallestMaxY - largestMinY
+
+        if width > 0, height > 0 {
+            // The intersection rectangle has dimensions, i.e. there is an intersection:
+            return CGRect(x: largestMinX, y: largestMinY, width: width, height: height)
+        } else {
+            return .zero
+        }
+    }
 }
 
 extension CGRect {
@@ -107,37 +125,24 @@ extension CGRect {
     public func applying(_ t: CGAffineTransform) -> CGRect {
         if t.isIdentity { return self }
 
-        let oldPoints: [CGPoint] = [
-            CGPoint(x: self.minX, y: self.minY), // top left
-            CGPoint(x: self.maxX, y: self.minY), // top right
-            CGPoint(x: self.minX, y: self.maxY), // bottom left
-            CGPoint(x: self.maxX, y: self.maxY)  // bottom right
-        ]
+        let newTopLeft = t.transforming(CGPoint(x: minX, y: minY))
+        let newTopRight = t.transforming(CGPoint(x: maxX, y: minY))
+        let newBottomLeft = t.transforming(CGPoint(x: minX, y: maxY))
+        let newBottomRight = t.transforming(CGPoint(x: maxX, y: maxY))
 
-        let newPoints = oldPoints.map { oldPoint in
-            CGPoint(
-                x: oldPoint.x * t.m11 + oldPoint.y * t.m21 + t.tX,
-                y: oldPoint.x * t.m12 + oldPoint.y * t.m22 + t.tY
-            )
-        }
+        let newMinX = min(newTopLeft.x, newTopRight.x, newBottomLeft.x, newBottomRight.x)
+        let newMaxX = max(newTopLeft.x, newTopRight.x, newBottomLeft.x, newBottomRight.x)
 
-        // TODO: Put all of this "inline" to avoid the overhead of multiple arrays and loops
-        let result = newPoints.reduce((minX: CGFloat.greatestFiniteMagnitude, minY: CGFloat.greatestFiniteMagnitude, maxX: -CGFloat.greatestFiniteMagnitude, maxY: -CGFloat.greatestFiniteMagnitude)) { result, point in
-            return (
-                minX: min(result.minX, point.x),
-                minY: min(result.minY, point.y),
-                maxX: max(result.maxX, point.x),
-                maxY: max(result.maxY, point.y)
-            )
-        }
+        let newMinY = min(newTopLeft.y, newTopRight.y, newBottomLeft.y, newBottomRight.y)
+        let newMaxY = max(newTopLeft.y, newTopRight.y, newBottomLeft.y, newBottomRight.y)
 
         // XXX: What happens if the point that was furthest left is now on the right (because of a rotation)?
         // i.e. Should do we return a normalised rect or one with a negative width?
         return CGRect(
-            x: result.minX,
-            y: result.minY,
-            width: result.maxX - result.minX,
-            height: result.maxY - result.minY
+            x: newMinX,
+            y: newMinY,
+            width: newMaxX - newMinX,
+            height: newMaxY - newMinY
         )
     }
 }
@@ -147,14 +152,15 @@ extension CGRect {
     internal func applying(_ t: CATransform3D) -> CGRect {
         if t == CATransform3DIdentity { return self }
 
-        let topLeft = t.applyToVector(x: minX, y: minY, z: 0)
-        let topRight = t.applyToVector(x: maxX, y: minY, z: 0)
-        let bottomLeft = t.applyToVector(x: minX, y: maxY, z: 0)
-        let bottomRight = t.applyToVector(x: maxX, y: maxY, z: 0)
+        let topLeft = t.transformingVector(x: minX, y: minY, z: 0)
+        let topRight = t.transformingVector(x: maxX, y: minY, z: 0)
+        let bottomLeft = t.transformingVector(x: minX, y: maxY, z: 0)
+        let bottomRight = t.transformingVector(x: maxX, y: maxY, z: 0)
 
         let newMinX = min(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x)
-        let newMinY = min(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
         let newMaxX = max(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x)
+
+        let newMinY = min(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
         let newMaxY = max(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
 
         return CGRect(

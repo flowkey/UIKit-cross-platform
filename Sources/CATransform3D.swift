@@ -48,11 +48,11 @@ extension CATransform3D {
 }
 
 internal extension CATransform3D {
-    func applyToVector(x: CGFloat, y: CGFloat, z: CGFloat) -> (x: CGFloat, y: CGFloat, z: CGFloat) {
-        let newX: CGFloat = (CGFloat(m11) * x) + (CGFloat(m12) * y) + (CGFloat(m13) * z) + CGFloat(m14)
-        let newY: CGFloat = (CGFloat(m21) * x) + (CGFloat(m22) * y) + (CGFloat(m23) * z) + CGFloat(m24)
-        let newZ: CGFloat = (CGFloat(m31) * x) + (CGFloat(m32) * y) + (CGFloat(m33) * z) + CGFloat(m34)
-        let newW: CGFloat = (CGFloat(m41) * x) + (CGFloat(m42) * y) + (CGFloat(m43) * z) + CGFloat(m44)
+    func transformingVector(x: CGFloat, y: CGFloat, z: CGFloat) -> (x: CGFloat, y: CGFloat, z: CGFloat) {
+        let newX = CGFloat(m11) * x + CGFloat(m21) * y + CGFloat(m31) * z + CGFloat(m41)
+        let newY = CGFloat(m12) * x + CGFloat(m22) * y + CGFloat(m32) * z + CGFloat(m42)
+        let newZ = CGFloat(m13) * x + CGFloat(m23) * y + CGFloat(m33) * z + CGFloat(m43)
+        let newW = CGFloat(m14) * x + CGFloat(m24) * y + CGFloat(m34) * z + CGFloat(m44)
 
         return (x: newX / newW, y: newY / newW, z: newZ / newW)
     }

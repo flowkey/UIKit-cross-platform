@@ -14,6 +14,13 @@ public extension CGAffineTransform {
         self.init(scaleByX: scaleX, byY: y)
     }
 
+    internal func transforming(_ point: CGPoint) -> CGPoint {
+        return CGPoint(
+            x: point.x * m11 + point.y * m21 + tX,
+            y: point.x * m12 + point.y * m22 + tY
+        )
+    }
+
     public var isIdentity: Bool {
         return self == .identity
     }
