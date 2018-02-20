@@ -11,13 +11,7 @@ import SDL
 open class CALayer {
     open weak var delegate: CALayerDelegate?
 
-    open var contents: CGImage? {
-        didSet {
-            if let contents = self.contents {
-                self.bounds.size = contents.size / contentsScale
-            }
-        }
-    }
+    open var contents: CGImage?
 
     /// Defaults to 1.0 but if the layer is associated with a view,
     /// the view sets this value to match the screen.
@@ -219,12 +213,6 @@ open class CALayer {
         return CALayer.defaultAction(forKey: event)
     }
 
-    // TODO: remove this function after implementing CGImage to get font texture in UIImage extension for fonts
-    open func convertToUIImage() -> UIImage? {
-        guard let contents = self.contents else { return nil }
-        return UIImage(cgImage: contents, scale: contentsScale)
-    }
-
     var presentation: CALayer?
     var disableAnimations = false
 
@@ -239,8 +227,8 @@ extension CGPoint {
 
 extension CALayer: CustomStringConvertible {
     public var description: String {
-        let anchorPointDescription = (anchorPoint != .defaultAnchorPoint) ? "\n- anchorPoint: \(anchorPoint)" : ""
-        let colourDescription = (backgroundColor != nil) ? "\n- backgroundColor: \(backgroundColor!)" : ""
+        let anchorPointDescription = (anchorPoint != .defaultAnchorPoint) ? "\n    - anchorPoint: \(anchorPoint)" : ""
+        let colourDescription = (backgroundColor != nil) ? "\n    - backgroundColor: \(backgroundColor!)" : ""
         return """
             \(type(of: self))
                 - frame: \(frame),
