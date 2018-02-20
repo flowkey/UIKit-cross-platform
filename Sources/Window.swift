@@ -10,8 +10,6 @@ import SDL
 import SDL_gpu
 
 internal final class Window {
-    var printThisLoop = false // XXX: REMOVE ME!!
-
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
     let size: CGSize
     let scale: CGFloat
@@ -82,10 +80,9 @@ internal final class Window {
     func blit(
         _ image: CGImage,
         anchorPoint: CGPoint,
-        scaleX: Float,
-        scaleY: Float,
-        opacity: Float,
-        offset: CGPoint
+        contentsScale: CGFloat,
+        contentsGravity: ContentsGravityTransformation,
+        opacity: Float
     ) {
         GPU_SetAnchor(image.rawPointer, Float(anchorPoint.x), Float(anchorPoint.y))
         GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8())
@@ -94,11 +91,11 @@ internal final class Window {
             image.rawPointer,
             nil,
             self.rawPointer,
-            Float(offset.x),
-            Float(offset.y),
+            Float(contentsGravity.offset.x),
+            Float(contentsGravity.offset.y),
             0, // rotation in degrees
-            scaleX,
-            scaleY
+            Float(contentsGravity.scale.width / contentsScale),
+            Float(contentsGravity.scale.height / contentsScale)
         )
     }
 
@@ -148,7 +145,6 @@ internal final class Window {
 
     func flip() {
         GPU_Flip(rawPointer)
-        printThisLoop = false
     }
 
     deinit {
@@ -193,8 +189,7 @@ extension SDLWindowFlags: OptionSet {}
     import JNI
 
     fileprivate func getAndroidDeviceScale() -> CGFloat {
-        let sdlView = getSDLView()
-        if let density: Float = try? jni.call("getDeviceDensity", on: sdlView) {
+        if let density: Float = try? jni.call("getDeviceDensity", on: getSDLView()) {
             return CGFloat(density)
         } else {
             return 2.0 // assume retina

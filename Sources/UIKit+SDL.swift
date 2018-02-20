@@ -120,8 +120,6 @@ final public class SDL { // Only public for rootView!
                         SDL.onPressPlus?()
                     case 45: // minus/dash key
                         SDL.onPressMinus?()
-                    case 112: // "P"
-                        SDL.window.printThisLoop = true
                     case 118: // "V"
                         SDL.rootView.printViewHierarchy()
                     default:

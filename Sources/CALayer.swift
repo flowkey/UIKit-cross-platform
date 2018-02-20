@@ -17,12 +17,10 @@ open class CALayer {
     /// the view sets this value to match the screen.
     open var contentsScale: CGFloat = 1.0
 
-    open var contentsGravity: String = "resize" {
-        didSet {
-            if !CALayer.validContentsGravityOptions.contains(contentsGravity) {
-                contentsGravity = "center"
-            }
-        }
+    internal var contentsGravityEnum: ContentsGravity = .resize
+    open var contentsGravity: String {
+        get { return contentsGravityEnum.rawValue }
+        set { contentsGravityEnum = ContentsGravity(rawValue: newValue) ?? .center } // matches iOS
     }
 
     internal (set) public weak var superlayer: CALayer?

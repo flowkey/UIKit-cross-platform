@@ -13,35 +13,53 @@ extension CALayer {
         let opacity = self.opacity * parentAbsoluteOpacity
         if isHidden || opacity < 0.01 { return }
 
-        let parentTransform = CATransform3D(unsafePointer: GPU_GetCurrentMatrix())
-        let matrixAtPosition = parentTransform * CATransform3DMakeTranslation(position.x, position.y, zPosition)
-        let modelViewTransform = matrixAtPosition * transform
-        modelViewTransform.setAsSDLgpuMatrix()
+        // The basis for all our transformations is `position` (in parent coordinates), which in this layer's
+        // coordinates is `anchorPoint`. To make this happen, we translate (in our parent's coordinate system
+        // – which may in turn be affected by its parents, and so on) to `position`, and then render rectangles
+        // which may (and often do) start at a negative `origin` based on our (bounds) `size` and `anchorPoint`:
+        let parentOriginTransform = CATransform3D(unsafePointer: GPU_GetCurrentMatrix())
+        let translationToPosition = CATransform3DMakeTranslation(position.x, position.y, zPosition)
+        let transformAtPositionInParentCoordinates = parentOriginTransform * translationToPosition
 
+        let modelViewTransform = transformAtPositionInParentCoordinates * self.transform
+
+        // Now that we're in our own coordinate system based around `anchorPoint` (which is generally the middle of
+        // bounds.size), we need to find the top left of the rectangle in order to be able to render rectangles.
+        // Since we have already applied our own `transform`, we can work in our own (`bounds.size`) units.
         let deltaFromAnchorPointToOrigin = CGPoint(
             x: -(bounds.width * anchorPoint.x),
             y: -(bounds.height * anchorPoint.y)
         )
-
         let renderedBoundsRelativeToAnchorPoint = CGRect(origin: deltaFromAnchorPointToOrigin, size: bounds.size)
+
 
         // Big performance optimization. Don't render anything that's entirely offscreen:
         let absoluteFrame = renderedBoundsRelativeToAnchorPoint.applying(modelViewTransform)
         guard absoluteFrame.intersects(SDL.rootView.bounds) else { return }
 
+
+        // We only actually set the transform here to avoid unneccesary work if the guard above fails
+        modelViewTransform.setAsSDLgpuMatrix()
+        defer { // Queue this up here in case we return before the actual end of the function
+            // We'll be done rendering this part of the tree by the time this is called.
+            // To render further siblings we need to return to our parent's transform (at its `origin`).
+            parentOriginTransform.setAsSDLgpuMatrix()
+        }
+
+
         let previousClippingRect = SDL.window.clippingRect
+
         if masksToBounds {
-            // If a previous one exists restrict it further, otherwise just set it:
+            // If a previous clippingRect exists restrict it further, otherwise just set it:
             SDL.window.clippingRect = previousClippingRect?.intersection(absoluteFrame) ?? absoluteFrame
         }
 
-        if SDL.window.printThisLoop {
-            print("--------------------------------")
-            print(self.delegate ?? self)
-            print(modelViewTransform)
-            print(renderedBoundsRelativeToAnchorPoint)
-            print()
+        defer {
+            // Reset clipping bounds no matter what happens between now and the end of this function
+            // We can't `defer` within the previous `if` block because defers always execute at the end of (any) scope
+            if masksToBounds { SDL.window.clippingRect = previousClippingRect }
         }
+
 
         if let mask = mask, let maskContents = mask.contents {
             ShaderProgram.mask.activate() // must activate before setting parameters (below)!
@@ -79,14 +97,12 @@ extension CALayer {
         }
 
         if let contents = contents {
-            let gravityScale = contentsScaleForGravity()
             SDL.window.blit(
                 contents,
                 anchorPoint: anchorPoint,
-                scaleX: Float(gravityScale.x / contentsScale),
-                scaleY: Float(gravityScale.y / contentsScale),
-                opacity: opacity,
-                offset: contentsOffsetForGravity()
+                contentsScale: contentsScale,
+                contentsGravity: ContentsGravityTransformation(for: self),
+                opacity: opacity
             )
         }
 
@@ -96,68 +112,26 @@ extension CALayer {
 
         if let sublayers = sublayers {
             // `position` is always relative from the parent's origin, but the global GPU matrix is currently
-            // focused on `self.position` rather than `self.origin` (which in turn is relative to `anchorPoint`).
-            // Translating back to `origin` here allows us to translate to the next `position` in each sublayer.
+            // focused on `self.position` rather than the `origin` we calculated to render rectangles.
+            // We need to be at `origin` here though so we can translate to the next `position` in each sublayer.
             //
-            // We also subtract `bounds` to get the scrolling effect as usual.
+            // We also subtract `bounds` to get the strange but useful scrolling effect as on iOS.
             let translationFromAnchorPointToOrigin = CATransform3DMakeTranslation(
                 deltaFromAnchorPointToOrigin.x - bounds.origin.x,
                 deltaFromAnchorPointToOrigin.y - bounds.origin.y,
-                -zPosition // XXX: not sure if this is correct
+                0 // If we moved (e.g.) forward to render `self`, all sublayers should start at the same zIndex
             )
 
-            let matrixAtFrameOrigin = modelViewTransform * translationFromAnchorPointToOrigin
-            matrixAtFrameOrigin.setAsSDLgpuMatrix()
+            // This transform is referred to as the `parentOriginTransform` in our sublayers (see above):
+            let transformAtSelfOrigin = modelViewTransform * translationFromAnchorPointToOrigin
+            transformAtSelfOrigin.setAsSDLgpuMatrix()
 
             for sublayer in sublayers {
                 (sublayer.presentation ?? sublayer).sdlRender(parentAbsoluteOpacity: opacity)
             }
         }
 
-        if masksToBounds {
-            SDL.window.clippingRect = previousClippingRect
-        }
-
-        // Essentially pops any transforms we added from the transform stack and returns to where we started
-        parentTransform.setAsSDLgpuMatrix()
-    }
-
-    private func contentsScaleForGravity() -> (x: CGFloat, y: CGFloat) {
-        let scaledContentsSize = CGSize(
-            width: contents!.size.width / contentsScale,
-            height: contents!.size.height / contentsScale
-        )
-
-        switch contentsGravity {
-        case "resize":
-            return (bounds.width / scaledContentsSize.width, bounds.height / scaledContentsSize.height)
-        case "resizeAspectFill":
-            let scale = max(bounds.width / scaledContentsSize.width, bounds.height / scaledContentsSize.height)
-            return (scale, scale)
-        case "resizeAspect":
-            let scale = min(bounds.width / scaledContentsSize.width, bounds.height / scaledContentsSize.height)
-            return (scale, scale)
-        case "left", "center", "right": // we don't scale for these values
-            return (1.0, 1.0)
-        default:
-            preconditionFailure("Tried to render a cgImage with an unimplemented contentsGravity value")
-        }
-    }
-
-    private func contentsOffsetForGravity() -> CGPoint {
-        switch contentsGravity {
-        case "resize", "resizeAspectFill", "resizeAspect", "center":
-            return .zero // centred
-        case "left":
-            let scaledWidth = (contents!.size.width / contentsScale)
-            let distanceToMinX = -(bounds.width - scaledWidth) * anchorPoint.x
-            return CGPoint(x: distanceToMinX, y: 0.0)
-        case "right":
-            let distanceToMaxX = bounds.width * (1 - anchorPoint.x)
-            let scaledWidth = (contents!.size.width / contentsScale)
-            return CGPoint(x: distanceToMaxX - scaledWidth, y: 0.0)
-        default:
-            preconditionFailure("Tried to render a cgImage with an unimplemented contentsGravity value")
-        }
+        // Defer blocks (above) reset the global `transform` and `clippingRect`s here
+        // to those that were set before we started rendering `self`.
     }
 }
