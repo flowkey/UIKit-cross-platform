@@ -98,9 +98,9 @@ extension CATransform3D: CustomStringConvertible {
 
 // https://stackoverflow.com/a/5508486/3086440
 /*
- | a b c |      | a b 0 0 |
- | d e f |  =>  | d e 0 0 |
- | g h i |      | 0 0 1 0 |
+ | a b 0 |      | a b 0 0 |
+ | d e 0 |  =>  | d e 0 0 |
+ | g h 1 |      | 0 0 1 0 |
                 | g h 0 1 |
  */
 public func CATransform3DMakeAffineTransform(_ m: CGAffineTransform) -> CATransform3D {

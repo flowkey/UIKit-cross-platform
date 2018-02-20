@@ -219,14 +219,19 @@ open class CALayer {
     }
 }
 
-extension CGPoint {
+private extension CGPoint {
     static let defaultAnchorPoint = CGPoint(x: 0.5, y: 0.5)
 }
 
 extension CALayer: CustomStringConvertible {
     public var description: String {
-        let anchorPointDescription = (anchorPoint != .defaultAnchorPoint) ? "\n    - anchorPoint: \(anchorPoint)" : ""
-        let colourDescription = (backgroundColor != nil) ? "\n    - backgroundColor: \(backgroundColor!)" : ""
+        let indent = "\n    - "
+        let anchorPointDescription =
+            (anchorPoint != .defaultAnchorPoint) ? "\(indent)anchorPoint: \(anchorPoint)" : ""
+
+        let colourDescription =
+            (backgroundColor != nil) ? "\(indent)backgroundColor: \(backgroundColor!)" : ""
+
         return """
             \(type(of: self))
                 - frame: \(frame),
