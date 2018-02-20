@@ -9,7 +9,9 @@
 
 extension CALayer {
     static let validContentsGravityOptions = [
+        "left",
         "center",
+        "right",
         "resize",
         "resizeAspectFill",
         "resizeAspect" // resizeAspectFit
