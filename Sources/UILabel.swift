@@ -52,9 +52,7 @@ open class UILabel: UIView {
     }
 
     override open var frame: CGRect {
-        didSet {
-            if oldValue.size != frame.size { setNeedsDisplay() }
-        }
+        didSet { if oldValue.size != frame.size { setNeedsDisplay() } }
     }
 
     open override func draw() {
