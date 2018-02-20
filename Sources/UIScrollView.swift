@@ -80,17 +80,6 @@ open class UIScrollView: UIView {
         }
     }
 
-//    open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-//        let extendedBounds = CGRect(
-//            x: -contentInset.left,
-//            y: -contentInset.top,
-//            width: max(bounds.width, contentInset.left + contentSize.width + contentInset.right),
-//            height: max(bounds.height, contentInset.top + contentSize.height + contentInset.bottom)
-//        )
-//
-//        return extendedBounds.contains(point)
-//    }
-
     open var showsVerticalScrollIndicator = true
 
     // TODO: Implement these:
