@@ -67,7 +67,12 @@ final public class SDL { // Only public for rootView!
 
         if !DisplayLink.activeDisplayLinks.isEmpty {
             DisplayLink.activeDisplayLinks.forEach { $0.callback() }
-        } else if !eventWasHandled && !firstRender && !UIView.animationsArePending {
+        } else if
+            !rootView.treeNeedsDisplay &&
+            !eventWasHandled &&
+            !firstRender &&
+            !UIView.animationsArePending
+        {
             // Sleep unless there are active touch inputs or pending animations
             return
         }
@@ -138,3 +143,11 @@ public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaOb
 }
 #endif
 
+extension UIView {
+    var treeNeedsDisplay: Bool {
+        if subviews.isEmpty {
+            return needsDisplay
+        }
+        return needsDisplay || subviews.contains(where: { $0.treeNeedsDisplay })
+    }
+}

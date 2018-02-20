@@ -186,4 +186,24 @@ class UIViewTests: XCTestCase {
         XCTAssertNil(subview)
     }
 
+    func testViewTreeNeedsDisplayReturnsTrue() {
+        let view = UIView()
+        let subview = UIView()
+        view.addSubview(subview)
+
+        view.sdlDrawAndLayoutTreeIfNeeded()
+        subview.setNeedsDisplay()
+
+        XCTAssertTrue(view.treeNeedsDisplay)
+    }
+
+    func testViewTreeNeedsDisplayReturnsFalse() {
+        let view = UIView()
+        let subview = UIView()
+        view.addSubview(subview)
+
+        view.sdlDrawAndLayoutTreeIfNeeded()
+
+        XCTAssertFalse(view.treeNeedsDisplay)
+    }
 }
