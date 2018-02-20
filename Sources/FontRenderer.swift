@@ -152,8 +152,13 @@ extension FontRenderer {
             tok = firstCharOfNextLine
         } while (tok < end)
 
-        let combinedTextHeight = Int(textLineHeight) * lines.count
-        let combinedLineSpacing = lineSpace * (lines.count - 1)
+        // The sizing using linesCount is actually correct, but it gives a different result compared to
+        // what actually gets rendered. So for now, use this updated figure to have correct sizeThatFits etc:
+        let linesCount = lines.count
+        let temporaryLinesCountToMatchRenderBug = linesCount + 1
+
+        let combinedTextHeight = Int(textLineHeight) * temporaryLinesCountToMatchRenderBug
+        let combinedLineSpacing = lineSpace * (temporaryLinesCountToMatchRenderBug - 1)
 
         return CGSize(width: wrapLength, height: combinedTextHeight + combinedLineSpacing)
     }
