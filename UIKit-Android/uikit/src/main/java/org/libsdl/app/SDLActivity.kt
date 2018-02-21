@@ -20,7 +20,13 @@ import android.view.Surface.*
 private val TAG = "SDL"
 
 open class SDLActivity(context: Context?) : RelativeLayout(context),
-        View.OnKeyListener, View.OnTouchListener, SensorEventListener, SurfaceHolder.Callback {
+                                            View.OnKeyListener,
+                                            View.OnTouchListener,
+                                            SensorEventListener,
+                                            SurfaceHolder.Callback,
+                                            Choreographer.FrameCallback {
+
+
 
     companion object {
         internal val COMMAND_CHANGE_TITLE = 1
@@ -37,8 +43,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private var mIsPaused = false
     private var mIsSurfaceReady = false
     private var mHasFocus = false
-    private var mHandler: Handler? = null
-    private var mRunnable: Runnable? = null
 
     // Main components
     private var mSurface: SurfaceView
@@ -81,13 +85,10 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     @Suppress("unused") // accessed via JNI
     fun removeCallbacks() {
+        Log.v("SDL", "removeCallbacks()")
         mSurface.setOnTouchListener(null)
         mSurface.holder?.removeCallback(this)
         nativeSurface.release()
-
-        mHandler?.removeCallbacks(mRunnable)
-        mHandler = null
-        mRunnable = null
     }
 
     @Suppress("unused") // accessed via JNI
@@ -125,6 +126,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      */
     @Suppress("UNUSED_PARAMETER")
     protected fun onUnhandledMessage(command: Int, param: Any): Boolean {
+        Log.v("SDL", "onUnhandledMessage()")
         return false
     }
 
@@ -263,9 +265,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * to 'true' during the call to onPause (in a usual scenario).
      */
     private fun handlePause() {
+        Log.v("SDL", "handlePause()")
         if (!this.mIsPaused && this.mIsSurfaceReady) {
             this.mIsPaused = true
             this.nativePause()
+            this.handleSurfacePause()
             enableSensor(Sensor.TYPE_ACCELEROMETER, false)
         }
     }
@@ -275,10 +279,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * every time we get one of those events, only if it comes after surfaceDestroyed
      */
     private fun handleResume() {
+        Log.v("SDL", "handleResume()")
         if (this.mIsPaused && this.mIsSurfaceReady && this.mHasFocus) {
             this.mIsPaused = false
             this.nativeResume()
-            handleSurfaceResume()
+            this.handleSurfaceResume()
         }
     }
 
@@ -344,9 +349,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private var mWidth: Float = 1.0f
     private var mHeight: Float = 1.0f
 
-    private var isRunning = false
-
     private fun handleSurfaceResume() {
+        Log.v("SDL", "handleSurfaceResume()")
         mSurface.isFocusable = true
         mSurface.isFocusableInTouchMode = true
         mSurface.requestFocus()
@@ -355,7 +359,12 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         enableSensor(Sensor.TYPE_ACCELEROMETER, true)
     }
 
+    private fun handleSurfacePause() {
+        Log.v("SDL", "handleSurfacePause()")
+    }
+
     override fun surfaceCreated(holder: SurfaceHolder?) {
+        Log.v("SDL", "surfaceCreated()")
         handleResume()
     }
 
@@ -416,44 +425,28 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
 
+        // This is the entry point to the C app.
+        // Start up the C app thread and enable sensor input for the first time
+        this.nativeInit()
+        enableSensor(Sensor.TYPE_ACCELEROMETER, true)
+        Choreographer.getInstance().postFrameCallback(this)
 
-        if (!isRunning) {
-            // This is the entry point to the C app.
-            // Start up the C app thread and enable sensor input for the first time
-            isRunning = true
-
-            this.nativeInit()
-            enableSensor(Sensor.TYPE_ACCELEROMETER, true)
-
-            mHandler = Handler(Looper.getMainLooper())
-
-            val maxFrameTime = 1000.0 / 60.0
-
-            mRunnable = Runnable {
-                val timeTaken = this.render()
-                if (timeTaken == -1) {
-                    // SDL_Quit was called
-                    // FIXME: This should really happen another way, because there's
-                    // FIXME: probably a few reasons why this could return -1
-                    return@Runnable
-                }
-
-                val timeUntilNextFrame = (maxFrameTime - timeTaken).toLong()
-                mHandler?.postDelayed(mRunnable, timeUntilNextFrame)
-            }
-            mHandler?.post(mRunnable)
-        }
 
         if (mHasFocus) {
             handleSurfaceResume()
         }
     }
 
+    override fun doFrame(frameTimeNanos: Long) {
+        Choreographer.getInstance().postFrameCallback(this)
+        this.render()
+    }
+
     // Called when we lose the surface
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         Log.v("SDL", "surfaceDestroyed()")
         // Call this *before* setting mIsSurfaceReady to 'false'
-        //handlePause()
+        handlePause()
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
 
