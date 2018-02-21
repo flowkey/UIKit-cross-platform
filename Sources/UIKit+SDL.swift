@@ -103,6 +103,18 @@ final public class SDL { // Only public for rootView!
                 try? jni.call("removeCallbacks", on: getSDLView())
                 #endif
                 return true
+            case SDL_APP_WILLENTERBACKGROUND:
+                print("SDL_APP_WILLENTERBACKGROUND was called")
+                eventWasHandled = true
+            case SDL_APP_DIDENTERBACKGROUND:
+                print("SDL_APP_DIDENTERBACKGROUND was called")
+                eventWasHandled = true
+            case SDL_APP_WILLENTERFOREGROUND:
+                print("SDL_APP_WILLENTERFOREGROUND was called")
+                eventWasHandled = true
+            case SDL_APP_DIDENTERFOREGROUND:
+                print("SDL_APP_DIDENTERFOREGROUND was called")
+                eventWasHandled = true
             case SDL_MOUSEBUTTONDOWN:
                 handleTouchDown(.from(e.button))
                 eventWasHandled = true
