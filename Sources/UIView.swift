@@ -317,3 +317,9 @@ extension UIView: Equatable {
     }
 }
 
+extension UIView: Hashable {
+    public var hashValue: Int {
+        return ObjectIdentifier(self).hashValue
+    }
+}
+

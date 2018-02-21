@@ -9,6 +9,22 @@
 // TODO: This urgently needs tests!
 
 extension SDL {
+    private static func run(
+        responderAction: (_ responder: UIResponder)->Void,
+        recognizerAction: (_ recognizer: UIGestureRecognizer)->Void,
+        on responderChain: UnfoldSequence<UIResponder, (UIResponder?, Bool)>
+    ) {
+        for responder in responderChain {
+            responderAction(responder)
+
+            guard let view = responder as? UIView else { return }
+            for recognizer in view.gestureRecognizers {
+                recognizerAction(recognizer)
+                if (recognizer.cancelsTouchesInView) { return }
+            }
+        }
+    }
+
     static func handleTouchDown(_ point: CGPoint) {
         guard let hitView = rootView.hitTest(point, with: nil) else { return }
 
@@ -20,15 +36,11 @@ extension SDL {
 
         if currentTouch.hasBeenCancelledByAGestureRecognizer { return }
 
-        responderChainLoop: for responder in hitView.responderChain {
-            responder.touchesBegan([currentTouch], with: nil)
-
-            guard let responder = responder as? UIView else { return }
-            for recognizer in responder.gestureRecognizers {
-                recognizer.touchesBegan(UITouch.activeTouches, with: UIEvent())
-                if (recognizer.cancelsTouchesInView) { break responderChainLoop }
-            }
-        }
+        run(
+            responderAction: { $0.touchesBegan([currentTouch], with: nil) },
+            recognizerAction: { $0.touchesBegan(UITouch.activeTouches, with: UIEvent()) },
+            on: hitView.responderChain
+        )
     }
 
     static func handleTouchMove(_ point: CGPoint) {
@@ -37,15 +49,11 @@ extension SDL {
         touch.updateAbsoluteLocation(point)
 
         if let hitView = touch.view, !touch.hasBeenCancelledByAGestureRecognizer {
-            responderChainLoop: for responder in hitView.responderChain {
-                responder.touchesMoved([touch], with: nil)
-
-                guard let responder = responder as? UIView else { return }
-                for recognizer in responder.gestureRecognizers {
-                    recognizer.touchesMoved(UITouch.activeTouches, with: UIEvent())
-                    if (recognizer.cancelsTouchesInView) { break responderChainLoop }
-                }
-            }
+            run(
+                responderAction: { $0.touchesMoved([touch], with: nil) },
+                recognizerAction: { $0.touchesMoved(UITouch.activeTouches, with: UIEvent()) },
+                on: hitView.responderChain
+            )
         }
     }
 
@@ -53,17 +61,13 @@ extension SDL {
         guard let touch = UITouch.activeTouches.first(where: {$0.touchId == Int(0) }) else { return }
 
         if let hitView = touch.view, !touch.hasBeenCancelledByAGestureRecognizer {
-            responderChainLoop: for responder in hitView.responderChain {
-                responder.touchesEnded([touch], with: nil)
-
-                guard let responder = responder as? UIView else { return }
-                for recognizer in responder.gestureRecognizers {
-                    recognizer.touchesEnded(UITouch.activeTouches, with: UIEvent())
-                    if (recognizer.cancelsTouchesInView) { break responderChainLoop }
-                }
-            }
+            run(
+                responderAction: { $0.touchesEnded([touch], with: nil) },
+                recognizerAction: { $0.touchesEnded([touch], with: UIEvent()) },
+                on: hitView.responderChain
+            )
         }
-        
+
         UITouch.activeTouches.remove(touch)
     }
 }
