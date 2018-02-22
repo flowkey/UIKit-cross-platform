@@ -103,16 +103,22 @@ final public class SDL { // Only public for rootView!
                 UIWindow.main.sendEvent(event)
                 eventWasHandled = true
             case SDL_MOUSEMOTION:
-                if let event = UIEvent.activeEvents.first {
-                    event.allTouches?.first?.updateAbsoluteLocation(.from(e.button))
+                if
+                    let event = UIEvent.activeEvents.first,
+                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+                {
+                    touch.updateAbsoluteLocation(.from(e.button))
                     event.phase = .moved
                     UIWindow.main.sendEvent(event)
                 }
 
                 eventWasHandled = true
             case SDL_MOUSEBUTTONUP:
-                if let event = UIEvent.activeEvents.first {
-                    event.allTouches?.first?.updateAbsoluteLocation(.from(e.button))
+                if
+                    let event = UIEvent.activeEvents.first,
+                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+                {
+                    touch.updateAbsoluteLocation(.from(e.button))
                     event.phase = .ended
                     UIWindow.main.sendEvent(event)
                 }
