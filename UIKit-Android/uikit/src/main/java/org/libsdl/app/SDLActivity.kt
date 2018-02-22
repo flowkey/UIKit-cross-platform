@@ -17,16 +17,19 @@ import android.content.Context
 import android.view.Surface.*
 import main.java.org.libsdl.app.SDLOnKeyListener
 import main.java.org.libsdl.app.SDLOnTouchListener
+import main.java.org.libsdl.app.SDLSensorEventListener
 
 private val TAG = "SDLActivity"
 
 open class SDLActivity(context: Context?) : RelativeLayout(context),
                                             SDLOnKeyListener,
                                             SDLOnTouchListener,
-                                            SensorEventListener,
+                                            SDLSensorEventListener,
                                             SurfaceHolder.Callback,
                                             Choreographer.FrameCallback {
 
+    override val rotation: Int
+        get() = display.rotation
 
 
     companion object {
@@ -304,7 +307,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
                                     action: Int, x: Float,
                                     y: Float, p: Float)
 
-    private external fun onNativeAccel(x: Float, y: Float, z: Float)
+    override external fun onNativeAccel(x: Float, y: Float, z: Float)
     private external fun onNativeSurfaceChanged()
     private external fun onNativeSurfaceDestroyed()
     private external fun nativeGetHint(name: String): String?
@@ -465,40 +468,5 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
             mSensorManager.unregisterListener(this,
                     mSensorManager.getDefaultSensor(sensortype))
         }
-    }
-
-    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-        // TODO
-    }
-
-    override fun onSensorChanged(event: SensorEvent) {
-        if (event.sensor.type != Sensor.TYPE_ACCELEROMETER) return
-
-        val x: Float
-        val y: Float
-        when (display.rotation) {
-            ROTATION_90 -> {
-                x = -event.values[1]
-                y = event.values[0]
-            }
-            ROTATION_270 -> {
-                x = event.values[1]
-                y = -event.values[0]
-            }
-            ROTATION_180 -> {
-                x = -event.values[1]
-                y = -event.values[0]
-            }
-            else -> {
-                x = event.values[0]
-                y = event.values[1]
-            }
-        }
-
-        onNativeAccel(
-            -x / SensorManager.GRAVITY_EARTH,
-            y / SensorManager.GRAVITY_EARTH,
-            event.values[2] / SensorManager.GRAVITY_EARTH
-        )
     }
 }
