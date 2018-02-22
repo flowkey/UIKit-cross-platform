@@ -17,7 +17,7 @@ import kotlin.math.min
 import android.content.Context
 import android.view.Surface.*
 
-private val TAG = "SDL"
+private val TAG = "SDLActivity"
 
 open class SDLActivity(context: Context?) : RelativeLayout(context),
                                             View.OnKeyListener,
@@ -85,7 +85,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     @Suppress("unused") // accessed via JNI
     fun removeCallbacks() {
-        Log.v("SDL", "removeCallbacks()")
+        Log.v(TAG, "removeCallbacks()")
         mSurface.setOnTouchListener(null)
         mSurface.holder?.removeCallback(this)
         nativeSurface.release()
@@ -126,7 +126,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      */
     @Suppress("UNUSED_PARAMETER")
     protected fun onUnhandledMessage(command: Int, param: Any): Boolean {
-        Log.v("SDL", "onUnhandledMessage()")
+        Log.v(TAG, "onUnhandledMessage()")
         return false
     }
 
@@ -265,7 +265,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * to 'true' during the call to onPause (in a usual scenario).
      */
     private fun handlePause() {
-        Log.v("SDL", "handlePause()")
+        Log.v(TAG, "handlePause()")
         if (!this.mIsPaused && this.mIsSurfaceReady) {
             this.mIsPaused = true
             this.nativePause()
@@ -279,7 +279,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * every time we get one of those events, only if it comes after surfaceDestroyed
      */
     private fun handleResume() {
-        Log.v("SDL", "handleResume()")
+        Log.v(TAG, "handleResume()")
         if (this.mIsPaused && this.mIsSurfaceReady && this.mHasFocus) {
             this.mIsPaused = false
             this.nativeResume()
@@ -350,7 +350,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private var mHeight: Float = 1.0f
 
     private fun handleSurfaceResume() {
-        Log.v("SDL", "handleSurfaceResume()")
+        Log.v(TAG, "handleSurfaceResume()")
         mSurface.isFocusable = true
         mSurface.isFocusableInTouchMode = true
         mSurface.requestFocus()
@@ -360,34 +360,34 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     private fun handleSurfacePause() {
-        Log.v("SDL", "handleSurfacePause()")
+        Log.v(TAG, "handleSurfacePause()")
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
-        Log.v("SDL", "surfaceCreated()")
+        Log.v(TAG, "surfaceCreated()")
         handleResume()
     }
 
     // Called when the surface is resized
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        Log.v("SDL", "surfaceChanged()")
+        Log.v(TAG, "surfaceChanged()")
 
         var sdlFormat = 0x15151002 // SDL_PIXELFORMAT_RGB565 by default
         when (format) {
             PixelFormat.RGBA_8888 -> {
-                Log.v("SDL", "pixel format RGBA_8888")
+                Log.v(TAG, "pixel format RGBA_8888")
                 sdlFormat = 0x16462004 // SDL_PIXELFORMAT_RGBA8888
             }
             PixelFormat.RGBX_8888 -> {
-                Log.v("SDL", "pixel format RGBX_8888")
+                Log.v(TAG, "pixel format RGBX_8888")
                 sdlFormat = 0x16261804 // SDL_PIXELFORMAT_RGBX8888
             }
             PixelFormat.RGB_565 -> {
-                Log.v("SDL", "pixel format RGB_565")
+                Log.v(TAG, "pixel format RGB_565")
                 sdlFormat = 0x15151002 // SDL_PIXELFORMAT_RGB565
             }
             PixelFormat.RGB_888 -> {
-                Log.v("SDL", "pixel format RGB_888")
+                Log.v(TAG, "pixel format RGB_888")
                 // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
                 sdlFormat = 0x16161804 // SDL_PIXELFORMAT_RGB888
             }
@@ -397,7 +397,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         mWidth = width.toFloat()
         mHeight = height.toFloat()
         this.onNativeResize(width, height, sdlFormat, display.refreshRate)
-        Log.v("SDL", "Window size: " + width + "x" + height)
+        Log.v(TAG, "Window size: " + width + "x" + height)
 
 
         // FIXME: Remove this hack
@@ -414,9 +414,9 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
             if (max / min < 1.20f) {
                 // Special Patch for Square Resolution: Black Berry Passport
-                Log.v("SDL", "Avoid skip on near-square aspect-ratio, just in case.")
+                Log.v(TAG, "Avoid skip on near-square aspect-ratio, just in case.")
             } else {
-                Log.v("SDL", "Surface is not ready. Skipping creation for now...")
+                Log.v(TAG, "Surface is not ready. Skipping creation for now...")
                 return
             }
         }
@@ -444,7 +444,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     // Called when we lose the surface
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        Log.v("SDL", "surfaceDestroyed()")
+        Log.v(TAG, "surfaceDestroyed()")
         // Call this *before* setting mIsSurfaceReady to 'false'
         handlePause()
         mIsSurfaceReady = false
@@ -461,11 +461,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
         if (event.source and InputDevice.SOURCE_KEYBOARD != 0) {
             if (event.action == ACTION_DOWN) {
-                //Log.v("SDL", "key down: " + keyCode);
+                //Log.v(TAG, "key down: " + keyCode);
                 this.onNativeKeyDown(keyCode)
                 return true
             } else if (event.action == ACTION_UP) {
-                //Log.v("SDL", "key up: " + keyCode);
+                //Log.v(TAG, "key up: " + keyCode);
                 this.onNativeKeyUp(keyCode)
                 return true
             }
