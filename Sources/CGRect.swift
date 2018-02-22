@@ -128,10 +128,10 @@ extension CGRect {
     public func applying(_ t: CGAffineTransform) -> CGRect {
         if t.isIdentity { return self }
 
-        let newTopLeft = t.transforming(CGPoint(x: minX, y: minY))
-        let newTopRight = t.transforming(CGPoint(x: maxX, y: minY))
-        let newBottomLeft = t.transforming(CGPoint(x: minX, y: maxY))
-        let newBottomRight = t.transforming(CGPoint(x: maxX, y: maxY))
+        let newTopLeft = CGPoint(x: minX, y: minY).applying(t)
+        let newTopRight = CGPoint(x: maxX, y: minY).applying(t)
+        let newBottomLeft = CGPoint(x: minX, y: maxY).applying(t)
+        let newBottomRight = CGPoint(x: maxX, y: maxY).applying(t)
 
         let newMinX = min(newTopLeft.x, newTopRight.x, newBottomLeft.x, newBottomRight.x)
         let newMaxX = max(newTopLeft.x, newTopRight.x, newBottomLeft.x, newBottomRight.x)

@@ -36,6 +36,13 @@ extension CGPoint {
     internal func offsetBy(_ other: CGPoint) -> CGPoint {
         return CGPoint(x: self.x + other.x, y: self.y + other.y)
     }
+
+    public func applying(_ t: CGAffineTransform) -> CGPoint {
+        return CGPoint(
+            x: x * t.m11 + y * t.m21 + t.tX,
+            y: x * t.m12 + y * t.m22 + t.tY
+        )
+    }
 }
 extension CGPoint: Equatable {
     public static func == (lhs: CGPoint, rhs: CGPoint) -> Bool {
