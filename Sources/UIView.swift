@@ -225,10 +225,9 @@ open class UIView: UIResponder {
 
         // Fast paths:
         if let superview = self.superview, superview == otherView {
-            return frame.origin.offsetBy(-superview.bounds.origin).offsetBy(point)
+            return convertToSuperview(point)
         } else if otherView.superview == self {
-            let otherViewOrigin = otherView.frame.origin.offsetBy(-self.bounds.origin)
-            return CGPoint(x: point.x - otherViewOrigin.x, y: point.y - otherViewOrigin.y)
+            return convertToSubview(point, subview: otherView)
         }
 
         // Slow path:
@@ -242,12 +241,34 @@ open class UIView: UIResponder {
         return CGPoint(x: point.x - originDifference.width, y: point.y - originDifference.height)
     }
 
-    func absoluteOrigin() -> CGPoint {
-        guard let superview = superview else {
-            return frame.origin
+    private func convertToSuperview(_ point: CGPoint) -> CGPoint {
+        return (point - bounds.origin).applying(transform) + frame.origin
+    }
+
+    /// `point` is in self.bounds.size coordinates
+    private func convertToSubview(_ point: CGPoint, subview: UIView) -> CGPoint {
+        precondition(subview.superview == self)
+        guard let invertedSubviewTransform = subview.transform.inverted() else {
+            assertionFailure("Tried to convert a point to a subview whose transfrom could not be inverted")
+            return point
         }
 
-        return frame.origin.offsetBy(-superview.bounds.origin).offsetBy(superview.absoluteOrigin())
+        return (point - (subview.frame.origin + subview.bounds.origin)).applying(invertedSubviewTransform)
+    }
+
+    internal func absoluteOrigin() -> CGPoint {
+        guard let superview = superview else {
+            return .zero
+        }
+
+        // `self.bounds.origin` is the point at which `origin` in bounds units starts (not `.zero`!)
+        // So: if we want to find `origin` in the superview, we need to start from that point
+        let pointInSuperview = convert(self.bounds.origin, to: superview)
+        let superviewAbsoluteOrigin = superview.absoluteOrigin()
+        return CGPoint(
+            x: pointInSuperview.x - superview.bounds.origin.x + superviewAbsoluteOrigin.x,
+            y: pointInSuperview.y - superview.bounds.origin.y + superviewAbsoluteOrigin.y
+        )
     }
 
     public func convert(_ point: CGPoint, from view: UIView?) -> CGPoint {
@@ -283,9 +304,10 @@ open class UIView: UIResponder {
         return self
     }
 
+    /// Checks whether `point` is in the view's bounds (meaning it is affected by `self.bounds.origin`)
     /// It would be easier to understand this if it was called `contains(_ point: CGPoint, with event:)`
     open func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        return CGRect(origin: .zero, size: bounds.size).contains(point)
+        return bounds.contains(point)
     }
 
     open func sizeThatFits(_ size: CGSize) -> CGSize {
