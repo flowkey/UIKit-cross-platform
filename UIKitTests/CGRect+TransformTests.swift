@@ -7,7 +7,6 @@
 //
 
 import XCTest
-import UIKit
 
 class CGRectTransformTests: XCTestCase {
     let accuracy: CGFloat = 1e-05

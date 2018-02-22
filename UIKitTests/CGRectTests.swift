@@ -7,9 +7,6 @@
 //
 
 import XCTest
-import UIKit
-
-typealias CGRect = UIKit.CGRect
 
 class CGRectTests: XCTestCase {
     func testRectsIntersectSimple() {

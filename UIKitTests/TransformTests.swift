@@ -7,8 +7,8 @@
 //
 
 import XCTest
-@testable import UIKit
 import SDL_gpu
+@testable import UIKit
 
 class TransformTests: XCTestCase {
     func testIdentityMatricesAreEquivalent() {

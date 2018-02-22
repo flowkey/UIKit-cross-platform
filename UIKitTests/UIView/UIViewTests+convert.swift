@@ -1,15 +1,17 @@
 //
-//  UIViewTests.swift
+//  UIViewPointConversionTests
 //  UIKitTests
 //
-//  Created by Geordie Jay on 16.05.17.
+//  Created by Geordie Jay on 21.02.17.
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
 import XCTest
+#if !os(iOS)
 @testable import UIKit
+#endif
 
-class UIViewTests: XCTestCase {
+class UIViewPointConversionTests: XCTestCase {
     /*  (0,0, width: 100, height: 100):
      --------------------------
      1. (20, 10):
@@ -96,17 +98,30 @@ class UIViewTests: XCTestCase {
 
     func testAbsoluteOriginWithNonZeroSubViewBounds() {
         let rootView = UIView()
-        let subview1 = UIView()
-        let subview1subview1 = UIView()
-
-        subview1.frame = CGRect(x: 20, y: 20, width: 10, height: 10)
+        let subview1 = UIView(frame: CGRect(x: 20, y: 20, width: 10, height: 10))
         subview1.bounds.origin = CGPoint(x: 10, y: 10) // non-zero bounds
-        subview1subview1.frame = CGRect(x: 5, y: 5, width: 5, height: 5)
-
         rootView.addSubview(subview1)
+
+        let subview1subview1 = UIView(frame: CGRect(x: 5, y: 5, width: 5, height: 5))
         subview1.addSubview(subview1subview1)
 
         XCTAssertEqual(subview1subview1.absoluteOrigin(), CGPoint(x: 15, y: 15))
+    }
+
+    func testAbsoluteOriginWithMultipleNonZeroBounds() {
+        let rootView = UIView()
+        rootView.bounds = CGRect(x: 10, y: 10, width: 100, height: 100)
+        rootView.frame.origin = .zero
+
+        let subview1 = UIView(frame: CGRect(x: 20, y: 20, width: 10, height: 10))
+        subview1.bounds.origin = CGPoint(x: 5, y: 5)
+        rootView.addSubview(subview1)
+
+        let subview1subview1 = UIView(frame: CGRect(x: 5, y: 5, width: 5, height: 5))
+        subview1subview1.bounds.origin = CGPoint(x: 999, y: 999) // definitely shouldn't have any effect
+        subview1.addSubview(subview1subview1)
+
+        XCTAssertEqual(subview1subview1.absoluteOrigin(), CGPoint(x: 10, y: 10))
     }
 
 
@@ -133,58 +148,73 @@ class UIViewTests: XCTestCase {
         XCTAssertEqual(rootView.convert(point, from: nil), point)
     }
 
-    func testPointInside() {
-        let view = UIView()
-        // bounds.origin affect child elements only
-        view.bounds = CGRect(x: 100000, y: 100000, width: 100, height: 100)
-        XCTAssertTrue((view.point(inside: CGPoint(x: 99, y: 99), with: nil)))
-        XCTAssertFalse((view.point(inside: CGPoint(x: 100, y: 100), with: nil)))
+    func testConvertToSubviewWithSubviewTransform() {
+        let testPoint = CGPoint(x: 60, y: 20)
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 80, height: 40))
+        let subview = UIView()
+
+        subview.transform = CGAffineTransform(scaleX: 2.0, y: 2.0)
+        subview.frame = CGRect(x: 10, y: 10, width: 60, height: 40)
+        view.addSubview(subview)
+
+        let result = view.convert(testPoint, to: subview)
+        let expectedPoint = CGPoint(x: 25, y: 5) // post conversion is always in bounds units (without transform)
+
+        XCTAssertEqual(result, expectedPoint)
     }
 
-    func testHitTest() {
-        let rootView = UIView()
-        rootView.bounds = CGRect(x: -10, y: -10, width: 100, height: 100)
+    // functionally and programatically the opposite of the test above
+    func testConvertToSuperviewWithSelfTransform() {
+        let testPoint = CGPoint(x: 25, y: 5)
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 80, height: 40))
+        let subview = UIView()
 
-        let subview1 = UIView()
-        subview1.frame = CGRect(x: 40, y: 40, width: 20, height: 20)
+        subview.transform = CGAffineTransform(scaleX: 2.0, y: 2.0)
+        subview.frame = CGRect(x: 10, y: 10, width: 60, height: 40)
+        view.addSubview(subview)
 
-        let subview1subview1 = UIView()
-        subview1subview1.frame = CGRect(x: 10, y: 10, width: 5, height: 5)
+        let result = subview.convert(testPoint, to: view)
+        let expectedPoint = CGPoint(x: 60, y: 20) // post conversion is always in bounds units (without transform)
 
-        rootView.addSubview(subview1)
-        subview1.addSubview(subview1subview1)
-
-        XCTAssertEqual(rootView.hitTest(CGPoint(x: 0, y: 0), with: nil), rootView)
-        XCTAssertEqual(rootView.hitTest(CGPoint(x: 50, y: 50), with: nil), subview1)
-        XCTAssertEqual(rootView.hitTest(CGPoint(x: 62.5, y: 62.5), with: nil), subview1subview1)
-        XCTAssertNil(rootView.hitTest(CGPoint(x: -1, y: -1), with: nil))
+        XCTAssertEqual(result, expectedPoint)
     }
 
-    func testNeedsLayoutDefaultTrue() {
-        class ParentView: UIView {
-            override func layoutSubviews() {
-                super.layoutSubviews()
-                for view in subviews { view.frame.size = CGSize(width: 300, height: 100) }
-            }
-        }
-        let parentView = ParentView()
-        let subview = UIView(frame: .zero)
-        parentView.addSubview(subview)
-        parentView.layoutIfNeeded()
+    func testConvertPointWithNonZeroBoundsOriginToSuperview() {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        view.bounds.origin = CGPoint(x: 50, y: 50)
 
-        XCTAssertEqual(subview.frame.width, 300)
-        XCTAssertEqual(subview.frame.height, 100)
+        let subview = UIView(frame: CGRect(x: 40, y: 40, width: 20, height: 20))
+        view.addSubview(subview)
+
+        let testPoint = CGPoint(x: 10, y: 10)
+        subview.bounds.origin = CGPoint(x: 123, y: 123)
+
+        let testPointIgnoringSubviewBoundsOrigin = CGPoint(
+            x: subview.bounds.origin.x + testPoint.x,
+            y: subview.bounds.origin.y + testPoint.y
+        )
+
+        let convertedPoint1 = subview.convert(testPointIgnoringSubviewBoundsOrigin, to: view)
+        let convertedPoint2 = view.convert(testPointIgnoringSubviewBoundsOrigin, from: subview)
+
+        XCTAssertEqual(convertedPoint1, convertedPoint2)
+        XCTAssertEqual(convertedPoint1, CGPoint(x: 50, y: 50))
     }
-
-    func testPreventStrongReferenceCyclesBetweenSubviews() {
-        var view: UIView? = UIView()
-        view!.addSubview(UIView())
-
-        weak var subview = view?.subviews.first
-        XCTAssertNotNil(subview)
-
-        view = nil
-        XCTAssertNil(subview)
-    }
-
 }
+
+#if os(iOS)
+    extension UIView {
+        internal func absoluteOrigin() -> CGPoint {
+            guard let superview = superview else {
+                return .zero
+            }
+
+            let pointInSuperview = convert(self.bounds.origin, to: superview)
+            let superviewAbsoluteOrigin = superview.absoluteOrigin()
+            return CGPoint(
+                x: pointInSuperview.x - superview.bounds.origin.x + superviewAbsoluteOrigin.x,
+                y: pointInSuperview.y - superview.bounds.origin.y + superviewAbsoluteOrigin.y
+            )
+        }
+    }
+#endif

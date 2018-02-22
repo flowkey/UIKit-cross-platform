@@ -67,8 +67,12 @@
 		5C6AB7711ED680BC006F90AC /* UIResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7701ED680BC006F90AC /* UIResponder.swift */; };
 		5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77B1ED70F97006F90AC /* DisplayLink.swift */; };
 		5C6AB77E1ED71867006F90AC /* CATransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77D1ED71867006F90AC /* CATransaction.swift */; };
-		5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */; };
+		5C6AB7801EDBDF40006F90AC /* UIViewTests+hitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77F1EDBDF40006F90AC /* UIViewTests+hitTest.swift */; };
 		5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7811EDC18BA006F90AC /* UITouch.swift */; };
+		5C8475D7203DC6E700CA2EBF /* UIViewTests+convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8475CD203DC4CC00CA2EBF /* UIViewTests+convert.swift */; };
+		5C8475D8203DC6EE00CA2EBF /* UIViewTests+misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8475D5203DC53200CA2EBF /* UIViewTests+misc.swift */; };
+		5C8475D9203DCA3C00CA2EBF /* UIViewTests+convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8475CD203DC4CC00CA2EBF /* UIViewTests+convert.swift */; };
+		5C8475F8203F0DA400CA2EBF /* UIViewTests+hitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77F1EDBDF40006F90AC /* UIViewTests+hitTest.swift */; };
 		5C8E6A21203A089A00D1DBE0 /* CALayer+ContentsGravity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E6A20203A089A00D1DBE0 /* CALayer+ContentsGravity.swift */; };
 		5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
 		5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037241F138B8A0058E592 /* MeteringView.swift */; };
@@ -100,8 +104,6 @@
 		5CFFF9F1201741F000D989BC /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF8632016328200D989BC /* SDL2.framework */; };
 		5CFFFA172017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
 		5CFFFA182017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
-		5CFFFA1A20174BF200D989BC /* Imports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA1920174BF200D989BC /* Imports.swift */; };
-		5CFFFA1B20174BF200D989BC /* Imports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA1920174BF200D989BC /* Imports.swift */; };
 		5CFFFA1D2017540200D989BC /* UIKit-Mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 5CFFFA1C2017540200D989BC /* UIKit-Mac.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8318D27B1F0695080029816A /* UIControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D27A1F0695080029816A /* UIControl.swift */; };
 		8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323F27F1F2FA2EE00C121BB /* TestSetup.swift */; };
@@ -311,8 +313,10 @@
 		5C6AB7701ED680BC006F90AC /* UIResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIResponder.swift; path = Sources/UIResponder.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB77B1ED70F97006F90AC /* DisplayLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DisplayLink.swift; path = Sources/DisplayLink.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB77D1ED71867006F90AC /* CATransaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CATransaction.swift; path = Sources/CATransaction.swift; sourceTree = SOURCE_ROOT; };
-		5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewTests.swift; sourceTree = "<group>"; };
+		5C6AB77F1EDBDF40006F90AC /* UIViewTests+hitTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewTests+hitTest.swift"; sourceTree = "<group>"; };
 		5C6AB7811EDC18BA006F90AC /* UITouch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITouch.swift; path = Sources/UITouch.swift; sourceTree = SOURCE_ROOT; };
+		5C8475CD203DC4CC00CA2EBF /* UIViewTests+convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+convert.swift"; sourceTree = "<group>"; };
+		5C8475D5203DC53200CA2EBF /* UIViewTests+misc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+misc.swift"; sourceTree = "<group>"; };
 		5C8E6A20203A089A00D1DBE0 /* CALayer+ContentsGravity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+ContentsGravity.swift"; sourceTree = "<group>"; };
 		5C9037201F137FB70058E592 /* CGRectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGRectTests.swift; sourceTree = "<group>"; };
 		5C9037241F138B8A0058E592 /* MeteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MeteringView.swift; path = Sources/MeteringView.swift; sourceTree = SOURCE_ROOT; };
@@ -341,7 +345,6 @@
 		5CFFF87F201632FC00D989BC /* SDL-gpu.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "SDL-gpu.xcodeproj"; path = "SDL/SDL-gpu.xcodeproj"; sourceTree = "<group>"; };
 		5CFFF97C20163AF900D989BC /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = SDL/SDL_ttf.xcodeproj; sourceTree = "<group>"; };
 		5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+subviews.swift"; sourceTree = "<group>"; };
-		5CFFFA1920174BF200D989BC /* Imports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Imports.swift; sourceTree = "<group>"; };
 		5CFFFA1C2017540200D989BC /* UIKit-Mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIKit-Mac.h"; sourceTree = "<group>"; };
 		83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VideoTexture+Mac.swift"; sourceTree = "<group>"; };
 		8318D27A1F0695080029816A /* UIControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIControl.swift; path = ../Sources/UIControl.swift; sourceTree = "<group>"; };
@@ -577,7 +580,6 @@
 				83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */,
 				03760AE51F67E73300F36283 /* UIScrollViewTests.swift */,
 				5CFFFA0E2017454300D989BC /* UIView */,
-				5CFFFA1920174BF200D989BC /* Imports.swift */,
 				5CCF1C12202382FF00AAF598 /* CALayerTests.swift */,
 				5CB6E1B52031D801001FEAC9 /* CGRect+TransformTests.swift */,
 				5CB6E1BF2031ECCE001FEAC9 /* TransformTests.swift */,
@@ -675,9 +677,11 @@
 		5CFFFA0E2017454300D989BC /* UIView */ = {
 			isa = PBXGroup;
 			children = (
-				5C6AB77F1EDBDF40006F90AC /* UIViewTests.swift */,
-				5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */,
+				5C8475CD203DC4CC00CA2EBF /* UIViewTests+convert.swift */,
 				5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */,
+				5C6AB77F1EDBDF40006F90AC /* UIViewTests+hitTest.swift */,
+				5C8475D5203DC53200CA2EBF /* UIViewTests+misc.swift */,
+				5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */,
 			);
 			path = UIView;
 			sourceTree = "<group>";
@@ -1100,21 +1104,22 @@
 				034898331FB5C11F00E8975C /* UITouchTests.swift in Sources */,
 				034898501FB9C44000E8975C /* TouchHandlingTests.swift in Sources */,
 				5CFFFA172017457100D989BC /* UIViewTests+subviews.swift in Sources */,
-				5C6AB7801EDBDF40006F90AC /* UIViewTests.swift in Sources */,
+				5C6AB7801EDBDF40006F90AC /* UIViewTests+hitTest.swift in Sources */,
 				5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */,
 				8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */,
 				5CB6E1B62031D801001FEAC9 /* CGRect+TransformTests.swift in Sources */,
 				5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */,
 				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
+				5C8475D7203DC6E700CA2EBF /* UIViewTests+convert.swift in Sources */,
 				83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */,
 				5BEEF828202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */,
 				83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */,
-				5CFFFA1A20174BF200D989BC /* Imports.swift in Sources */,
 				837335901F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift in Sources */,
 				832A7F021F1632070041916B /* ButtonSizeToFitTests.swift in Sources */,
 				5CF2BEEE1F8D1BD7009FCA1E /* UIFontTests.swift in Sources */,
 				832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */,
 				5CCF1C13202382FF00AAF598 /* CALayerTests.swift in Sources */,
+				5C8475D8203DC6EE00CA2EBF /* UIViewTests+misc.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1122,6 +1127,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C8475F8203F0DA400CA2EBF /* UIViewTests+hitTest.swift in Sources */,
 				5CB6E1B72031D801001FEAC9 /* CGRect+TransformTests.swift in Sources */,
 				5BEEF829202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */,
 				83F02DBA1F179AE800347AA8 /* UIImage+testImage.swift in Sources */,
@@ -1134,8 +1140,8 @@
 				83F02DB41F1798D100347AA8 /* loadCustomFont.swift in Sources */,
 				832A7F0E1F1636900041916B /* ButtonSizeToFitTests.swift in Sources */,
 				837335921F2F6AC70012F066 /* ButtonSetTitleColorForStateTests.swift in Sources */,
+				5C8475D9203DCA3C00CA2EBF /* UIViewTests+convert.swift in Sources */,
 				832A7F0D1F16368D0041916B /* ButtonContentAlignmentTests.swift in Sources */,
-				5CFFFA1B20174BF200D989BC /* Imports.swift in Sources */,
 				5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

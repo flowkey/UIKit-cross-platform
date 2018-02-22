@@ -7,7 +7,6 @@
 //
 
 import XCTest
-import UIKit
 
 class CALayerTests: XCTestCase {
     let accuracy: CGFloat = 1e-05

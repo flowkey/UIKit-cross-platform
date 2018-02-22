@@ -12,9 +12,14 @@ import XCTest
 class UITouchTests: XCTestCase {
 
     func testLocationInView() {
+        let rootView = UIView()
         let view = UIView(frame: CGRect(x: 10, y: 10, width: 50, height: 50))
+
+        rootView.addSubview(view)
+
         let touch = UITouch(at: CGPoint(x: 10, y: 10), touchId: 0)
 
+        // touch location in view should always be in bounds units.
         XCTAssertEqual(touch.location(in: view), .zero)
 
         let location = CGPoint(x: 30, y: 30)
