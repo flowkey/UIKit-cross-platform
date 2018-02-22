@@ -13,15 +13,16 @@ import android.graphics.*
 import android.hardware.*
 import android.content.pm.ActivityInfo
 import android.view.KeyEvent.*
-import kotlin.math.min
 import android.content.Context
 import android.view.Surface.*
+import main.java.org.libsdl.app.SDLOnKeyListener
+import main.java.org.libsdl.app.SDLOnTouchListener
 
 private val TAG = "SDLActivity"
 
 open class SDLActivity(context: Context?) : RelativeLayout(context),
-                                            View.OnKeyListener,
-                                            View.OnTouchListener,
+                                            SDLOnKeyListener,
+                                            SDLOnTouchListener,
                                             SensorEventListener,
                                             SurfaceHolder.Callback,
                                             Choreographer.FrameCallback {
@@ -296,12 +297,12 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private external fun onNativeResize(x: Int, y: Int, format: Int, rate: Float)
 
 
-    private external fun onNativeKeyDown(keycode: Int)
-    private external fun onNativeKeyUp(keycode: Int)
-    private external fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
-    private external fun onNativeTouch(touchDevId: Int, pointerFingerId: Int,
-                               action: Int, x: Float,
-                               y: Float, p: Float)
+    external override fun onNativeKeyDown(keycode: Int)
+    external override fun onNativeKeyUp(keycode: Int)
+    external override fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
+    external override fun onNativeTouch(touchDevId: Int, pointerFingerId: Int,
+                                    action: Int, x: Float,
+                                    y: Float, p: Float)
 
     private external fun onNativeAccel(x: Float, y: Float, z: Float)
     private external fun onNativeSurfaceChanged()
@@ -345,8 +346,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     // Keep track of the surface size to normalize touch events
     // Start with non-zero values to avoid potential division by zero
-    private var mWidth: Float = 1.0f
-    private var mHeight: Float = 1.0f
+    override var mWidth: Float = 1.0f
+    override var mHeight: Float = 1.0f
 
     private fun handleSurfaceResume() {
         Log.v(TAG, "handleSurfaceResume()")
@@ -452,90 +453,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         enableSensor(Sensor.TYPE_ACCELEROMETER, false)
     }
 
-
-    // Key events
-    override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
-        if (event.source and InputDevice.SOURCE_KEYBOARD != 0) {
-            if (event.action == ACTION_DOWN) {
-                //Log.v(TAG, "key down: " + keyCode);
-                this.onNativeKeyDown(keyCode)
-                return true
-            } else if (event.action == ACTION_UP) {
-                //Log.v(TAG, "key up: " + keyCode);
-                this.onNativeKeyUp(keyCode)
-                return true
-            }
-        }
-
-        if (event.source and InputDevice.SOURCE_MOUSE != 0) {
-            // on some devices key events are sent for mouse BUTTON_BACK/FORWARD presses
-            // they are ignored here because sending them as mouse input to SDL is messy
-            if (keyCode == KEYCODE_BACK || keyCode == KEYCODE_FORWARD) {
-                when (event.action) {
-                    ACTION_DOWN, ACTION_UP ->
-                        // mark the event as handled or it will be handled by system
-                        // handling KEYCODE_BACK by system will call onBackPressed()
-                        return true
-                }
-            }
-        }
-
-        return false
-    }
-
-    // Touch events
-    override fun onTouch(v: View, event: MotionEvent): Boolean {
-        /* Ref: http://developer.android.com/training/gestures/multi.html */
-        val touchDevId = event.deviceId
-        val action = event.actionMasked
-
-        data class TouchValues(val fingerId: Int, val x: Float, val y: Float, val p: Float)
-
-        fun MotionEvent.touchValues(i: Int): TouchValues {
-            return TouchValues(
-                    getPointerId(i),
-                    getX(i) / mWidth,
-                    getY(i) / mHeight,
-                    // Pressure can be > 1.0 on some devices. See getPressure(i) docs.
-                    min(this.getPressure(i), 1.0f)
-            )
-        }
-
-        if (event.source == InputDevice.SOURCE_MOUSE && mSeparateMouseAndTouch) {
-            val mouseButton = try { event.buttonState } catch (e: Exception) { 1 } // 1 is left button
-            this.onNativeMouse(mouseButton, action, event.getX(0), event.getY(0))
-            return true
-        }
-
-        when (action) {
-            MotionEvent.ACTION_MOVE -> {
-                for (i in 0 until event.pointerCount) {
-                    val (fingerId, x, y, p) = event.touchValues(i)
-                    this.onNativeTouch(touchDevId, fingerId, action, x, y, p)
-                }
-            }
-
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_DOWN -> {
-                // Primary pointer up/down, the index is always zero
-                val (fingerId, x, y, p) = event.touchValues(event.actionIndex)
-                this.onNativeTouch(touchDevId, fingerId, action, x, y, p)
-            }
-
-            MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_POINTER_DOWN -> {
-                val (fingerId, x, y, p) = event.touchValues(event.actionIndex)
-                this.onNativeTouch(touchDevId, fingerId, action, x, y, p)
-            }
-
-            MotionEvent.ACTION_CANCEL -> {
-                for (i in 0 until event.pointerCount) {
-                    val (fingerId, x, y, p) = event.touchValues(i)
-                    this.onNativeTouch(touchDevId, fingerId, MotionEvent.ACTION_UP, x, y, p)
-                }
-            }
-        }
-
-        return true
-    }
 
     // Sensor events
     private fun enableSensor(sensortype: Int, enabled: Boolean) {
