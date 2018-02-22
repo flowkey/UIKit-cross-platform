@@ -11,12 +11,14 @@ import XCTest
 
 class UIResponderChainTests: XCTestCase {
 
+    var viewOnTouchesBeganWasCalled = false
     var viewRecognizerOnActionWasCalled = false
     var subsubview: UIView = UIView()
 
     override func setUp() {
         SDL.rootView = UIWindow(frame: CGRect(origin: .zero, size: CGSize(width: 1000, height: 1000)))
-        let view = UIView(frame: SDL.rootView.bounds)
+        let view = ResponderView(frame: SDL.rootView.bounds)
+        view.onTouchesBegan = { self.viewOnTouchesBeganWasCalled = true }
         SDL.rootView.addSubview(view)
 
         let viewRecognizer = UIPanGestureRecognizer()
@@ -40,10 +42,6 @@ class UIResponderChainTests: XCTestCase {
         XCTAssertTrue(viewRecognizerOnActionWasCalled)
     }
 
-    func touch() {
-        
-    }
-
     func testCancelsTouchesInViewTrue() {
         let anotherSubview = UIView(frame: SDL.rootView.bounds)
         subsubview.addSubview(anotherSubview)
@@ -58,7 +56,7 @@ class UIResponderChainTests: XCTestCase {
         SDL.handleTouchMove(CGPoint(x: 15, y: 10))
         SDL.handleTouchUp(CGPoint(x: 15, y: 10))
 
-        XCTAssertFalse(viewRecognizerOnActionWasCalled)
+        XCTAssertFalse(viewOnTouchesBeganWasCalled)
         XCTAssertTrue(anotherGestureRecognizerOnActionWasCalled)
     }
 
@@ -74,6 +72,13 @@ class UIResponderChainTests: XCTestCase {
         SDL.handleTouchMove(CGPoint(x: 15, y: 10))
         SDL.handleTouchUp(CGPoint(x: 15, y: 10))
 
-        XCTAssertTrue(viewRecognizerOnActionWasCalled)
+        XCTAssertTrue(viewOnTouchesBeganWasCalled)
+    }
+
+    class ResponderView: UIView {
+        public var onTouchesBegan: (()->Void)?
+        override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+            onTouchesBegan?()
+        }
     }
 }
