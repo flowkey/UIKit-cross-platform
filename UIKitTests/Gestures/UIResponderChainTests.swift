@@ -37,9 +37,9 @@ class UIResponderChainTests: XCTestCase {
     }
 
     func testResponderChainTriggersGestureRecognizers() {
-        window.handleTouchDown(CGPoint(x: 10, y: 10))
-        window.handleTouchMove(CGPoint(x: 15, y: 10))
-        window.handleTouchUp(CGPoint(x: 15, y: 10))
+        handleTouchDown(CGPoint(x: 10, y: 10))
+        handleTouchMove(CGPoint(x: 15, y: 10))
+        handleTouchUp(CGPoint(x: 15, y: 10))
 
         XCTAssertTrue(viewRecognizerOnActionWasCalled)
     }
@@ -54,9 +54,9 @@ class UIResponderChainTests: XCTestCase {
         var anotherGestureRecognizerOnActionWasCalled = false
         anotherGestureRecognizer.onAction = { anotherGestureRecognizerOnActionWasCalled = true }
 
-        window.handleTouchDown(CGPoint(x: 10, y: 10))
-        window.handleTouchMove(CGPoint(x: 15, y: 10))
-        window.handleTouchUp(CGPoint(x: 15, y: 10))
+        handleTouchDown(CGPoint(x: 10, y: 10))
+        handleTouchMove(CGPoint(x: 15, y: 10))
+        handleTouchUp(CGPoint(x: 15, y: 10))
 
         XCTAssertFalse(viewOnTouchesBeganWasCalled)
         XCTAssertTrue(anotherGestureRecognizerOnActionWasCalled)
@@ -70,9 +70,9 @@ class UIResponderChainTests: XCTestCase {
         anotherGestureRecognizer.cancelsTouchesInView = false
         anotherSubview.addGestureRecognizer(anotherGestureRecognizer)
 
-        window.handleTouchDown(CGPoint(x: 10, y: 10))
-        window.handleTouchMove(CGPoint(x: 15, y: 10))
-        window.handleTouchUp(CGPoint(x: 15, y: 10))
+        handleTouchDown(CGPoint(x: 10, y: 10))
+        handleTouchMove(CGPoint(x: 15, y: 10))
+        handleTouchUp(CGPoint(x: 15, y: 10))
 
         XCTAssertTrue(viewOnTouchesBeganWasCalled)
     }
@@ -81,6 +81,34 @@ class UIResponderChainTests: XCTestCase {
         public var onTouchesBegan: (()->Void)?
         override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
             onTouchesBegan?()
+        }
+    }
+}
+
+fileprivate extension UIResponderChainTests {
+    func handleTouchDown(_ point: CGPoint) {
+        let event = UIEvent(from: UITouch(at: point, touchId: 0))
+        window.sendEvent(event)
+    }
+
+    func handleTouchMove(_ point: CGPoint) {
+        if
+            let event = UIEvent.activeEvents.first,
+            let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+        {
+            touch.updateAbsoluteLocation(point)
+            event.phase = .moved
+            window.sendEvent(event)
+        }
+    }
+
+    func handleTouchUp(_ point: CGPoint) {
+        if
+            let event = UIEvent.activeEvents.first,
+            let _ = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+        {
+            event.phase = .ended
+            window.sendEvent(event)
         }
     }
 }
