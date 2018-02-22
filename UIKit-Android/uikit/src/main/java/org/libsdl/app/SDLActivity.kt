@@ -269,7 +269,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         if (!this.mIsPaused && this.mIsSurfaceReady) {
             this.mIsPaused = true
             this.nativePause()
-            this.handleSurfacePause()
             this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
         }
     }
@@ -357,10 +356,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         mSurface.setOnKeyListener(this)
         mSurface.setOnTouchListener(this)
         enableSensor(Sensor.TYPE_ACCELEROMETER, true)
-    }
-
-    private fun handleSurfacePause() {
-        Log.v(TAG, "handleSurfacePause()")
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
