@@ -10,16 +10,18 @@ import XCTest
 @testable import UIKit
 
 class UIResponderChainTests: XCTestCase {
-
+    var window = UIWindow()
     var viewOnTouchesBeganWasCalled = false
     var viewRecognizerOnActionWasCalled = false
     var subsubview: UIView = UIView()
+    var event = UIEvent()
 
     override func setUp() {
-        SDL.rootView = UIWindow(frame: CGRect(origin: .zero, size: CGSize(width: 1000, height: 1000)))
-        let view = ResponderView(frame: SDL.rootView.bounds)
+        event = UIEvent()
+        window = UIWindow(frame: CGRect(origin: .zero, size: CGSize(width: 1000, height: 1000)))
+        let view = ResponderView(frame: window.bounds)
         view.onTouchesBegan = { self.viewOnTouchesBeganWasCalled = true }
-        SDL.rootView.addSubview(view)
+        window.addSubview(view)
 
         let viewRecognizer = UIPanGestureRecognizer()
         view.addGestureRecognizer(viewRecognizer)
@@ -27,23 +29,23 @@ class UIResponderChainTests: XCTestCase {
         viewRecognizerOnActionWasCalled = false
         viewRecognizer.onAction = { self.viewRecognizerOnActionWasCalled = true }
 
-        let subview = UIView(frame: SDL.rootView.bounds)
+        let subview = UIView(frame: window.bounds)
         view.addSubview(subview)
 
-        subsubview = UIView(frame: SDL.rootView.bounds)
+        subsubview = UIView(frame: window.bounds)
         subview.addSubview(subsubview)
     }
 
     func testResponderChainTriggersGestureRecognizers() {
-        SDL.handleTouchDown(CGPoint(x: 10, y: 10))
-        SDL.handleTouchMove(CGPoint(x: 15, y: 10))
-        SDL.handleTouchUp(CGPoint(x: 15, y: 10))
+        window.handleTouchDown(CGPoint(x: 10, y: 10))
+        window.handleTouchMove(CGPoint(x: 15, y: 10))
+        window.handleTouchUp(CGPoint(x: 15, y: 10))
 
         XCTAssertTrue(viewRecognizerOnActionWasCalled)
     }
 
     func testCancelsTouchesInViewTrue() {
-        let anotherSubview = UIView(frame: SDL.rootView.bounds)
+        let anotherSubview = UIView(frame: window.bounds)
         subsubview.addSubview(anotherSubview)
 
         let anotherGestureRecognizer = UIPanGestureRecognizer()
@@ -52,25 +54,25 @@ class UIResponderChainTests: XCTestCase {
         var anotherGestureRecognizerOnActionWasCalled = false
         anotherGestureRecognizer.onAction = { anotherGestureRecognizerOnActionWasCalled = true }
 
-        SDL.handleTouchDown(CGPoint(x: 10, y: 10))
-        SDL.handleTouchMove(CGPoint(x: 15, y: 10))
-        SDL.handleTouchUp(CGPoint(x: 15, y: 10))
+        window.handleTouchDown(CGPoint(x: 10, y: 10))
+        window.handleTouchMove(CGPoint(x: 15, y: 10))
+        window.handleTouchUp(CGPoint(x: 15, y: 10))
 
         XCTAssertFalse(viewOnTouchesBeganWasCalled)
         XCTAssertTrue(anotherGestureRecognizerOnActionWasCalled)
     }
 
     func testCancelsTouchesInViewFalse() {
-        let anotherSubview = UIView(frame: SDL.rootView.bounds)
+        let anotherSubview = UIView(frame: window.bounds)
         subsubview.addSubview(anotherSubview)
 
         let anotherGestureRecognizer = UIGestureRecognizer()
         anotherGestureRecognizer.cancelsTouchesInView = false
         anotherSubview.addGestureRecognizer(anotherGestureRecognizer)
 
-        SDL.handleTouchDown(CGPoint(x: 10, y: 10))
-        SDL.handleTouchMove(CGPoint(x: 15, y: 10))
-        SDL.handleTouchUp(CGPoint(x: 15, y: 10))
+        window.handleTouchDown(CGPoint(x: 10, y: 10))
+        window.handleTouchMove(CGPoint(x: 15, y: 10))
+        window.handleTouchUp(CGPoint(x: 15, y: 10))
 
         XCTAssertTrue(viewOnTouchesBeganWasCalled)
     }

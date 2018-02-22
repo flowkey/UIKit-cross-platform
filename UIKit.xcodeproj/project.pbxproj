@@ -81,7 +81,7 @@
 		5CDC14CC1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */; };
 		5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */; };
 		5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */; };
-		5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */; };
+		5CE5C5731EDD7C3400680154 /* UIWindow+TouchHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */; };
 		5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5771EDDAD8200680154 /* CGRect.swift */; };
 		5CE5C57A1EDDAE5000680154 /* CGPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5791EDDAE5000680154 /* CGPath.swift */; };
 		5CF2BEEE1F8D1BD7009FCA1E /* UIFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF2BEED1F8D1BD7009FCA1E /* UIFontTests.swift */; };
@@ -317,7 +317,7 @@
 		5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+mask.swift"; sourceTree = "<group>"; };
 		5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIPanGestureRecognizer.swift; path = Sources/UIPanGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITapGestureRecognizer.swift; path = Sources/UITapGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
-		5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL+TouchHandling.swift"; sourceTree = "<group>"; };
+		5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIWindow+TouchHandling.swift"; sourceTree = "<group>"; };
 		5CE5C5771EDDAD8200680154 /* CGRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGRect.swift; path = Sources/CGRect.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5791EDDAE5000680154 /* CGPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CGPath.swift; path = Sources/CGPath.swift; sourceTree = SOURCE_ROOT; };
 		5CF2BEED1F8D1BD7009FCA1E /* UIFontTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFontTests.swift; sourceTree = "<group>"; };
@@ -598,7 +598,7 @@
 				5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */,
 				5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */,
 				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
-				5CE5C5721EDD7C3400680154 /* SDL+TouchHandling.swift */,
+				5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */,
 				5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */,
 				5C3716B51F10050600B2C366 /* Timer.swift */,
 				5C27E8051ECB301900F5020D /* UIKit+SDL.swift */,
@@ -1043,7 +1043,7 @@
 				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
 				5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */,
-				5CE5C5731EDD7C3400680154 /* SDL+TouchHandling.swift in Sources */,
+				5CE5C5731EDD7C3400680154 /* UIWindow+TouchHandling.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
 				5B1D6F3E1F8E264F009CE5B4 /* NSMutableAttributedString.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,

@@ -300,12 +300,19 @@ open class UIView: UIResponder {
     // MARK: UIResponder conformance:
 
     open func next() -> UIResponder? {
+        if self.gestureRecognizers.contains(where: { $0.cancelsTouchesInView }) { return nil }
         return superview
     }
 
-    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {}
-    open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {}
-    open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {}
+    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        next()?.touchesBegan(touches, with: event)
+    }
+    open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        next()?.touchesMoved(touches, with: event)
+    }
+    open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+         next()?.touchesEnded(touches, with: event)
+    }
     open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {}
 }
 

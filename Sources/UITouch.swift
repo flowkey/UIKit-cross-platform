@@ -7,8 +7,6 @@
 //
 
 public class UITouch {
-    static var activeTouches = Set<UITouch>()
-
     // using this to convert SDL touches into UIView touches
     internal init(at point: CGPoint, touchId: Int) {
         absoluteLocation = point
