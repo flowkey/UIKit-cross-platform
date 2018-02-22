@@ -270,7 +270,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
             this.mIsPaused = true
             this.nativePause()
             this.handleSurfacePause()
-            enableSensor(Sensor.TYPE_ACCELEROMETER, false)
+            this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
         }
     }
 
@@ -453,6 +453,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // Send a quit message to the application
         // This eventually stops the run loop and nulls the native SDL.window
         // nativeQuit()
+        Choreographer.getInstance().removeFrameCallback(this)
         enableSensor(Sensor.TYPE_ACCELEROMETER, false)
     }
 
