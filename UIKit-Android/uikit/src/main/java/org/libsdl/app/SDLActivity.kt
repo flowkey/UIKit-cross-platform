@@ -452,7 +452,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
         // Send a quit message to the application
         // This eventually stops the run loop and nulls the native SDL.window
-        nativeQuit()
+        // nativeQuit()
         enableSensor(Sensor.TYPE_ACCELEROMETER, false)
     }
 
