@@ -111,18 +111,15 @@ final public class SDL { // Only public for rootView!
                     event.phase = .moved
                     UIWindow.main.sendEvent(event)
                 }
-
                 eventWasHandled = true
             case SDL_MOUSEBUTTONUP:
                 if
                     let event = UIEvent.activeEvents.first,
-                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+                    let _ = event.allTouches?.first(where: { $0.touchId == Int(0) } )
                 {
-                    touch.updateAbsoluteLocation(.from(e.button))
                     event.phase = .ended
                     UIWindow.main.sendEvent(event)
                 }
-
                 eventWasHandled = true
             case SDL_KEYUP:
                 if e.key.keysym.scancode.rawValue == 270 {
