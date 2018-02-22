@@ -9,17 +9,13 @@
 // TODO: This urgently needs tests!
 
 extension SDL {
-    private static func run(
-        responderAction: (_ responder: UIResponder)->Void,
-        recognizerAction: (_ recognizer: UIGestureRecognizer)->Void,
-        on responderChain: UnfoldSequence<UIResponder, (UIResponder?, Bool)>
-    ) {
-        for responder in responderChain {
-            responderAction(responder)
+    private static func run(_ action: (_ responder: Touchable)->Void, on view: UIView) {
+        action(view)
 
+        for responder in view.responderChain {
             guard let view = responder as? UIView else { return }
             for recognizer in view.gestureRecognizers {
-                recognizerAction(recognizer)
+                action(recognizer)
                 if (recognizer.cancelsTouchesInView) { return }
             }
         }
@@ -36,11 +32,7 @@ extension SDL {
 
         if currentTouch.hasBeenCancelledByAGestureRecognizer { return }
 
-        run(
-            responderAction: { $0.touchesBegan([currentTouch], with: nil) },
-            recognizerAction: { $0.touchesBegan(UITouch.activeTouches, with: UIEvent()) },
-            on: hitView.responderChain
-        )
+        run({ $0.touchesBegan([currentTouch], with: nil) }, on: hitView)
     }
 
     static func handleTouchMove(_ point: CGPoint) {
@@ -49,11 +41,7 @@ extension SDL {
         touch.updateAbsoluteLocation(point)
 
         if let hitView = touch.view, !touch.hasBeenCancelledByAGestureRecognizer {
-            run(
-                responderAction: { $0.touchesMoved([touch], with: nil) },
-                recognizerAction: { $0.touchesMoved(UITouch.activeTouches, with: UIEvent()) },
-                on: hitView.responderChain
-            )
+            run({ $0.touchesMoved([touch], with: nil) }, on: hitView)
         }
     }
 
@@ -61,11 +49,7 @@ extension SDL {
         guard let touch = UITouch.activeTouches.first(where: {$0.touchId == Int(0) }) else { return }
 
         if let hitView = touch.view, !touch.hasBeenCancelledByAGestureRecognizer {
-            run(
-                responderAction: { $0.touchesEnded([touch], with: nil) },
-                recognizerAction: { $0.touchesEnded([touch], with: UIEvent()) },
-                on: hitView.responderChain
-            )
+            run({ $0.touchesEnded([touch], with: nil) }, on: hitView)
         }
 
         UITouch.activeTouches.remove(touch)
@@ -98,3 +82,23 @@ private extension UIView {
         return sequence(first: self as UIResponder, next: { $0.next() })
     }
 }
+
+protocol Touchable {
+    func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
+    func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
+    func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
+}
+
+extension UIView: Touchable {}
+extension UIGestureRecognizer: Touchable {
+    func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.touchesBegan(touches, with: event ?? UIEvent())
+    }
+    func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.touchesMoved(touches, with: event ?? UIEvent())
+    }
+    func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.touchesEnded(touches, with: event ?? UIEvent())
+    }
+}
+
