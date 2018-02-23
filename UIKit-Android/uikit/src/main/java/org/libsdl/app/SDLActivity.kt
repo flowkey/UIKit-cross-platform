@@ -4,17 +4,15 @@ import java.io.IOException
 import java.io.InputStream
 import java.lang.reflect.Method
 
-import android.app.*
 import android.view.*
 import android.widget.RelativeLayout
-import android.os.*
 import android.util.Log
 import android.graphics.*
 import android.hardware.*
 import android.content.pm.ActivityInfo
 import android.view.KeyEvent.*
 import android.content.Context
-import android.view.Surface.*
+import main.java.org.libsdl.app.SDLCommandHandler
 import main.java.org.libsdl.app.SDLOnKeyListener
 import main.java.org.libsdl.app.SDLOnTouchListener
 import main.java.org.libsdl.app.SDLSensorEventListener
@@ -121,7 +119,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     /**
-     * This method is called by SDL if SDL did not handle a message itself.
+     * This method is called by SDLCommandHandler if SDL did not handle a message itself.
      * This happens if a received message contains an unsupported command.
      * Method can be overwritten to handle Messages in a different class.
      * @param command the command of the message.
@@ -129,37 +127,9 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * @return if the message was handled in overridden method.
      */
     @Suppress("UNUSED_PARAMETER")
-    protected fun onUnhandledMessage(command: Int, param: Any): Boolean {
+    fun onUnhandledMessage(command: Int, param: Any): Boolean {
         Log.v(TAG, "onUnhandledMessage()")
         return false
-    }
-
-    /**
-     * A Handler class for Messages from native SDL applications.
-     * It uses current Activities as target (e.g. for the title).
-     * static to prevent implicit references to enclosing object.
-     */
-    protected class SDLCommandHandler(private val context: Context) : Handler() {
-        override fun handleMessage(msg: Message) {
-            when (msg.arg1) {
-                COMMAND_CHANGE_TITLE -> if (context is Activity) {
-                    context.title = msg.obj as String
-                } else {
-                    Log.e(TAG, "Error changing title, getContext() didn't return an Activity")
-                }
-                COMMAND_SET_KEEP_SCREEN_ON -> {
-                    val window = (context as? Activity)?.window ?: return
-                    if (msg.obj as? Int != 0) {
-                        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                    } else {
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                    }
-                }
-                else -> if (context is SDLActivity && !context.onUnhandledMessage(msg.arg1, msg.obj)) {
-                    Log.e(TAG, "error handling message, command is " + msg.arg1)
-                }
-            }
-        }
     }
 
     // Send a message from the SDLMain thread
@@ -299,15 +269,12 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private external fun nativeResume()
     private external fun onNativeResize(x: Int, y: Int, format: Int, rate: Float)
 
-
     external override fun onNativeKeyDown(keycode: Int)
     external override fun onNativeKeyUp(keycode: Int)
     external override fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
-    external override fun onNativeTouch(touchDevId: Int, pointerFingerId: Int,
-                                    action: Int, x: Float,
-                                    y: Float, p: Float)
+    external override fun onNativeTouch(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float)
+    external override fun onNativeAccel(x: Float, y: Float, z: Float)
 
-    override external fun onNativeAccel(x: Float, y: Float, z: Float)
     private external fun onNativeSurfaceChanged()
     private external fun onNativeSurfaceDestroyed()
     private external fun nativeGetHint(name: String): String?
