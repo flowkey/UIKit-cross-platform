@@ -22,10 +22,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
                                             Choreographer.FrameCallback,
                                             APKExtensionInputStreamOpener {
 
-    override val rotation: Int
-        get() = display.rotation
-
-
     companion object {
         internal val COMMAND_CHANGE_TITLE = 1
         internal val COMMAND_SET_KEEP_SCREEN_ON = 5
@@ -37,24 +33,46 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         @JvmStatic private var mSeparateMouseAndTouch = false
     }
 
-    // Keep track of the paused state
+    private var mSurface: SurfaceView
     private var mIsPaused = false
     private var mIsSurfaceReady = false
     private var mHasFocus = false
 
-    // Main components
-    private var mSurface: SurfaceView
+    private external fun render(): Int
+    private external fun nativeInit(): Int
+    private external fun nativeQuit()
+    private external fun nativePause()
+    private external fun nativeResume()
+    private external fun onNativeResize(x: Int, y: Int, format: Int, rate: Float)
+    private external fun onNativeSurfaceChanged()
+    private external fun onNativeSurfaceDestroyed()
+
+    // SDLOnKeyListener conformance
+    external override fun onNativeKeyDown(keycode: Int)
+    external override fun onNativeKeyUp(keycode: Int)
+
+    // SDLOnTouchListener conformance
+    external override fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
+    external override fun onNativeTouch(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float)
+    override var mWidth: Float = 1.0f // Keep track of the surface size to normalize touch events
+    override var mHeight: Float = 1.0f // Start with non-zero values to avoid potential division by zero
+
+    // SDLSensorEventListener conformance
+    external override fun onNativeAccel(x: Float, y: Float, z: Float)
+    override val rotation: Int
+        get() = display.rotation
+
+    // APKExtensionStreamOpener conformance
+    external override fun nativeGetHint(name: String): String?
+    override var expansionFile: Any? = null
+    override var expansionFileMethod: Method? = null
+
 
     // Handler for the messages
     private val commandHandler by lazy { SDLCommandHandler(this.context) }
 
-    // APKExtensionInputStreamOpener conformance, APK expansion files support
-
-    /** com.android.vending.expansion.zipfile.ZipResourceFile object or null.  */
-    override var expansionFile: Any? = null
-
-    /** com.android.vending.expansion.zipfile.ZipResourceFile's getInputStream() or null.  */
-    override var expansionFileMethod: Method? = null
+    // Lazy to avoid accessing context before onCreate!
+    private val mSensorManager: SensorManager by lazy { context!!.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
 
 
     init {
@@ -91,8 +109,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     @Suppress("unused") // accessed via JNI
     private fun getDeviceDensity(): Float = context.resources.displayMetrics.density
-
-    // Events
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
@@ -137,36 +153,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
 
-
-
-    // The code below was unused and used a deprecated API anyway.
-    // It would be good to have some access to native dialogs though, so
-    // we should rethink it based on the up-to-date information at:
-    // https://developer.android.com/guide/topics/ui/dialogs.html#FullscreenDialog
-
-//    /**
-//     * This method is called by SDL using JNI.
-//     * Shows the messagebox from UI thread and block calling thread.
-//     * buttonFlags, buttonIds and buttonTexts must have same length.
-//     * @param buttonFlags array containing flags for every button.
-//     * @param buttonIds array containing id for every button.
-//     * @param buttonTexts array containing text for every button.
-//     * @param colors null for default or array of length 5 containing colors.
-//     * @return button id or -1.
-//     */
-//    fun messageboxShowMessageBox(
-//            flags: Int,
-//            title: String,
-//            message: String,
-//            buttonFlags: IntArray,
-//            buttonIds: IntArray,
-//            buttonTexts: Array<String>,
-//            colors: IntArray): Int {
-//    }
-
-//    override fun onCreateDialog(ignore: Int, args: Bundle): Dialog? {
-//    }
-
     /** Called by onPause or surfaceDestroyed. Even if surfaceDestroyed
      * is the first to be called, mIsSurfaceReady should still be set
      * to 'true' during the call to onPause (in a usual scenario).
@@ -180,37 +166,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         }
     }
 
-    /** Called by onResume or surfaceCreated. An actual resume should be done only when the surface is ready.
-     * Note: Some Android variants may send multiple surfaceChanged events, so we don't need to resume
-     * every time we get one of those events, only if it comes after surfaceDestroyed
-     */
-    private fun handleResume() {
-        Log.v(TAG, "handleResume()")
-        if (this.mIsPaused && this.mIsSurfaceReady && this.mHasFocus) {
-            this.mIsPaused = false
-            this.nativeResume()
-            this.handleSurfaceResume()
-        }
-    }
-
-    // C functions we call
-
-    private external fun render(): Int
-    private external fun nativeInit(): Int
-    private external fun nativeQuit()
-    private external fun nativePause()
-    private external fun nativeResume()
-    private external fun onNativeResize(x: Int, y: Int, format: Int, rate: Float)
-
-    external override fun onNativeKeyDown(keycode: Int)
-    external override fun onNativeKeyUp(keycode: Int)
-    external override fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
-    external override fun onNativeTouch(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float)
-    external override fun onNativeAccel(x: Float, y: Float, z: Float)
-
-    private external fun onNativeSurfaceChanged()
-    private external fun onNativeSurfaceDestroyed()
-    external override fun nativeGetHint(name: String): String?
 
     /** Called by SDL using JNI. */
     @Suppress("unused")
@@ -241,16 +196,25 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         }
     }
 
-    // Interface conformance!
 
-    // Sensors
-    // Lazy to avoid accessing context before onCreate!
-    private val mSensorManager: SensorManager by lazy { context!!.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
+    override fun doFrame(frameTimeNanos: Long) {
+        Choreographer.getInstance().postFrameCallback(this)
+        this.render()
+    }
 
-    // Keep track of the surface size to normalize touch events
-    // Start with non-zero values to avoid potential division by zero
-    override var mWidth: Float = 1.0f
-    override var mHeight: Float = 1.0f
+    /** Called by onResume or surfaceCreated. An actual resume should be done only when the surface is ready.
+     * Note: Some Android variants may send multiple surfaceChanged events, so we don't need to resume
+     * every time we get one of those events, only if it comes after surfaceDestroyed
+     */
+    private fun handleResume() {
+        Log.v(TAG, "handleResume()")
+        if (this.mIsPaused && this.mIsSurfaceReady && this.mHasFocus) {
+            this.mIsPaused = false
+            this.nativeResume()
+            this.handleSurfaceResume()
+        }
+    }
+
 
     private fun handleSurfaceResume() {
         Log.v(TAG, "handleSurfaceResume()")
@@ -336,11 +300,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         }
     }
 
-    override fun doFrame(frameTimeNanos: Long) {
-        Choreographer.getInstance().postFrameCallback(this)
-        this.render()
-    }
-
     // Called when we lose the surface
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         Log.v(TAG, "surfaceDestroyed()")
@@ -369,4 +328,35 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
                     mSensorManager.getDefaultSensor(sensortype))
         }
     }
+
 }
+
+
+    // The code below was unused and used a deprecated API anyway.
+    // It would be good to have some access to native dialogs though, so
+    // we should rethink it based on the up-to-date information at:
+    // https://developer.android.com/guide/topics/ui/dialogs.html#FullscreenDialog
+
+//    /**
+//     * This method is called by SDL using JNI.
+//     * Shows the messagebox from UI thread and block calling thread.
+//     * buttonFlags, buttonIds and buttonTexts must have same length.
+//     * @param buttonFlags array containing flags for every button.
+//     * @param buttonIds array containing id for every button.
+//     * @param buttonTexts array containing text for every button.
+//     * @param colors null for default or array of length 5 containing colors.
+//     * @return button id or -1.
+//     */
+//    fun messageboxShowMessageBox(
+//            flags: Int,
+//            title: String,
+//            message: String,
+//            buttonFlags: IntArray,
+//            buttonIds: IntArray,
+//            buttonTexts: Array<String>,
+//            colors: IntArray): Int {
+//    }
+
+//    override fun onCreateDialog(ignore: Int, args: Bundle): Dialog? {
+//    }
+
