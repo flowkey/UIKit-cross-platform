@@ -128,14 +128,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         return false
     }
 
-    // Send a message from the SDLMain thread
-    private fun sendCommand(command: Int, data: Any?): Boolean {
-        val msg = commandHandler.obtainMessage()
-        msg.arg1 = command
-        msg.obj = data
-        return commandHandler.sendMessage(msg)
-    }
-
     /**
      * This method is called by SDL using JNI.
      * @return result of getSystemService(name) but executed on UI thread.
@@ -224,13 +216,13 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     @Suppress("unused")
     private fun setActivityTitle(title: String): Boolean {
         // Called from SDLMain() thread and can't directly affect the view
-        return sendCommand(COMMAND_CHANGE_TITLE, title)
+        return commandHandler.sendCommand(COMMAND_CHANGE_TITLE, title)
     }
 
     /** Called by SDL using JNI. */
     @Suppress("unused")
     private fun sendMessage(command: Int, param: Int): Boolean {
-        return sendCommand(command, param)
+        return commandHandler.sendCommand(command, param)
     }
 
     /** Called by SDL using JNI. */

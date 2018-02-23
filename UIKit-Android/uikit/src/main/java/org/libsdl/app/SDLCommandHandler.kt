@@ -37,3 +37,12 @@ class SDLCommandHandler(private val context: Context) : Handler() {
         }
     }
 }
+
+
+// Send a message from the SDLMain thread
+fun SDLCommandHandler.sendCommand(command: Int, data: Any?): Boolean {
+    val msg = obtainMessage()
+    msg.arg1 = command
+    msg.obj = data
+    return sendMessage(msg)
+}
