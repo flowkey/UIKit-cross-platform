@@ -30,6 +30,8 @@ public struct UIColor: Equatable {
     }
 
     // from wikipedia: https://en.wikipedia.org/wiki/HSL_and_HSV
+    // XXX: This is not currently working as it should but it is better than nothing
+    // We currently only use this in testing, but whoever needs it for real should have a look at fixing it..
     public init(hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat) {
         let c = (1 - ((2 * brightness) - 1).magnitude) * saturation
         let x = c * (1 - (hue.remainder(dividingBy: 2) - 1).magnitude)
