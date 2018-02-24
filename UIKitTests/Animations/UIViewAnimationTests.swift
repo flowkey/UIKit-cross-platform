@@ -295,7 +295,7 @@ class UIViewAnimationTests: XCTestCase {
 
         XCTAssertTrue((view.layer.animations["position"]?.animationGroup?
             .options.contains(.allowUserInteraction) ?? false))
-        XCTAssertTrue(view.animationsAllowUserInteraction)
+        XCTAssertTrue(view.anyCurrentlyRunningAnimationsAllowUserInteraction)
     }
 
     func testCreateAnimationsOnlyWhenPropertiesDiffer() {

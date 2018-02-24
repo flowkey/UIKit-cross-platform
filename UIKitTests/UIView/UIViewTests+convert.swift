@@ -125,6 +125,43 @@ class UIViewPointConversionTests: XCTestCase {
     }
 
 
+    func testAbsoluteOriginWithTransforms() {
+        let rootView = UIView(frame: CGRect(x: 0, y: 0, width: 512, height: 512))
+
+        let subview = UIView()
+        subview.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        subview.frame = CGRect(x: 128, y: 128, width: 256, height: 256)
+        subview.bounds.origin = CGPoint(x: 32, y: 32)
+        rootView.addSubview(subview)
+
+        let subviewSubview = UIView()
+        subviewSubview.transform = CGAffineTransform(scaleX: 2, y: 2)
+        subviewSubview.frame = CGRect(x: 128, y: 128, width: 128, height: 128)
+        subview.addSubview(subviewSubview)
+
+        XCTAssertEqual(subviewSubview.absoluteOrigin(), CGPoint(x: 176, y: 176))
+    }
+
+    func testAbsoluteOriginWithTransformsAndLotsOfBounds() {
+        let rootView = UIView(frame: CGRect(x: 0, y: 0, width: 512, height: 512))
+        rootView.bounds.origin = CGPoint(x: 16, y: 18)
+
+        let subview = UIView()
+        subview.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        subview.frame = CGRect(x: 128, y: 128, width: 256, height: 256)
+        subview.bounds.origin = CGPoint(x: 32, y: 32)
+        rootView.addSubview(subview)
+
+        let subviewSubview = UIView()
+        subviewSubview.transform = CGAffineTransform(scaleX: 3, y: 3) // has no effect on absolute origin
+        subviewSubview.frame = CGRect(x: 100, y: 128, width: 128, height: 128)
+        subviewSubview.bounds.origin = CGPoint(x: 64, y: 32) // has no effect on absolute origin
+        subview.addSubview(subviewSubview)
+
+        XCTAssertEqual(subviewSubview.absoluteOrigin(), CGPoint(x: 146, y: 158))
+    }
+
+
     func testCoordinateSystemConversion() {
         let rootView = UIView()
         let subview1 = UIView()
@@ -203,18 +240,37 @@ class UIViewPointConversionTests: XCTestCase {
 }
 
 #if os(iOS)
+    extension CGPoint {
+        static func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+            return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+        }
+
+        static func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+            return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+        }
+    }
+
     extension UIView {
+        // XXX: we shouldn't actually need this function. It should be the same as running
+        // `convert(self.bounds.origin, to: rootView)` or `to: touch.window)` etc.
+
+        /// Returns `self.frame.origin` in `window.bounds` coordinates
         internal func absoluteOrigin() -> CGPoint {
-            guard let superview = superview else {
-                return .zero
+            var result: CGPoint = .zero
+            var view = self
+            while let superview = view.superview {
+                let translatedFrameOrigin = view.convert(view.bounds.origin, to: superview)
+                let translatedFrameOriginOffsetBySuperviewBounds = translatedFrameOrigin - superview.bounds.origin
+
+                // This is the important step:
+                // We start deep in the hierarchy and at every level multiply the total result by the parent transform
+                // Without this, we would be ignoring the fact that a transform in (e.g.) the UIWindow affects ALL
+                // its subviews and their subviews, rather than just one level at a time.
+                result = (result + translatedFrameOriginOffsetBySuperviewBounds).applying(superview.transform)
+                view = superview
             }
 
-            let pointInSuperview = convert(self.bounds.origin, to: superview)
-            let superviewAbsoluteOrigin = superview.absoluteOrigin()
-            return CGPoint(
-                x: pointInSuperview.x - superview.bounds.origin.x + superviewAbsoluteOrigin.x,
-                y: pointInSuperview.y - superview.bounds.origin.y + superviewAbsoluteOrigin.y
-            )
+            return result
         }
     }
 #endif

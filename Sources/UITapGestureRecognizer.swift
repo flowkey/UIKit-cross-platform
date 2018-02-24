@@ -26,7 +26,8 @@ open class UITapGestureRecognizer: UIGestureRecognizer {
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesEnded(touches, with: event)
         if let trackedTouch = trackedTouch, touches.first == trackedTouch {
-            if let view = self.view, view.point(inside: trackedTouch.location(in: view), with: event) {
+            let trackedTouchLocationInView = trackedTouch.location(in: view)
+            if let view = self.view, view.point(inside: trackedTouchLocationInView, with: event) {
                 self.state = .recognized
                 onPress?()
                 self.state = .possible

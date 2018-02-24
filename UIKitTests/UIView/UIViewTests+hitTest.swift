@@ -24,7 +24,8 @@ class UIViewHitTests: XCTestCase {
         XCTAssertFalse((view.point(inside: CGPoint(x: 50, y: 50), with: nil)))
     }
 
-    func testHitTest() {
+    // XXX: we should split this up into a few different tests to make it clearer what we're trying to achieve.
+    func testHitTestBasic() {
         let rootView = UIView()
         rootView.bounds = CGRect(x: -10, y: -10, width: 100, height: 100)
         rootView.frame.origin = .zero
@@ -45,5 +46,66 @@ class UIViewHitTests: XCTestCase {
         // These are outside the bounds rect
         XCTAssertNil(rootView.hitTest(CGPoint(x: -11, y: -11), with: nil))
         XCTAssertNil(rootView.hitTest(CGPoint(x: 95, y: 95), with: nil))
+    }
+
+    func testHitTestWithSelfTransform() {
+        let rootView = UIView()
+        let subview = UIView()
+        rootView.addSubview(subview)
+
+        rootView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        rootView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        subview.frame = CGRect(x: 25, y: 25, width: 50, height: 50)
+
+        XCTAssertEqual(subview, rootView.hitTest(CGPoint(x: 25, y: 25), with: nil))
+        XCTAssertEqual(subview, rootView.hitTest(CGPoint(x: 74, y: 74), with: nil))
+
+        XCTAssertEqual(rootView, rootView.hitTest(CGPoint(x: 20, y: 20), with: nil))
+        XCTAssertEqual(rootView, rootView.hitTest(CGPoint(x: 75, y: 75), with: nil))
+
+        // Because bounds is twice the size of frame when scale 0.5
+        XCTAssertEqual(rootView, rootView.hitTest(CGPoint(x: 199, y: 199), with: nil))
+    }
+
+    func testHitTestWithChildTransform() {
+        let rootView = UIView()
+        let subview = UIView()
+        rootView.addSubview(subview)
+
+        rootView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        subview.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        subview.frame = CGRect(x: 25, y: 25, width: 50, height: 50)
+
+        XCTAssertEqual(subview, rootView.hitTest(CGPoint(x: 25, y: 25), with: nil))
+        XCTAssertEqual(subview, rootView.hitTest(CGPoint(x: 74, y: 74), with: nil))
+
+        XCTAssertEqual(rootView, rootView.hitTest(CGPoint(x: 20, y: 20), with: nil))
+        XCTAssertEqual(rootView, rootView.hitTest(CGPoint(x: 75, y: 75), with: nil))
+
+        // 100, 100 in a rect of size 100, 100 is out of bounds
+        XCTAssertNil(rootView.hitTest(CGPoint(x: 100, y: 100), with: nil))
+    }
+
+
+    func testHitTestWithSelfTransformAndAlteredBoundsOrigin() {
+        let rootView = UIView()
+        let subview = UIView()
+        rootView.addSubview(subview)
+
+        rootView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        rootView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        subview.frame = CGRect(x: 25, y: 25, width: 50, height: 50)
+
+        // Any points that would put this outside of
+        rootView.bounds.origin = CGPoint(x: 0, y: 25)
+
+        XCTAssertEqual(rootView.hitTest(CGPoint(x: 25, y: 25), with: nil), subview)
+        XCTAssertEqual(rootView.hitTest(CGPoint(x: 74, y: 74), with: nil), subview)
+
+        XCTAssertEqual(rootView.hitTest(CGPoint(x: 75, y: 75), with: nil), rootView)
+
+        // Because bounds is twice the size of frame when scale 0.5
+        XCTAssertEqual(rootView.hitTest(CGPoint(x: 199, y: 199), with: nil), rootView)
+        XCTAssertNil(rootView.hitTest(CGPoint(x: 200, y: 200), with: nil))
     }
 }

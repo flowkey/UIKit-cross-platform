@@ -115,13 +115,13 @@ extension CGRect {
 extension CGRect {
     internal func offsetBy(_ point: CGPoint) -> CGRect {
         var offsetCopy = self
-        offsetCopy.origin = self.origin.offsetBy(point)
+        offsetCopy.origin = self.origin + point
         return offsetCopy
     }
 
     public func offsetBy(dx: CGFloat, dy: CGFloat) -> CGRect {
         var offsetCopy = self
-        offsetCopy.origin = self.origin.offsetBy(CGPoint(x: dx, y: dy))
+        offsetCopy.origin = self.origin + CGPoint(x: dx, y: dy)
         return offsetCopy
     }
 

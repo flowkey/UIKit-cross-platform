@@ -56,7 +56,7 @@ open class UIView: UIResponder {
 
     /// returns true if any animation was started with allowUserInteraction
     /// or if no animation is currently running
-    var animationsAllowUserInteraction: Bool {
+    var anyCurrentlyRunningAnimationsAllowUserInteraction: Bool {
         return layer.animations.isEmpty || layer.animations.values.contains {
             $0.animationGroup?.options.contains(.allowUserInteraction) ?? false
         }
@@ -224,10 +224,10 @@ open class UIView: UIResponder {
         guard let otherView = view, otherView != self else { return point }
 
         // Fast paths:
-        if let superview = self.superview, superview == otherView {
-            return convertToSuperview(point)
-        } else if otherView.superview == self {
+        if otherView.superview == self {
             return convertToSubview(point, subview: otherView)
+        } else if let superview = self.superview, superview == otherView {
+            return convertToSuperview(point)
         }
 
         // Slow path:
@@ -253,22 +253,26 @@ open class UIView: UIResponder {
             return point
         }
 
-        return (point - (subview.frame.origin + subview.bounds.origin)).applying(invertedSubviewTransform)
+        return (point - subview.frame.origin).applying(invertedSubviewTransform) + subview.bounds.origin
     }
 
+    /// Returns `self.frame.origin` in `window.bounds` coordinates
     internal func absoluteOrigin() -> CGPoint {
-        guard let superview = superview else {
-            return .zero
+        var result: CGPoint = .zero
+        var view = self
+        while let superview = view.superview {
+            let translatedFrameOrigin = view.convert(view.bounds.origin, to: superview)
+            let translatedFrameOriginOffsetBySuperviewBounds = translatedFrameOrigin - superview.bounds.origin
+
+            // This is the important step:
+            // We start deep in the hierarchy and at every level multiply the total result by the parent transform
+            // Without this, we would be ignoring the fact that a transform in (e.g.) the UIWindow affects ALL
+            // its subviews and their subviews, rather than just one level at a time.
+            result = (result + translatedFrameOriginOffsetBySuperviewBounds).applying(superview.transform)
+            view = superview
         }
 
-        // `self.bounds.origin` is the point at which `origin` in bounds units starts (not `.zero`!)
-        // So: if we want to find `origin` in the superview, we need to start from that point
-        let pointInSuperview = convert(self.bounds.origin, to: superview)
-        let superviewAbsoluteOrigin = superview.absoluteOrigin()
-        return CGPoint(
-            x: pointInSuperview.x - superview.bounds.origin.x + superviewAbsoluteOrigin.x,
-            y: pointInSuperview.y - superview.bounds.origin.y + superviewAbsoluteOrigin.y
-        )
+        return result
     }
 
     public func convert(_ point: CGPoint, from view: UIView?) -> CGPoint {
@@ -291,7 +295,7 @@ open class UIView: UIResponder {
     }
 
     open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard !isHidden, isUserInteractionEnabled, animationsAllowUserInteraction,
+        guard !isHidden, isUserInteractionEnabled, anyCurrentlyRunningAnimationsAllowUserInteraction,
             alpha > 0.01, self.point(inside: point, with: event) else { return nil }
 
         // reversing allows us to return the view with the highest z-index in the shortest amount of time:
@@ -345,7 +349,7 @@ extension UIView: CustomStringConvertible {
 // for some reason classes are not automatically equatable:
 extension UIView: Equatable {
     public static func == (lhs: UIView, rhs: UIView) -> Bool {
-        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+        return lhs === rhs
     }
 }
 
