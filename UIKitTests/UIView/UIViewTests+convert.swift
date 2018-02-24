@@ -152,11 +152,16 @@ class UIViewPointConversionTests: XCTestCase {
         subview.bounds.origin = CGPoint(x: 32, y: 32)
         rootView.addSubview(subview)
 
+        // Without this the test would pass even with an incorrect implementation of absoluteOrigin
+        // This ensures that the transforms affect subviews' subviews (etc.) too, and not just direct children:
+        let blankSubview = UIView()
+        subview.addSubview(blankSubview)
+
         let subviewSubview = UIView()
         subviewSubview.transform = CGAffineTransform(scaleX: 3, y: 3) // has no effect on absolute origin
         subviewSubview.frame = CGRect(x: 100, y: 128, width: 128, height: 128)
         subviewSubview.bounds.origin = CGPoint(x: 64, y: 32) // has no effect on absolute origin
-        subview.addSubview(subviewSubview)
+        blankSubview.addSubview(subviewSubview)
 
         XCTAssertEqual(subviewSubview.absoluteOrigin(), CGPoint(x: 146, y: 158))
     }
