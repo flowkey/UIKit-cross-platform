@@ -36,7 +36,7 @@ extension CGPoint {
     public func applying(_ t: CGAffineTransform) -> CGPoint {
         return CGPoint(
             x: x * t.m11 + y * t.m21 + t.tX,
-            y: y * t.m12 + y * t.m22 + t.tY
+            y: x * t.m12 + y * t.m22 + t.tY
         )
     }
 }
