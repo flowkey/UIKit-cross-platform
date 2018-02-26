@@ -7,6 +7,7 @@
 //
 
 import SDL_gpu
+import func Foundation.round
 
 public struct CGRect {
     public var origin: CGPoint
