@@ -57,6 +57,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     /** com.android.vending.expansion.zipfile.ZipResourceFile's getInputStream() or null.  */
     private var expansionFileMethod: Method? = null
+    
+    private var isRunning: Boolean = false
 
 
     init {
@@ -286,9 +288,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         }
     }
 
-    private fun start() {
+    private fun startIfNotRunning() {
         // This is the entry point to the C app.
         // Start up the C app thread and enable sensor input for the first time
+        if (this.isRunning) return
+        this.isRunning = true
         this.nativeInit()
         this.enableSensor(Sensor.TYPE_ACCELEROMETER, true)
         Choreographer.getInstance().postFrameCallback(this)
@@ -301,6 +305,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         Choreographer.getInstance().removeFrameCallback(this)
         this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
         this.nativeQuit()
+        this.isRunning = false
     }
 
     override fun doFrame(frameTimeNanos: Long) {
@@ -441,7 +446,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
-        start()
+        startIfNotRunning()
 
         if (mHasFocus) {
             handleSurfaceResume()
