@@ -116,6 +116,8 @@ final public class SDL { // Only public for rootView!
                 let keyModifier = SDL_Keymod(UInt32(e.key.keysym.mod))
                 if keyModifier.contains(KMOD_LSHIFT) || keyModifier.contains(KMOD_RSHIFT) {
                     switch e.key.keysym.sym {
+                    case 43: // plus/multiply key
+                        fallthrough
                     case 61: // plus/equals key
                         SDL.onPressPlus?()
                     case 45: // minus/dash key
