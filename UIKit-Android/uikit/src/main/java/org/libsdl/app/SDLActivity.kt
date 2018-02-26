@@ -286,6 +286,28 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         }
     }
 
+    private fun start() {
+        // This is the entry point to the C app.
+        // Start up the C app thread and enable sensor input for the first time
+        this.nativeInit()
+        this.enableSensor(Sensor.TYPE_ACCELEROMETER, true)
+        Choreographer.getInstance().postFrameCallback(this)
+    }
+
+
+    private fun stop() {
+        // Send a quit message to the application
+        // This eventually stops the run loop and nulls the native SDL.window
+        Choreographer.getInstance().removeFrameCallback(this)
+        this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
+        this.nativeQuit()
+    }
+
+    override fun doFrame(frameTimeNanos: Long) {
+        Choreographer.getInstance().postFrameCallback(this)
+        this.render()
+    }
+
     // C functions we call
 
     private external fun render(): Int
@@ -419,22 +441,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
-
-        // This is the entry point to the C app.
-        // Start up the C app thread and enable sensor input for the first time
-        this.nativeInit()
-        enableSensor(Sensor.TYPE_ACCELEROMETER, true)
-        Choreographer.getInstance().postFrameCallback(this)
-
+        start()
 
         if (mHasFocus) {
             handleSurfaceResume()
         }
-    }
-
-    override fun doFrame(frameTimeNanos: Long) {
-        Choreographer.getInstance().postFrameCallback(this)
-        this.render()
     }
 
     // Called when we lose the surface
@@ -444,12 +455,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         handlePause()
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
-
-        // Send a quit message to the application
-        // This eventually stops the run loop and nulls the native SDL.window
-        // nativeQuit()
-        Choreographer.getInstance().removeFrameCallback(this)
-        enableSensor(Sensor.TYPE_ACCELEROMETER, false)
+        stop()
     }
 
 
