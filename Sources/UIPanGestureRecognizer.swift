@@ -23,19 +23,15 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         else { return .zero }
 
         let positionInTargetView = trackedTouch.location(in: view)
-        return CGPoint(
-            x: positionInTargetView.x - initialTouchPoint.x,
-            y: positionInTargetView.y - initialTouchPoint.y
-        )
+        return (positionInTargetView - initialTouchPoint)
+            // this should actually consider recursive parent transforms
+            .applying(view?.superview?.transform.inverted() ?? .identity)
     }
 
     open func setTranslation(_ translation: CGPoint, in view: UIView?) {
         guard let trackedTouch = trackedTouch else { return }
         let positionInTargetView = trackedTouch.location(in: view)
-        initialTouchPoint = CGPoint(
-            x: positionInTargetView.x - translation.x,
-            y: positionInTargetView.y - translation.y
-        )
+        initialTouchPoint = positionInTargetView - translation
     }
 
     // The velocity of the pan gesture, which is expressed in points per second.
