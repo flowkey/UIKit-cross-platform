@@ -257,7 +257,7 @@ open class UIView: UIResponder {
     }
 
     /// Returns `self.frame.origin` in `window.bounds` coordinates
-    internal func absoluteOrigin() -> CGPoint {
+    private func absoluteOrigin() -> CGPoint {
         var result: CGPoint = .zero
         var view = self
         while let superview = view.superview {
