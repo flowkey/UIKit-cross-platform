@@ -304,8 +304,12 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // This eventually stops the run loop and nulls the native SDL.window
         Choreographer.getInstance().removeFrameCallback(this)
         this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
-        this.nativeQuit()
         this.isRunning = false
+    }
+
+    fun quit() {
+        this.stop()
+        this.nativeQuit()
     }
 
     override fun doFrame(frameTimeNanos: Long) {
