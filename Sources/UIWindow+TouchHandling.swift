@@ -15,7 +15,7 @@ extension UIWindow {
             !currentTouch.hasBeenCancelledByAGestureRecognizer
         else { return }
 
-        switch event.phase {
+        switch currentTouch.phase {
         case .began:
             UIEvent.activeEvents.insert(event)
 

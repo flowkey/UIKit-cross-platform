@@ -8,16 +8,12 @@
 
 import class Foundation.NSDate
 
-enum UIEventPhase: String {
-    case began, moved, ended
-}
 
 public class UIEvent {
     internal static var activeEvents = Set<UIEvent>()
 
     public var allTouches: Set<UITouch>?
     public let timestamp =  NSDate.timeIntervalSinceReferenceDate
-    var phase: UIEventPhase = .began
 
     public init() {}
 

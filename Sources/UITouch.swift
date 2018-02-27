@@ -21,6 +21,8 @@ public class UITouch {
     public weak var window: UIWindow?
     public var gestureRecognizers: [UIGestureRecognizer] = []
 
+    public var phase: UITouchPhase = .began
+
     private var absoluteLocation: CGPoint
     private var previousAbsoluteLocation: CGPoint
 
@@ -28,8 +30,6 @@ public class UITouch {
         previousAbsoluteLocation = absoluteLocation
         absoluteLocation = newLocation
     }
-
- 
 
     public func location(in view: UIView?) -> CGPoint {
         return window?.convert(absoluteLocation, to: view) ?? absoluteLocation
@@ -41,6 +41,9 @@ public class UITouch {
 
 }
 
+public enum UITouchPhase: Int {
+    case began, moved, ended
+}
 
 extension UITouch: Hashable {
     public var hashValue: Int {
