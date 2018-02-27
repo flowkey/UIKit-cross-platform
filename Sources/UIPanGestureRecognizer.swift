@@ -23,19 +23,13 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         else { return .zero }
 
         let positionInTargetView = trackedTouch.location(in: view)
-        return CGPoint(
-            x: positionInTargetView.x - initialTouchPoint.x,
-            y: positionInTargetView.y - initialTouchPoint.y
-        )
+        return positionInTargetView - initialTouchPoint
     }
 
     open func setTranslation(_ translation: CGPoint, in view: UIView?) {
         guard let trackedTouch = trackedTouch else { return }
         let positionInTargetView = trackedTouch.location(in: view)
-        initialTouchPoint = CGPoint(
-            x: positionInTargetView.x - translation.x,
-            y: positionInTargetView.y - translation.y
-        )
+        initialTouchPoint = positionInTargetView - translation
     }
 
     // The velocity of the pan gesture, which is expressed in points per second.
@@ -45,9 +39,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             let curPos = trackedTouch?.location(in: view),
             let prevPos = trackedTouch?.previousLocation(in: view),
             timeSinceLastMovement != 0.0
-        else {
-            return CGPoint.zero
-        }
+        else { return CGPoint.zero }
 
         // XXX: apple docs say velocity is in points per s (see above)
         // here we use milliseconds though in order to get results in the same magnitude as in iOS
