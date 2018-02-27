@@ -233,12 +233,9 @@ open class UIView: UIResponder {
         // Slow path:
         let selfAbsoluteOrigin = self.absoluteOrigin()
         let otherAbsoluteOrigin = otherView.absoluteOrigin()
-        let originDifference = CGSize(
-            width: otherAbsoluteOrigin.x - selfAbsoluteOrigin.x,
-            height: otherAbsoluteOrigin.y - selfAbsoluteOrigin.y
-        )
 
-        return CGPoint(x: point.x - originDifference.width, y: point.y - originDifference.height)
+        let originDifference = (otherAbsoluteOrigin - selfAbsoluteOrigin)
+        return point - originDifference
     }
 
     private func convertToSuperview(_ point: CGPoint) -> CGPoint {
