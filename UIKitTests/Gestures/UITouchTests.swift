@@ -12,12 +12,15 @@ import XCTest
 class UITouchTests: XCTestCase {
 
     func testLocationInView() {
+        let window = UIWindow()
+        window.frame.size = CGSize(width: 800, height: 300)
+
         let rootView = UIView()
         let view = UIView(frame: CGRect(x: 10, y: 10, width: 50, height: 50))
 
         rootView.addSubview(view)
 
-        let touch = UITouch(at: CGPoint(x: 10, y: 10), touchId: 0)
+        let touch = UITouch(at: CGPoint(x: 10, y: 10), touchId: 0, window: window)
 
         // touch location in view should always be in bounds units.
         XCTAssertEqual(touch.location(in: view), .zero)
@@ -33,7 +36,7 @@ class UITouchTests: XCTestCase {
     func testLocationInNilReturnsAbsoluteLocation() {
         let point = CGPoint(x: 10, y: 10)
 
-        let touch = UITouch(at: point, touchId: 0)
+        let touch = UITouch(at: point, touchId: 0, window: UIWindow())
         XCTAssertEqual(touch.location(in: nil), point)
     }
 

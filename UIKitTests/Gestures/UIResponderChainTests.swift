@@ -87,7 +87,7 @@ class UIResponderChainTests: XCTestCase {
 
 fileprivate extension UIResponderChainTests {
     func handleTouchDown(_ point: CGPoint) {
-        let event = UIEvent(from: UITouch(at: point, touchId: 0))
+        let event = UIEvent(from: UITouch(at: point, touchId: 0, window: window))
         window.sendEvent(event)
     }
 

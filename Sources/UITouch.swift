@@ -8,14 +8,17 @@
 
 public class UITouch {
     // using this to convert SDL touches into UIView touches
-    internal init(at point: CGPoint, touchId: Int) {
+    internal init(at point: CGPoint, touchId: Int, window: UIWindow = UIWindow.main) {
         absoluteLocation = point
         previousAbsoluteLocation = point
         self.touchId = touchId
+        self.window = window
     }
 
-    var touchId: Int
-    internal(set) public weak var view: UIView?
+    let touchId: Int
+
+    public weak var view: UIView?
+    public weak var window: UIWindow?
     public var gestureRecognizers: [UIGestureRecognizer] = []
 
     private var absoluteLocation: CGPoint
@@ -26,14 +29,14 @@ public class UITouch {
         absoluteLocation = newLocation
     }
 
-    // weak var window: UIWindow? // unused
+ 
 
     public func location(in view: UIView?) -> CGPoint {
-        return UIWindow.main.convert(absoluteLocation, to: view)
+        return window?.convert(absoluteLocation, to: view) ?? absoluteLocation
     }
 
     public func previousLocation(in view: UIView?) -> CGPoint {
-        return UIWindow.main.convert(previousAbsoluteLocation, to: view)
+        return window?.convert(previousAbsoluteLocation, to: view) ?? previousAbsoluteLocation
     }
 
 }
