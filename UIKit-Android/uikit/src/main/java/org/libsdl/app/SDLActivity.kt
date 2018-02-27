@@ -60,6 +60,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     
     private var isRunning: Boolean = false
 
+    private var lastFrameTimeNanos: Long = 0
 
     init {
         Log.v(TAG, "Device: " + android.os.Build.DEVICE)
@@ -314,8 +315,17 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     override fun doFrame(frameTimeNanos: Long) {
         Choreographer.getInstance().postFrameCallback(this)
-        this.render()
+
+        // XXX: not sure if this makes any sense yet, but the behaviour is what I expected from my understandings
+       if ((frameTimeNanos - this.lastFrameTimeNanos) >= 16666666.6667) {
+            this.render()
+            this.lastFrameTimeNanos = frameTimeNanos
+       }
+       else {
+           Log.v(TAG, "skip render")
+       }
     }
+
 
     // C functions we call
 
