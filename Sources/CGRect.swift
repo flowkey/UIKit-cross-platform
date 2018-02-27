@@ -7,6 +7,7 @@
 //
 
 import SDL_gpu
+import func Foundation.round
 
 public struct CGRect {
     public var origin: CGPoint
@@ -27,6 +28,9 @@ public struct CGRect {
         self.size = CGSize(width: width, height: height)
     }
 
+    public var isNull: Bool { return self == .null }
+
+    public static let null = CGRect(x: .infinity, y: .infinity, width: 0, height: 0)
     public static let zero = CGRect()
 }
 
@@ -89,28 +93,101 @@ extension CGRect {
 
         return true
     }
+
+    public func intersection(_ other: CGRect) -> CGRect {
+        let largestMinX = max(self.minX, other.minX)
+        let largestMinY = max(self.minY, other.minY)
+
+        let smallestMaxX = min(self.maxX, other.maxX)
+        let smallestMaxY = min(self.maxY, other.maxY)
+
+        let width = smallestMaxX - largestMinX
+        let height = smallestMaxY - largestMinY
+
+        if width > 0, height > 0 {
+            // The intersection rectangle has dimensions, i.e. there is an intersection:
+            return CGRect(x: largestMinX, y: largestMinY, width: width, height: height)
+        } else {
+            return .null
+        }
+    }
 }
 
 extension CGRect {
     internal func offsetBy(_ point: CGPoint) -> CGRect {
         var offsetCopy = self
-        offsetCopy.origin = self.origin.offsetBy(point)
+        offsetCopy.origin = self.origin + point
         return offsetCopy
     }
 
     public func offsetBy(dx: CGFloat, dy: CGFloat) -> CGRect {
         var offsetCopy = self
-        offsetCopy.origin = self.origin.offsetBy(CGPoint(x: dx, y: dy))
+        offsetCopy.origin = self.origin + CGPoint(x: dx, y: dy)
         return offsetCopy
+    }
+
+    public func applying(_ t: CGAffineTransform) -> CGRect {
+        if t.isIdentity { return self }
+
+        let newTopLeft = CGPoint(x: minX, y: minY).applying(t)
+        let newTopRight = CGPoint(x: maxX, y: minY).applying(t)
+        let newBottomLeft = CGPoint(x: minX, y: maxY).applying(t)
+        let newBottomRight = CGPoint(x: maxX, y: maxY).applying(t)
+
+        let newMinX = min(newTopLeft.x, newTopRight.x, newBottomLeft.x, newBottomRight.x)
+        let newMaxX = max(newTopLeft.x, newTopRight.x, newBottomLeft.x, newBottomRight.x)
+
+        let newMinY = min(newTopLeft.y, newTopRight.y, newBottomLeft.y, newBottomRight.y)
+        let newMaxY = max(newTopLeft.y, newTopRight.y, newBottomLeft.y, newBottomRight.y)
+
+        // XXX: What happens if the point that was furthest left is now on the right (because of a rotation)?
+        // i.e. Should do we return a normalised rect or one with a negative width?
+        return CGRect(
+            x: newMinX,
+            y: newMinY,
+            width: newMaxX - newMinX,
+            height: newMaxY - newMinY
+        )
+    }
+}
+
+extension CGRect {
+    // This doesn't exist in iOS but it's useful for debugging our rendering
+    internal func applying(_ t: CATransform3D) -> CGRect {
+        if t == CATransform3DIdentity { return self }
+
+        let topLeft = t.transformingVector(x: minX, y: minY, z: 0)
+        let topRight = t.transformingVector(x: maxX, y: minY, z: 0)
+        let bottomLeft = t.transformingVector(x: minX, y: maxY, z: 0)
+        let bottomRight = t.transformingVector(x: maxX, y: maxY, z: 0)
+
+        let newMinX = min(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x)
+        let newMaxX = max(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x)
+
+        let newMinY = min(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
+        let newMaxY = max(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
+
+        return CGRect(
+            x: CGFloat(newMinX),
+            y: CGFloat(newMinY),
+            width: CGFloat(newMaxX - newMinX),
+            height: CGFloat(newMaxY - newMinY)
+        )
     }
 }
 
 extension GPU_Rect {
     init(_ cgRect: CGRect) {
-        self.w = Float(cgRect.size.width)
-        self.h = Float(cgRect.size.height)
-        self.x = Float(cgRect.origin.x)
-        self.y = Float(cgRect.origin.y)
+        self.w = Float(round(cgRect.size.width))
+        self.h = Float(round(cgRect.size.height))
+        self.x = Float(round(cgRect.origin.x))
+        self.y = Float(round(cgRect.origin.y))
+    }
+}
+
+extension CGRect: CustomStringConvertible {
+    public var description: String {
+        return "(\(origin.x), \(origin.y), \(width), \(height))"
     }
 }
 

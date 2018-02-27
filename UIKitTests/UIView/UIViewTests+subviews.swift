@@ -6,7 +6,6 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-import UIKit
 import XCTest
 
 class UIViewSubviewTests: XCTestCase {
