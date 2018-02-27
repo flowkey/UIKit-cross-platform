@@ -75,6 +75,11 @@ final public class SDL { // Only public for rootView!
         UIView.animateIfNeeded(at: frameTimer)
 
         window.clear()
+
+        GPU_MatrixMode(GPU_MODELVIEW)
+        GPU_LoadIdentity()
+
+        window.clippingRect = rootView.bounds
         rootView.sdlDrawAndLayoutTreeIfNeeded()
         rootView.layer.sdlRender()
         window.flip()
@@ -122,10 +127,27 @@ final public class SDL { // Only public for rootView!
                 }
                 eventWasHandled = true
             case SDL_KEYUP:
+                let keyModifier = SDL_Keymod(UInt32(e.key.keysym.mod))
+                if keyModifier.contains(KMOD_LSHIFT) || keyModifier.contains(KMOD_RSHIFT) {
+                    switch e.key.keysym.sym {
+                    case 43: // plus/multiply key
+                        fallthrough
+                    case 61: // plus/equals key
+                        SDL.onPressPlus?()
+                    case 45: // minus/dash key
+                        SDL.onPressMinus?()
+                    case 118: // "V"
+                        SDL.rootView.printViewHierarchy()
+                    default:
+                        print(e.key.keysym.sym)
+                        break
+                    }
+                }
                 if e.key.keysym.scancode.rawValue == 270 {
                     onHardwareBackButtonPress?()
                 }
-            default: break
+            default:
+                break
             }
         }
 
@@ -133,6 +155,25 @@ final public class SDL { // Only public for rootView!
     }
 }
 
+extension UIView {
+    func printViewHierarchy(depth: Int = 0) {
+        if self.isHidden || self.alpha < 0.01 { return }
+        let indentation = (0 ..< depth).reduce("") { result, _ in result + "  " }
+        print(indentation + "💩 " + self.description.replacingOccurrences(of: "\n", with: "\n" + indentation))
+
+        let newDepth = depth + 1
+        for subview in subviews {
+            subview.printViewHierarchy(depth: newDepth)
+        }
+    }
+}
+
+extension SDL {
+    public static var onPressPlus: (() -> Void)?
+    public static var onPressMinus: (() -> Void)?
+}
+
+extension SDL_Keymod: OptionSet {}
 public var onHardwareBackButtonPress: (() -> Void)?
 
 #if os(Android)

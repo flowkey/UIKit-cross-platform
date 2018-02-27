@@ -29,13 +29,13 @@ public class UITouch {
     // weak var window: UIWindow? // unused
 
     public func location(in view: UIView?) -> CGPoint {
-        let origin = view?.absoluteOrigin() ?? .zero
-        return absoluteLocation.offsetBy(-origin)
+        let viewAbsoluteOrigin = view?.absoluteOrigin() ?? .zero
+        return absoluteLocation - viewAbsoluteOrigin
     }
 
     public func previousLocation(in view: UIView?) -> CGPoint {
         let origin = view?.absoluteOrigin() ?? .zero
-        return previousAbsoluteLocation.offsetBy(-origin)
+        return previousAbsoluteLocation - origin
     }
 
 }

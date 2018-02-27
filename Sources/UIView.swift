@@ -34,8 +34,13 @@ open class UIView: UIResponder {
     }
 
     open var transform: CGAffineTransform {
-        get { return layer.transform }
-        set { layer.transform = newValue }
+        get { return layer.affineTransform() }
+        set {
+            layer.setAffineTransform(newValue)
+
+            // XXX: This doesn't actually happen on iOS but the subviews get layouted somehow anyway
+            needsLayout = true
+        }
     }
 
     open let safeAreaInsets: UIEdgeInsets = .zero
@@ -51,7 +56,7 @@ open class UIView: UIResponder {
 
     /// returns true if any animation was started with allowUserInteraction
     /// or if no animation is currently running
-    var animationsAllowUserInteraction: Bool {
+    var anyCurrentlyRunningAnimationsAllowUserInteraction: Bool {
         return layer.animations.isEmpty || layer.animations.values.contains {
             $0.animationGroup?.options.contains(.allowUserInteraction) ?? false
         }
@@ -219,11 +224,10 @@ open class UIView: UIResponder {
         guard let otherView = view, otherView != self else { return point }
 
         // Fast paths:
-        if let superview = self.superview, superview == otherView {
-            return frame.origin.offsetBy(-superview.bounds.origin).offsetBy(point)
-        } else if otherView.superview == self {
-            let otherViewOrigin = otherView.frame.origin.offsetBy(-self.bounds.origin)
-            return CGPoint(x: point.x - otherViewOrigin.x, y: point.y - otherViewOrigin.y)
+        if otherView.superview == self {
+            return convertToSubview(point, subview: otherView)
+        } else if let superview = self.superview, superview == otherView {
+            return convertToSuperview(point)
         }
 
         // Slow path:
@@ -237,12 +241,38 @@ open class UIView: UIResponder {
         return CGPoint(x: point.x - originDifference.width, y: point.y - originDifference.height)
     }
 
-    func absoluteOrigin() -> CGPoint {
-        guard let superview = superview else {
-            return frame.origin
+    private func convertToSuperview(_ point: CGPoint) -> CGPoint {
+        return (point - bounds.origin).applying(transform) + frame.origin
+    }
+
+    /// `point` is in self.bounds.size coordinates
+    private func convertToSubview(_ point: CGPoint, subview: UIView) -> CGPoint {
+        precondition(subview.superview == self)
+        guard let invertedSubviewTransform = subview.transform.inverted() else {
+            assertionFailure("Tried to convert a point to a subview whose transfrom could not be inverted")
+            return point
         }
 
-        return frame.origin.offsetBy(-superview.bounds.origin).offsetBy(superview.absoluteOrigin())
+        return (point - subview.frame.origin).applying(invertedSubviewTransform) + subview.bounds.origin
+    }
+
+    /// Returns `self.frame.origin` in `window.bounds` coordinates
+    internal func absoluteOrigin() -> CGPoint {
+        var result: CGPoint = .zero
+        var view = self
+        while let superview = view.superview {
+            let translatedFrameOrigin = view.convert(view.bounds.origin, to: superview)
+            let translatedFrameOriginOffsetBySuperviewBounds = translatedFrameOrigin - superview.bounds.origin
+
+            // This is the important step:
+            // We start deep in the hierarchy and at every level multiply the total result by the parent transform
+            // Without this, we would be ignoring the fact that a transform in (e.g.) the UIWindow affects ALL
+            // its subviews and their subviews, rather than just one level at a time.
+            result = (result + translatedFrameOriginOffsetBySuperviewBounds).applying(superview.transform)
+            view = superview
+        }
+
+        return result
     }
 
     public func convert(_ point: CGPoint, from view: UIView?) -> CGPoint {
@@ -265,13 +295,8 @@ open class UIView: UIResponder {
     }
 
     open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard
-            !isHidden,
-            isUserInteractionEnabled,
-            animationsAllowUserInteraction,
-            alpha > 0.01,
-            self.point(inside: point, with: event)
-        else { return nil }
+        guard !isHidden, isUserInteractionEnabled, anyCurrentlyRunningAnimationsAllowUserInteraction,
+            alpha > 0.01, self.point(inside: point, with: event) else { return nil }
 
         // reversing allows us to return the view with the highest z-index in the shortest amount of time:
         for subview in subviews.reversed() {
@@ -283,17 +308,18 @@ open class UIView: UIResponder {
         return self
     }
 
+    /// Checks whether `point` is in the view's bounds (meaning it is affected by `self.bounds.origin`)
     /// It would be easier to understand this if it was called `contains(_ point: CGPoint, with event:)`
     open func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        return CGRect(origin: .zero, size: bounds.size).contains(point)
+        return bounds.contains(point)
     }
 
     open func sizeThatFits(_ size: CGSize) -> CGSize {
-        return bounds.size
+        return frame.size
     }
 
     open func sizeToFit() {
-        self.bounds.size = sizeThatFits(self.bounds.size)
+        self.frame.size = sizeThatFits(self.frame .size)
         setNeedsLayout()
     }
 
@@ -316,11 +342,21 @@ open class UIView: UIResponder {
     open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {}
 }
 
+extension UIView: CustomStringConvertible {
+    public var description: String {
+        return """
+            \(type(of: self))
+            - transform: \(transform.description)
+            - layer: \(layer.description)
+            """
+    }
+}
+
 
 // for some reason classes are not automatically equatable:
 extension UIView: Equatable {
     public static func == (lhs: UIView, rhs: UIView) -> Bool {
-        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+        return lhs === rhs
     }
 }
 

@@ -8,8 +8,6 @@
 
 import XCTest
 @testable import UIKit
-typealias CAMediaTimingFunction = UIKit.CAMediaTimingFunction
-typealias UIView = UIKit.UIView
 
 class CAMediaTimingFunctionTests: XCTestCase {
     func testCurveEasInWhenUsingUIViewAnimate() {

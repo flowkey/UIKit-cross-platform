@@ -6,11 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-#if os(iOS)
-    import UIKit
-#else
-    @testable import UIKit
-#endif
+import UIKit
 
 extension UIImage {
     static func testImage(ofSize size: CGSize) -> UIImage {

@@ -7,7 +7,6 @@
 //
 
 import XCTest
-import UIKit
 
 private let frameSizeWithShortLabelText = CGSize(width: 28.5, height: 26.5)
 private let frameSizeWithMediumLabelText = CGSize(width: 137, height: 31.0)
