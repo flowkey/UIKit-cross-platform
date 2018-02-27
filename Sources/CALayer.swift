@@ -190,7 +190,8 @@ open class CALayer {
         contentsScale = layer.contentsScale
         superlayer = layer.superlayer
         sublayers = layer.sublayers
-        transform = layer.transform
+        contentsGravity = layer.contentsGravity
+        contentsGravityEnum = layer.contentsGravityEnum
     }
 
     open func copy() -> Any {
