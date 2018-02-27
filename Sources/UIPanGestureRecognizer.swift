@@ -41,9 +41,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             let curPos = trackedTouch?.location(in: view),
             let prevPos = trackedTouch?.previousLocation(in: view),
             timeSinceLastMovement != 0.0
-        else {
-            return CGPoint.zero
-        }
+        else { return CGPoint.zero }
 
         // XXX: apple docs say velocity is in points per s (see above)
         // here we use milliseconds though in order to get results in the same magnitude as in iOS
