@@ -22,8 +22,8 @@
 		5B840BB71F42FCBD0010AC95 /* AnimatableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */; };
 		5BA1FC4E1F6694CA005843B9 /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA1FC4D1F6694CA005843B9 /* UITextView.swift */; };
 		5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */; };
-		5BAF8E4A203DA89D00DA1EBF /* UIResponderChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BAF8E49203DA89D00DA1EBF /* UIResponderChainTests.swift */; };
 		5BA87A9C2018FC990080C876 /* CATransform3D+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA87A942018FC980080C876 /* CATransform3D+animations.swift */; };
+		5BAF8E4A203DA89D00DA1EBF /* UIResponderChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BAF8E49203DA89D00DA1EBF /* UIResponderChainTests.swift */; };
 		5BBEECA51F39E7A6006E3416 /* CGRect+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */; };
 		5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */; };
 		5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */; };
@@ -263,8 +263,8 @@
 		5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimatableProperty.swift; path = Sources/AnimatableProperty.swift; sourceTree = SOURCE_ROOT; };
 		5BA1FC4D1F6694CA005843B9 /* UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UITextView.swift; path = Sources/UITextView.swift; sourceTree = SOURCE_ROOT; };
 		5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABasicAnimationTests.swift; sourceTree = "<group>"; };
-		5BAF8E49203DA89D00DA1EBF /* UIResponderChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIResponderChainTests.swift; sourceTree = "<group>"; };
 		5BA87A942018FC980080C876 /* CATransform3D+animations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CATransform3D+animations.swift"; path = "Sources/CATransform3D+animations.swift"; sourceTree = SOURCE_ROOT; };
+		5BAF8E49203DA89D00DA1EBF /* UIResponderChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIResponderChainTests.swift; sourceTree = "<group>"; };
 		5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CGRect+animations.swift"; path = "Sources/CGRect+animations.swift"; sourceTree = SOURCE_ROOT; };
 		5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CABasicAnimation+updateProgress.swift"; path = "Sources/CABasicAnimation+updateProgress.swift"; sourceTree = SOURCE_ROOT; };
 		5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimationKeyPath.swift; path = Sources/AnimationKeyPath.swift; sourceTree = SOURCE_ROOT; };
@@ -562,6 +562,7 @@
 				838545621F26458100B64986 /* UIVisualEffect.swift */,
 				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
 				5C6AB7171ED3BECD006F90AC /* UIWindow.swift */,
+				5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */,
 				833075381F697613002089AC /* Video */,
 			);
 			name = UIKit;
@@ -625,7 +626,6 @@
 				5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */,
 				5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */,
 				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
-				5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */,
 				5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */,
 				5C3716B51F10050600B2C366 /* Timer.swift */,
 				5C27E8051ECB301900F5020D /* UIKit+SDL.swift */,
