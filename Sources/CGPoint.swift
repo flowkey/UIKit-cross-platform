@@ -26,11 +26,21 @@ public struct CGPoint {
     }
 }
 
-extension CGPoint {
-    internal func offsetBy(_ other: CGPoint) -> CGPoint {
-        return CGPoint(x: self.x + other.x, y: self.y + other.y)
+extension CGPoint: CustomStringConvertible {
+    public var description: String {
+        return "(\(x), \(y))"
     }
 }
+
+extension CGPoint {
+    public func applying(_ t: CGAffineTransform) -> CGPoint {
+        return CGPoint(
+            x: x * t.m11 + y * t.m21 + t.tX,
+            y: x * t.m12 + y * t.m22 + t.tY
+        )
+    }
+}
+
 extension CGPoint: Equatable {
     public static func == (lhs: CGPoint, rhs: CGPoint) -> Bool {
         return lhs.x == rhs.x && lhs.y == rhs.y

@@ -11,17 +11,17 @@ import SDL
 open class CALayer {
     open weak var delegate: CALayerDelegate?
 
-    open var contents: CGImage? {
-        didSet {
-            if let contents = self.contents {
-                self.bounds.size = contents.size / contentsScale
-            }
-        }
-    }
+    open var contents: CGImage?
 
     /// Defaults to 1.0 but if the layer is associated with a view,
     /// the view sets this value to match the screen.
     open var contentsScale: CGFloat = 1.0
+
+    internal var contentsGravityEnum: ContentsGravity = .resize
+    open var contentsGravity: String {
+        get { return contentsGravityEnum.rawValue }
+        set { contentsGravityEnum = ContentsGravity(rawValue: newValue) ?? .center } // matches iOS
+    }
 
     internal (set) public weak var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer]?
@@ -66,36 +66,66 @@ open class CALayer {
         superlayer = nil
     }
 
-    public var backgroundColor: CGColor?
+    open var backgroundColor: CGColor?
 
-    public var position: CGPoint {
-        // Note: this should be based on the CALayer's anchor point: (midX, midY) is just the default (0.5, 0.5) point:
-        get { return CGPoint(x: frame.midX, y: frame.midY) }
-        set { frame.midX = newValue.x; frame.midY = newValue.y }
-    }
+    open var frame: CGRect {
+        get {
+            // Create a rectangle based on `bounds.size` * `transform` at `position` offset by `anchorPoint`
+            let transformedBounds = bounds.applying(transform)
 
-    /// Frame is what is actually rendered, regardless of the texture size (we don't do any stretching etc)
-    open var frame: CGRect = .zero {
-        willSet (newFrame) {
-            guard newFrame != frame else { return }
-            onWillSet(keyPath: .frame)
+            let anchorPointOffset = CGPoint(
+                x: transformedBounds.width * anchorPoint.x,
+                y: transformedBounds.height * anchorPoint.y
+            )
+
+            return CGRect(
+                x: position.x - anchorPointOffset.x,
+                y: position.y - anchorPointOffset.y,
+                width: transformedBounds.width,
+                height: transformedBounds.height
+            )
         }
-        didSet {
-            if bounds.size != frame.size {
-                bounds.size = frame.size
+        set {
+            // `position` is set untransformed because it is in the superview's coordinate system:
+            position = CGPoint(
+                x: newValue.origin.x + (newValue.width * anchorPoint.x),
+                y: newValue.origin.y + (newValue.height * anchorPoint.y)
+            )
+
+            guard let inverseTransform = affineTransform().inverted() else {
+                assertionFailure("You tried to set the frame of a CALayer whose transform cannot be inverted. This is undefined behaviour.")
+                return
             }
+
+            // If we are shrinking the view with a transform and then setting a
+            // new frame, the layer's actual `bounds` is bigger (and vice-versa):
+            let nonTransformedBoundSize = newValue.applying(inverseTransform).size
+            bounds.size = nonTransformedBoundSize
         }
     }
+
+    open var position: CGPoint = .zero {
+        willSet(newPosition) {
+            guard newPosition != position else { return }
+            onWillSet(keyPath: .position)
+        }
+    }
+
+    open var zPosition: CGFloat = 0.0
+
+    open var anchorPoint = CGPoint.defaultAnchorPoint {
+        willSet(newAnchorPoint) {
+            guard newAnchorPoint != anchorPoint else { return }
+            onWillSet(keyPath: .anchorPoint)
+        }
+    }
+
+    open var anchorPointZ: CGFloat = 0.0
 
     open var bounds: CGRect = .zero {
         willSet(newBounds) {
             guard newBounds != bounds else { return }
             onWillSet(keyPath: .bounds)
-        }
-        didSet {
-            if frame.size != bounds.size {
-                frame.size = bounds.size
-            }
         }
     }
 
@@ -106,11 +136,19 @@ open class CALayer {
         }
     }
 
-    public var transform: CGAffineTransform = .identity {
+    public var transform: CATransform3D = CATransform3DIdentity {
         willSet(newTransform) {
-            guard newTransform != transform else { return }
+            if newTransform == transform { return }
             onWillSet(keyPath: .transform)
         }
+    }
+
+    final public func setAffineTransform(_ t: CGAffineTransform) {
+        self.transform = CATransform3DMakeAffineTransform(t)
+    }
+
+    final public func affineTransform() -> CGAffineTransform {
+        return CATransform3DGetAffineTransform(transform)
     }
 
     public var isHidden = false
@@ -132,8 +170,10 @@ open class CALayer {
 
     public required init(layer: Any) {
         guard let layer = layer as? CALayer else { fatalError() }
-        frame = layer.frame
         bounds = layer.bounds
+        transform = layer.transform
+        position = layer.position
+        anchorPoint = layer.anchorPoint
         opacity = layer.opacity
         backgroundColor = layer.backgroundColor
         isHidden = layer.isHidden
@@ -148,8 +188,10 @@ open class CALayer {
         mask = layer.mask
         contents = layer.contents // XXX: we should make a copy here
         contentsScale = layer.contentsScale
+        superlayer = layer.superlayer
         sublayers = layer.sublayers
-        transform = layer.transform
+        contentsGravity = layer.contentsGravity
+        contentsGravityEnum = layer.contentsGravityEnum
     }
 
     open func copy() -> Any {
@@ -170,17 +212,33 @@ open class CALayer {
         return CALayer.defaultAction(forKey: event)
     }
 
-    // TODO: remove this function after implementing CGImage to get font texture in UIImage extension for fonts
-    open func convertToUIImage() -> UIImage? {
-        guard let contents = self.contents else { return nil }
-        return UIImage(cgImage: contents, scale: SDL.window.scale)
-    }
-
     var presentation: CALayer?
     var disableAnimations = false
 
     var animations = [String: CABasicAnimation]() {
         didSet { onDidSetAnimations(wasEmpty: oldValue.isEmpty) }
+    }
+}
+
+private extension CGPoint {
+    static let defaultAnchorPoint = CGPoint(x: 0.5, y: 0.5)
+}
+
+extension CALayer: CustomStringConvertible {
+    public var description: String {
+        let indent = "\n    - "
+        let anchorPointDescription =
+            (anchorPoint != .defaultAnchorPoint) ? "\(indent)anchorPoint: \(anchorPoint)" : ""
+
+        let colourDescription =
+            (backgroundColor != nil) ? "\(indent)backgroundColor: \(backgroundColor!)" : ""
+
+        return """
+            \(type(of: self))
+                - frame: \(frame),
+                - bounds: \(bounds),
+                - position: \(position)\(anchorPointDescription)\(colourDescription)
+            """
     }
 }
 
@@ -190,7 +248,6 @@ extension CALayer: Hashable {
     }
 
     public static func == (lhs: CALayer, rhs: CALayer) -> Bool {
-        return lhs.hashValue == rhs.hashValue
+        return lhs === rhs
     }
 }
-

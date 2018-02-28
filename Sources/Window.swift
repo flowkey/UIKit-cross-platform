@@ -77,35 +77,26 @@ internal final class Window {
         #endif
     }
 
-    /// clippingRect behaves like an offset
-    func blit(_ image: CGImage, at destination: CGPoint, scaleX: Float, scaleY: Float, opacity: Float, clippingRect: CGRect?) {
+    func blit(
+        _ image: CGImage,
+        anchorPoint: CGPoint,
+        contentsScale: CGFloat,
+        contentsGravity: ContentsGravityTransformation,
+        opacity: Float
+    ) {
+        GPU_SetAnchor(image.rawPointer, Float(anchorPoint.x), Float(anchorPoint.y))
         GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8())
 
-        // The only difference between these two is/should be whether we pass a clipping rect:
-        if let clippingRect = clippingRect {
-            var clipGPU_Rect = GPU_Rect(clippingRect)
-            GPU_BlitTransform(
-                image.rawPointer,
-                &clipGPU_Rect,
-                self.rawPointer,
-                Float(destination.x + clippingRect.origin.x),
-                Float(destination.y + clippingRect.origin.y),
-                0, // rotation in degrees
-                scaleX,
-                scaleY
-            )
-        } else {
-            GPU_BlitTransform(
-                image.rawPointer,
-                nil,
-                self.rawPointer,
-                Float(destination.x),
-                Float(destination.y),
-                0, // rotation in degrees
-                scaleX,
-                scaleY
-            )
-        }
+        GPU_BlitTransform(
+            image.rawPointer,
+            nil,
+            self.rawPointer,
+            Float(contentsGravity.offset.x),
+            Float(contentsGravity.offset.y),
+            0, // rotation in degrees
+            Float(contentsGravity.scale.width / contentsScale),
+            Float(contentsGravity.scale.height / contentsScale)
+        )
     }
 
     func setShapeBlending(_ newValue: Bool) {
@@ -118,6 +109,16 @@ internal final class Window {
 
     func clear() {
         GPU_Clear(rawPointer)
+    }
+
+    var clippingRect: CGRect? {
+        didSet {
+            guard let clippingRect = clippingRect else {
+                return GPU_UnsetClip(rawPointer)
+            }
+
+            GPU_SetClipRect(rawPointer, GPU_Rect(clippingRect))
+        }
     }
 
     func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
@@ -188,8 +189,7 @@ extension SDLWindowFlags: OptionSet {}
     import JNI
 
     fileprivate func getAndroidDeviceScale() -> CGFloat {
-        let sdlView = getSDLView()
-        if let density: Float = try? jni.call("getDeviceDensity", on: sdlView) {
+        if let density: Float = try? jni.call("getDeviceDensity", on: getSDLView()) {
             return CGFloat(density)
         } else {
             return 2.0 // assume retina
