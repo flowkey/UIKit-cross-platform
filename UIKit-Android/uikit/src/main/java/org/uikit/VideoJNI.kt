@@ -54,12 +54,11 @@ class VideoJNI(parent: SDLActivity, url: String) {
                 }
             }
 
-            override fun onSeekProcessed() {}
-            override fun onPositionDiscontinuity(reason: Int) {}
-            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
+            // not used but necessary to implement EventListener interface:
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {}
             override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {}
             override fun onLoadingChanged(isLoading: Boolean) {}
+            override fun onPositionDiscontinuity() {}
             override fun onRepeatModeChanged(repeatMode: Int) {}
             override fun onTimelineChanged(timeline: Timeline?, manifest: Any?) {}
             override fun onPlayerError(error: ExoPlaybackException?) {}
