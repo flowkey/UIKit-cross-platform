@@ -19,7 +19,6 @@ public class UITouch {
 
     public weak var view: UIView?
     public weak var window: UIWindow?
-    public var gestureRecognizers: [UIGestureRecognizer] = []
 
     public var phase: UITouchPhase = .began
 
@@ -39,10 +38,15 @@ public class UITouch {
         return window?.convert(previousAbsoluteLocation, to: view) ?? previousAbsoluteLocation
     }
 
-}
+    public var gestureRecognizers: [UIGestureRecognizer] = []
+    func runTouchActionOnRecognizerHierachy(_ action: (_ recognizer: UIGestureRecognizer) -> Void) {
+        for recognizer in gestureRecognizers {
+            action(recognizer)
 
-public enum UITouchPhase: Int {
-    case began, moved, ended
+            // actually continue when other recognizers shouldRecognizeSimultaneously
+            return
+        }
+    }
 }
 
 extension UITouch: Hashable {
@@ -54,3 +58,8 @@ extension UITouch: Hashable {
         return lhs.touchId == rhs.touchId
     }
 }
+
+public enum UITouchPhase: Int {
+    case began, moved, ended
+}
+

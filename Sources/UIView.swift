@@ -323,7 +323,6 @@ open class UIView: UIResponder {
     // MARK: UIResponder conformance:
 
     open func next() -> UIResponder? {
-        if self.gestureRecognizers.contains(where: { $0.cancelsTouchesInView }) { return nil }
         return superview
     }
 

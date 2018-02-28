@@ -13,7 +13,7 @@ class TouchHandlingTests: XCTestCase {
     var window = UIWindow()
     var viewOnTouchesMovedWasCalled = false
     var viewRecognizerOnActionWasCalled = false
-    var subsubview: UIView = UIView()
+    var subsubview = UIView()
     var event = UIEvent()
 
     override func setUp() {

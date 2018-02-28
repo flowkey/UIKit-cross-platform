@@ -15,37 +15,31 @@ public class UIWindow: UIView {
         guard
             let allTouches = event.allTouches,
             let currentTouch = allTouches.first,
-            let hitView = currentTouch.view ?? hitTest(currentTouch.location(in: nil), with: nil),
-            !currentTouch.hasBeenCancelledByAGestureRecognizer
+            let hitView = currentTouch.view ?? hitTest(currentTouch.location(in: nil), with: nil)
         else { return }
 
         switch currentTouch.phase {
         case .began:
             UIEvent.activeEvents.insert(event)
-
             currentTouch.view = hitView
-            runRecognizerChain({ $0.touchesBegan(allTouches, with: event) }, on: hitView)
+            currentTouch.gestureRecognizers = hitView.recognizerHierachy
+
+            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
             hitView.touchesBegan(allTouches, with: event)
 
         case .moved:
-            runRecognizerChain({ $0.touchesMoved(allTouches, with: event) }, on: hitView)
-            hitView.touchesMoved(allTouches, with: event)
+            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(allTouches, with: event) }
+            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
+                hitView.touchesMoved(allTouches, with: event)
+            }
 
         case .ended:
-            runRecognizerChain({ $0.touchesEnded(allTouches, with: event) }, on: hitView)
-            hitView.touchesEnded(allTouches, with: event)
+            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(allTouches, with: event) }
+            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
+                hitView.touchesEnded(allTouches, with: event)
+            }
 
             UIEvent.activeEvents.remove(event)
-        }
-    }
-
-    private func runRecognizerChain(_ action: (_ recognizer: UIGestureRecognizer)->Void, on view: UIView) {
-        for recognizer in view.gestureRecognizers {
-            action(recognizer)
-        }
-
-        if let superview = view.superview, view.gestureRecognizers.isEmpty {
-            runRecognizerChain(action, on: superview)
         }
     }
 }
@@ -53,5 +47,19 @@ public class UIWindow: UIView {
 private extension UITouch {
     var hasBeenCancelledByAGestureRecognizer: Bool {
         return gestureRecognizers.contains(where: { ($0.state == .changed) && $0.cancelsTouchesInView })
+    }
+}
+
+private extension UIView {
+    var recognizerHierachy: [UIGestureRecognizer]  {
+        var recognizerHierachy: [UIGestureRecognizer] = []
+        var currentView = self
+
+        while let superview = currentView.superview {
+            recognizerHierachy.append(contentsOf: currentView.gestureRecognizers)
+            currentView = superview
+        }
+
+        return recognizerHierachy
     }
 }
