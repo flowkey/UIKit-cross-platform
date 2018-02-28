@@ -97,7 +97,7 @@ fileprivate extension UIResponderChainTests {
             let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
         {
             touch.updateAbsoluteLocation(point)
-            event.phase = .moved
+            touch.phase = .moved
             window.sendEvent(event)
         }
     }
@@ -105,9 +105,9 @@ fileprivate extension UIResponderChainTests {
     func handleTouchUp(_ point: CGPoint) {
         if
             let event = UIEvent.activeEvents.first,
-            let _ = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+            let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
         {
-            event.phase = .ended
+            touch.phase = .ended
             window.sendEvent(event)
         }
     }
