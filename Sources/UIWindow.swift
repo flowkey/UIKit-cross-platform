@@ -17,7 +17,7 @@ public class UIWindow: UIView {
             let currentTouch = allTouches.first,
             let hitView = currentTouch.view ?? hitTest(currentTouch.location(in: nil), with: nil),
             !currentTouch.hasBeenCancelledByAGestureRecognizer
-            else { return }
+        else { return }
 
         switch currentTouch.phase {
         case .began:
