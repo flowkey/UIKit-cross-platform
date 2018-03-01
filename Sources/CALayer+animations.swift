@@ -72,16 +72,20 @@ extension CALayer {
         guard let keyPath = animation.keyPath else { return }
 
         switch keyPath {
-        case .frame:
-            guard let startFrame = animation.fromValue as? CGRect else { return }
-            let endFrame = animation.toValue as? CGRect ?? self.frame
-            presentation.frame = startFrame + (endFrame - startFrame) * progress
+        case .position:
+            guard let start = animation.fromValue as? CGPoint else { return }
+            let end = animation.toValue as? CGPoint ?? self.position
+            presentation.position = start + (end - start) * progress
+
+        case .anchorPoint:
+            guard let start = animation.fromValue as? CGPoint else { return }
+            let end = animation.toValue as? CGPoint ?? self.anchorPoint
+            presentation.anchorPoint = start + (end - start) * progress
 
         case .bounds:
             guard let startBounds = animation.fromValue as? CGRect else { return }
             let endBounds = animation.toValue as? CGRect ?? self.bounds
-            // animate origin only, because setting bounds.size updates frame.size
-            presentation.bounds.origin = (startBounds + (endBounds - startBounds) * progress).origin
+            presentation.bounds = (startBounds + (endBounds - startBounds) * progress)
 
         case .opacity:
             guard let startOpacity = animation.fromValue as? Float else { return }
@@ -89,9 +93,9 @@ extension CALayer {
             presentation.opacity = startOpacity + ((endOpacity - startOpacity)) * Float(progress)
 
         case .transform:
-            guard let startTransform = animation.fromValue as? CGAffineTransform else { return }
-            let endTransform = animation.toValue as? CGAffineTransform ?? self.transform
-            presentation.transform = (startTransform + (endTransform - startTransform) * progress)
+            guard let startTransform = animation.fromValue as? CATransform3D else { return }
+            let endTransform = animation.toValue as? CATransform3D ?? self.transform
+            presentation.transform = startTransform + ((endTransform - startTransform) * Float(progress))
 
         case .unknown: break
         }
@@ -111,10 +115,11 @@ extension CALayer {
 extension CALayer {
     func value(forKeyPath: AnimationKeyPath) -> AnimatableProperty? {
         switch forKeyPath as AnimationKeyPath  {
-        case .frame: return frame
         case .opacity: return opacity
         case .bounds: return bounds
         case .transform: return transform
+        case .position: return position
+        case .anchorPoint: return anchorPoint
         case .unknown: return nil
         }
     }

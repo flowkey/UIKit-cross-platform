@@ -22,17 +22,10 @@ public class CGImage {
         rawPointer = pointer
 
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
-        GPU_SetImageFilter(rawPointer, GPU_FILTER_NEAREST)
-        GPU_SetAnchor(rawPointer, 0, 0)
         GPU_SetBlendMode(rawPointer, GPU_BLEND_NORMAL_FACTOR_ALPHA)
+        GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR)
 
-        // Post-scale size.
-        // e.g. If the pixel buffer contains 100x100 pixels at scale 2.0, size will be 50x50:
-        size = CGSize(
-            width: Int(rawPointer.pointee.w),
-            height: Int(rawPointer.pointee.h)
-        )
-
+        size = CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
         GPU_GenerateMipmaps(rawPointer)
     }
 

@@ -35,13 +35,13 @@ open class UIFont: Equatable {
 
     public init?(name: String, size: CGFloat) {
         let name = name.lowercased()
+        let size = Int32(size * UIScreen.main.scale)
 
         guard let fontData = UIFont.availableFontData[name] else {
             print("Tried to load \(name) but it wasn't in UIFont.availableFonts")
             return nil
         }
 
-        let size = Int32(size * UIScreen.main.scale)
         let cacheKey = name + String(describing: size)
         guard let renderer = UIFont.fontRendererCache[cacheKey] ?? FontRenderer(fontData, size: size) else {
             print("Couldn't load font", name)
@@ -126,13 +126,13 @@ extension UIFont {
 }
 
 extension String {
-    public func size(with font: UIFont, wrapLength: UInt = 0) -> CGSize {
+    public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
         let retinaResolutionSize =
             (wrapLength == 0) ?
                 font.renderer.singleLineSize(of: self) :
                 font.renderer.multilineSize(
                     of: self,
-                    wrapLength: UInt(CGFloat(wrapLength) * UIScreen.main.scale)
+                    wrapLength: UInt(wrapLength * UIScreen.main.scale)
                 )
 
         return CGSize(

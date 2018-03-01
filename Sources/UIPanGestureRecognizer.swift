@@ -28,19 +28,13 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             let initialTouchPoint = initialTouchPoint
         else { return .zero }
 
-        return CGPoint(
-            x: positionInTargetView.x - initialTouchPoint.x,
-            y: positionInTargetView.y - initialTouchPoint.y
-        )
+        return positionInTargetView - initialTouchPoint
     }
 
     open func setTranslation(_ translation: CGPoint, in view: UIView?) {
         guard let trackedTouch = trackedTouch else { return }
         let positionInTargetView = trackedTouch.location(in: view)
-        initialTouchPoint = CGPoint(
-            x: positionInTargetView.x - translation.x,
-            y: positionInTargetView.y - translation.y
-        )
+        initialTouchPoint = positionInTargetView - translation
     }
 
     // The velocity of the pan gesture, which is expressed in points per second.

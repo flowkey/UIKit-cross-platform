@@ -6,8 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-@testable import UIKit
 import SDL_gpu
+@testable import UIKit
 
 extension CGImage {
     convenience init?(size: CGSize) {
