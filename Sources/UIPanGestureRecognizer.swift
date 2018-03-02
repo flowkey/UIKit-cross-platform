@@ -18,32 +18,20 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     open func translation(in view: UIView?) -> CGPoint {
         guard
-            let trackedTouch = trackedTouch,
+            let positionInTargetView = trackedTouch?.location(in: view),
             let initialTouchPoint = initialTouchPoint
         else { return .zero }
 
-        let positionInTargetView = trackedTouch.location(in: view)
+        var translation = (positionInTargetView - initialTouchPoint)
 
-
-        let rawTranslation = (positionInTargetView - initialTouchPoint)
-
-        // create Array of all parent transforms
-        var parentTransforms: [CGAffineTransform?] = []
-        var currentView = view
-        while
-            let view = currentView,
-            let superview = view.superview
-        {
-            parentTransforms.append(superview.transform)
-            currentView = superview
+        // apply transforms of all super views
+        var bubblingView = view
+        while let view = bubblingView, let superview = view.superview {
+            translation = translation.applying(superview.transform.inverted() ?? .identity)
+            bubblingView = superview
         }
-    
-        // apply all parent transforms to the rawTranslation
-        let transformedTranslation = parentTransforms.flatMap({$0}).reduce(rawTranslation, { translation, transform in
-            return translation.applying(transform.inverted() ?? .identity)
-        })
 
-        return transformedTranslation
+        return translation
     }
 
     open func setTranslation(_ translation: CGPoint, in view: UIView?) {
