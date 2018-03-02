@@ -23,9 +23,27 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         else { return .zero }
 
         let positionInTargetView = trackedTouch.location(in: view)
-        return (positionInTargetView - initialTouchPoint)
-            // this should actually consider recursive parent transforms
-            .applying(view?.superview?.transform.inverted() ?? .identity)
+
+
+        let rawTranslation = (positionInTargetView - initialTouchPoint)
+
+        // create Array of all parent transforms
+        var parentTransforms: [CGAffineTransform?] = []
+        var currentView = view
+        while
+            let view = currentView,
+            let superview = view.superview
+        {
+            parentTransforms.append(superview.transform)
+            currentView = superview
+        }
+    
+        // apply all parent transforms to the rawTranslation
+        let transformedTranslation = parentTransforms.flatMap({$0}).reduce(rawTranslation, { translation, transform in
+            return translation.applying(transform.inverted() ?? .identity)
+        })
+
+        return transformedTranslation
     }
 
     open func setTranslation(_ translation: CGPoint, in view: UIView?) {
