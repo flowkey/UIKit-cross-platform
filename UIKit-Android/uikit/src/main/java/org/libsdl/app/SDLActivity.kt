@@ -74,6 +74,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     // Lazy to avoid accessing context before onCreate!
     private val mSensorManager: SensorManager by lazy { context!!.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
 
+    private var isRunning: Boolean = false
 
     init {
         Log.v(TAG, "Device: " + android.os.Build.DEVICE)
@@ -166,6 +167,35 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         }
     }
 
+    private fun startIfNotRunning() {
+        // This is the entry point to the C app.
+        // Start up the C app thread and enable sensor input for the first time
+        if (this.isRunning) return
+        this.isRunning = true
+        this.nativeInit()
+        this.enableSensor(Sensor.TYPE_ACCELEROMETER, true)
+        Choreographer.getInstance().postFrameCallback(this)
+    }
+
+
+    private fun stop() {
+        // Send a quit message to the application
+        // This eventually stops the run loop and nulls the native SDL.window
+        Choreographer.getInstance().removeFrameCallback(this)
+        this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
+        this.isRunning = false
+    }
+
+    fun quit() {
+        this.stop()
+        this.nativeQuit()
+    }
+
+    override fun doFrame(frameTimeNanos: Long) {
+        Choreographer.getInstance().postFrameCallback(this)
+        this.render()
+    }
+
 
     /** Called by SDL using JNI. */
     @Suppress("unused")
@@ -194,12 +224,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
             val device = InputDevice.getDevice(id)
             return if (device.sources and sources != 0) (result + device.id) else result
         }
-    }
-
-
-    override fun doFrame(frameTimeNanos: Long) {
-        Choreographer.getInstance().postFrameCallback(this)
-        this.render()
     }
 
     /** Called by onResume or surfaceCreated. An actual resume should be done only when the surface is ready.
@@ -287,13 +311,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
-
-        // This is the entry point to the C app.
-        // Start up the C app thread and enable sensor input for the first time
-        this.nativeInit()
-        enableSensor(Sensor.TYPE_ACCELEROMETER, true)
-        Choreographer.getInstance().postFrameCallback(this)
-
+        startIfNotRunning()
 
         if (mHasFocus) {
             handleSurfaceResume()
@@ -307,12 +325,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         handlePause()
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
-
-        // Send a quit message to the application
-        // This eventually stops the run loop and nulls the native SDL.window
-        // nativeQuit()
-        Choreographer.getInstance().removeFrameCallback(this)
-        enableSensor(Sensor.TYPE_ACCELEROMETER, false)
+        stop()
     }
 
 

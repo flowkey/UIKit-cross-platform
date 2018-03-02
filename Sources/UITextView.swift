@@ -21,6 +21,7 @@ open class UITextView: UIScrollView {
         get { return label.text }
         set {
             label.text = newValue
+            contentOffset = .zero // scroll to top left when new text is set
             setNeedsLayout()
         }
     }
@@ -57,6 +58,7 @@ open class UITextView: UIScrollView {
     override open func layoutSubviews() {
         label.frame.width = bounds.width - spaceToVerticalScrollIndicator
         label.sizeToFit()
+        label.frame.origin = .zero
 
         let textHeight = label.frame.height
         contentSize = CGSize(width: bounds.width, height: max(textHeight, bounds.height))

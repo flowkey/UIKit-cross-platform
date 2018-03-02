@@ -24,6 +24,7 @@ open class UIScrollView: UIView {
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
 
+        verticalScrollIndicator.cornerRadius = 1
         verticalScrollIndicator.disableAnimations = true
         verticalScrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
         layer.addSublayer(verticalScrollIndicator)
@@ -69,37 +70,18 @@ open class UIScrollView: UIView {
         }
     }
 
-    open var contentInset: UIEdgeInsets = .zero //{ didSet {updateBounds()} }
+    open var contentInset: UIEdgeInsets = .zero
     open var contentSize: CGSize = .zero
 
     open var contentOffset: CGPoint = .zero {
         didSet {
-            updateBounds()
+            bounds.origin = contentOffset
             if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
         }
     }
 
-    open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        let extendedBounds = CGRect(
-            x: -contentInset.left,
-            y: -contentInset.top,
-            width: max(bounds.width, contentInset.left + contentSize.width + contentInset.right),
-            height: max(bounds.height, contentInset.top + contentSize.height + contentInset.bottom)
-        )
+    open var showsVerticalScrollIndicator = true
 
-        return extendedBounds.contains(point)
-    }
-
-    private func updateBounds() {
-        // logically it'd make sense for origin to be `inset + offset` but
-        // the original implementation seems to do what we have here instead:
-        bounds.origin = contentOffset
-    }
-
-    open var showsVerticalScrollIndicator: Bool {
-        get { return !verticalScrollIndicator.isHidden }
-        set { verticalScrollIndicator.isHidden = !showsVerticalScrollIndicator }
-    }
     // TODO: Implement these:
     open var showsHorizontalScrollIndicator = true
 
@@ -107,7 +89,7 @@ open class UIScrollView: UIView {
         // TODO: animate
         contentOffset = point
 
-        // otherwise everything subscribing to scrollViewDidScroll is impliciltly animated from velocity scroll
+        // otherwise everything subscribing to scrollViewDidScroll is implicitly animated from velocity scroll
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         delegate?.scrollViewDidScroll(self)
@@ -120,17 +102,15 @@ open class UIScrollView: UIView {
     }
 
     private func layoutVerticalScrollIndicator() {
-        if contentSize.height == bounds.height {
-            verticalScrollIndicator.isHidden = true
-            return
-        }
+        verticalScrollIndicator.isHidden = (contentSize.height == bounds.height)
+        if verticalScrollIndicator.isHidden { return }
 
         let indicatorWidth: CGFloat = 2
         let indicatorHeight: CGFloat = (bounds.height / contentSize.height) * bounds.height
         let indicatorYOffset = contentOffset.y + (contentOffset.y / contentSize.height) * bounds.height
 
         verticalScrollIndicator.frame = CGRect(
-            x: bounds.maxX,
+            x: bounds.maxX - indicatorWidth,
             y: indicatorYOffset,
             width: indicatorWidth,
             height: indicatorHeight
