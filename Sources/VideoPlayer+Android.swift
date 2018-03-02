@@ -29,6 +29,11 @@ open class VideoPlayer: UIView {
         set { jniVideo.onVideoEnded = newValue }
     }
 
+    public var onVideoReady: (() -> Void)? {
+        get { return jniVideo.onVideoReady }
+        set { jniVideo.onVideoReady = newValue }
+    }
+
     public func play() {
         jniVideo.play()
     }

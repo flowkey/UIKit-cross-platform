@@ -14,6 +14,11 @@ public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObjec
     globalJNIVideo?.onVideoEnded?()
 }
 
+@_silgen_name("Java_org_uikit_VideoJNI_nativeOnVideoReady")
+public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
+    globalJNIVideo?.onVideoReady?()
+}
+
 private weak var globalJNIVideo: JNIVideo?
 
 class JNIVideo: JNIObject {
@@ -28,6 +33,7 @@ class JNIVideo: JNIObject {
     }
 
     var onVideoEnded: (() -> Void)?
+    var onVideoReady: (() -> Void)?
 
     var isMuted: Bool = false {
         didSet {
