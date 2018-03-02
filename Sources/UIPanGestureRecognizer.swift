@@ -23,6 +23,10 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         else { return .zero }
 
         var translation = (positionInTargetView - initialTouchPoint)
+        
+        // apply views transform
+        // XXX: not sure if this is neccessary
+        translation = translation.applying(view?.transform.inverted() ?? .identity)
 
         // apply transforms of all super views
         var bubblingView = view
