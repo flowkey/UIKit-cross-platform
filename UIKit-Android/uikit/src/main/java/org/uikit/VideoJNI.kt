@@ -1,7 +1,6 @@
 package org.uikit
 
 import android.net.Uri
-import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.RelativeLayout
@@ -59,8 +58,6 @@ class VideoJNI(parent: SDLActivity, url: String) {
         listener = object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 if (playbackState == Player.STATE_READY) {
-                    Log.v("video-jni", "nativeOnVideoReady()")
-
                     videoPlayerLayout.visibility = VISIBLE
                     nativeOnVideoReady()
                 }
