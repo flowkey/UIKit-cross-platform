@@ -288,7 +288,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         }
     }
 
-    private fun startIfNotRunning() {
+    private fun initAndPostFrameCallbackIfNotRunning() {
         // This is the entry point to the C app.
         // Start up the C app thread and enable sensor input for the first time
         if (this.isRunning) return
@@ -299,16 +299,16 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
 
-    private fun stop() {
-        // Send a quit message to the application
+    private fun removeFrameCallbackAndPause() {
+        // Send a removeFrameCallbackAndQuit message to the application
         // This eventually stops the run loop and nulls the native SDL.window
         Choreographer.getInstance().removeFrameCallback(this)
         this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
         this.isRunning = false
     }
 
-    fun quit() {
-        this.stop()
+    fun removeFrameCallbackAndQuit() {
+        this.removeFrameCallbackAndPause()
         this.nativeQuit()
     }
 
@@ -450,7 +450,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
-        startIfNotRunning()
+        initAndPostFrameCallbackIfNotRunning()
 
         if (mHasFocus) {
             handleSurfaceResume()
@@ -464,7 +464,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         handlePause()
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
-        stop()
+        removeFrameCallbackAndPause()
     }
 
 
