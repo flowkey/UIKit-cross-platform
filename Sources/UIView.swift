@@ -312,11 +312,13 @@ open class UIView: UIResponder {
     }
 
     open func sizeThatFits(_ size: CGSize) -> CGSize {
-        return frame.size
+        return bounds.size
     }
 
     open func sizeToFit() {
-        self.frame.size = sizeThatFits(self.frame .size)
+        let originalOrigin = self.frame.origin
+        self.bounds.size = sizeThatFits(bounds.size)
+        self.frame.origin = originalOrigin
         setNeedsLayout()
     }
 
