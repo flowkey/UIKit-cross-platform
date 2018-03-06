@@ -159,7 +159,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * to 'true' during the call to onPause (in a usual scenario).
      */
     private fun handlePause() {
-        Log.v(TAG, "handlePause()")
         if (!this.mIsPaused && this.mIsSurfaceReady) {
             this.mIsPaused = true
             this.nativePause()
@@ -231,7 +230,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * every time we get one of those events, only if it comes after surfaceDestroyed
      */
     private fun handleResume() {
-        Log.v(TAG, "handleResume()")
         if (this.mIsPaused && this.mIsSurfaceReady && this.mHasFocus) {
             this.mIsPaused = false
             this.nativeResume()
@@ -241,7 +239,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
 
     private fun handleSurfaceResume() {
-        Log.v(TAG, "handleSurfaceResume()")
         mSurface.isFocusable = true
         mSurface.isFocusableInTouchMode = true
         mSurface.requestFocus()
@@ -251,7 +248,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
-        Log.v(TAG, "surfaceCreated()")
         handleResume()
     }
 
