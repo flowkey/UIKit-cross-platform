@@ -3,18 +3,11 @@ package main.java.org.libsdl.app
 import android.view.InputDevice
 import android.view.MotionEvent
 import android.view.View
+import org.libsdl.app.SDLActivity
 import kotlin.math.min
 
 
 interface SDLOnTouchListener: View.OnTouchListener {
-
-    companion object {
-        // If we want to separate mouse and touch events.
-        // This is only toggled in native code when a hint is set!
-        // This is the only property that remains static - we probably won't use it at all long-term
-        // and it is a major overhaul to change the native C code (there are a lot of dependencies)
-        var mSeparateMouseAndTouch: Boolean = false
-    }
 
     var mWidth: Float
     var mHeight: Float
@@ -40,7 +33,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
             )
         }
 
-        if (event.source == InputDevice.SOURCE_MOUSE && mSeparateMouseAndTouch) {
+        if (event.source == InputDevice.SOURCE_MOUSE && SDLActivity.mSeparateMouseAndTouch) {
             val mouseButton = try { event.buttonState } catch (e: Exception) { 1 } // 1 is left button
             this.onNativeMouse(mouseButton, action, event.getX(0), event.getY(0))
             return true
