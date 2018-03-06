@@ -313,8 +313,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     override fun doFrame(frameTimeNanos: Long) {
-        Choreographer.getInstance().postFrameCallback(this)
         this.render()
+
+        // Request the next frame only after rendering the current one.
+        // This should skip next frame if the current one takes too long.
+        Choreographer.getInstance().postFrameCallback(this)
     }
 
     // C functions we call
