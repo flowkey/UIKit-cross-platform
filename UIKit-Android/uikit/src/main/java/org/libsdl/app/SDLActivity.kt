@@ -58,7 +58,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     /** com.android.vending.expansion.zipfile.ZipResourceFile's getInputStream() or null.  */
     private var expansionFileMethod: Method? = null
     
-    private var isRunning: Boolean = false
+    private var isRunning = false
 
 
     init {
@@ -288,7 +288,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         }
     }
 
-    private fun initAndPostFrameCallbackIfNotRunning() {
+    private fun doNativeInitAndPostFrameCallbackIfNotRunning() {
         // This is the entry point to the C app.
         // Start up the C app thread and enable sensor input for the first time
         if (this.isRunning) return
@@ -450,7 +450,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
-        initAndPostFrameCallbackIfNotRunning()
+        doNativeInitAndPostFrameCallbackIfNotRunning()
 
         if (mHasFocus) {
             handleSurfaceResume()
