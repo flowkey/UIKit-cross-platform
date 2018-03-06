@@ -16,7 +16,7 @@ public class UIEvent {
 
     public init() {}
 
-    init(touch: UITouch) {
+    internal init(touch: UITouch) {
         allTouches = Set<UITouch>([touch])
     }
 }
