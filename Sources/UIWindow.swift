@@ -22,7 +22,7 @@ public class UIWindow: UIView {
         case .began:
             UIEvent.activeEvents.insert(event)
             currentTouch.view = hitView
-            currentTouch.gestureRecognizers = hitView.recognizerHierachy
+            currentTouch.gestureRecognizers = hitView.getRecognizerHierachy()
 
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
             hitView.touchesBegan(allTouches, with: event)
@@ -51,7 +51,7 @@ private extension UITouch {
 }
 
 private extension UIView {
-    var recognizerHierachy: [UIGestureRecognizer]  {
+    func getRecognizerHierachy() -> [UIGestureRecognizer] {
         var recognizerHierachy: [UIGestureRecognizer] = []
         var currentView = self
 

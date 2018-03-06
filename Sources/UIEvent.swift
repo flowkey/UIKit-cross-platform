@@ -6,18 +6,17 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import class Foundation.NSDate
-
+import struct Foundation.Date
 
 public class UIEvent {
     internal static var activeEvents = Set<UIEvent>()
 
     public var allTouches: Set<UITouch>?
-    public let timestamp =  NSDate.timeIntervalSinceReferenceDate
+    public let timestamp = Date.timeIntervalSinceReferenceDate
 
     public init() {}
 
-    init(from touch: UITouch) {
+    init(touch: UITouch) {
         allTouches = Set<UITouch>([touch])
     }
 }
