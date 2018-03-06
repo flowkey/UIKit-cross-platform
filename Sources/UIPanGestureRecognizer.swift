@@ -24,7 +24,6 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
         let positionInTargetView = trackedTouch.location(in: view)
         return (positionInTargetView - initialTouchPoint)
-            // this should actually consider recursive parent transforms
             .applying(view?.superview?.transform.inverted() ?? .identity)
     }
 

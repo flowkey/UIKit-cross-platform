@@ -43,7 +43,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let recognizer = TestPanGestureRecognizer(endedExp: endedExpectation)
 
         let location0 = CGPoint(x: 42, y: 12)
-        let touch = UITouch(at: location0, touchId: 0, window: window)
+        let touch = UITouch(touchId: 0, at: location0, in: window)
         touch.view = mockView
         recognizer.touchesBegan([touch], with: UIEvent())
         XCTAssert(recognizer.state == .began)
@@ -67,7 +67,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let recognizer = TestPanGestureRecognizer(cancelledExp: cancelledExpectation)
 
         let location0 = CGPoint(x: 12, y: 42)
-        let touch = UITouch(at: location0, touchId: 0, window: window)
+        let touch = UITouch(touchId: 0, at: location0, in: window)
 
         recognizer.touchesBegan([touch], with: UIEvent())
         XCTAssert(recognizer.state == .began)
@@ -92,7 +92,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let timeInterval = 1.0
 
         let recognizer = UIPanGestureRecognizer()
-        let touch = UITouch(at: .zero, touchId: 0, window: window)
+        let touch = UITouch(touchId: 0, at: .zero, in: window)
         recognizer.touchesBegan([touch], with: UIEvent())
 
         touch.updateAbsoluteLocation(CGPoint(x: touchPositionDiff, y: 0))
@@ -105,7 +105,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
 
     func testTouchesMovedUpdatesTranslation() {
         let recognizer = UIPanGestureRecognizer()
-        let touch = UITouch(at: .zero, touchId: 0, window: window)
+        let touch = UITouch(touchId: 0, at: .zero, in: window)
         let location = CGPoint(x: 10, y: 10)
 
         recognizer.view = mockView
@@ -123,7 +123,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
     func testSetTranslation() {
         let recognizer = UIPanGestureRecognizer()
         let newTranslation = CGPoint(x: 12, y: 13)
-        let touch = UITouch(at: .zero, touchId: 0, window: window)
+        let touch = UITouch(touchId: 0, at: .zero, in: window)
 
         recognizer.view = mockView
         recognizer.touchesBegan([touch], with: UIEvent())
@@ -140,7 +140,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
         view.addGestureRecognizer(panGestureRecognizer)
         rootView.addSubview(view)
 
-        let touch = UITouch(at: CGPoint(x: 10, y: 10), touchId: 0, window: window)
+        let touch = UITouch(touchId: 0, at: CGPoint(x: 10, y: 10), in: window)
         touch.view = view
         panGestureRecognizer.touchesBegan([touch], with: UIEvent())
 

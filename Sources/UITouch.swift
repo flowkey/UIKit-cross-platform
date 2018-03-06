@@ -7,8 +7,8 @@
 //
 
 public class UITouch {
-    // using this to convert SDL touches into UIView touches
-    internal init(at point: CGPoint, touchId: Int, window: UIWindow = UIWindow.main) {
+
+    internal init(touchId: Int, at point: CGPoint, in window: UIWindow) {
         absoluteLocation = point
         previousAbsoluteLocation = point
         self.touchId = touchId

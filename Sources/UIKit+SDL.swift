@@ -104,7 +104,7 @@ final public class SDL { // Only public for rootView!
                 #endif
                 return true
             case SDL_MOUSEBUTTONDOWN:
-                let event = UIEvent(from: UITouch(at: .from(e.button), touchId: 0))
+                let event = UIEvent(from: UITouch(touchId: 0, at: .from(e.button), in: SDL.rootView))
                 UIWindow.main.sendEvent(event)
                 eventWasHandled = true
             case SDL_MOUSEMOTION:
