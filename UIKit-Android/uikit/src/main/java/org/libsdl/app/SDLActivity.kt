@@ -313,7 +313,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     override fun doFrame(frameTimeNanos: Long) {
-        this.render()
+        this.nativeRender()
 
         // Request the next frame only after rendering the current one.
         // This should skip next frame if the current one takes too long.
@@ -322,7 +322,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     // C functions we call
 
-    private external fun render(): Int
+    private external fun nativeRender()
     private external fun nativeInit(): Int
     private external fun nativeQuit()
     private external fun nativePause()

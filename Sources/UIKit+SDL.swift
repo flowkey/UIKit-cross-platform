@@ -163,8 +163,8 @@ extension SDL_Keymod: OptionSet {}
 public var onHardwareBackButtonPress: (() -> Void)?
 
 #if os(Android)
-@_silgen_name("Java_org_libsdl_app_SDLActivity_render")
-public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
+@_silgen_name("Java_org_libsdl_app_SDLActivity_nativeRender")
+public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
     let renderAndRunLoopTimer = Timer()
     let timeTaken = SDL.render()
     let remainingFrameTime = maxFrameRenderTimeInMilliseconds - timeTaken
@@ -172,10 +172,6 @@ public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaOb
     if remainingFrameTime > 0 {
         CFRunLoopRunInMode(kCFRunLoopDefaultMode, remainingFrameTime / 1000, true)
     }
-
-    // XXX: This really should send back either a float or a nanosecond int value
-    // Because rounding up to 17 or down to 16 introduces too much variation for a fluid FPS
-    return JavaInt(renderAndRunLoopTimer.elapsedTimeInMilliseconds)
 }
 #endif
 
