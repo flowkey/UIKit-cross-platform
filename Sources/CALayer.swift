@@ -190,7 +190,6 @@ open class CALayer {
         contentsScale = layer.contentsScale
         superlayer = layer.superlayer
         sublayers = layer.sublayers
-        contentsGravity = layer.contentsGravity
         contentsGravityEnum = layer.contentsGravityEnum
     }
 

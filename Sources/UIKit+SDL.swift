@@ -46,7 +46,7 @@ final public class SDL { // Only public for rootView!
         onUnloadListeners.removeAll()
         DisplayLink.activeDisplayLinks.removeAll()
         UIView.layersWithAnimations.removeAll()
-        UITouch.activeTouches.removeAll()
+        UIEvent.activeEvents.removeAll()
         UIView.currentAnimationPrototype = nil
         UIFont.fontRendererCache.removeAll()
     }
@@ -104,13 +104,27 @@ final public class SDL { // Only public for rootView!
                 #endif
                 return true
             case SDL_MOUSEBUTTONDOWN:
-                handleTouchDown(.from(e.button))
+                let event = UIEvent(touch: UITouch(touchId: 0, at: .from(e.button), in: SDL.rootView))
+                UIWindow.main.sendEvent(event)
                 eventWasHandled = true
             case SDL_MOUSEMOTION:
-                handleTouchMove(.from(e.motion))
+                if
+                    let event = UIEvent.activeEvents.first,
+                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+                {
+                    touch.updateAbsoluteLocation(.from(e.button))
+                    touch.phase = .moved
+                    UIWindow.main.sendEvent(event)
+                }
                 eventWasHandled = true
             case SDL_MOUSEBUTTONUP:
-                handleTouchUp(.from(e.button))
+                if
+                    let event = UIEvent.activeEvents.first,
+                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+                {
+                    touch.phase = .ended
+                    UIWindow.main.sendEvent(event)
+                }
                 eventWasHandled = true
             case SDL_KEYUP:
                 let keyModifier = SDL_Keymod(UInt32(e.key.keysym.mod))
