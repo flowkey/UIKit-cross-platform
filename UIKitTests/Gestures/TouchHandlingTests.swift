@@ -23,18 +23,17 @@ class TouchHandlingTests: XCTestCase {
         let view = ResponderView(frame: window.bounds)
         window.addSubview(view)
 
-        let viewRecognizer = UIPanGestureRecognizer()
+        let viewRecognizer = UIPanGestureRecognizer(onAction: { self.recognizerOnActionWasCalled = true })
         view.addGestureRecognizer(viewRecognizer)
         let subview = UIView(frame: window.bounds)
         view.addSubview(subview)
+        view.onTouchesMoved = { self.viewOnTouchesMovedWasCalled = true }
+
         subsubview = UIView(frame: window.bounds)
         subview.addSubview(subsubview)
 
         viewOnTouchesMovedWasCalled = false
         recognizerOnActionWasCalled = false
-
-        view.onTouchesMoved = { self.viewOnTouchesMovedWasCalled = true }
-        viewRecognizer.onAction = { self.recognizerOnActionWasCalled = true }
     }
 
     func testRecognizerOnActionWasCalled() {
@@ -49,11 +48,10 @@ class TouchHandlingTests: XCTestCase {
         let anotherSubview = UIView(frame: window.bounds)
         subsubview.addSubview(anotherSubview)
 
-        let anotherGestureRecognizer = UIPanGestureRecognizer()
+        var anotherGestureRecognizerOnActionWasCalled = false
+        let anotherGestureRecognizer = UIPanGestureRecognizer(onAction: { anotherGestureRecognizerOnActionWasCalled = true })
         anotherSubview.addGestureRecognizer(anotherGestureRecognizer)
 
-        var anotherGestureRecognizerOnActionWasCalled = false
-        anotherGestureRecognizer.onAction = { anotherGestureRecognizerOnActionWasCalled = true }
 
         handleTouchDown(CGPoint(x: 10, y: 10))
         handleTouchMove(CGPoint(x: 15, y: 10))
@@ -63,7 +61,7 @@ class TouchHandlingTests: XCTestCase {
         XCTAssertTrue(anotherGestureRecognizerOnActionWasCalled)
     }
 
-    func testDoesNotCancelsTouchesInView() {
+    func testDoesNotCancelTouchesInView() {
         let anotherSubview = UIView(frame: window.bounds)
         subsubview.addSubview(anotherSubview)
 
@@ -87,6 +85,7 @@ class TouchHandlingTests: XCTestCase {
 }
 
 private extension TouchHandlingTests {
+
     func handleTouchDown(_ point: CGPoint) {
         let event = UIEvent(from: UITouch(touchId: 0, at: point, in: window))
         window.sendEvent(event)
