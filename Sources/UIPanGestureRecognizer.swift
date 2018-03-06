@@ -24,6 +24,8 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
         let positionInTargetView = trackedTouch.location(in: view)
         return (positionInTargetView - initialTouchPoint)
+            // if positionInTargetView and initialTouchPoint would be converted correctly
+            // this wouldnt be neccesary. TODO: fix slow path in UIView.convert
             .applying(view?.superview?.transform.inverted() ?? .identity)
     }
 
