@@ -233,12 +233,9 @@ open class UIView: UIResponder {
         // Slow path:
         let selfAbsoluteOrigin = self.absoluteOrigin()
         let otherAbsoluteOrigin = otherView.absoluteOrigin()
-        let originDifference = CGSize(
-            width: otherAbsoluteOrigin.x - selfAbsoluteOrigin.x,
-            height: otherAbsoluteOrigin.y - selfAbsoluteOrigin.y
-        )
 
-        return CGPoint(x: point.x - originDifference.width, y: point.y - originDifference.height)
+        let originDifference = (otherAbsoluteOrigin - selfAbsoluteOrigin)
+        return point - originDifference
     }
 
     private func convertToSuperview(_ point: CGPoint) -> CGPoint {
@@ -315,11 +312,13 @@ open class UIView: UIResponder {
     }
 
     open func sizeThatFits(_ size: CGSize) -> CGSize {
-        return frame.size
+        return bounds.size
     }
 
     open func sizeToFit() {
-        self.frame.size = sizeThatFits(self.frame .size)
+        let originalOrigin = self.frame.origin
+        self.bounds.size = sizeThatFits(bounds.size)
+        self.frame.origin = originalOrigin
         setNeedsLayout()
     }
 
@@ -329,9 +328,15 @@ open class UIView: UIResponder {
         return superview
     }
 
-    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {}
-    open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {}
-    open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {}
+    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        next()?.touchesBegan(touches, with: event)
+    }
+    open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        next()?.touchesMoved(touches, with: event)
+    }
+    open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+         next()?.touchesEnded(touches, with: event)
+    }
     open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {}
 }
 
@@ -350,6 +355,12 @@ extension UIView: CustomStringConvertible {
 extension UIView: Equatable {
     public static func == (lhs: UIView, rhs: UIView) -> Bool {
         return lhs === rhs
+    }
+}
+
+extension UIView: Hashable {
+    public var hashValue: Int {
+        return ObjectIdentifier(self).hashValue
     }
 }
 

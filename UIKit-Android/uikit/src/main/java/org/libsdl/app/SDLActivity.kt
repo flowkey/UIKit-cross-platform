@@ -30,7 +30,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // This is only toggled in native code when a hint is set!
         // This is the only property that remains static - we probably won't use it at all long-term
         // and it is a major overhaul to change the native C code (there are a lot of dependencies)
-        @JvmStatic private var mSeparateMouseAndTouch = false
+        @JvmStatic
+        internal var mSeparateMouseAndTouch = false
     }
 
     private var mSurface: SurfaceView
@@ -38,7 +39,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private var mIsSurfaceReady = false
     private var mHasFocus = false
 
-    private external fun render(): Int
+    private external fun nativeRender()
     private external fun nativeInit(): Int
     private external fun nativeQuit()
     private external fun nativePause()
@@ -67,14 +68,13 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     override var expansionFile: Any? = null
     override var expansionFileMethod: Method? = null
 
-
     // Handler for the messages
     private val commandHandler by lazy { SDLCommandHandler(this.context) }
 
     // Lazy to avoid accessing context before onCreate!
     private val mSensorManager: SensorManager by lazy { context!!.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
-
-    private var isRunning: Boolean = false
+        
+    private var isRunning = false
 
     init {
         Log.v(TAG, "Device: " + android.os.Build.DEVICE)
@@ -159,6 +159,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * to 'true' during the call to onPause (in a usual scenario).
      */
     private fun handlePause() {
+        Log.v(TAG, "handlePause()")
         if (!this.mIsPaused && this.mIsSurfaceReady) {
             this.mIsPaused = true
             this.nativePause()
@@ -166,7 +167,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         }
     }
 
-    private fun startIfNotRunning() {
+    private fun doNativeInitAndPostFrameCallbackIfNotRunning() {
         // This is the entry point to the C app.
         // Start up the C app thread and enable sensor input for the first time
         if (this.isRunning) return
@@ -177,24 +178,26 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
 
-    private fun stop() {
-        // Send a quit message to the application
+    private fun removeFrameCallbackAndPause() {
+        // Send a removeFrameCallbackAndQuit message to the application
         // This eventually stops the run loop and nulls the native SDL.window
         Choreographer.getInstance().removeFrameCallback(this)
         this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
         this.isRunning = false
     }
 
-    fun quit() {
-        this.stop()
+    fun removeFrameCallbackAndQuit() {
+        this.removeFrameCallbackAndPause()
         this.nativeQuit()
     }
 
     override fun doFrame(frameTimeNanos: Long) {
-        Choreographer.getInstance().postFrameCallback(this)
-        this.render()
-    }
+        this.nativeRender()
 
+        // Request the next frame only after rendering the current one.
+        // This should skip next frame if the current one takes too long.
+        Choreographer.getInstance().postFrameCallback(this)
+    }
 
     /** Called by SDL using JNI. */
     @Suppress("unused")
@@ -237,8 +240,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         }
     }
 
-
     private fun handleSurfaceResume() {
+        Log.v(TAG, "handleSurfaceResume()")
         mSurface.isFocusable = true
         mSurface.isFocusableInTouchMode = true
         mSurface.requestFocus()
@@ -248,6 +251,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
+        Log.v(TAG, "surfaceCreated()")
         handleResume()
     }
 
@@ -307,7 +311,9 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
-        startIfNotRunning()
+
+        doNativeInitAndPostFrameCallbackIfNotRunning()
+
 
         if (mHasFocus) {
             handleSurfaceResume()
@@ -321,7 +327,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         handlePause()
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
-        stop()
+        removeFrameCallbackAndPause()
     }
 
 
