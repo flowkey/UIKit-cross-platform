@@ -85,7 +85,6 @@ class TouchHandlingTests: XCTestCase {
 }
 
 private extension TouchHandlingTests {
-
     func handleTouchDown(_ point: CGPoint) {
         let event = UIEvent(from: UITouch(touchId: 0, at: point, in: window))
         window.sendEvent(event)
