@@ -17,10 +17,16 @@ import kotlin.math.min
 import android.content.Context
 import android.view.Surface.*
 
-private val TAG = "SDL"
+private val TAG = "SDLActivity"
 
 open class SDLActivity(context: Context?) : RelativeLayout(context),
-        View.OnKeyListener, View.OnTouchListener, SensorEventListener, SurfaceHolder.Callback {
+                                            View.OnKeyListener,
+                                            View.OnTouchListener,
+                                            SensorEventListener,
+                                            SurfaceHolder.Callback,
+                                            Choreographer.FrameCallback {
+
+
 
     companion object {
         internal val COMMAND_CHANGE_TITLE = 1
@@ -37,8 +43,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private var mIsPaused = false
     private var mIsSurfaceReady = false
     private var mHasFocus = false
-    private var mHandler: Handler? = null
-    private var mRunnable: Runnable? = null
 
     // Main components
     private var mSurface: SurfaceView
@@ -53,6 +57,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     /** com.android.vending.expansion.zipfile.ZipResourceFile's getInputStream() or null.  */
     private var expansionFileMethod: Method? = null
+    
+    private var isRunning = false
 
 
     init {
@@ -81,13 +87,10 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     @Suppress("unused") // accessed via JNI
     fun removeCallbacks() {
+        Log.v(TAG, "removeCallbacks()")
         mSurface.setOnTouchListener(null)
         mSurface.holder?.removeCallback(this)
         nativeSurface.release()
-
-        mHandler?.removeCallbacks(mRunnable)
-        mHandler = null
-        mRunnable = null
     }
 
     @Suppress("unused") // accessed via JNI
@@ -125,6 +128,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      */
     @Suppress("UNUSED_PARAMETER")
     protected fun onUnhandledMessage(command: Int, param: Any): Boolean {
+        Log.v(TAG, "onUnhandledMessage()")
         return false
     }
 
@@ -263,10 +267,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * to 'true' during the call to onPause (in a usual scenario).
      */
     private fun handlePause() {
+        Log.v(TAG, "handlePause()")
         if (!this.mIsPaused && this.mIsSurfaceReady) {
             this.mIsPaused = true
             this.nativePause()
-            enableSensor(Sensor.TYPE_ACCELEROMETER, false)
+            this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
         }
     }
 
@@ -275,16 +280,49 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * every time we get one of those events, only if it comes after surfaceDestroyed
      */
     private fun handleResume() {
+        Log.v(TAG, "handleResume()")
         if (this.mIsPaused && this.mIsSurfaceReady && this.mHasFocus) {
             this.mIsPaused = false
             this.nativeResume()
-            handleSurfaceResume()
+            this.handleSurfaceResume()
         }
+    }
+
+    private fun doNativeInitAndPostFrameCallbackIfNotRunning() {
+        // This is the entry point to the C app.
+        // Start up the C app thread and enable sensor input for the first time
+        if (this.isRunning) return
+        this.isRunning = true
+        this.nativeInit()
+        this.enableSensor(Sensor.TYPE_ACCELEROMETER, true)
+        Choreographer.getInstance().postFrameCallback(this)
+    }
+
+
+    private fun removeFrameCallbackAndPause() {
+        // Send a removeFrameCallbackAndQuit message to the application
+        // This eventually stops the run loop and nulls the native SDL.window
+        Choreographer.getInstance().removeFrameCallback(this)
+        this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
+        this.isRunning = false
+    }
+
+    fun removeFrameCallbackAndQuit() {
+        this.removeFrameCallbackAndPause()
+        this.nativeQuit()
+    }
+
+    override fun doFrame(frameTimeNanos: Long) {
+        this.nativeRender()
+
+        // Request the next frame only after rendering the current one.
+        // This should skip next frame if the current one takes too long.
+        Choreographer.getInstance().postFrameCallback(this)
     }
 
     // C functions we call
 
-    private external fun render(): Int
+    private external fun nativeRender()
     private external fun nativeInit(): Int
     private external fun nativeQuit()
     private external fun nativePause()
@@ -344,9 +382,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private var mWidth: Float = 1.0f
     private var mHeight: Float = 1.0f
 
-    private var isRunning = false
-
     private fun handleSurfaceResume() {
+        Log.v(TAG, "handleSurfaceResume()")
         mSurface.isFocusable = true
         mSurface.isFocusableInTouchMode = true
         mSurface.requestFocus()
@@ -356,29 +393,30 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
+        Log.v(TAG, "surfaceCreated()")
         handleResume()
     }
 
     // Called when the surface is resized
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        Log.v("SDL", "surfaceChanged()")
+        Log.v(TAG, "surfaceChanged()")
 
         var sdlFormat = 0x15151002 // SDL_PIXELFORMAT_RGB565 by default
         when (format) {
             PixelFormat.RGBA_8888 -> {
-                Log.v("SDL", "pixel format RGBA_8888")
+                Log.v(TAG, "pixel format RGBA_8888")
                 sdlFormat = 0x16462004 // SDL_PIXELFORMAT_RGBA8888
             }
             PixelFormat.RGBX_8888 -> {
-                Log.v("SDL", "pixel format RGBX_8888")
+                Log.v(TAG, "pixel format RGBX_8888")
                 sdlFormat = 0x16261804 // SDL_PIXELFORMAT_RGBX8888
             }
             PixelFormat.RGB_565 -> {
-                Log.v("SDL", "pixel format RGB_565")
+                Log.v(TAG, "pixel format RGB_565")
                 sdlFormat = 0x15151002 // SDL_PIXELFORMAT_RGB565
             }
             PixelFormat.RGB_888 -> {
-                Log.v("SDL", "pixel format RGB_888")
+                Log.v(TAG, "pixel format RGB_888")
                 // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
                 sdlFormat = 0x16161804 // SDL_PIXELFORMAT_RGB888
             }
@@ -388,7 +426,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         mWidth = width.toFloat()
         mHeight = height.toFloat()
         this.onNativeResize(width, height, sdlFormat, display.refreshRate)
-        Log.v("SDL", "Window size: " + width + "x" + height)
+        Log.v(TAG, "Window size: " + width + "x" + height)
 
 
         // FIXME: Remove this hack
@@ -405,9 +443,9 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
             if (max / min < 1.20f) {
                 // Special Patch for Square Resolution: Black Berry Passport
-                Log.v("SDL", "Avoid skip on near-square aspect-ratio, just in case.")
+                Log.v(TAG, "Avoid skip on near-square aspect-ratio, just in case.")
             } else {
-                Log.v("SDL", "Surface is not ready. Skipping creation for now...")
+                Log.v(TAG, "Surface is not ready. Skipping creation for now...")
                 return
             }
         }
@@ -415,34 +453,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
-
-
-        if (!isRunning) {
-            // This is the entry point to the C app.
-            // Start up the C app thread and enable sensor input for the first time
-            isRunning = true
-
-            this.nativeInit()
-            enableSensor(Sensor.TYPE_ACCELEROMETER, true)
-
-            mHandler = Handler(Looper.getMainLooper())
-
-            val maxFrameTime = 1000.0 / 60.0
-
-            mRunnable = Runnable {
-                val timeTaken = this.render()
-                if (timeTaken == -1) {
-                    // SDL_Quit was called
-                    // FIXME: This should really happen another way, because there's
-                    // FIXME: probably a few reasons why this could return -1
-                    return@Runnable
-                }
-
-                val timeUntilNextFrame = (maxFrameTime - timeTaken).toLong()
-                mHandler?.postDelayed(mRunnable, timeUntilNextFrame)
-            }
-            mHandler?.post(mRunnable)
-        }
+        doNativeInitAndPostFrameCallbackIfNotRunning()
 
         if (mHasFocus) {
             handleSurfaceResume()
@@ -451,16 +462,12 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     // Called when we lose the surface
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        Log.v("SDL", "surfaceDestroyed()")
+        Log.v(TAG, "surfaceDestroyed()")
         // Call this *before* setting mIsSurfaceReady to 'false'
-        //handlePause()
+        handlePause()
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
-
-        // Send a quit message to the application
-        // This eventually stops the run loop and nulls the native SDL.window
-        nativeQuit()
-        enableSensor(Sensor.TYPE_ACCELEROMETER, false)
+        removeFrameCallbackAndPause()
     }
 
 
@@ -468,11 +475,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
         if (event.source and InputDevice.SOURCE_KEYBOARD != 0) {
             if (event.action == ACTION_DOWN) {
-                //Log.v("SDL", "key down: " + keyCode);
+                //Log.v(TAG, "key down: " + keyCode);
                 this.onNativeKeyDown(keyCode)
                 return true
             } else if (event.action == ACTION_UP) {
-                //Log.v("SDL", "key up: " + keyCode);
+                //Log.v(TAG, "key up: " + keyCode);
                 this.onNativeKeyUp(keyCode)
                 return true
             }
