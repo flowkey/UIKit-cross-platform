@@ -8,7 +8,7 @@
 
 import struct Foundation.URL
 
-public struct AVPlayerItem {
+public class AVPlayerItem {
     public var url: URL?
     public init(url: URL?) {
         self.url = url

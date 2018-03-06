@@ -54,12 +54,21 @@ public class AVPlayer: JNIObject {
 
 private weak var globalAVPlayer: AVPlayer?
 
-@_silgen_name("Java_org_uikit_VideoJNI_nativeOnVideoReady")
+@_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoReady")
 public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onReady?()
 }
 
-@_silgen_name("Java_org_uikit_VideoJNI_nativeOnVideoEnded")
+@_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoEnded")
 public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onVideoEnded?()
+}
+
+extension AVPlayer: JavaParameterConvertible {
+    private static let javaClassname = "org/uikit/AVPlayer"
+    public static let asJNIParameterString = "L\(javaClassname);"
+
+    public func toJavaParameter() -> JavaParameter {
+        return JavaParameter(object: self.instance)
+    }
 }

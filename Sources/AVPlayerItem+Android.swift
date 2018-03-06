@@ -12,7 +12,7 @@ import struct Foundation.URL
 public class AVPlayerItem: JNIObject {
     public var url: URL?
     convenience public init(url: URL) {
-        try! self.init("org.uikit.AVPlayerItem", arguments: [getSDLView(), url.absoluteString])
+        try! self.init("org.uikit.AVPlayerItem", arguments: [JavaSDLView(getSDLView()), url.absoluteString])
         self.url = url
     }
 }

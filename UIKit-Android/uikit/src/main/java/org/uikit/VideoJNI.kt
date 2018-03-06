@@ -18,15 +18,15 @@ import com.google.android.exoplayer2.util.Util
 import org.libsdl.app.SDLActivity
 
 @Suppress("unused")
-class AVPlayerItem(context: Context, url: String) {
+class AVPlayerItem(parent: SDLActivity, url: String) {
     internal val videoSource: ExtractorMediaSource
 
     init {
         val regularVideoSourceUri = Uri.parse(url)
 
         // Produces DataSource instances through which media data is loaded.
-        val dataSourceFactory = DefaultDataSourceFactory(context,
-                Util.getUserAgent(context, "com.flowkey.uikit"))
+        val dataSourceFactory = DefaultDataSourceFactory(parent.context,
+                Util.getUserAgent(parent.context, "com.flowkey.uikit"))
 
         // Produces Extractor instances for parsing the media data.
         val extractorsFactory = DefaultExtractorsFactory()
@@ -37,7 +37,7 @@ class AVPlayerItem(context: Context, url: String) {
 }
 
 @Suppress("unused")
-class AVPlayer(context: Context, playerItem: AVPlayerItem) {
+class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
     internal val exoPlayer: SimpleExoPlayer
     private var listener: Player.EventListener
 
@@ -49,7 +49,7 @@ class AVPlayer(context: Context, playerItem: AVPlayerItem) {
         val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
         val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
 
-        exoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
+        exoPlayer = ExoPlayerFactory.newSimpleInstance(parent.context, trackSelector)
         exoPlayer.prepare(playerItem.videoSource)
 
         listener = object: Player.EventListener {
