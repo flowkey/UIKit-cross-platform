@@ -41,7 +41,7 @@ open class UIGestureRecognizer {
             }
         }
     }
-    public var onStateChanged: (() -> Void)? = nil
+    var onStateChanged: (() -> Void)? = nil
 
     public typealias OnActionCallback = (() -> Void)?
     internal var onAction: OnActionCallback

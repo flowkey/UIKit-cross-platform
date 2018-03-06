@@ -7,18 +7,20 @@
 //
 
 public class UITouch {
-    static var activeTouches = Set<UITouch>()
 
-    // using this to convert SDL touches into UIView touches
-    internal init(at point: CGPoint, touchId: Int) {
+    internal init(touchId: Int, at point: CGPoint, in window: UIWindow) {
         absoluteLocation = point
         previousAbsoluteLocation = point
         self.touchId = touchId
+        self.window = window
     }
 
-    var touchId: Int
-    internal(set) public weak var view: UIView?
-    public var gestureRecognizers: [UIGestureRecognizer] = []
+    let touchId: Int
+
+    public weak var view: UIView?
+    public weak var window: UIWindow?
+
+    public var phase: UITouchPhase = .began
 
     private var absoluteLocation: CGPoint
     private var previousAbsoluteLocation: CGPoint
@@ -28,20 +30,24 @@ public class UITouch {
         absoluteLocation = newLocation
     }
 
-    // weak var window: UIWindow? // unused
-
     public func location(in view: UIView?) -> CGPoint {
-        let viewAbsoluteOrigin = view?.absoluteOrigin() ?? .zero
-        return absoluteLocation - viewAbsoluteOrigin
+        return window?.convert(absoluteLocation, to: view) ?? absoluteLocation
     }
 
     public func previousLocation(in view: UIView?) -> CGPoint {
-        let origin = view?.absoluteOrigin() ?? .zero
-        return previousAbsoluteLocation - origin
+        return window?.convert(previousAbsoluteLocation, to: view) ?? previousAbsoluteLocation
     }
 
-}
+    public var gestureRecognizers: [UIGestureRecognizer] = []
+    func runTouchActionOnRecognizerHierachy(_ action: (_ recognizer: UIGestureRecognizer) -> Void) {
+        for recognizer in gestureRecognizers {
+            action(recognizer)
 
+            // actually continue when other recognizers shouldRecognizeSimultaneously
+            return
+        }
+    }
+}
 
 extension UITouch: Hashable {
     public var hashValue: Int {
@@ -52,3 +58,8 @@ extension UITouch: Hashable {
         return lhs.touchId == rhs.touchId
     }
 }
+
+public enum UITouchPhase: Int {
+    case began, moved, ended
+}
+

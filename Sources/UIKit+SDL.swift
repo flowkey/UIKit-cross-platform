@@ -46,7 +46,7 @@ final public class SDL { // Only public for rootView!
         onUnloadListeners.removeAll()
         DisplayLink.activeDisplayLinks.removeAll()
         UIView.layersWithAnimations.removeAll()
-        UITouch.activeTouches.removeAll()
+        UIEvent.activeEvents.removeAll()
         UIView.currentAnimationPrototype = nil
         UIFont.fontRendererCache.removeAll()
     }
@@ -104,13 +104,27 @@ final public class SDL { // Only public for rootView!
                 #endif
                 return true
             case SDL_MOUSEBUTTONDOWN:
-                handleTouchDown(.from(e.button))
+                let event = UIEvent(touch: UITouch(touchId: 0, at: .from(e.button), in: SDL.rootView))
+                UIWindow.main.sendEvent(event)
                 eventWasHandled = true
             case SDL_MOUSEMOTION:
-                handleTouchMove(.from(e.motion))
+                if
+                    let event = UIEvent.activeEvents.first,
+                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+                {
+                    touch.updateAbsoluteLocation(.from(e.button))
+                    touch.phase = .moved
+                    UIWindow.main.sendEvent(event)
+                }
                 eventWasHandled = true
             case SDL_MOUSEBUTTONUP:
-                handleTouchUp(.from(e.button))
+                if
+                    let event = UIEvent.activeEvents.first,
+                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+                {
+                    touch.phase = .ended
+                    UIWindow.main.sendEvent(event)
+                }
                 eventWasHandled = true
             case SDL_KEYUP:
                 let keyModifier = SDL_Keymod(UInt32(e.key.keysym.mod))
@@ -163,8 +177,8 @@ extension SDL_Keymod: OptionSet {}
 public var onHardwareBackButtonPress: (() -> Void)?
 
 #if os(Android)
-@_silgen_name("Java_org_libsdl_app_SDLActivity_render")
-public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
+@_silgen_name("Java_org_libsdl_app_SDLActivity_nativeRender")
+public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
     let renderAndRunLoopTimer = Timer()
     let timeTaken = SDL.render()
     let remainingFrameTime = maxFrameRenderTimeInMilliseconds - timeTaken
@@ -172,10 +186,6 @@ public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaOb
     if remainingFrameTime > 0 {
         CFRunLoopRunInMode(kCFRunLoopDefaultMode, remainingFrameTime / 1000, true)
     }
-
-    // XXX: This really should send back either a float or a nanosecond int value
-    // Because rounding up to 17 or down to 16 introduces too much variation for a fluid FPS
-    return JavaInt(renderAndRunLoopTimer.elapsedTimeInMilliseconds)
 }
 #endif
 
