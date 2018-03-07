@@ -10,7 +10,7 @@ import Foundation
 
  // hand-tuned values
 private let velocityThreshold: CGFloat = 100
-private let velocityBuffersize: Int = 10
+private let velocityBuffersize: Int = 7
 
 open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var initialTouchPoint: CGPoint?
