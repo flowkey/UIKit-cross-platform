@@ -30,7 +30,6 @@
 		5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDE15DF1F3DF703005620AA /* UIViewAnimationTests.swift */; };
 		5BEEF828202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */; };
 		5BEEF829202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */; };
-		5BF4AA17204EEAD600E7B313 /* AVPlayer+Android.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833075391F69768E002089AC /* AVPlayer+Android.swift */; };
 		5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */; };
 		5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */; };
 		5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F06AE1F3210F200EFF087 /* UIViewController.swift */; };
@@ -1036,7 +1035,6 @@
 				83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */,
 				5C6AB71D1ED3BECD006F90AC /* UIImageView.swift in Sources */,
 				5BBEECA51F39E7A6006E3416 /* CGRect+animations.swift in Sources */,
-				5BF4AA17204EEAD600E7B313 /* AVPlayer+Android.swift in Sources */,
 				5CDC14CC1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift in Sources */,
 				8356933C1F8CF6C500C6D253 /* setAndroidMain.swift in Sources */,
 				5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */,

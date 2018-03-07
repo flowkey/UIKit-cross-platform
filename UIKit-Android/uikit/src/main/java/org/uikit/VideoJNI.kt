@@ -98,8 +98,12 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
         exoPlayer.seekTo(timeInMilliseconds.toLong())
     }
 
-    fun setPlaybackRate(rate: Double) {
-        exoPlayer.playbackParameters = PlaybackParameters(rate.toFloat(), 1.0F)
+    fun getPlaybackRate(): Float {
+        return exoPlayer.playbackParameters.speed
+    }
+
+    fun setPlaybackRate(rate: Float) {
+        exoPlayer.playbackParameters = PlaybackParameters(rate, 1.0F)
     }
 
     fun cleanup() {

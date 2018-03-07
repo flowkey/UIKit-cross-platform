@@ -34,8 +34,9 @@ public class AVPlayer: JNIObject {
         try! call(methodName: "seekToTimeInMilliseconds", arguments: [timeInMilliseconds])
     }
 
-    public func setPlaybackRate(to rate: Double) {
-        try! call(methodName: "setPlaybackRate", arguments: [rate])
+    public var rate: Float {
+        get { return try! call(methodName: "getPlaybackRate") }
+        set { try! call(methodName: "setPlaybackRate", arguments: [newValue]) }
     }
 
     public var isMuted: Bool = false {
