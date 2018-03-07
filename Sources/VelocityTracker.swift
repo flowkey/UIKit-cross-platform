@@ -6,6 +6,7 @@ class VelocityTracker {
     private var velocityBuffer: [CGPoint]
 
     var mean: CGPoint { return velocityBuffer.mean() }
+    var median: CGPoint { return velocityBuffer.median() }
     var last: CGPoint { return velocityBuffer.last ?? .zero } // return .zero if none exists
 
     init(bufferSize: Int) {
@@ -40,5 +41,14 @@ class VelocityTracker {
 private extension Array where Element == CGPoint {
     func mean() -> CGPoint {
         return self.reduce(.zero, +) / CGFloat(self.count)
+    }
+    func median() -> CGPoint {
+        let sorted = self.sorted{ $0.normLength < $1.normLength }
+        if sorted.count % 2 == 0 {
+            let midIndex = (sorted.count / 2)
+            return (sorted[midIndex] + sorted[midIndex - 1]) / 2
+        } else {
+            return sorted[(sorted.count - 1) / 2]
+        }
     }
 }
