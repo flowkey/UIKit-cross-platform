@@ -24,6 +24,11 @@ open class VideoPlayer: UIView {
     }
 
     public var onVideoEnded: (() -> Void)?
+    public var onVideoReady: (() -> Void)? {
+        didSet {
+            onVideoReady?()
+        }
+    }
 
     open func play() {
         player?.rate = Float(self.rate)

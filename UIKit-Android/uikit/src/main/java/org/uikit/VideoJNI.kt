@@ -1,6 +1,8 @@
 package org.uikit
 
 import android.net.Uri
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.RelativeLayout
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -23,6 +25,7 @@ class VideoJNI(parent: SDLActivity, url: String) {
     private var listener: Player.EventListener
 
     external fun nativeOnVideoEnded() // calls onVideoEnded function in Swift
+    external fun nativeOnVideoReady()
 
     init {
         val context = parent.context
@@ -46,9 +49,19 @@ class VideoJNI(parent: SDLActivity, url: String) {
         val videoSource = ExtractorMediaSource(regularVideoSourceUri, dataSourceFactory, extractorsFactory, null, null)
         videoPlayer.prepare(videoSource)
 
+        videoPlayerLayout = SimpleExoPlayerView(context)
+        videoPlayerLayout.player = videoPlayer
+        videoPlayerLayout.useController = false
+        videoPlayerLayout.visibility = INVISIBLE
+        videoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
 
         listener = object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                if (playbackState == Player.STATE_READY) {
+                    videoPlayerLayout.visibility = VISIBLE
+                    nativeOnVideoReady()
+                }
+
                 if (!playWhenReady && playbackState == Player.STATE_ENDED) {
                     nativeOnVideoEnded()
                 }
@@ -65,12 +78,6 @@ class VideoJNI(parent: SDLActivity, url: String) {
         }
 
         videoPlayer.addListener(listener)
-
-        videoPlayerLayout = SimpleExoPlayerView(context)
-        videoPlayerLayout.player = videoPlayer
-        videoPlayerLayout.useController = false
-
-        videoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
         parent.addView(videoPlayerLayout)
     }
 
