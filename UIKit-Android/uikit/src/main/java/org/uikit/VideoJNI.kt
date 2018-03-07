@@ -1,7 +1,6 @@
 package org.uikit
 
 import android.net.Uri
-import android.view.View
 import android.widget.RelativeLayout
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -122,17 +121,13 @@ class AVPlayerLayer(parent: SDLActivity, player: AVPlayer) {
         exoPlayerLayout = SimpleExoPlayerView(context)
         exoPlayerLayout.player = player.exoPlayer
         exoPlayerLayout.useController = false
-        exoPlayerLayout.visibility = View.INVISIBLE
-
         exoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
-        parent.addView(exoPlayerLayout)
+
+        parent.addView(exoPlayerLayout, 0)
     }
 
     fun setFrame(x: Int, y: Int, width: Int, height: Int) {
         val layoutParams = RelativeLayout.LayoutParams(width, height)
         layoutParams.setMargins(x, y, 0, 0)
-
-        exoPlayerLayout.layoutParams = layoutParams
-        exoPlayerLayout.visibility = View.VISIBLE
     }
 }
