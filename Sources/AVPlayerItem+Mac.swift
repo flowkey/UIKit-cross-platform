@@ -6,11 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import struct Foundation.URL
+import AVFoundation
 
-public class AVPlayerItem {
-    public var url: URL?
-    public init(url: URL?) {
-        self.url = url
-    }
-}
+public typealias AVPlayerItem = AVFoundation.AVPlayerItem
+public typealias CMTime = AVFoundation.CMTime
