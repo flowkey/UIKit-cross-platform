@@ -12,12 +12,15 @@ extension UIScrollView {
         let decelerationRate = UIScrollViewDecelerationRateNormal * 1000
 
         // ToDo: take y also into account
-        let gestureVelocity = Double(panGestureRecognizer.velocity(in: self).x)
-        if gestureVelocity == 0 { return }
+        guard
+            let _velocity = self.currentVelocity?.x,
+            _velocity != 0
+        else { return }
+        let velocity = Double(_velocity)
 
         // calculate time it would take until deceleration is complete (final velocity = 0)
         var animationTime = time(
-            initialVelocity: gestureVelocity,
+            initialVelocity: velocity,
             acceleration: Double(-decelerationRate),
             finalVelocity: 0
         )
@@ -26,11 +29,11 @@ extension UIScrollView {
         let distanceToMove = distance(
             acceleration: Double(-decelerationRate),
             time: Double(animationTime),
-            initialVelocity: gestureVelocity
+            initialVelocity: velocity
         )
 
         // determine scroll direction
-        let distanceWithDirection = gestureVelocity.sign == .minus ? distanceToMove : -distanceToMove
+        let distanceWithDirection = velocity.sign == .minus ? distanceToMove : -distanceToMove
 
         var newOffset = CGPoint(
             x: contentOffset.x + CGFloat(distanceWithDirection),
@@ -47,7 +50,7 @@ extension UIScrollView {
             newOffset = boundsCheckedOffset
             // time it takes until reaching bounds from current position
             animationTime = time(
-                initialVelocity: gestureVelocity,
+                initialVelocity: velocity,
                 accleration: Double(decelerationRate),
                 distance: Double(abs(contentOffset.x - boundsCheckedOffset.x))
             )

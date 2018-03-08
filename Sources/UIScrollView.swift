@@ -17,6 +17,9 @@ open class UIScrollView: UIView {
     private var verticalScrollIndicator = CALayer()
     public var indicatorStyle: UIScrollViewIndicatorStyle = .white
 
+    private var previousVelocity: CGPoint?
+    var currentVelocity: CGPoint?
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
         panGestureRecognizer.onAction = { [weak self] in self?.onPan() }
@@ -35,6 +38,10 @@ open class UIScrollView: UIView {
     private func onPan() {
         let translation = panGestureRecognizer.translation(in: self)
         panGestureRecognizer.setTranslation(.zero, in: self)
+
+        let panGestureVelocity = panGestureRecognizer.velocity(in: self)
+        self.currentVelocity = (previousVelocity ?? .zero) * 0.2 + panGestureVelocity * 0.8
+        self.previousVelocity = self.currentVelocity
 
         let newOffset = getBoundsCheckedContentOffset(
             x: contentOffset.x - translation.x,
