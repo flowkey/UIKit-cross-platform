@@ -45,9 +45,6 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             timeSinceLastMovement != 0.0
         else { return CGPoint.zero }
 
-        // XXX: apple docs say velocity is in points per s (see above)
-        // here we use timeSinceLastMovement in milliseconds though 
-        // in order to get results in the same magnitude as in iOS
         return (curPos - prevPos) / CGFloat(timeSinceLastMovement)
     }
 
