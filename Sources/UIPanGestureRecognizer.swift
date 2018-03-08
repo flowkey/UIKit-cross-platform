@@ -15,6 +15,8 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var timeSinceLastMovement: TimeInterval?
 
     private let minimumTranslationThreshold: CGFloat = 5
+    
+    private var previousVelocity: CGPoint = CGPoint(x: 1, y: 1)
 
     open func translation(in view: UIView?) -> CGPoint {
         guard
@@ -45,17 +47,16 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         else { return CGPoint.zero }
 
         // XXX: apple docs say velocity is in points per s (see above)
-        // here we use milliseconds though in order to get results in the same magnitude as in iOS
-        let timeDiffInMs = CGFloat(timeSinceLastMovement)
-
-        return CGPoint(
-            x: (curPos.x - prevPos.x) / timeDiffInMs,
-            y: (curPos.y - prevPos.y) / timeDiffInMs
-        )
+        // here we use timeSinceLastMovement in milliseconds though 
+        // in order to get results in the same magnitude as in iOS
+        return (curPos - prevPos) / CGFloat(timeSinceLastMovement)
     }
 
     open func velocity(in view: UIView?) -> CGPoint {
-        return velocity(in: view, for: timeSinceLastMovement ?? 0)
+         let currentVelocity: CGPoint = (previousVelocity * 0.2) + (self.velocity(in: view, for: timeSinceLastMovement ?? 0) * 0.8)
+         self.previousVelocity = currentVelocity
+         return currentVelocity
+//        return velocity(in: view, for: timeSinceLastMovement ?? 0)
     }
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -120,5 +121,6 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         timeSinceLastMovement = nil
         initialTouchPoint = .zero
         state = .possible
+        previousVelocity = CGPoint(x: 1, y: 1)
     }
 }
