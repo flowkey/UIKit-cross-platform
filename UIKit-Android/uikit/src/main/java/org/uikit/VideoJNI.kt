@@ -3,14 +3,13 @@ package org.uikit
 import android.net.Uri
 import android.widget.RelativeLayout
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
@@ -19,7 +18,7 @@ import org.libsdl.app.SDLActivity
 @Suppress("unused")
 class VideoJNI(parent: SDLActivity, url: String) {
     private val videoPlayer: SimpleExoPlayer
-    private var videoPlayerLayout: SimpleExoPlayerView
+    private var videoPlayerLayout: PlayerView
     private var listener: Player.EventListener
 
     external fun nativeOnVideoEnded() // calls onVideoEnded function in Swift
@@ -39,11 +38,9 @@ class VideoJNI(parent: SDLActivity, url: String) {
         val dataSourceFactory = DefaultDataSourceFactory(context,
                 Util.getUserAgent(context, "com.flowkey.nativeplayersdl"))
 
-        // Produces Extractor instances for parsing the media data.
-        val extractorsFactory = DefaultExtractorsFactory()
-
         // ExtractorMediaSource works for regular media files such as mp4, webm, mkv
-        val videoSource = ExtractorMediaSource(regularVideoSourceUri, dataSourceFactory, extractorsFactory, null, null)
+        val videoSource = ExtractorMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(regularVideoSourceUri)
         videoPlayer.prepare(videoSource)
 
 
@@ -55,23 +52,25 @@ class VideoJNI(parent: SDLActivity, url: String) {
             }
 
             // not used but necessary to implement EventListener interface:
+            override fun onSeekProcessed() {}
+            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {}
             override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {}
             override fun onLoadingChanged(isLoading: Boolean) {}
-            override fun onPositionDiscontinuity() {}
+            override fun onPositionDiscontinuity(reason: Int) {}
             override fun onRepeatModeChanged(repeatMode: Int) {}
-            override fun onTimelineChanged(timeline: Timeline?, manifest: Any?) {}
+            override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {}
             override fun onPlayerError(error: ExoPlaybackException?) {}
         }
 
         videoPlayer.addListener(listener)
 
-        videoPlayerLayout = SimpleExoPlayerView(context)
+        videoPlayerLayout = PlayerView(context)
         videoPlayerLayout.player = videoPlayer
         videoPlayerLayout.useController = false
 
         videoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
-        parent.addView(videoPlayerLayout)
+        parent.addView(videoPlayerLayout, 0)
     }
 
     fun setFrame(x: Int, y: Int, width: Int, height: Int) {
