@@ -89,25 +89,6 @@ class UIPanGestureRecognizerTests: XCTestCase {
         XCTAssert(recognizer.state == .possible)
     }
 
-    func testVelocityTracker() {
-        // test data
-        let timestampsAndTranslations = Array(zip( // Array so we can .count
-            [TimeInterval(100), TimeInterval(100), TimeInterval(100)],
-            [CGPoint(x: 100, y: 100), CGPoint(x:100, y:100), CGPoint(x: 100, y: 100)]
-        ))
-
-        // create velocity tracker and track test data
-        let velocityTracker = VelocityTracker(bufferSize: timestampsAndTranslations.count)
-        timestampsAndTranslations.forEach {
-            velocityTracker.track(timeInterval: $0, translation: $1)
-        }
-
-        // calculate expected velocity from test data
-        let expectedMeanVelocity = calculateVelocityMean(from: timestampsAndTranslations)
-
-        XCTAssertEqual(expectedMeanVelocity, velocityTracker.mean)
-    }
-
     func testTouchesMovedUpdatesTranslation() {
         let recognizer = UIPanGestureRecognizer()
         let touch = UITouch(touchId: 0, at: .zero, in: window)
