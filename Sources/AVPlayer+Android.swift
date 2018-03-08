@@ -58,6 +58,7 @@ private weak var globalAVPlayer: AVPlayer?
 @_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoReady")
 public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onReady?()
+    globalAVPlayer?.onReady = nil
 }
 
 @_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoEnded")

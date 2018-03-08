@@ -13,7 +13,7 @@ open class UIView: UIResponder {
         return CALayer.self
     }
 
-    open internal(set) var layer: CALayer
+    open let layer: CALayer
 
     // mocked for parentViewController.present function in AlertContainer
     open let parentViewController: UIViewController? = UIViewController()
