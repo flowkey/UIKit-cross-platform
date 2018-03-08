@@ -15,7 +15,6 @@ extension UIScrollView {
         let gestureVelocity = Double(panGestureRecognizer.velocity(in: self).x)
         if gestureVelocity == 0 { return }
 
-
         // calculate time it would take until deceleration is complete (final velocity = 0)
         var animationTime = time(
             initialVelocity: gestureVelocity,
@@ -54,7 +53,7 @@ extension UIScrollView {
             )
         }
 
-        UIView.animate(withDuration: animationTime, options: [.curveEaseOut, .allowUserInteraction],  animations: {
+        UIView.animate(withDuration: animationTime, options: [.customEaseOut, .allowUserInteraction],  animations: {
             self.isDecelerating = true
             self.setContentOffset(newOffset, animated: false)
         }, completion: { _ in

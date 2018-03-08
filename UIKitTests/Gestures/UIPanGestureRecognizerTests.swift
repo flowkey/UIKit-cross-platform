@@ -11,6 +11,7 @@ import XCTest
 import Foundation
 
 
+
 fileprivate class TestPanGestureRecognizer: UIPanGestureRecognizer {
     let stateCancelledExpectation: XCTestExpectation?
     let stateEndedExpectation: XCTestExpectation?

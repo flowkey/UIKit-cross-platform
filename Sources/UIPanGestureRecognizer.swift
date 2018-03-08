@@ -8,10 +8,6 @@
 
 import Foundation
 
- // hand-tuned values
-private let velocityThreshold: CGFloat = 100
-private let velocityBuffersize: Int = 7
-
 open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var initialTouchPoint: CGPoint?
 
@@ -19,15 +15,16 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var timeSinceLastMovement: TimeInterval?
 
     private let minimumTranslationThreshold: CGFloat = 5
-
-    private let velocityTracker = VelocityTracker(bufferSize: velocityBuffersize)
     
+    private var previousVelocity: CGPoint = CGPoint(x: 1, y: 1)
+
     open func translation(in view: UIView?) -> CGPoint {
         guard
-            let positionInTargetView = trackedTouch?.location(in: self.view),
+            let trackedTouch = trackedTouch,
             let initialTouchPoint = initialTouchPoint
         else { return .zero }
 
+        let positionInTargetView = trackedTouch.location(in: view)
         return (positionInTargetView - initialTouchPoint)
             // if positionInTargetView and initialTouchPoint would be converted correctly
             // this wouldnt be neccesary. TODO: fix slow path in UIView.convert
@@ -42,28 +39,24 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     // The velocity of the pan gesture, which is expressed in points per second.
     // The velocity is broken into horizontal and vertical components.
-    open func velocity(in view: UIView?) -> CGPoint {
-        if velocityTracker.last.normLength < velocityThreshold {
-            return .zero
-        }
-
-        return velocityTracker.mean
-    }
-
-    private func trackVelocity(in view: UIView?, for timeSinceLastMovement: TimeInterval) {
+    func velocity(in view: UIView?, for timeSinceLastMovement: TimeInterval) -> CGPoint {
         guard
             let curPos = trackedTouch?.location(in: view),
             let prevPos = trackedTouch?.previousLocation(in: view),
             timeSinceLastMovement != 0.0
-        else {
-            return
-        }
+        else { return CGPoint.zero }
 
-        velocityTracker.track(
-            timeInterval: timeSinceLastMovement,
-            previousPoint: prevPos,
-            currentPoint: curPos
-        )
+        // XXX: apple docs say velocity is in points per s (see above)
+        // here we use timeSinceLastMovement in milliseconds though 
+        // in order to get results in the same magnitude as in iOS
+        return (curPos - prevPos) / CGFloat(timeSinceLastMovement)
+    }
+
+    open func velocity(in view: UIView?) -> CGPoint {
+        let currentVelocity: CGPoint = (previousVelocity * 0.2) + (self.velocity(in: view, for: timeSinceLastMovement ?? 0) * 0.8)
+        self.previousVelocity = currentVelocity
+        return currentVelocity
+        // return velocity(in: view, for: timeSinceLastMovement ?? 0)
     }
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -104,8 +97,6 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             state = .changed
         }
 
-        trackVelocity(in: self.view, for: timeSinceLastMovement ?? 0)
-
         if state == .changed {
             onAction?()
         }
@@ -130,6 +121,6 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         timeSinceLastMovement = nil
         initialTouchPoint = .zero
         state = .possible
-        velocityTracker.reset()
+        previousVelocity = CGPoint(x: 1, y: 1)
     }
 }
