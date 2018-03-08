@@ -119,7 +119,6 @@
 		833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B76ED21F0BCD4C0096736C /* ButtonTestsConstants.swift */; };
 		834C94971F6BDE6200F5B40F /* ButtonLayoutingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834C94961F6BDE6200F5B40F /* ButtonLayoutingTests.swift */; };
 		8356933C1F8CF6C500C6D253 /* setAndroidMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8356933B1F8CF6C500C6D253 /* setAndroidMain.swift */; };
-		83667C8D1F4D8A6F00780EA6 /* VideoPlayer+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5AC6DC1F1791D0004A88C0 /* VideoPlayer+Mac.swift */; };
 		83667CE01F4DC87B00780EA6 /* AVPlayerLayer+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */; };
 		837335901F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8373358F1F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift */; };
 		837335921F2F6AC70012F066 /* ButtonSetTitleColorForStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8373358F1F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift */; };
@@ -297,7 +296,6 @@
 		5C4AD7E1204EE2B60021DD4A /* AVPlayerItem+Mac.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+Mac.swift"; sourceTree = "<group>"; };
 		5C4AD7E2204EE2B60021DD4A /* AVPlayerItem+Android.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+Android.swift"; sourceTree = "<group>"; };
 		5C4AD7E6204EE45F0021DD4A /* AVPlayerLayer+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayerLayer+Android.swift"; sourceTree = "<group>"; };
-		5C5AC6DC1F1791D0004A88C0 /* VideoPlayer+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "VideoPlayer+Mac.swift"; path = "Sources/VideoPlayer+Mac.swift"; sourceTree = SOURCE_ROOT; };
 		5C664CD31FA0DBFC008F41D6 /* MaskingShaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaskingShaders.swift; sourceTree = "<group>"; };
 		5C664CD51FA0DF1D008F41D6 /* Shader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
 		5C664CD71FA0E640008F41D6 /* ShaderProgram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderProgram.swift; sourceTree = "<group>"; };
@@ -697,7 +695,6 @@
 				5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */,
 				833075391F69768E002089AC /* AVPlayer+Android.swift */,
 				5C4AD7E6204EE45F0021DD4A /* AVPlayerLayer+Android.swift */,
-				5C5AC6DC1F1791D0004A88C0 /* VideoPlayer+Mac.swift */,
 				83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */,
 			);
 			name = Video;
@@ -1051,7 +1048,6 @@
 				5C6AB71F1ED3BECD006F90AC /* UIWindow.swift in Sources */,
 				5CB6E1C32033460C001FEAC9 /* CATransform3D+SDL_gpu.swift in Sources */,
 				5C8E6A21203A089A00D1DBE0 /* CALayer+ContentsGravity.swift in Sources */,
-				83667C8D1F4D8A6F00780EA6 /* VideoPlayer+Mac.swift in Sources */,
 				5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */,
 				83CC3CD11F275DB600144E85 /* NSRange.swift in Sources */,
 				5B840BB71F42FCBD0010AC95 /* AnimatableProperty.swift in Sources */,
