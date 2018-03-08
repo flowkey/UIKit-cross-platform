@@ -129,5 +129,6 @@ class AVPlayerLayer(parent: SDLActivity, player: AVPlayer) {
     fun setFrame(x: Int, y: Int, width: Int, height: Int) {
         val layoutParams = RelativeLayout.LayoutParams(width, height)
         layoutParams.setMargins(x, y, 0, 0)
+        exoPlayerLayout.layoutParams = layoutParams
     }
 }
