@@ -106,8 +106,11 @@ public final class AVPlayerLayer: CALayer {
         }
 
         // Swap R and B values to get RGBA pixels instead of BGRA:
-        for i in stride(from: 0, to: CVPixelBufferGetDataSize(pixelBuffer), by: 4) {
+        for i in stride(from: 0, to: CVPixelBufferGetDataSize(pixelBuffer), by: 16) {
             swap(&pixelBytes[i], &pixelBytes[i + 2])
+            swap(&pixelBytes[i+4], &pixelBytes[i + 6])
+            swap(&pixelBytes[i+8], &pixelBytes[i + 10])
+            swap(&pixelBytes[i+12], &pixelBytes[i + 14])
         }
 
         contents?.replacePixels(with: pixelBytes, bytesPerPixel: 4)
