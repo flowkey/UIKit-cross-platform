@@ -3,14 +3,13 @@ package org.uikit
 import android.net.Uri
 import android.widget.RelativeLayout
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
@@ -27,11 +26,9 @@ class AVPlayerItem(parent: SDLActivity, url: String) {
         val dataSourceFactory = DefaultDataSourceFactory(parent.context,
                 Util.getUserAgent(parent.context, "com.flowkey.uikit"))
 
-        // Produces Extractor instances for parsing the media data.
-        val extractorsFactory = DefaultExtractorsFactory()
-
         // ExtractorMediaSource works for regular media files such as mp4, webm, mkv
-        videoSource = ExtractorMediaSource(regularVideoSourceUri, dataSourceFactory, extractorsFactory, null, null)
+        videoSource = ExtractorMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(regularVideoSourceUri)
     }
 }
 
@@ -63,12 +60,15 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
             }
 
             // not used but necessary to implement EventListener interface:
+            override fun onSeekProcessed() {}
+
+            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {}
             override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {}
             override fun onLoadingChanged(isLoading: Boolean) {}
-            override fun onPositionDiscontinuity() {}
+            override fun onPositionDiscontinuity(reason: Int) {}
             override fun onRepeatModeChanged(repeatMode: Int) {}
-            override fun onTimelineChanged(timeline: Timeline?, manifest: Any?) {}
+            override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {}
             override fun onPlayerError(error: ExoPlaybackException?) {}
         }
 
@@ -113,12 +113,12 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
 
 @Suppress("unused")
 class AVPlayerLayer(parent: SDLActivity, player: AVPlayer) {
-    private var exoPlayerLayout: SimpleExoPlayerView
+    private var exoPlayerLayout: PlayerView
 
     init {
         val context = parent.context
 
-        exoPlayerLayout = SimpleExoPlayerView(context)
+        exoPlayerLayout = PlayerView(context)
         exoPlayerLayout.player = player.exoPlayer
         exoPlayerLayout.useController = false
         exoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
