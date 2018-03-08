@@ -51,7 +51,7 @@ extension UIScrollView {
             // time it takes until reaching bounds from current position
             animationTime = time(
                 initialVelocity: velocity,
-                accleration: Double(decelerationRate),
+                acceleration: Double(decelerationRate),
                 distance: Double(abs(contentOffset.x - boundsCheckedOffset.x))
             )
         }
@@ -89,9 +89,9 @@ fileprivate func distance(acceleration: Double, time: Double, initialVelocity: D
 
 /// calculate the time it takes do travel a certain distance given initial velocity and acceleration
 /// solution for quadratic equation s = 1/2*a*t^2 + v_0 * t
-fileprivate func time(initialVelocity: Double, accleration: Double, distance: Double) -> Double {
-    let term1 = -(initialVelocity / accleration)
-    let term2 = sqrt( pow((initialVelocity / accleration), 2) + (2 * distance / accleration) )
+fileprivate func time(initialVelocity: Double, acceleration: Double, distance: Double) -> Double {
+    let term1 = -(initialVelocity / acceleration)
+    let term2 = sqrt( pow((initialVelocity / acceleration), 2) + (2 * distance / acceleration) )
 
     let t1 = term1 + term2
     let t2 = term1 - term2
