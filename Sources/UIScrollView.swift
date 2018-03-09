@@ -67,6 +67,8 @@ open class UIScrollView: UIView {
         case .ended:
             delegate?.scrollViewDidEndDragging(self, willDecelerate: false) // TODO: fix me
             startDecelerating()
+            previousVelocity = nil
+            currentVelocity = nil
 
             // XXX: Spring back with animation:
             //case .ended, .cancelled:
