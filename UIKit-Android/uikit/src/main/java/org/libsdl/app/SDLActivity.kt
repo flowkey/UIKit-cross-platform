@@ -86,6 +86,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
         // Set up the surface
         mSurface = SurfaceView(context)
+        mSurface.setZOrderOnTop(true) // so we can cover the video (fixes Android 8 bug)
 
         // Enables the alpha value for colors on the SDLSurface
         // which makes the VideoJNI SurfaceView behind it visible
