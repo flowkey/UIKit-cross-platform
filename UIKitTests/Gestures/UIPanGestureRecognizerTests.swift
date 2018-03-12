@@ -89,6 +89,22 @@ class UIPanGestureRecognizerTests: XCTestCase {
         XCTAssert(recognizer.state == .possible)
     }
 
+     func testVelocity() {
+        let touchPositionDiff: CGFloat = 50
+        let timeInterval = 1.0
+
+        let recognizer = UIPanGestureRecognizer()
+        let touch = UITouch(touchId: 0, at: .zero, in: window)
+        recognizer.touchesBegan([touch], with: UIEvent())
+
+        touch.updateAbsoluteLocation(CGPoint(x: touchPositionDiff, y: 0))
+        recognizer.touchesMoved([touch], with: UIEvent())
+
+        let velocityX = recognizer.velocity(in: self.mockView, for: timeInterval).x
+        let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
+        XCTAssertEqual(velocityX, expectedVelocityX, accuracy: 0.001)
+    }
+
     func testTouchesMovedUpdatesTranslation() {
         let recognizer = UIPanGestureRecognizer()
         let touch = UITouch(touchId: 0, at: .zero, in: window)
