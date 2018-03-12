@@ -165,6 +165,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         this.removeFrameCallbackAndPause()
         this.nativeQuit()
 
+        // cleanup UIKit after nativeQuit
         this.nativeRender()
     }
 
