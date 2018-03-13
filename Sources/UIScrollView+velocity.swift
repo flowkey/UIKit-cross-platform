@@ -6,8 +6,6 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-private let maxAbsoluteVelocity = 2500.0
-
 extension UIScrollView {
 
     func startDecelerating() {
@@ -18,7 +16,7 @@ extension UIScrollView {
             let _velocity = self.currentVelocity?.x,
             _velocity != 0
         else { return }
-        let velocity = max(min(Double(_velocity), maxAbsoluteVelocity), -maxAbsoluteVelocity)
+        let velocity = Double(_velocity)
 
         // calculate time it would take until deceleration is complete (final velocity = 0)
         var animationTime = time(
