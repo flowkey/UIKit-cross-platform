@@ -47,11 +47,16 @@ extension CAMediaTimingFunction {
     static func easeInOutCubic(_ x: CGFloat) -> CGFloat {
         return x < 0.5 ? 2*pow(x, 2) : -1+(4-2*x)*x
     }
-    static func customEaseOut(_ x: CGFloat) -> CGFloat {
-        // first factor is hand tuned
-        let term0 = 0.99 * 3 * x * pow(1-x, 2)
-        let term1 = 0.995 * 3 * pow(x, 2) * (1-x)
+    static let customEaseOut = makeCubicBezier1D(0, CGFloat(UIScrollViewDecelerationRateNormal), 1, 1)
+}
 
-        return term0 + term1 + pow(x, 3)
+fileprivate func makeCubicBezier1D(_ P0: CGFloat, _ P1: CGFloat, _ P2: CGFloat, _ P3: CGFloat) -> ((CGFloat) -> CGFloat) {
+    return { t in
+        let term0 = P0 * pow(1-t, 3)
+        let term1 = P1 * 3 * t * pow(1-t, 2)
+        let term2 = P2 * 3 * pow(t, 2) * (1-t)
+        let term3 = P3 * pow(t, 3)
+
+        return term0 + term1 + term2 + term3
     }
 }
