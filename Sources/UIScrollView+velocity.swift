@@ -16,11 +16,11 @@ extension UIScrollView {
             let _velocity = self.currentVelocity?.x,
             _velocity != 0
         else { return }
-        let velocity = Double(_velocity)
+        let initialVelocity = Double(_velocity)
 
         // calculate time it would take until deceleration is complete (final velocity = 0)
         var animationTime = time(
-            initialVelocity: velocity,
+            initialVelocity: initialVelocity,
             acceleration: Double(-decelerationRate),
             finalVelocity: 0
         )
@@ -29,11 +29,11 @@ extension UIScrollView {
         let distanceToMove = distance(
             acceleration: Double(-decelerationRate),
             time: Double(animationTime),
-            initialVelocity: velocity
+            initialVelocity: initialVelocity
         )
 
         // determine scroll direction
-        let distanceWithDirection = velocity.sign == .minus ? distanceToMove : -distanceToMove
+        let distanceWithDirection = initialVelocity.sign == .minus ? distanceToMove : -distanceToMove
 
         var newOffset = CGPoint(
             x: contentOffset.x + CGFloat(distanceWithDirection),
@@ -50,7 +50,7 @@ extension UIScrollView {
             newOffset = boundsCheckedOffset
             // time it takes until reaching bounds from current position
             animationTime = time(
-                initialVelocity: velocity,
+                initialVelocity: initialVelocity,
                 acceleration: Double(decelerationRate),
                 distance: Double(abs(contentOffset.x - boundsCheckedOffset.x))
             )
