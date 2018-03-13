@@ -89,7 +89,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
         XCTAssert(recognizer.state == .possible)
     }
 
-     func testVelocity() {
+    func testVelocity() {
         let touchPositionDiff: CGFloat = 50
         let timeInterval = 1.0
 
@@ -156,22 +156,4 @@ class UIPanGestureRecognizerTests: XCTestCase {
 
         XCTAssertEqual(panGestureRecognizer.translation(in: view), CGPoint(x: 10, y: 10))
     }
-}
-
-fileprivate func calculateVelocityMean(from timestampsAndTranslations: [(TimeInterval, CGPoint)]) -> CGPoint {
-    let summedVelocity = timestampsAndTranslations.reduce(CGPoint.zero, { prev, tuple in
-        let (timeInterval, translation) = tuple
-        guard timeInterval != 0 else {
-            return .zero
-        }
-        let singleVelocity = CGPoint(
-            x: translation.x / CGFloat(timeInterval),
-            y: translation.y / CGFloat(timeInterval)
-        )
-        return CGPoint(x: prev.x + singleVelocity.x, y: prev.y + singleVelocity.y)
-    })
-    return CGPoint(
-        x: summedVelocity.x / CGFloat(timestampsAndTranslations.count),
-        y: summedVelocity.y / CGFloat(timestampsAndTranslations.count)
-    )
 }
