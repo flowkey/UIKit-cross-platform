@@ -11,6 +11,7 @@ import SDL_gpu
 import CoreFoundation
 import struct Foundation.Date
 import class Foundation.Thread
+import struct Foundation.TimeInterval
 import JNI
 
 private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
@@ -104,7 +105,8 @@ final public class SDL { // Only public for rootView!
                 #endif
                 return true
             case SDL_MOUSEBUTTONDOWN:
-                let event = UIEvent(touch: UITouch(touchId: 0, at: .from(e.button), in: SDL.rootView))
+                let touch = UITouch(touchId: 0, at: .from(e.button), in: SDL.rootView, timestamp: TimeInterval(e.button.timestamp))
+                let event = UIEvent(touch: touch)
                 UIWindow.main.sendEvent(event)
                 eventWasHandled = true
             case SDL_MOUSEMOTION:
@@ -113,6 +115,7 @@ final public class SDL { // Only public for rootView!
                     let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
                 {
                     touch.updateAbsoluteLocation(.from(e.button))
+                    touch.timestamp = TimeInterval(e.motion.timestamp)
                     touch.phase = .moved
                     UIWindow.main.sendEvent(event)
                 }
