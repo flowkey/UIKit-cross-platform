@@ -12,11 +12,8 @@ extension UIScrollView {
         let decelerationRate = UIScrollViewDecelerationRateNormal * 1000
 
         // ToDo: take y also into account
-        guard
-            let _velocity = self.currentVelocity?.x,
-            _velocity != 0
-        else { return }
-        let initialVelocity = Double(_velocity)
+        if self.currentVelocity.x.isZero { return }
+        let initialVelocity = Double(self.currentVelocity.x)
 
         // calculate time it would take until deceleration is complete (final velocity = 0)
         var animationTime = time(

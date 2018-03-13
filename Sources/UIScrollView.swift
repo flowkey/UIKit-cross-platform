@@ -17,8 +17,7 @@ open class UIScrollView: UIView {
     private var verticalScrollIndicator = CALayer()
     public var indicatorStyle: UIScrollViewIndicatorStyle = .white
 
-    private var previousVelocity: CGPoint?
-    var currentVelocity: CGPoint?
+    var currentVelocity: CGPoint = .zero
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -40,8 +39,8 @@ open class UIScrollView: UIView {
         panGestureRecognizer.setTranslation(.zero, in: self)
 
         let panGestureVelocity = panGestureRecognizer.velocity(in: self)
-        self.currentVelocity = (previousVelocity ?? .zero) * 0.2 + panGestureVelocity * 0.8
-        self.previousVelocity = self.currentVelocity
+        print(panGestureVelocity)
+        self.currentVelocity = self.currentVelocity * 0.2 + panGestureVelocity * 0.8
 
         let newOffset = getBoundsCheckedContentOffset(
             x: contentOffset.x - translation.x,
@@ -67,8 +66,7 @@ open class UIScrollView: UIView {
         case .ended:
             delegate?.scrollViewDidEndDragging(self, willDecelerate: false) // TODO: fix me
             startDecelerating()
-            previousVelocity = nil
-            currentVelocity = nil
+            currentVelocity = .zero
 
             // XXX: Spring back with animation:
             //case .ended, .cancelled:
