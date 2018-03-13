@@ -63,6 +63,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         state = .began
         trackedTouch = firstTouch
         initialTouchPoint = firstTouch.location(in: self.view?.superview)
+        touchesMovedTimestamp = Date.timeIntervalSinceReferenceDate
     }
 
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
