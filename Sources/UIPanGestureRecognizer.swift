@@ -37,14 +37,14 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     // The velocity of the pan gesture, which is expressed in points per second.
     // The velocity is broken into horizontal and vertical components.
-    func velocity(in view: UIView?, for timeSinceLastMovement: TimeInterval) -> CGPoint {
+    func velocity(in view: UIView?, timeDiffSeconds: TimeInterval) -> CGPoint {
         guard
             let curPos = trackedTouch?.location(in: view),
             let prevPos = trackedTouch?.previousLocation(in: view),
-            timeSinceLastMovement != 0
+            timeDiffSeconds != 0
         else { return CGPoint.zero }
 
-        return (curPos - prevPos) / CGFloat(timeSinceLastMovement)
+        return (curPos - prevPos) / CGFloat(timeDiffSeconds)
     }
 
     open func velocity(in view: UIView?) -> CGPoint {
@@ -53,8 +53,8 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             let previousTouchesMovedTimestamp = previousTouchesMovedTimestamp
         else { return CGPoint.zero }
         
-        let timeDiff = touchesMovedTimestamp - previousTouchesMovedTimestamp
-        return velocity(in: view, for: timeDiff)
+        let timeDiffMilliseconds = touchesMovedTimestamp - previousTouchesMovedTimestamp
+        return velocity(in: view, timeDiffSeconds: (timeDiffMilliseconds / 1000))
     }
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -98,6 +98,8 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesEnded(touches, with: event)
         guard let trackedTouch = trackedTouch, touches.contains(trackedTouch) else { return }
+        self.previousTouchesMovedTimestamp = touchesMovedTimestamp ?? 0
+        self.touchesMovedTimestamp = trackedTouch.timestamp
         state = .ended
         reset()
     }
