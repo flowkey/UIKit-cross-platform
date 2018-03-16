@@ -53,8 +53,8 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             let previousTouchesMovedTimestamp = previousTouchesMovedTimestamp
         else { return CGPoint.zero }
         
-        let timeDiffMilliseconds = touchesMovedTimestamp - previousTouchesMovedTimestamp
-        return velocity(in: view, timeDiffSeconds: (timeDiffMilliseconds / 1000))
+        let timeDiffSeconds = touchesMovedTimestamp - previousTouchesMovedTimestamp
+        return velocity(in: view, timeDiffSeconds: timeDiffSeconds)
     }
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {

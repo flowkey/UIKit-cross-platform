@@ -97,7 +97,7 @@ final public class SDL { // Only public for rootView!
             case SDL_QUIT:
                 print("SDL_QUIT was called")
                 shouldQuit = true
-                SDL.rootView = nil
+                rootView = nil
                 window = nil
                 unload()
                 #if os(Android)
@@ -105,19 +105,26 @@ final public class SDL { // Only public for rootView!
                 #endif
                 return true
             case SDL_MOUSEBUTTONDOWN:
-                let touch = UITouch(touchId: 0, at: .from(e.button), in: SDL.rootView, timestamp: TimeInterval(e.button.timestamp))
+                let touch = UITouch(touchId: 0, at: .from(e.button), in: rootView, timestamp: TimeInterval(e.button.timestamp) / 1_000_000_000)
                 let event = UIEvent(touch: touch)
-                UIWindow.main.sendEvent(event)
+                rootView.sendEvent(event)
                 eventWasHandled = true
             case SDL_MOUSEMOTION:
                 if
                     let event = UIEvent.activeEvents.first,
                     let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
                 {
-                    touch.updateAbsoluteLocation(.from(e.button))
-                    touch.timestamp = TimeInterval(e.motion.timestamp)
+                    let previousTimestamp = touch.timestamp
+                    let newTimestamp = TimeInterval(e.motion.timestamp) / 1_000_000_000
+
+                    touch.updateAbsoluteLocation(.from(e.motion))
+                    touch.timestamp = newTimestamp
                     touch.phase = .moved
-                    UIWindow.main.sendEvent(event)
+
+                    if (newTimestamp - previousTimestamp) < (5 / 1000) {
+                        continue
+                    }
+                    rootView.sendEvent(event)
                 }
                 eventWasHandled = true
             case SDL_MOUSEBUTTONUP:
@@ -125,8 +132,9 @@ final public class SDL { // Only public for rootView!
                     let event = UIEvent.activeEvents.first,
                     let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
                 {
+                    touch.timestamp = TimeInterval(e.common.timestamp) / 1_000_000_000
                     touch.phase = .ended
-                    UIWindow.main.sendEvent(event)
+                    rootView.sendEvent(event)
                 }
                 eventWasHandled = true
             case SDL_KEYUP:
@@ -182,7 +190,6 @@ public var onHardwareBackButtonPress: (() -> Void)?
 #if os(Android)
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeRender")
 public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
-    let renderAndRunLoopTimer = Timer()
     let timeTaken = SDL.render()
     let remainingFrameTime = maxFrameRenderTimeInMilliseconds - timeTaken
    

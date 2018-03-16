@@ -6,56 +6,34 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import func Foundation.sqrt
+
+private extension CGPoint {
+    var magnitude: CGFloat {
+        return sqrt(x * x + y * y)
+    }
+}
+
 extension UIScrollView {
+    func startDeceleratingIfNecessary() {
+        // Only animate if instantaneous velocity is large enough
+        // Otherwise we could animate after scrolling quickly, pausing for a few seconds, then letting go
+        let willDecelerate = (self.panGestureRecognizer.velocity(in: self).magnitude >= 20)
+        delegate?.scrollViewDidEndDragging(self, willDecelerate: willDecelerate)
+        guard willDecelerate else { return }
 
-    func startDecelerating() {
-        let decelerationRate = UIScrollViewDecelerationRateNormal * 1000
+        let nonBoundsCheckedScrollAnimationDistance = self.currentVelocity * 0.74 // hand-tuned to match easing curve
 
-        // ToDo: take y also into account
-        if self.currentVelocity.x.isZero { return }
-        let initialVelocity = Double(self.currentVelocity.x)
+        let targetOffset = getBoundsCheckedContentOffset(contentOffset - nonBoundsCheckedScrollAnimationDistance)
+        let distanceToBoundsCheckedTarget = contentOffset - targetOffset
 
-        // calculate time it would take until deceleration is complete (final velocity = 0)
-        var animationTime = time(
-            initialVelocity: initialVelocity,
-            acceleration: Double(-decelerationRate),
-            finalVelocity: 0
-        )
+        // The 325 should be calculated from `UIScrollViewDecelerationRateXYZ` instead:
+        // This calculation is a weird approximation but it's close enough for now...
+        let animationTime = log(Double(distanceToBoundsCheckedTarget.magnitude)) * 325 / 1000 / 2
 
-        // calculate the distance to move until completely decelerated
-        let distanceToMove = distance(
-            acceleration: Double(-decelerationRate),
-            time: Double(animationTime),
-            initialVelocity: initialVelocity
-        )
-
-        // determine scroll direction
-        let distanceWithDirection = initialVelocity.sign == .minus ? distanceToMove : -distanceToMove
-
-        var newOffset = CGPoint(
-            x: contentOffset.x + CGFloat(distanceWithDirection),
-            y: contentOffset.y
-        )
-
-        let boundsCheckedOffset = getBoundsCheckedContentOffset(
-            x: contentOffset.x + CGFloat(distanceWithDirection),
-            y: contentOffset.y
-        )
-
-        let offsetIsOutOfBounds = (newOffset != boundsCheckedOffset)
-        if offsetIsOutOfBounds {
-            newOffset = boundsCheckedOffset
-            // time it takes until reaching bounds from current position
-            animationTime = time(
-                initialVelocity: initialVelocity,
-                acceleration: Double(decelerationRate),
-                distance: Double(abs(contentOffset.x - boundsCheckedOffset.x))
-            )
-        }
-
-        UIView.animate(withDuration: animationTime, options: [.customEaseOut, .allowUserInteraction],  animations: {
+        UIView.animate(withDuration: animationTime, options: [.beginFromCurrentState, .customEaseOut, .allowUserInteraction],  animations: {
             self.isDecelerating = true
-            self.setContentOffset(newOffset, animated: false)
+            self.contentOffset = targetOffset
         }, completion: { _ in
             self.isDecelerating = false
         })
@@ -64,34 +42,10 @@ extension UIScrollView {
     func cancelDeceleratingIfNeccessary() {
         if !isDecelerating { return }
 
+        let currentOrigin = layer.presentation?.bounds.origin ?? bounds.origin
+        setContentOffset(currentOrigin, animated: false)
         layer.removeAnimation(forKey: "bounds")
-        let currentX = layer.presentation?.bounds.origin.x ?? bounds.origin.x
-        setContentOffset(CGPoint(x: currentX, y: 0), animated: false)
 
         isDecelerating = false
     }
-}
-
-// MARK: Physics
-
-/// calculate time it takes to accelerate from initialVelocity to finalVelocity
-fileprivate func time(initialVelocity: Double, acceleration: Double, finalVelocity: Double) -> Double {
-    return abs((finalVelocity - initialVelocity) / acceleration)
-}
-
-/// calculate the distance travelled within a time interval after accelerating from initialVelcotity
-fileprivate func distance(acceleration: Double, time: Double, initialVelocity: Double) -> Double {
-    return abs((initialVelocity * time)) + abs((0.5 * acceleration * pow(time, 2)))
-}
-
-/// calculate the time it takes do travel a certain distance given initial velocity and acceleration
-/// solution for quadratic equation s = 1/2*a*t^2 + v_0 * t
-fileprivate func time(initialVelocity: Double, acceleration: Double, distance: Double) -> Double {
-    let term1 = -(initialVelocity / acceleration)
-    let term2 = sqrt( pow((initialVelocity / acceleration), 2) + (2 * distance / acceleration) )
-
-    let t1 = term1 + term2
-    let t2 = term1 - term2
-
-    return min(abs(t1), abs(t2))
 }

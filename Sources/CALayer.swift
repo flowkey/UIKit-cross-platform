@@ -171,6 +171,7 @@ open class CALayer {
     public required init(layer: Any) {
         guard let layer = layer as? CALayer else { fatalError() }
         bounds = layer.bounds
+        delegate = layer.delegate
         transform = layer.transform
         position = layer.position
         anchorPoint = layer.anchorPoint
@@ -211,7 +212,7 @@ open class CALayer {
         return CALayer.defaultAction(forKey: event)
     }
 
-    var presentation: CALayer?
+    public internal(set) var presentation: CALayer?
     var disableAnimations = false
 
     var animations = [String: CABasicAnimation]() {
@@ -249,4 +250,8 @@ extension CALayer: Hashable {
     public static func == (lhs: CALayer, rhs: CALayer) -> Bool {
         return lhs === rhs
     }
+}
+
+public protocol CALayerDelegate: class {
+    func action(forKey event: String) -> CABasicAnimation?
 }

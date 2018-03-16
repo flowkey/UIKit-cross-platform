@@ -8,7 +8,7 @@
 
 import SDL
 
-open class UIView: UIResponder {
+open class UIView: UIResponder, CALayerDelegate {
     open class var layerClass: CALayer.Type {
         return CALayer.self
     }
@@ -338,6 +338,21 @@ open class UIView: UIResponder {
          next()?.touchesEnded(touches, with: event)
     }
     open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {}
+
+    // We originally had this in an extension but Swift functions in extensions cannot be overwritten (as of Swift 4)
+    open func action(forKey event: String) -> CABasicAnimation? {
+        guard let prototype = UIView.currentAnimationPrototype else { return nil }
+
+        let keyPath = AnimationKeyPath(stringLiteral: event)
+        let beginFromCurrentState = prototype.animationGroup.options.contains(.beginFromCurrentState)
+        let state = beginFromCurrentState ? (layer.presentation ?? layer) : layer
+
+        if let fromValue = state.value(forKeyPath: keyPath) {
+            return prototype.createAnimation(keyPath: keyPath, fromValue: fromValue)
+        }
+
+        return nil
+    }
 }
 
 extension UIView: CustomStringConvertible {
