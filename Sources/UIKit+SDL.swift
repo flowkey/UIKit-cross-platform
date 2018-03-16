@@ -105,7 +105,7 @@ final public class SDL { // Only public for rootView!
                 #endif
                 return true
             case SDL_MOUSEBUTTONDOWN:
-                let touch = UITouch(touchId: 0, at: .from(e.button), in: rootView, timestamp: TimeInterval(e.button.timestamp) / 1_000_000_000)
+                let touch = UITouch(touchId: 0, at: .from(e.button), in: rootView, timestamp: TimeInterval(e.button.timestamp) / 1000)
                 let event = UIEvent(touch: touch)
                 rootView.sendEvent(event)
                 eventWasHandled = true
@@ -115,7 +115,7 @@ final public class SDL { // Only public for rootView!
                     let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
                 {
                     let previousTimestamp = touch.timestamp
-                    let newTimestamp = TimeInterval(e.motion.timestamp) / 1_000_000_000
+                    let newTimestamp = TimeInterval(e.motion.timestamp) / 1000
 
                     touch.updateAbsoluteLocation(.from(e.motion))
                     touch.timestamp = newTimestamp
@@ -132,7 +132,7 @@ final public class SDL { // Only public for rootView!
                     let event = UIEvent.activeEvents.first,
                     let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
                 {
-                    touch.timestamp = TimeInterval(e.common.timestamp) / 1_000_000_000
+                    touch.timestamp = TimeInterval(e.common.timestamp) / 1000
                     touch.phase = .ended
                     rootView.sendEvent(event)
                 }
