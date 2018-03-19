@@ -25,7 +25,7 @@ test:
         CODE_SIGN_IDENTITY=""
         PROVISIONING_PROFILE=""
         -sdk "iphonesimulator"
-        -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8'
+        -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
         -scheme "iOSTestTarget"
         clean build test |
       tee $CIRCLE_ARTIFACTS/xcode_raw.log |
