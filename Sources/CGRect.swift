@@ -176,15 +176,6 @@ extension CGRect {
     }
 }
 
-extension GPU_Rect {
-    init(_ cgRect: CGRect) {
-        self.w = Float(round(cgRect.size.width))
-        self.h = Float(round(cgRect.size.height))
-        self.x = Float(round(cgRect.origin.x))
-        self.y = Float(round(cgRect.origin.y))
-    }
-}
-
 extension CGRect: CustomStringConvertible {
     public var description: String {
         return "(\(origin.x), \(origin.y), \(width), \(height))"
