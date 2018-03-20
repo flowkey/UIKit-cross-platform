@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import Foundation
+import struct Foundation.TimeInterval
 
 public class UITouch {
 

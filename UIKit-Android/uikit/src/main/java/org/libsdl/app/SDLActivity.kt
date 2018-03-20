@@ -89,7 +89,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         mSurface.holder?.addCallback(this)
         mSurface.setOnTouchListener(this)
 
-        this.addView(mSurface, 0)
+        this.addView(mSurface)
     }
 
     @Suppress("unused") // accessed via JNI

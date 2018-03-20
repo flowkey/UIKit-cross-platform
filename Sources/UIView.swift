@@ -339,7 +339,7 @@ open class UIView: UIResponder, CALayerDelegate {
     }
     open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {}
 
-    // We originally had this in an extension but Swift functions in extensions cannot be overwritten (as of Swift 4)
+    // We originally had this in an extension but Swift functions in extensions cannot be overridden (as of Swift 4)
     open func action(forKey event: String) -> CABasicAnimation? {
         guard let prototype = UIView.currentAnimationPrototype else { return nil }
 

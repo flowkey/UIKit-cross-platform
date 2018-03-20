@@ -41,7 +41,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         guard
             let curPos = trackedTouch?.location(in: view),
             let prevPos = trackedTouch?.previousLocation(in: view),
-            timeDiffSeconds != 0
+            timeDiffSeconds.isZero == false
         else { return CGPoint.zero }
 
         return (curPos - prevPos) / CGFloat(timeDiffSeconds)

@@ -1,7 +1,6 @@
 package org.uikit
 
 import android.net.Uri
-import android.os.Handler
 import android.widget.RelativeLayout
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -104,8 +103,13 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
 
     private fun seekToTimeInMilliseconds(timeInMilliseconds: Double) {
         desiredSeekPosition = timeInMilliseconds
+
+        // This *should* mean we don't always scroll to the last position provided.
+        // In practice we always seem to be at the position we want anyway:
         if (isSeeking) { return }
 
+        // Seeking to the exact millisecond is very processor intensive (and SLOW!)
+        // Only do put that effort in if we're scrubbing very slowly over a short time period:
         val syncParameters = if ((desiredSeekPosition - lastSeekedToTime).absoluteValue < 40) {
             SeekParameters.EXACT
         } else {
