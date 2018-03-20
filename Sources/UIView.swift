@@ -345,7 +345,7 @@ open class UIView: UIResponder, CALayerDelegate {
 
         let keyPath = AnimationKeyPath(stringLiteral: event)
         let beginFromCurrentState = prototype.animationGroup.options.contains(.beginFromCurrentState)
-        let state = beginFromCurrentState ? (layer.presentation ?? layer) : layer
+        let state = beginFromCurrentState ? (layer._presentation ?? layer) : layer
 
         if let fromValue = state.value(forKeyPath: keyPath) {
             return prototype.createAnimation(keyPath: keyPath, fromValue: fromValue)

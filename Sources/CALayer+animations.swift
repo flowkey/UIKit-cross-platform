@@ -14,7 +14,7 @@ extension CALayer {
 
         // animation.fromValue is optional, set it to currently visible state if nil
         if copy.fromValue == nil, let keyPath = copy.keyPath {
-            copy.fromValue = (presentation ?? self).value(forKeyPath: keyPath)
+            copy.fromValue = (_presentation ?? self).value(forKeyPath: keyPath)
         }
 
         animations[key]?.animationGroup?.animationDidStop(finished: false)
@@ -41,10 +41,10 @@ extension CALayer {
     func onDidSetAnimations(wasEmpty: Bool) {
         if !animations.isEmpty && wasEmpty {
             UIView.layersWithAnimations.insert(self)
-            presentation = createPresentation()
+            _presentation = createPresentation()
 
         } else if animations.isEmpty && !wasEmpty {
-            presentation = nil
+            _presentation = nil
             UIView.layersWithAnimations.remove(self)
         }
     }
@@ -65,7 +65,7 @@ extension CALayer {
             }
         }
 
-        self.presentation = animations.isEmpty ? nil : presentation
+        self._presentation = animations.isEmpty ? nil : presentation
     }
 
     private func update(_ presentation: CALayer, for animation: CABasicAnimation, with progress: CGFloat) {

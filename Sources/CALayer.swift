@@ -198,13 +198,6 @@ open class CALayer {
         return CALayer(layer: self)
     }
 
-    /// returns a non animating copy of the layer
-    func createPresentation() -> CALayer {
-        let copy = CALayer(layer: self)
-        copy.disableAnimations = true
-        return copy
-    }
-
     open func action(forKey event: String) -> CAAction? {
         if let delegate = delegate {
             return delegate.action(forKey: event)
@@ -212,7 +205,17 @@ open class CALayer {
         return CALayer.defaultAction(forKey: event)
     }
 
-    public internal(set) var presentation: CALayer?
+
+    /// returns a non animating copy of the layer
+    func createPresentation() -> CALayer {
+        let copy = CALayer(layer: self)
+        copy.disableAnimations = true
+        return copy
+    }
+
+    internal var _presentation: CALayer?
+    open func presentation() -> CALayer? { return _presentation }
+
     var disableAnimations = false
 
     var animations = [String: CABasicAnimation]() {
