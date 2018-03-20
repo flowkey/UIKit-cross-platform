@@ -127,7 +127,7 @@ extension CALayer {
             transformAtSelfOrigin.setAsSDLgpuMatrix()
 
             for sublayer in sublayers {
-                (sublayer.presentation ?? sublayer).sdlRender(parentAbsoluteOpacity: opacity)
+                (sublayer._presentation ?? sublayer).sdlRender(parentAbsoluteOpacity: opacity)
             }
         }
 

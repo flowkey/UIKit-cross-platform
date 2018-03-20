@@ -22,7 +22,7 @@ class CABasicAnimationTests: XCTestCase {
 
         UIView.animateIfNeeded(at: Timer(startingAt: 250))
 
-        if let presentation = layer.presentation {
+        if let presentation = layer._presentation {
             XCTAssertEqual(presentation.opacity, 0.5, accuracy: 0.01)
         } else {
             XCTFail("presentation must be defined")
@@ -52,8 +52,8 @@ class CABasicAnimationTests: XCTestCase {
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2000))
 
-        XCTAssertNotNil(layer.presentation)
-        XCTAssertEqual(layer.presentation?.opacity, 0)
+        XCTAssertNotNil(layer._presentation)
+        XCTAssertEqual(layer._presentation?.opacity, 0)
     }
 
     func testShouldAnimateImplicitly() {
@@ -62,7 +62,7 @@ class CABasicAnimationTests: XCTestCase {
 
         UIView.animateIfNeeded(at: Timer(startingAt: 125))
 
-        if let presentation = layer.presentation {
+        if let presentation = layer._presentation {
             XCTAssertEqual(presentation.opacity, 0.5, accuracy: 0.01)
         } else {
             XCTFail("presentation must be defined")

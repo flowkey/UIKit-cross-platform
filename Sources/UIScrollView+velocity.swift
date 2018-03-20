@@ -48,7 +48,7 @@ extension UIScrollView {
     func cancelDeceleratingIfNeccessary() {
         if !isDecelerating { return }
 
-        let currentOrigin = layer.presentation?.bounds.origin ?? bounds.origin
+        let currentOrigin = layer._presentation?.bounds.origin ?? bounds.origin
         setContentOffset(currentOrigin, animated: false)
         layer.removeAnimation(forKey: "bounds")
 

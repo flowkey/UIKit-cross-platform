@@ -31,7 +31,7 @@ class UIViewAnimationTests: XCTestCase {
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
 
-        guard let presentation = view.layer.presentation else {
+        guard let presentation = view.layer._presentation else {
             return XCTFail("presentation must be defined")
         }
 
@@ -52,7 +52,7 @@ class UIViewAnimationTests: XCTestCase {
         XCTAssertEqual(view.layer.animations.count, 1)
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
-        if let presentation = view.layer.presentation {
+        if let presentation = view.layer._presentation {
             XCTAssertEqual(presentation.opacity, 0.6, accuracy: 0.01)
         } else {
             XCTFail("presentation must be defined")
@@ -77,7 +77,7 @@ class UIViewAnimationTests: XCTestCase {
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
 
-        if let presentation = view.layer.presentation {
+        if let presentation = view.layer._presentation {
             XCTAssertEqual(
                 presentation.bounds.rounded(accuracy: 0.01),
                 CGRect(x: 15, y: 15, width: 15, height: 15)
@@ -95,7 +95,7 @@ class UIViewAnimationTests: XCTestCase {
         })
 
         UIView.animateIfNeeded(at: Timer(startingAt: 3000))
-        if let presentation = view.layer.presentation {
+        if let presentation = view.layer._presentation {
             XCTAssertEqual(Double(presentation.opacity), 0.5, accuracy: 0.01)
         } else {
             XCTFail("presentation must be defined")
@@ -181,7 +181,7 @@ class UIViewAnimationTests: XCTestCase {
         let view = UIView()
         let expectedFrame = CGRect(x: 20, y: 20, width: 20, height: 20)
 
-        XCTAssertNil(view.layer.presentation)
+        XCTAssertNil(view.layer._presentation)
 
         UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
             view.frame = expectedFrame
@@ -189,7 +189,7 @@ class UIViewAnimationTests: XCTestCase {
         })
 
         UIView.animateIfNeeded(at: Timer(startingAt: 2500))
-        XCTAssertNotNil(view.layer.presentation)
+        XCTAssertNotNil(view.layer._presentation)
     }
 
     func testPresentationIsRemovedWhenAnimationCompletes() {
@@ -203,7 +203,7 @@ class UIViewAnimationTests: XCTestCase {
         })
 
         UIView.animateIfNeeded(at: Timer(startingAt: 6000))
-        XCTAssertNil(view.layer.presentation)
+        XCTAssertNil(view.layer._presentation)
     }
 
     func testLayersWithAnimations() {
@@ -259,7 +259,7 @@ class UIViewAnimationTests: XCTestCase {
         view.alpha = 0
         UIView.animateIfNeeded(at: Timer(startingAt: 5000))
 
-        if let presentation = view.layer.presentation {
+        if let presentation = view.layer._presentation {
             XCTAssertEqual(presentation.opacity, 0)
             XCTAssertEqual(presentation.frame.origin.x, 100, accuracy: 0.01)
         } else {
@@ -278,7 +278,7 @@ class UIViewAnimationTests: XCTestCase {
         view.frame.origin.x = 0
         UIView.animateIfNeeded(at: Timer(startingAt: 5000))
 
-        if let presentation = view.layer.presentation {
+        if let presentation = view.layer._presentation {
             XCTAssertEqual(presentation.frame.origin.x, 0)
         } else {
             XCTFail("presentation must be defined")

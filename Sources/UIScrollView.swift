@@ -42,7 +42,7 @@ open class UIScrollView: UIView {
         let panGestureVelocity = panGestureRecognizer.velocity(in: self)
         self.weightedAverageVelocity = self.weightedAverageVelocity * 0.2 + panGestureVelocity * 0.8
 
-        let visibleContentOffset = (layer.presentation ?? layer).bounds.origin
+        let visibleContentOffset = (layer._presentation ?? layer).bounds.origin
         let newOffset = getBoundsCheckedContentOffset(visibleContentOffset - translation)
         setContentOffset(newOffset, animated: false)
     }
