@@ -17,7 +17,6 @@ private val TAG = "SDLActivity"
 open class SDLActivity(context: Context?) : RelativeLayout(context),
                                             SDLOnKeyListener,
                                             SDLOnTouchListener,
-                                            SDLSensorEventListener,
                                             SurfaceHolder.Callback,
                                             Choreographer.FrameCallback,
                                             APKExtensionInputStreamOpener {
@@ -58,11 +57,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     override var mWidth: Float = 1.0f // Keep track of the surface size to normalize touch events
     override var mHeight: Float = 1.0f // Start with non-zero values to avoid potential division by zero
 
-    // SDLSensorEventListener conformance
-    external override fun onNativeAccel(x: Float, y: Float, z: Float)
-    override val rotation: Int
-        get() = display.rotation
-
     // APKExtensionStreamOpener conformance
     external override fun nativeGetHint(name: String): String?
     override var expansionFile: Any? = null
@@ -71,9 +65,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     // Handler for the messages
     private val commandHandler by lazy { SDLCommandHandler(this.context) }
 
-    // Lazy to avoid accessing context before onCreate!
-    private val mSensorManager: SensorManager by lazy { context!!.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
-        
     private var isRunning = false
 
     init {
@@ -154,27 +145,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         return context.getSystemService(name)
     }
 
-
-    /** Called by onPause or surfaceDestroyed. Even if surfaceDestroyed
-     * is the first to be called, mIsSurfaceReady should still be set
-     * to 'true' during the call to onPause (in a usual scenario).
-     */
-    private fun handlePause() {
-        Log.v(TAG, "handlePause()")
-        if (!this.mIsPaused && this.mIsSurfaceReady) {
-            this.mIsPaused = true
-            this.nativePause()
-            this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
-        }
-    }
-
     private fun doNativeInitAndPostFrameCallbackIfNotRunning() {
         // This is the entry point to the C app.
-        // Start up the C app thread and enable sensor input for the first time
         if (this.isRunning) return
         this.isRunning = true
         this.nativeInit()
-        this.enableSensor(Sensor.TYPE_ACCELEROMETER, true)
         Choreographer.getInstance().postFrameCallback(this)
     }
 
@@ -183,13 +158,15 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         // Send a removeFrameCallbackAndQuit message to the application
         // This eventually stops the run loop and nulls the native SDL.window
         Choreographer.getInstance().removeFrameCallback(this)
-        this.enableSensor(Sensor.TYPE_ACCELEROMETER, false)
         this.isRunning = false
     }
 
     fun removeFrameCallbackAndQuit() {
         this.removeFrameCallbackAndPause()
         this.nativeQuit()
+
+        // cleanup UIKit after nativeQuit
+        this.nativeRender()
     }
 
     override fun doFrame(frameTimeNanos: Long) {
@@ -248,7 +225,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         mSurface.requestFocus()
         mSurface.setOnKeyListener(this)
         mSurface.setOnTouchListener(this)
-        enableSensor(Sensor.TYPE_ACCELEROMETER, true)
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
@@ -324,25 +300,9 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     // Called when we lose the surface
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         Log.v(TAG, "surfaceDestroyed()")
-        // Call this *before* setting mIsSurfaceReady to 'false'
-        handlePause()
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
         removeFrameCallbackAndPause()
-    }
-
-
-    // Sensor events
-    private fun enableSensor(sensortype: Int, enabled: Boolean) {
-        // TODO: This uses getDefaultSensor - what if we have >1 accels?
-        if (enabled) {
-            mSensorManager.registerListener(this,
-                    mSensorManager.getDefaultSensor(sensortype),
-                    SensorManager.SENSOR_DELAY_GAME, null)
-        } else {
-            mSensorManager.unregisterListener(this,
-                    mSensorManager.getDefaultSensor(sensortype))
-        }
     }
 
 }
