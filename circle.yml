@@ -1,6 +1,6 @@
 machine:
   xcode:
-    version: "9.0"
+    version: "9.2"
 
 checkout:
   post:
@@ -19,3 +19,15 @@ test:
         clean build test |
       tee $CIRCLE_ARTIFACTS/xcode_raw.log |
       xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
+    - set -o pipefail &&
+      xcodebuild
+        CODE_SIGNING_REQUIRED=NO
+        CODE_SIGN_IDENTITY=""
+        PROVISIONING_PROFILE=""
+        -sdk "iphonesimulator"
+        -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
+        -scheme "iOSTestTarget"
+        clean build test |
+      tee $CIRCLE_ARTIFACTS/xcode_raw.log |
+      xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
+

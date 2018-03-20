@@ -6,8 +6,6 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL_gpu
-import func Foundation.round
 
 public struct CGRect {
     public var origin: CGPoint
@@ -173,15 +171,6 @@ extension CGRect {
             width: CGFloat(newMaxX - newMinX),
             height: CGFloat(newMaxY - newMinY)
         )
-    }
-}
-
-extension GPU_Rect {
-    init(_ cgRect: CGRect) {
-        self.w = Float(round(cgRect.size.width))
-        self.h = Float(round(cgRect.size.height))
-        self.x = Float(round(cgRect.origin.x))
-        self.y = Float(round(cgRect.origin.y))
     }
 }
 

@@ -8,6 +8,7 @@
 
 import SDL
 import SDL_gpu
+import func Foundation.round
 
 internal final class Window {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
@@ -117,27 +118,27 @@ internal final class Window {
                 return GPU_UnsetClip(rawPointer)
             }
 
-            GPU_SetClipRect(rawPointer, GPU_Rect(clippingRect))
+            GPU_SetClipRect(rawPointer, clippingRect.gpuRect(scale: scale))
         }
     }
 
     func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
         if cornerRadius >= 1 {
-            GPU_RectangleRoundFilled(rawPointer, GPU_Rect(rect), cornerRadius: Float(cornerRadius), color: color.sdlColor)
+            GPU_RectangleRoundFilled(rawPointer, rect.gpuRect(scale: scale), cornerRadius: Float(cornerRadius), color: color.sdlColor)
         } else {
-            GPU_RectangleFilled(rawPointer, GPU_Rect(rect), color: color.sdlColor)
+            GPU_RectangleFilled(rawPointer, rect.gpuRect(scale: scale), color: color.sdlColor)
         }
     }
 
     func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat) {
         GPU_SetLineThickness(Float(lineThickness))
-        GPU_Rectangle(rawPointer, GPU_Rect(rect), color: lineColor.sdlColor)
+        GPU_Rectangle(rawPointer, rect.gpuRect(scale: scale), color: lineColor.sdlColor)
     }
 
     func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat, cornerRadius: CGFloat) {
         if cornerRadius > 1 {
             GPU_SetLineThickness(Float(lineThickness))
-            GPU_RectangleRound(rawPointer, GPU_Rect(rect), cornerRadius: Float(cornerRadius), color: lineColor.sdlColor)
+            GPU_RectangleRound(rawPointer, rect.gpuRect(scale: scale), cornerRadius: Float(cornerRadius), color: lineColor.sdlColor)
         } else {
             outline(rect, lineColor: lineColor, lineThickness: lineThickness)
         }
@@ -196,3 +197,14 @@ extension SDLWindowFlags: OptionSet {}
         }
     }
 #endif
+
+private extension CGRect {
+    func gpuRect(scale: CGFloat) -> GPU_Rect {
+        return GPU_Rect(
+            x: Float(round(self.origin.x * scale) / scale),
+            y: Float(round(self.origin.y * scale) / scale),
+            w: Float(round(self.size.width * scale) / scale),
+            h: Float(round(self.size.height * scale) / scale)
+        )
+    }
+}
