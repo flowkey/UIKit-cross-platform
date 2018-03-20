@@ -8,8 +8,8 @@
 
 // values from iOS
 // Note these are actually acceleration rates (explains why Fast is a smaller value than Normal)
-let UIScrollViewDecelerationRateFast: CGFloat = 0.99
 let UIScrollViewDecelerationRateNormal: CGFloat = 0.998
+let UIScrollViewDecelerationRateFast: CGFloat = 0.99
 
 open class UIScrollView: UIView {
     open weak var delegate: UIScrollViewDelegate? // TODO: change this to individually settable callbacks
@@ -75,10 +75,11 @@ open class UIScrollView: UIView {
     open var contentInset: UIEdgeInsets = .zero
     open var contentSize: CGSize = .zero
 
-    open var contentOffset: CGPoint = .zero {
-        didSet {
+    open var contentOffset: CGPoint {
+        get { return bounds.origin }
+        set {
             layer.removeAnimation(forKey: "bounds")
-            bounds.origin = contentOffset
+            bounds.origin = newValue
             if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
         }
     }
@@ -89,6 +90,9 @@ open class UIScrollView: UIView {
     open var showsHorizontalScrollIndicator = true
 
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
+        precondition(point.x.isFinite)
+        precondition(point.y.isFinite)
+
         contentOffset = point
 
         // otherwise everything subscribing to scrollViewDidScroll is implicitly animated from velocity scroll

@@ -14,6 +14,7 @@ import class Foundation.Thread
 import struct Foundation.TimeInterval
 import JNI
 
+
 private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
 
 final public class SDL { // Only public for rootView!
