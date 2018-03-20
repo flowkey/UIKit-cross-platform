@@ -185,3 +185,21 @@ extension CGRect: Equatable {
         return lhs.origin == rhs.origin && lhs.size == rhs.size
     }
 }
+
+// MARK: Performance optimizations:
+// The unspecialised generic versions of these functions take over 20% of the render func's CPU time in debug
+// As they are written here they don't even register in the profiler:
+
+private func min(_ a: CGFloat, _ b: CGFloat, _ c: CGFloat, _ d: CGFloat) -> CGFloat {
+    var minValue = (a < b) ? a : b
+    minValue = (minValue < c) ? minValue : c
+    minValue = (minValue < d) ? minValue : d
+    return minValue
+}
+
+private func max(_ a: CGFloat, _ b: CGFloat, _ c: CGFloat, _ d: CGFloat) -> CGFloat {
+    var maxValue = (a > b) ? a : b
+    maxValue = (maxValue > c) ? maxValue : c
+    maxValue = (maxValue > d) ? maxValue : d
+    return maxValue
+}

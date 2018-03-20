@@ -6,13 +6,16 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import struct Foundation.TimeInterval
+
 public class UITouch {
 
-    internal init(touchId: Int, at point: CGPoint, in window: UIWindow) {
+    internal init(touchId: Int, at point: CGPoint, in window: UIWindow, timestamp: TimeInterval) {
         absoluteLocation = point
         previousAbsoluteLocation = point
         self.touchId = touchId
         self.window = window
+        self.timestamp = timestamp
     }
 
     let touchId: Int
@@ -21,6 +24,7 @@ public class UITouch {
     public weak var window: UIWindow?
 
     public var phase: UITouchPhase = .began
+    public var timestamp: TimeInterval
 
     private var absoluteLocation: CGPoint
     private var previousAbsoluteLocation: CGPoint

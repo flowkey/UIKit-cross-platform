@@ -14,6 +14,8 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import org.libsdl.app.SDLActivity
+import kotlin.math.absoluteValue
+import kotlin.math.roundToLong
 
 @Suppress("unused")
 class AVPlayerItem(parent: SDLActivity, url: String) {
@@ -60,8 +62,9 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
             }
 
             // not used but necessary to implement EventListener interface:
-            override fun onSeekProcessed() {}
-
+            override fun onSeekProcessed() {
+                isSeeking = false
+            }
             override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {}
             override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {}
@@ -93,8 +96,30 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
         return exoPlayer.currentPosition.toDouble()
     }
 
-    fun seekToTimeInMilliseconds(timeInMilliseconds: Double) {
-        exoPlayer.seekTo(timeInMilliseconds.toLong())
+
+    private var isSeeking = false
+    private var desiredSeekPosition: Double = 0.0
+    private var lastSeekedToTime: Double = 0.0
+
+    private fun seekToTimeInMilliseconds(timeInMilliseconds: Double) {
+        desiredSeekPosition = timeInMilliseconds
+
+        // This *should* mean we don't always scroll to the last position provided.
+        // In practice we always seem to be at the position we want anyway:
+        if (isSeeking) { return }
+
+        // Seeking to the exact millisecond is very processor intensive (and SLOW!)
+        // Only do put that effort in if we're scrubbing very slowly over a short time period:
+        val syncParameters = if ((desiredSeekPosition - lastSeekedToTime).absoluteValue < 40) {
+            SeekParameters.EXACT
+        } else {
+            SeekParameters.CLOSEST_SYNC
+        }
+
+        isSeeking = true
+        exoPlayer.setSeekParameters(syncParameters)
+        exoPlayer.seekTo(timeInMilliseconds.roundToLong())
+        lastSeekedToTime = timeInMilliseconds
     }
 
     fun getPlaybackRate(): Float {

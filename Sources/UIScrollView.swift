@@ -7,8 +7,9 @@
 //
 
 // values from iOS
-let UIScrollViewDecelerationRateFast: CGFloat = 0.99
+// Note these are actually acceleration rates (explains why Fast is a smaller value than Normal)
 let UIScrollViewDecelerationRateNormal: CGFloat = 0.998
+let UIScrollViewDecelerationRateFast: CGFloat = 0.99
 
 open class UIScrollView: UIView {
     open weak var delegate: UIScrollViewDelegate? // TODO: change this to individually settable callbacks
@@ -16,6 +17,8 @@ open class UIScrollView: UIView {
 
     private var verticalScrollIndicator = CALayer()
     public var indicatorStyle: UIScrollViewIndicatorStyle = .white
+
+    var weightedAverageVelocity: CGPoint = .zero
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,19 +39,19 @@ open class UIScrollView: UIView {
         let translation = panGestureRecognizer.translation(in: self)
         panGestureRecognizer.setTranslation(.zero, in: self)
 
-        let newOffset = getBoundsCheckedContentOffset(
-            x: contentOffset.x - translation.x,
-            y: contentOffset.y - translation.y
-        )
+        let panGestureVelocity = panGestureRecognizer.velocity(in: self)
+        self.weightedAverageVelocity = self.weightedAverageVelocity * 0.2 + panGestureVelocity * 0.8
 
+        let visibleContentOffset = (layer._presentation ?? layer).bounds.origin
+        let newOffset = getBoundsCheckedContentOffset(visibleContentOffset - translation)
         setContentOffset(newOffset, animated: false)
     }
 
     /// does some min/max checks to prevent newOffset being out of bounds
-    func getBoundsCheckedContentOffset(x: CGFloat, y: CGFloat) -> CGPoint {
+    func getBoundsCheckedContentOffset(_ newContentOffset: CGPoint) -> CGPoint {
         return CGPoint(
-            x: min(max(x, -contentInset.left), (contentSize.width + contentInset.right) - bounds.width),
-            y: min(max(y, -contentInset.top), (contentSize.height + contentInset.bottom) - bounds.height)
+            x: min(max(newContentOffset.x, -contentInset.left), (contentSize.width + contentInset.right) - bounds.width),
+            y: min(max(newContentOffset.y, -contentInset.top), (contentSize.height + contentInset.bottom) - bounds.height)
         )
     }
 
@@ -58,8 +61,8 @@ open class UIScrollView: UIView {
             delegate?.scrollViewWillBeginDragging(self)
             cancelDeceleratingIfNeccessary()
         case .ended:
-            delegate?.scrollViewDidEndDragging(self, willDecelerate: false) // TODO: fix me
-            startDecelerating()
+            startDeceleratingIfNecessary()
+            weightedAverageVelocity = .zero
 
             // XXX: Spring back with animation:
             //case .ended, .cancelled:
@@ -73,25 +76,29 @@ open class UIScrollView: UIView {
     open var contentInset: UIEdgeInsets = .zero
     open var contentSize: CGSize = .zero
 
-    open var contentOffset: CGPoint = .zero {
-        didSet {
-            bounds.origin = contentOffset
+    open var contentOffset: CGPoint {
+        get { return bounds.origin }
+        set {
+            layer.removeAnimation(forKey: "bounds")
+            bounds.origin = newValue
             if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
         }
     }
 
     open var showsVerticalScrollIndicator = true
 
-    // TODO: Implement these:
+    // TODO: Implement this:
     open var showsHorizontalScrollIndicator = true
 
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
-        // TODO: animate
+        precondition(point.x.isFinite)
+        precondition(point.y.isFinite)
+
         contentOffset = point
 
         // otherwise everything subscribing to scrollViewDidScroll is implicitly animated from velocity scroll
         CATransaction.begin()
-        CATransaction.setDisableActions(true)
+        CATransaction.setDisableActions(!animated)
         delegate?.scrollViewDidScroll(self)
         CATransaction.commit()
     }

@@ -9,11 +9,7 @@
 import SDL
 import SDL_gpu
 import CoreFoundation
-import struct Foundation.Date
-import class Foundation.Thread
 import JNI
-
-private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
 
 final public class SDL { // Only public for rootView!
     public internal(set) static var rootView: UIWindow!
@@ -34,6 +30,17 @@ final public class SDL { // Only public for rootView!
         self.window = window
         self.rootView = UIWindow(frame: CGRect(origin: .zero, size: window.size))
         UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
+    }
+
+    static func handleSDLQuit() {
+        print("SDL_QUIT was called")
+        shouldQuit = true
+        rootView = nil
+        window = nil
+        unload()
+        #if os(Android)
+            try? jni.call("removeCallbacks", on: getSDLView())
+        #endif
     }
 
     private static var onUnloadListeners: [() -> Void] = []
@@ -86,100 +93,13 @@ final public class SDL { // Only public for rootView!
 
         firstRender = false
     }
-
-    private static func handleEventsIfNeeded() -> Bool {
-        var eventWasHandled = false
-        var e = SDL_Event()
-
-        while SDL_PollEvent(&e) == 1 {
-            switch SDL_EventType(rawValue: e.type) {
-            case SDL_QUIT:
-                print("SDL_QUIT was called")
-                shouldQuit = true
-                SDL.rootView = nil
-                window = nil
-                unload()
-                #if os(Android)
-                try? jni.call("removeCallbacks", on: getSDLView())
-                #endif
-                return true
-            case SDL_MOUSEBUTTONDOWN:
-                let event = UIEvent(touch: UITouch(touchId: 0, at: .from(e.button), in: SDL.rootView))
-                UIWindow.main.sendEvent(event)
-                eventWasHandled = true
-            case SDL_MOUSEMOTION:
-                if
-                    let event = UIEvent.activeEvents.first,
-                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
-                {
-                    touch.updateAbsoluteLocation(.from(e.button))
-                    touch.phase = .moved
-                    UIWindow.main.sendEvent(event)
-                }
-                eventWasHandled = true
-            case SDL_MOUSEBUTTONUP:
-                if
-                    let event = UIEvent.activeEvents.first,
-                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
-                {
-                    touch.phase = .ended
-                    UIWindow.main.sendEvent(event)
-                }
-                eventWasHandled = true
-            case SDL_KEYUP:
-                let keyModifier = SDL_Keymod(UInt32(e.key.keysym.mod))
-                if keyModifier.contains(KMOD_LSHIFT) || keyModifier.contains(KMOD_RSHIFT) {
-                    switch e.key.keysym.sym {
-                    case 43: // plus/multiply key
-                        fallthrough
-                    case 61: // plus/equals key
-                        SDL.onPressPlus?()
-                    case 45: // minus/dash key
-                        SDL.onPressMinus?()
-                    case 118: // "V"
-                        SDL.rootView.printViewHierarchy()
-                    default:
-                        print(e.key.keysym.sym)
-                        break
-                    }
-                }
-                if e.key.keysym.scancode.rawValue == 270 {
-                    onHardwareBackButtonPress?()
-                }
-            default:
-                break
-            }
-        }
-
-        return eventWasHandled
-    }
 }
-
-extension UIView {
-    func printViewHierarchy(depth: Int = 0) {
-        if self.isHidden || self.alpha < 0.01 { return }
-        let indentation = (0 ..< depth).reduce("") { result, _ in result + "  " }
-        print(indentation + "💩 " + self.description.replacingOccurrences(of: "\n", with: "\n" + indentation))
-
-        let newDepth = depth + 1
-        for subview in subviews {
-            subview.printViewHierarchy(depth: newDepth)
-        }
-    }
-}
-
-extension SDL {
-    public static var onPressPlus: (() -> Void)?
-    public static var onPressMinus: (() -> Void)?
-}
-
-extension SDL_Keymod: OptionSet {}
-public var onHardwareBackButtonPress: (() -> Void)?
 
 #if os(Android)
+private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
+
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeRender")
 public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
-    let renderAndRunLoopTimer = Timer()
     let timeTaken = SDL.render()
     let remainingFrameTime = maxFrameRenderTimeInMilliseconds - timeTaken
    
@@ -188,4 +108,3 @@ public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaOb
     }
 }
 #endif
-

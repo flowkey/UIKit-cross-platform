@@ -11,8 +11,8 @@ import Foundation
 open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var initialTouchPoint: CGPoint?
 
-    private var lastMovementTimestamp: TimeInterval?
-    private var timeSinceLastMovement: TimeInterval?
+    private var previousTouchesMovedTimestamp: TimeInterval?
+    private var touchesMovedTimestamp: TimeInterval?
 
     private let minimumTranslationThreshold: CGFloat = 5
 
@@ -37,25 +37,24 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     // The velocity of the pan gesture, which is expressed in points per second.
     // The velocity is broken into horizontal and vertical components.
-    func velocity(in view: UIView?, for timeSinceLastMovement: TimeInterval) -> CGPoint {
+    func velocity(in view: UIView?, timeDiffSeconds: TimeInterval) -> CGPoint {
         guard
             let curPos = trackedTouch?.location(in: view),
             let prevPos = trackedTouch?.previousLocation(in: view),
-            timeSinceLastMovement != 0.0
+            timeDiffSeconds.isZero == false
         else { return CGPoint.zero }
 
-        // XXX: apple docs say velocity is in points per s (see above)
-        // here we use milliseconds though in order to get results in the same magnitude as in iOS
-        let timeDiffInMs = CGFloat(timeSinceLastMovement)
-
-        return CGPoint(
-            x: (curPos.x - prevPos.x) / timeDiffInMs,
-            y: (curPos.y - prevPos.y) / timeDiffInMs
-        )
+        return (curPos - prevPos) / CGFloat(timeDiffSeconds)
     }
 
     open func velocity(in view: UIView?) -> CGPoint {
-        return velocity(in: view, for: timeSinceLastMovement ?? 0)
+        guard
+            let touchesMovedTimestamp = touchesMovedTimestamp,
+            let previousTouchesMovedTimestamp = previousTouchesMovedTimestamp
+        else { return CGPoint.zero }
+        
+        let timeDiffSeconds = touchesMovedTimestamp - previousTouchesMovedTimestamp
+        return velocity(in: view, timeDiffSeconds: timeDiffSeconds)
     }
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -64,7 +63,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         state = .began
         trackedTouch = firstTouch
         initialTouchPoint = firstTouch.location(in: self.view?.superview)
-        lastMovementTimestamp = NSDate.timeIntervalSinceReferenceDate
+        touchesMovedTimestamp = firstTouch.timestamp
     }
 
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -78,15 +77,10 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             return
         }
 
-        // XXX: revisit this and decide which timer we want to use
-        let now = NSDate.timeIntervalSinceReferenceDate
-
-        if let before = lastMovementTimestamp {
-            timeSinceLastMovement = now - before
-        }
-        lastMovementTimestamp = now
-
         let location = trackedTouch.location(in: self.view?.superview)
+
+        self.previousTouchesMovedTimestamp = touchesMovedTimestamp ?? 0
+        self.touchesMovedTimestamp = trackedTouch.timestamp
 
         if  state == .began,
             (location.x - initialTouchPoint.x).magnitude >= minimumTranslationThreshold ||
@@ -104,6 +98,8 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesEnded(touches, with: event)
         guard let trackedTouch = trackedTouch, touches.contains(trackedTouch) else { return }
+        self.previousTouchesMovedTimestamp = touchesMovedTimestamp ?? 0
+        self.touchesMovedTimestamp = trackedTouch.timestamp
         state = .ended
         reset()
     }
@@ -116,8 +112,8 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     private func reset() {
         trackedTouch = nil
-        lastMovementTimestamp = nil
-        timeSinceLastMovement = nil
+        previousTouchesMovedTimestamp = nil
+        touchesMovedTimestamp = nil
         initialTouchPoint = .zero
         state = .possible
     }

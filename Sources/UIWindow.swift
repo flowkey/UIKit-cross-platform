@@ -7,10 +7,6 @@
 //
 
 public class UIWindow: UIView {
-    public static var main: UIWindow {
-        return SDL.rootView
-    }
-
     public func sendEvent(_ event: UIEvent) {
         guard
             let allTouches = event.allTouches,
