@@ -20,7 +20,7 @@ extension UIScrollView {
         // Otherwise we could animate after scrolling quickly, pausing for a few seconds, then letting go
         let velocityIsLargeEnoughToDecelerate = (self.panGestureRecognizer.velocity(in: self).magnitude > 10)
 
-        let nonBoundsCheckedScrollAnimationDistance = self.currentVelocity * 0.74 // hand-tuned to match easing curve
+        let nonBoundsCheckedScrollAnimationDistance = self.weightedAverageVelocity * 0.74 // hand-tuned
         let targetOffset = getBoundsCheckedContentOffset(contentOffset - nonBoundsCheckedScrollAnimationDistance)
         let distanceToBoundsCheckedTarget = contentOffset - targetOffset
 

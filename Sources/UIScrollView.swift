@@ -18,7 +18,7 @@ open class UIScrollView: UIView {
     private var verticalScrollIndicator = CALayer()
     public var indicatorStyle: UIScrollViewIndicatorStyle = .white
 
-    var currentVelocity: CGPoint = .zero
+    var weightedAverageVelocity: CGPoint = .zero
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -40,9 +40,10 @@ open class UIScrollView: UIView {
         panGestureRecognizer.setTranslation(.zero, in: self)
 
         let panGestureVelocity = panGestureRecognizer.velocity(in: self)
-        self.currentVelocity = self.currentVelocity * 0.2 + panGestureVelocity * 0.8
+        self.weightedAverageVelocity = self.weightedAverageVelocity * 0.2 + panGestureVelocity * 0.8
 
-        let newOffset = getBoundsCheckedContentOffset(contentOffset - translation)
+        let visibleContentOffset = (layer.presentation ?? layer).bounds.origin
+        let newOffset = getBoundsCheckedContentOffset(visibleContentOffset - translation)
         setContentOffset(newOffset, animated: false)
     }
 
@@ -61,7 +62,7 @@ open class UIScrollView: UIView {
             cancelDeceleratingIfNeccessary()
         case .ended:
             startDeceleratingIfNecessary()
-            currentVelocity = .zero
+            weightedAverageVelocity = .zero
 
             // XXX: Spring back with animation:
             //case .ended, .cancelled:
