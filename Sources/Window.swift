@@ -8,6 +8,7 @@
 
 import SDL
 import SDL_gpu
+import func Foundation.round
 
 internal final class Window {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
@@ -25,7 +26,7 @@ internal final class Window {
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
     #else
         // This corresponds to the Samsung S7 screen at its 1080p 1.5x Retina resolution:
-        var size = CGSize(width: 2560 / 3.0, height: 1440 / 3.0)
+        var size = CGSize(width: 3560 / 3.0, height: 2440 / 3.0)
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
             //SDL_WINDOW_FULLSCREEN
@@ -197,17 +198,13 @@ extension SDLWindowFlags: OptionSet {}
     }
 #endif
 
-private extension GPU_Rect {
-    init(_ cgRect: CGRect, scale: CGFloat) {
-        self.w = Float(round(cgRect.size.width * scale) / scale)
-        self.h = Float(round(cgRect.size.height * scale) / scale)
-        self.x = Float(round(cgRect.origin.x * scale) / scale)
-        self.y = Float(round(cgRect.origin.y * scale) / scale)
-    }
-}
-
 private extension CGRect {
     func gpuRect(scale: CGFloat) -> GPU_Rect {
-        return GPU_Rect(self, scale: scale)
+        return GPU_Rect(
+            x: Float(round(self.origin.x * scale) / scale),
+            y: Float(round(self.origin.y * scale) / scale),
+            w: Float(round(self.size.width * scale) / scale),
+            h: Float(round(self.size.height * scale) / scale)
+        )
     }
 }

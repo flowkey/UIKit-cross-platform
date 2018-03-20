@@ -6,8 +6,6 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL_gpu
-import func Foundation.round
 
 public struct CGRect {
     public var origin: CGPoint
