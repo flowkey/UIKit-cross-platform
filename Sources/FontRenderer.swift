@@ -42,25 +42,17 @@ internal class FontRenderer {
 
     func render(_ text: String?, color: UIColor, wrapLength: Int = 0) -> CGImage? {
         guard let text = text else { return nil }
-        let unicode16Text = text.toUTF16()
 
         guard
             let surface = (wrapLength > 0) ?
-                TTF_RenderUNICODE_Blended_Wrapped(rawPointer, unicode16Text, color.sdlColor, UInt32(wrapLength)) :
-                TTF_RenderUNICODE_Blended(rawPointer, unicode16Text, color.sdlColor)
+                TTF_RenderUTF8_Blended_Wrapped(rawPointer, text, color.sdlColor, UInt32(wrapLength)) :
+                TTF_RenderUTF8_Blended(rawPointer, text, color.sdlColor)
         else {
             return nil
         }
 
         defer { SDL_FreeSurface(surface) }
         return CGImage(surface: surface)
-    }
-}
-
-private extension String {
-    func toUTF16() -> [UInt16] {
-        // Add a 0 to the end of the array to mark the end of the C string
-        return self.utf16.map { $0 } + [0]
     }
 }
 
@@ -71,7 +63,7 @@ extension FontRenderer {
     func singleLineSize(of text: String) -> CGSize {
         var width: Int32 = 0
         var height: Int32 = 0
-        TTF_SizeUNICODE(rawPointer, text.toUTF16(), &width, &height)
+        TTF_SizeUTF8(rawPointer, text, &width, &height)
 
         return CGSize(width: CGFloat(width), height: CGFloat(height))
     }
