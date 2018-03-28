@@ -47,11 +47,30 @@ internal class FontRenderer {
             let surface = (wrapLength > 0) ?
                 TTF_RenderUTF8_Blended_Wrapped(rawPointer, text, color.sdlColor, UInt32(wrapLength)) :
                 TTF_RenderUTF8_Blended(rawPointer, text, color.sdlColor)
-        else {
-            return nil
-        }
+        else { return nil }
 
         defer { SDL_FreeSurface(surface) }
+        return CGImage(surface: surface)
+    }
+
+    func render(_ attributedText: NSAttributedString?, color: UIColor) -> CGImage? {
+        guard let attributedText = attributedText else { return nil }
+
+
+        var colors = attributedText.string.enumerated().map { (index, _) -> SDLColor in
+            let color = attributedText.attribute(.foregroundColor, at: index, effectiveRange: nil) as? UIColor ?? color
+            return color.sdlColor
+        }
+
+        let colorPointer = UnsafeMutablePointer(mutating: colors)
+
+        guard let surface = TTF_RenderAttributedUTF8_Blended(rawPointer, attributedText.string, color.sdlColor, colorPointer)
+        else { return nil }
+
+        defer {
+            colorPointer.deinitialize(count: attributedText.string.count)
+            SDL_FreeSurface(surface)
+        }
         return CGImage(surface: surface)
     }
 }

@@ -65,6 +65,10 @@ open class UIFont: Equatable {
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
         return renderer.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.main.scale))
     }
+
+    internal func render(_ attributedString: NSAttributedString?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
+        return renderer.render(attributedString, color: color)
+    }
 }
 
 extension UIFont {
