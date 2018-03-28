@@ -25,8 +25,7 @@ internal final class Window {
         var size = CGSize.zero
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
     #else
-        // This corresponds to the Samsung S7 screen at its 1080p 1.5x Retina resolution:
-        var size = CGSize(width: 2560 / 3.0, height: 1440 / 3.0)
+        var size: CGSize = .samsungS7
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
             //SDL_WINDOW_FULLSCREEN
@@ -208,3 +207,10 @@ private extension CGRect {
         )
     }
 }
+
+#if !os(Android)
+    private extension CGSize {
+        static let samsungS7 = CGSize(width: 2560 / 3.0, height: 1440 / 3.0) // 1080p 1.5x Retina
+        static let nexus9 = CGSize(width: 2048 / 2.0, height: 1536 / 2.0)
+    }
+#endif
