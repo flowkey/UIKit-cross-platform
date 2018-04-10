@@ -16,7 +16,13 @@ public extension Locale {
     /// Returns the language code of the locale, or nil if has none.
     public var universalLanguageCode: String? {
         #if os(Android)
-        return try? jni.call("getDeviceLanguage", on: getSDLView())
+        guard
+            let language = try? jni.call("getDeviceLanguage", on: getSDLView()),
+            language != ""
+        else { return nil }
+
+        return language
+
         #else
         return Locale.current.languageCode
         #endif
