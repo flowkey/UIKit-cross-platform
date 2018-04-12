@@ -56,16 +56,17 @@ internal class FontRenderer {
     func render(_ attributedText: NSAttributedString?, color: UIColor) -> CGImage? {
         guard let attributedText = attributedText else { return nil }
 
-
         var colors = attributedText.string.enumerated().map { (index, _) -> SDLColor in
             let color = attributedText.attribute(.foregroundColor, at: index, effectiveRange: nil) as? UIColor ?? color
             return color.sdlColor
         }
 
         let colorPointer = UnsafeMutablePointer(mutating: colors)
-
-        guard let surface = TTF_RenderAttributedUTF8_Blended(rawPointer, attributedText.string, color.sdlColor, colorPointer)
-        else { return nil }
+        guard let surface = TTF_RenderAttributedUTF8_Blended(
+            rawPointer,
+            attributedText.string,
+            colorPointer
+        ) else { return nil }
 
         defer {
             colorPointer.deinitialize(count: attributedText.string.count)
