@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import AVFoundation
+@_exported import class AVFoundation.AVPlayerItem
+import struct AVFoundation.CMTime
 
-public typealias AVPlayerItem = AVFoundation.AVPlayerItem
 public typealias CMTime = AVFoundation.CMTime
