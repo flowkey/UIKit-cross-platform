@@ -6,11 +6,11 @@ import android.view.*
 import android.widget.RelativeLayout
 import android.util.Log
 import android.graphics.*
-import android.hardware.*
 import android.content.pm.ActivityInfo
 import android.view.KeyEvent.*
 import android.content.Context
 import main.java.org.libsdl.app.*
+import java.util.Locale
 
 private val TAG = "SDLActivity"
 
@@ -102,6 +102,9 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     @Suppress("unused") // accessed via JNI
     private fun getDeviceDensity(): Float = context.resources.displayMetrics.density
+    @Suppress("unused") // accessed via JNI
+    private fun getDeviceLanguage(): String = Locale.getDefault().language
+
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
