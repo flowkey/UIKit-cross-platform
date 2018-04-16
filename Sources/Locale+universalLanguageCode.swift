@@ -17,7 +17,9 @@ public extension Locale {
     public var universalLanguageCode: String? {
         #if os(Android)
         guard
-            let language: String = try? jni.call("getDeviceLanguage", on: getSDLView()),
+            let localeClass = try? jni.FindClass(name: "java.util.Locale"),
+            let defaultLocale = try? jni.callStatic("getDefault", on: localeClass, returningObjectType: "java.util.Locale"),
+            let language: String = try? jni.call("getLanguage", on: defaultLocale),
             language != ""
         else { return nil }
 
