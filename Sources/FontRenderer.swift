@@ -61,17 +61,13 @@ internal class FontRenderer {
             return color.sdlColor
         }
 
-        let colorPointer = UnsafeMutablePointer(mutating: colors)
         guard let surface = TTF_RenderAttributedUTF8_Blended(
             rawPointer,
             attributedText.string,
-            colorPointer
+            &colors
         ) else { return nil }
 
-        defer {
-            colorPointer.deinitialize(count: attributedText.string.count)
-            SDL_FreeSurface(surface)
-        }
+        defer { SDL_FreeSurface(surface) }
         return CGImage(surface: surface)
     }
 }
