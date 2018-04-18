@@ -10,8 +10,14 @@ import XCTest
 @testable import UIKit
 
 class CAMediaTimingFunctionTests: XCTestCase {
+    var view = UIView()
+
+    override func setUp() {
+        view = UIView()
+        view.layer.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
+    }
+
     func testCurveEasInWhenUsingUIViewAnimate() {
-        let view = UIView()
         UIView.animate(withDuration: 0, delay: 0, options: [.curveEaseIn], animations: {
             view.alpha = 0
         })
@@ -25,7 +31,6 @@ class CAMediaTimingFunctionTests: XCTestCase {
     }
 
     func testCurveEasOutWhenUsingUIViewAnimate() {
-        let view = UIView()
         UIView.animate(withDuration: 0, delay: 0, options: [.curveEaseOut], animations: {
             view.alpha = 0
         })
@@ -39,7 +44,6 @@ class CAMediaTimingFunctionTests: XCTestCase {
     }
 
     func testCurveEaseOutWhenUsingUIViewAnimateWithSpring() {
-        let view = UIView()
         UIView.animate(
             withDuration: 0,
             delay: 0,

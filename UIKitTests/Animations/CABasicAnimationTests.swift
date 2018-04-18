@@ -58,6 +58,7 @@ class CABasicAnimationTests: XCTestCase {
 
     func testShouldAnimateImplicitly() {
         let layer = CALayer()
+        layer.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
         layer.opacity = 0 // should be animated implicitly with duration of 0.25
 
         UIView.animateIfNeeded(at: Timer(startingAt: 125))

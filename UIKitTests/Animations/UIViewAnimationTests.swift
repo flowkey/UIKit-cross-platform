@@ -10,14 +10,19 @@ import XCTest
 @testable import UIKit
 
 class UIViewAnimationTests: XCTestCase {
+    var view = UIView()
 
     override func tearDown() {
         // reset animation state
         UIView.layersWithAnimations = Set<UIKit.CALayer>()
     }
 
+    override func setUp() {
+        view = UIView()
+        view.layer.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
+    }
+
     func testCanAnimateFrame() {
-        let view = UIView()
         let frameToStartFrom = CGRect(x: 10, y: 10, width: 10, height: 10)
         let expectedFrame = CGRect(x: 20, y: 20, width: 20, height: 20)
 
@@ -42,8 +47,6 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testCanAnimateOpacity() {
-        let view = UIView()
-
         UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
             view.alpha = 0.2
         })
@@ -60,7 +63,6 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testCanAnimateBounds() {
-        let view = UIView()
         let boundsToStartFrom = CGRect(x: 10, y: 10, width: 10, height: 10)
         let expectedBounds = CGRect(x: 20, y: 20, width: 20, height: 20)
 
@@ -88,7 +90,7 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testDelay() {
-        let view = UIView()
+
 
         UIView.animate(withDuration: 2, delay: 2, options: [], animations: {
             view.alpha = 0
@@ -119,7 +121,6 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testCompletionWhenCancelingAnimations() {
-        let view = UIView()
         var firstAnimationDidFinish: Bool?
         var secondAnimationDidFinish: Bool?
 
@@ -149,7 +150,6 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testCompletionWhenQueingAnimationsOfSameType() {
-        let view = UIView()
         var firstAnimationDidFinish: Bool?
         var secondAnimationDidFinish: Bool?
 
@@ -178,7 +178,6 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testPresentationLayerIsSet() {
-        let view = UIView()
         let expectedFrame = CGRect(x: 20, y: 20, width: 20, height: 20)
 
         XCTAssertNil(view.layer._presentation)
@@ -208,8 +207,13 @@ class UIViewAnimationTests: XCTestCase {
 
     func testLayersWithAnimations() {
         let firstView = UIView()
+        firstView.layer.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
+
         let secondView = UIView()
+        secondView.layer.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
+
         let thirdView = UIView()
+        thirdView.layer.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
 
         UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
             firstView.frame.origin.x += 10
@@ -235,11 +239,10 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testBeginFromCurrentState() {
-        let view = UIView()
-
         UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
             view.bounds.origin.x = 10
         })
+
         UIView.animateIfNeeded(at: Timer(startingAt: 5000))
         UIView.animate(withDuration: 10, delay: 5, options: [.beginFromCurrentState], animations: {
             view.bounds.origin.x = 20
@@ -250,8 +253,6 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testModifyLayerWhileAnimationIsInFlight() {
-        let view = UIView()
-
         UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
             view.frame.origin.x = 200
         })
@@ -269,8 +270,6 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testModifyPropertyWhichIsCurrentlyAnimating() {
-        let view = UIView()
-
         UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
             view.frame.origin.x = 200
         })
@@ -287,8 +286,6 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testAllowUserInteraction() {
-        let view = UIView()
-
         UIView.animate(withDuration: 10, delay: 0, options: [.allowUserInteraction], animations: {
             view.frame.origin.x = 200
         })
@@ -299,7 +296,6 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testCreateAnimationsOnlyWhenPropertiesDiffer() {
-        let view = UIView()
         view.frame.origin.x = 100
         var firstAnimationDidFinish = false
 
@@ -317,7 +313,6 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testCompletionIsCalledOnlyOnce() {
-        let view = UIView()
         var completionCounter = 0
 
         UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
