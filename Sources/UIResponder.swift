@@ -7,7 +7,7 @@
 //
 
 open class UIResponder {
-    open var next: UIResponder?
+    open weak var next: UIResponder?
 
     open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         next?.touchesBegan(touches, with: event)
