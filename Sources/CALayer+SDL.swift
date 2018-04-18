@@ -35,7 +35,11 @@ extension CALayer {
 
         // Big performance optimization. Don't render anything that's entirely offscreen:
         let absoluteFrame = renderedBoundsRelativeToAnchorPoint.applying(modelViewTransform)
-        guard absoluteFrame.intersects(SDL.rootView.bounds) else { return }
+        guard absoluteFrame.intersects(SDL.rootView.bounds) else {
+            return
+        }
+
+        self.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
 
 
         // We only actually set the transform here to avoid unneccesary work if the guard above fails

@@ -135,6 +135,7 @@ open class UIView: UIResponder, CALayerDelegate {
     // MARK: Subviews, Superviews
 
     open func addSubview(_ view: UIView) {
+        self.setNeedsLayout()
         layer.addSublayer(view.layer)
         insertSubviewWithoutTouchingLayer(view, at: subviews.endIndex)
     }
@@ -203,6 +204,7 @@ open class UIView: UIResponder, CALayerDelegate {
 
         superview.subviews = superview.subviews.filter { $0 != self }
         self.superview = nil
+        superview.setNeedsLayout()
     }
 
     /// Called when the view was added to a non-nil subview

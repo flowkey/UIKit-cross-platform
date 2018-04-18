@@ -56,6 +56,7 @@ open class CALayer {
     }
 
     open func removeFromSuperlayer() {
+        hasBeenRenderedInThisPartOfOverallLayerHierarchy = false
         if let superlayer = superlayer {
             superlayer.sublayers = superlayer.sublayers?.filter { $0 != self }
             if superlayer.sublayers?.isEmpty == true {
@@ -221,6 +222,11 @@ open class CALayer {
     var animations = [String: CABasicAnimation]() {
         didSet { onDidSetAnimations(wasEmpty: oldValue.isEmpty) }
     }
+
+    /// We disable animation on parameters of views / layers that haven't been rendered yet.
+    /// This is both a performance optimization (avoids lots of animations at the start)
+    /// as well as a correctness fix (matches iOS behaviour). Maybe there's a better way though?
+    internal var hasBeenRenderedInThisPartOfOverallLayerHierarchy = false
 }
 
 private extension CGPoint {
