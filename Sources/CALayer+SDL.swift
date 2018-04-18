@@ -51,17 +51,17 @@ extension CALayer {
         }
 
 
-        let previousClippingRect = SDL.window.clippingRect
+        let previousClippingRect = SDL.glRenderer.clippingRect
 
         if masksToBounds {
             // If a previous clippingRect exists restrict it further, otherwise just set it:
-            SDL.window.clippingRect = previousClippingRect?.intersection(absoluteFrame) ?? absoluteFrame
+            SDL.glRenderer.clippingRect = previousClippingRect?.intersection(absoluteFrame) ?? absoluteFrame
         }
 
         defer {
             // Reset clipping bounds no matter what happens between now and the end of this function
             // We can't `defer` within the previous `if` block because defers always execute at the end of (any) scope
-            if masksToBounds { SDL.window.clippingRect = previousClippingRect }
+            if masksToBounds { SDL.glRenderer.clippingRect = previousClippingRect }
         }
 
 
@@ -72,7 +72,7 @@ extension CALayer {
 
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
-            SDL.window.fill(
+            SDL.glRenderer.fill(
                 renderedBoundsRelativeToAnchorPoint,
                 with: backgroundColor.withAlphaComponent(CGFloat(backgroundColorOpacity)),
                 cornerRadius: cornerRadius
@@ -80,7 +80,7 @@ extension CALayer {
         }
 
         if borderWidth > 0 {
-            SDL.window.outline(
+            SDL.glRenderer.outline(
                 renderedBoundsRelativeToAnchorPoint,
                 lineColor: borderColor.withAlphaComponent(CGFloat(opacity)),
                 lineThickness: borderWidth,
@@ -92,7 +92,7 @@ extension CALayer {
             let absoluteShadowOpacity = shadowOpacity * opacity * 0.5 // for "shadow" effect ;)
 
             if absoluteShadowOpacity > 0.01 {
-                SDL.window.fill(
+                SDL.glRenderer.fill(
                     shadowPath.offsetBy(deltaFromAnchorPointToOrigin),
                     with: shadowColor.withAlphaComponent(CGFloat(absoluteShadowOpacity)),
                     cornerRadius: 2
@@ -101,7 +101,7 @@ extension CALayer {
         }
 
         if let contents = contents {
-            SDL.window.blit(
+            SDL.glRenderer.blit(
                 contents,
                 anchorPoint: anchorPoint,
                 contentsScale: contentsScale,
