@@ -12,7 +12,11 @@ import CoreFoundation
 import JNI
 
 final public class SDL { // Only public for rootView!
-    public internal(set) static var rootView: UIWindow!
+    public internal(set) static var window: UIWindow!
+    public static var rootView: UIView! {
+        get { return window.rootViewController!.view }
+    }
+
     static var glRenderer: GLRenderer!
 
     fileprivate static var shouldQuit = false
@@ -23,7 +27,8 @@ final public class SDL { // Only public for rootView!
         self.glRenderer = nil // triggers GLRenderer deinit
 
         self.glRenderer = GLRenderer()
-        self.rootView = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
+        self.window = glRenderer.createKeyWindow()
+        window.makeKeyAndVisible()
 
         UIFont.loadSystemFonts()
     }
@@ -31,7 +36,7 @@ final public class SDL { // Only public for rootView!
     static func handleSDLQuit() {
         print("SDL_QUIT was called")
         shouldQuit = true
-        rootView = nil
+        window = nil
         glRenderer = nil
         unload()
         #if os(Android)
@@ -82,9 +87,9 @@ final public class SDL { // Only public for rootView!
         GPU_MatrixMode(GPU_MODELVIEW)
         GPU_LoadIdentity()
 
-        glRenderer.clippingRect = rootView.bounds
-        rootView.sdlDrawAndLayoutTreeIfNeeded()
-        rootView.layer.sdlRender()
+        glRenderer.clippingRect = window.bounds
+        window.sdlDrawAndLayoutTreeIfNeeded()
+        window.layer.sdlRender()
         glRenderer.flip()
 
         firstRender = false

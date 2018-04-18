@@ -11,7 +11,7 @@ public enum UIAlertControllerStyle {
     case alert
 }
 
-public class UIAlertController {
+public class UIAlertController: UIViewController {
     public var title: String?
     public var message: String?
     public var preferredStyle: UIAlertControllerStyle
@@ -23,6 +23,8 @@ public class UIAlertController {
         self.message = message
         self.preferredStyle = preferredStyle
         self.actions = []
+
+        super.init(nibName: nil, bundle: nil)
     }
 
     public func addAction(_ action: UIAlertAction) {

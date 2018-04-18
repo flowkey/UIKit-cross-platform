@@ -20,9 +20,9 @@ extension SDL {
                 handleSDLQuit()
                 return true
             case SDL_MOUSEBUTTONDOWN:
-                let touch = UITouch(touchId: 0, at: .from(e.button), in: rootView, timestamp: e.timestampInSeconds)
+                let touch = UITouch(touchId: 0, at: .from(e.button), in: window, timestamp: e.timestampInSeconds)
                 let event = UIEvent(touch: touch)
-                rootView.sendEvent(event)
+                window.sendEvent(event)
                 eventWasHandled = true
             case SDL_MOUSEMOTION:
                 if
@@ -39,7 +39,7 @@ extension SDL {
                     // SDL adds timestamps on send which could be quite different to when the event actually occurred.
                     // It's common to get two events with an unrealistically small time between them; don't send those.
                     if (newTimestamp - previousTimestamp) > (5 / 1000) {
-                        rootView.sendEvent(event)
+                        window.sendEvent(event)
                     }
                 }
                 eventWasHandled = true
@@ -50,7 +50,7 @@ extension SDL {
                 {
                     touch.timestamp = e.timestampInSeconds
                     touch.phase = .ended
-                    rootView.sendEvent(event)
+                    window.sendEvent(event)
                 }
                 eventWasHandled = true
             case SDL_KEYUP:
