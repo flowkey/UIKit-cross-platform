@@ -10,7 +10,7 @@ open class UIViewController: UIResponder {
     }
 
     open var viewIsLoaded: Bool {
-        return view != nil
+        return _view != nil
     }
 
     open internal(set) var presentingViewController: UIViewController?
