@@ -15,9 +15,6 @@ open class UIView: UIResponder, CALayerDelegate {
 
     open let layer: CALayer
 
-    // mocked for parentViewController.present function in AlertContainer
-    open let parentViewController: UIViewController? = UIViewController()
-
     open var frame: CGRect {
         get { return layer.frame }
         set { layer.frame = newValue }
@@ -111,6 +108,9 @@ open class UIView: UIResponder, CALayerDelegate {
         // }
         didSet {
             didMoveToSuperview()
+            if !(self.next is UIViewController) {
+                self.next = superview
+            }
         }
     }
 
@@ -120,13 +120,15 @@ open class UIView: UIResponder, CALayerDelegate {
         }
     }
 
-    public convenience init() {
+    override public convenience init() {
         self.init(frame: .zero)
     }
 
     public init(frame: CGRect) {
         self.layer = type(of: self).layerClass.init()
         self.layer.contentsScale = UIScreen.main.scale
+        super.init()
+
         self.layer.delegate = self
         self.frame = frame
     }
@@ -323,23 +325,6 @@ open class UIView: UIResponder, CALayerDelegate {
         self.frame.origin = originalOrigin
         setNeedsLayout()
     }
-
-    // MARK: UIResponder conformance:
-
-    open func next() -> UIResponder? {
-        return superview
-    }
-
-    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        next()?.touchesBegan(touches, with: event)
-    }
-    open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        next()?.touchesMoved(touches, with: event)
-    }
-    open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-         next()?.touchesEnded(touches, with: event)
-    }
-    open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {}
 
     // We originally had this in an extension but Swift functions in extensions cannot be overridden (as of Swift 4)
     open func action(forKey event: String) -> CABasicAnimation? {

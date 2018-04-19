@@ -7,6 +7,21 @@
 //
 
 public class UIWindow: UIView {
+    open var rootViewController: UIViewController? {
+        didSet { rootViewController?.next = self }
+    }
+
+    open func makeKeyAndVisible() {
+        SDL.window = self
+
+        if let viewController = rootViewController {
+            viewController.loadViewIfNeeded()
+            viewController.view.frame = self.bounds
+            addSubview(viewController.view)
+            viewController.next = self // set responder
+        }
+    }
+
     public func sendEvent(_ event: UIEvent) {
         guard
             let allTouches = event.allTouches,
