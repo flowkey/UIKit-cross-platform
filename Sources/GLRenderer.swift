@@ -12,8 +12,8 @@ import func Foundation.round
 
 internal final class GLRenderer {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
-    fileprivate let size: CGSize
-    fileprivate let scale: CGFloat
+    internal let size: CGSize
+    internal let scale: CGFloat
 
     // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
     // The easiest solution is just to work in 1:1 pixels
@@ -164,17 +164,6 @@ internal final class GLRenderer {
         SDL_DestroyWindow(existingWindow)
     }
 }
-
-
-extension GLRenderer {
-    func createKeyWindow() -> UIWindow {
-        let window = UIWindow(frame: CGRect(origin: .zero, size: self.size))
-        // TODO: Assign window.rootViewController here
-        return window
-    }
-}
-
-
 
 #if os(macOS)
 import class AppKit.NSWindow

@@ -23,7 +23,7 @@ final public class SDL { // Only public for rootView!
         self.glRenderer = nil // triggers GLRenderer deinit
 
         self.glRenderer = GLRenderer()
-        self.rootView = self.glRenderer.createKeyWindow()
+        self.rootView = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
 
         UIFont.loadSystemFonts()
     }
