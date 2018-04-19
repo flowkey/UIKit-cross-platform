@@ -1,20 +1,12 @@
 open class UIViewController: UIResponder {
-    public init(nibName: String?, bundle: Bundle?) {
-        super.init()
-        if nibName != nil || bundle != nil {
-            assertionFailure("We can't load nib files (yet?)!")
-        }
-    }
-
     private var _view: UIView?
+
     open private(set) var view: UIView! {
         get {
             loadViewIfNeeded()
             return _view
         }
-        set {
-            _view = newValue
-        }
+        set { _view = newValue }
     }
 
     open var viewIsLoaded: Bool {
@@ -24,15 +16,22 @@ open class UIViewController: UIResponder {
     open internal(set) var presentingViewController: UIViewController?
     open internal(set) var presentedViewController: UIViewController?
 
-    open func loadView() {
-        view = UIView()
-        viewDidLoad()
+    public init(nibName: String?, bundle: Bundle?) {
+        super.init()
+        if nibName != nil || bundle != nil {
+            assertionFailure("We can't load nib files (yet?)!")
+        }
     }
 
     public func loadViewIfNeeded() {
         if !viewIsLoaded {
             loadView()
         }
+    }
+
+    open func loadView() {
+        view = UIView()
+        viewDidLoad()
     }
 
     // Most of these methods are designed to be overriden in `UIViewController` subclasses
@@ -51,7 +50,7 @@ open class UIViewController: UIResponder {
         // TODO: Add a background modal overlay here first. Also, actually animate the transition in.
         self.view.addSubview(otherViewController.view)
 
-        // XXX: Not sure if this order is correct
+        // XXX: Not sure if `viewDidAppear` should occur before or after layouting subviews
         otherViewController.viewWillLayoutSubviews()
         otherViewController.view.layoutSubviews()
 
