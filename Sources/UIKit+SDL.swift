@@ -13,30 +13,26 @@ import JNI
 
 final public class SDL { // Only public for rootView!
     public internal(set) static var rootView: UIWindow!
-    static var window: Window!
+    static var glRenderer: GLRenderer!
 
     fileprivate static var shouldQuit = false
 
     public static func initialize() {
         self.shouldQuit = false
         self.firstRender = true
-        self.window = nil // triggers Window deinit to destroy previous Window
+        self.glRenderer = nil // triggers GLRenderer deinit
 
-        let window = Window()
-        if window.size == .zero {
-            preconditionFailure("You need window dimensions to run")
-        }
+        self.glRenderer = GLRenderer()
+        self.rootView = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
 
-        self.window = window
-        self.rootView = UIWindow(frame: CGRect(origin: .zero, size: window.size))
-        UIFont.loadSystemFonts() // should always happen on UIKit-SDL init
+        UIFont.loadSystemFonts()
     }
 
     static func handleSDLQuit() {
         print("SDL_QUIT was called")
         shouldQuit = true
         rootView = nil
-        window = nil
+        glRenderer = nil
         unload()
         #if os(Android)
             try? jni.call("removeCallbacks", on: getSDLView())
@@ -81,15 +77,15 @@ final public class SDL { // Only public for rootView!
 
         UIView.animateIfNeeded(at: frameTimer)
 
-        window.clear()
+        glRenderer.clear()
 
         GPU_MatrixMode(GPU_MODELVIEW)
         GPU_LoadIdentity()
 
-        window.clippingRect = rootView.bounds
+        glRenderer.clippingRect = rootView.bounds
         rootView.sdlDrawAndLayoutTreeIfNeeded()
         rootView.layer.sdlRender()
-        window.flip()
+        glRenderer.flip()
 
         firstRender = false
     }

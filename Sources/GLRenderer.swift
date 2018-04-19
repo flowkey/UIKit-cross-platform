@@ -1,5 +1,5 @@
 //
-//  Window.swift
+//  GLRenderer.swift
 //  UIKit
 //
 //  Created by Chris on 19.06.17.
@@ -10,10 +10,10 @@ import SDL
 import SDL_gpu
 import func Foundation.round
 
-internal final class Window {
+internal final class GLRenderer {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
-    let size: CGSize
-    let scale: CGFloat
+    internal let size: CGSize
+    internal let scale: CGFloat
 
     // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
     // The easiest solution is just to work in 1:1 pixels
@@ -60,6 +60,9 @@ internal final class Window {
 
         
         self.size = size
+        if size == .zero {
+            preconditionFailure("You need window dimensions to run")
+        }
 
         // Fixes video surface visibility with transparent & opaque views in SDLSurface above
         // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
@@ -150,9 +153,9 @@ internal final class Window {
     deinit {
         defer { GPU_Quit() }
 
-        // get and destroy existing Window because only one SDL_Window can exist on Android at the same time
+        // get and destroy existing GLRenderer because only one SDL_Window can exist on Android at the same time
         guard let gpuContext = self.rawPointer.pointee.context else {
-            assertionFailure("window gpuContext not found")
+            assertionFailure("glRenderer gpuContext not found")
             return
         }
 
@@ -164,7 +167,7 @@ internal final class Window {
 
 #if os(macOS)
 import class AppKit.NSWindow
-extension Window {
+extension GLRenderer {
     var nsWindow: NSWindow {
         let sdlWindowID = rawPointer.pointee.context.pointee.windowID
         let sdlWindow = SDL_GetWindowFromID(sdlWindowID)

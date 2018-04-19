@@ -16,6 +16,6 @@ extension SDL_MouseMotionEvent: SDLEventWithCoordinates {}
 
 extension CGPoint {
     static func from(_ event: SDLEventWithCoordinates) -> CGPoint {
-        return SDL.window.absolutePointInOwnCoordinates(x: CGFloat(event.x), y: CGFloat(event.y))
+        return SDL.glRenderer.absolutePointInOwnCoordinates(x: CGFloat(event.x), y: CGFloat(event.y))
     }
 }
