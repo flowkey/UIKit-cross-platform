@@ -27,7 +27,8 @@ final public class SDL { // Only public for rootView!
         self.glRenderer = nil // triggers GLRenderer deinit
 
         self.glRenderer = GLRenderer()
-        self.window = glRenderer.createKeyWindow()
+        self.window = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
+        window.rootViewController = UIViewController(nibName: nil, bundle: nil)
         window.makeKeyAndVisible()
 
         UIFont.loadSystemFonts()

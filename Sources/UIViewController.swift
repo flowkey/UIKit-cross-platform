@@ -6,12 +6,26 @@ open class UIViewController: UIResponder {
         }
     }
 
-    open private(set) var view: UIView!
-    open private(set) var viewIsLoaded = false
+    private var _view: UIView?
+    open private(set) var view: UIView! {
+        get {
+            loadViewIfNeeded()
+            return _view
+        }
+        set {
+            _view = newValue
+        }
+    }
+
+    open var viewIsLoaded: Bool {
+        return view != nil
+    }
+
+    open internal(set) var presentingViewController: UIViewController?
+    open internal(set) var presentedViewController: UIViewController?
 
     open func loadView() {
         view = UIView()
-        viewIsLoaded = true
         viewDidLoad()
     }
 
