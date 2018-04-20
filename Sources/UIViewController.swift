@@ -77,6 +77,7 @@ open class UIViewController: UIResponder {
     open func viewDidDisappear() {}
 
     open func viewWillLayoutSubviews() {}
+    open func viewDidLayoutSubviews() {}
 
     open func present(_ otherViewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
         otherViewController.viewWillAppear(animated)
@@ -87,6 +88,7 @@ open class UIViewController: UIResponder {
         // XXX: Not sure if `viewDidAppear` should occur before or after layouting subviews
         otherViewController.viewWillLayoutSubviews()
         otherViewController.view.layoutSubviews()
+        otherViewController.viewDidLayoutSubviews()
 
         otherViewController.viewDidAppear()
         completion?()
