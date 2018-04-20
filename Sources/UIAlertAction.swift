@@ -13,11 +13,14 @@ public enum UIAlertActionStyle {
 }
 
 public class UIAlertAction {
-    public var title: String?
-    public var style: UIAlertActionStyle
+    public let title: String?
+    public let style: UIAlertActionStyle
+    
+    private let handler: ((UIAlertAction) -> Void)?
 
     public init(title: String?, style: UIAlertActionStyle, handler: ((UIAlertAction) -> Void)? = nil) {
         self.title = title
         self.style = style
+        self.handler = handler
     }
 }
