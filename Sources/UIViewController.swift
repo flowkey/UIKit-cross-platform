@@ -1,4 +1,5 @@
 open class UIViewController: UIResponder {
+    public var title: String?
     private var _view: UIView?
 
     open private(set) var view: UIView! {
