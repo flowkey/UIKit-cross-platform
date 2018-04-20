@@ -1,3 +1,18 @@
+
+public class UIPresentationController {
+
+}
+
+public class UIPopoverPresentationController: UIPresentationController {
+    open var sourceView: UIView?
+    open var sourceRect: CGRect = .zero
+
+    public override init() {
+        super.init()
+    }
+}
+
+
 open class UIViewController: UIResponder {
     public var title: String?
     private var _view: UIView?
@@ -16,6 +31,10 @@ open class UIViewController: UIResponder {
 
     open internal(set) var presentingViewController: UIViewController?
     open internal(set) var presentedViewController: UIViewController?
+
+    open var modalPresentationStyle: UIModalPresentationStyle = .popover
+
+    public var popoverPresentationController: UIPopoverPresentationController?
 
     public init(nibName: String?, bundle: Bundle?) {
         super.init()
@@ -66,4 +85,10 @@ open class UIViewController: UIResponder {
         self.viewDidDisappear()
         completion?()
     }
+}
+
+public enum UIModalPresentationStyle {
+    case popover
+    case formSheet
+    // TODO: add others
 }
