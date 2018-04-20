@@ -128,7 +128,7 @@ extension UIFont {
 extension String {
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
         let retinaResolutionSize =
-            (wrapLength == 0) ?
+            (wrapLength <= 0) ? // a wrapLength of < 0 leads to a crash, so assume 0
                 font.renderer.singleLineSize(of: self) :
                 font.renderer.multilineSize(
                     of: self,

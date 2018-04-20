@@ -1,7 +1,6 @@
 open class UIViewController: UIResponder {
-    private var _view: UIView?
-
-    open private(set) var view: UIView! {
+    internal var _view: UIView?
+    open var view: UIView! {
         get {
             loadViewIfNeeded()
             return _view
@@ -11,6 +10,10 @@ open class UIViewController: UIResponder {
 
     open var viewIsLoaded: Bool {
         return _view != nil
+    }
+
+    open var title: String? {
+        didSet { navigationItem.title = title }
     }
 
     open internal(set) var navigationController: UINavigationController?
@@ -27,16 +30,19 @@ open class UIViewController: UIResponder {
     public func loadViewIfNeeded() {
         if !viewIsLoaded {
             loadView()
+            viewDidLoad()
         }
     }
 
     open func loadView() {
         view = UIView()
-        viewDidLoad()
     }
 
     // Most of these methods are designed to be overriden in `UIViewController` subclasses
-    open func viewDidLoad() {}
+    open func viewDidLoad() {
+        view.backgroundColor = .white
+        view.next = self // set responder
+    }
 
     open func viewWillAppear(_ animated: Bool) {}
     open func viewDidAppear() {}
@@ -46,24 +52,35 @@ open class UIViewController: UIResponder {
     open func viewWillLayoutSubviews() {}
 
     open func present(_ otherViewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
+        otherViewController.view.frame = self.view.bounds
         otherViewController.viewWillAppear(animated)
 
         // TODO: Add a background modal overlay here first. Also, actually animate the transition in.
         self.view.addSubview(otherViewController.view)
 
-        // XXX: Not sure if `viewDidAppear` should occur before or after layouting subviews
+        otherViewController.viewDidAppear()
+
         otherViewController.viewWillLayoutSubviews()
         otherViewController.view.layoutSubviews()
 
-        otherViewController.viewDidAppear()
         completion?()
     }
 
     open func dismiss(animated: Bool, completion: (() -> Void)? = nil) {
         // TODO: Actually animate.
-        self.viewWillDisappear()
-        self.view.removeFromSuperview()
-        self.viewDidDisappear()
-        completion?()
+        if let navigationController = navigationController {
+            navigationController.dismiss(animated: animated, completion: completion)
+        } else {
+            self.viewWillDisappear()
+            self.view.removeFromSuperview()
+            self.viewDidDisappear()
+            completion?()
+        }
     }
+
+    open private(set) lazy var navigationItem: UINavigationItem = {
+        let item = UINavigationItem(title: "") // there is no public initializer that takes no `title`
+        item.title = self.title // possibly set `title` back to `nil` here
+        return item
+    }()
 }

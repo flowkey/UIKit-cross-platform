@@ -79,9 +79,11 @@
 		5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
 		5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037241F138B8A0058E592 /* MeteringView.swift */; };
 		5C93AE7C2088F7E7005BE853 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AE7B2088F7E7005BE853 /* UINavigationController.swift */; };
-		5C93AEA42088FB2A005BE853 /* UINavigationBarIOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEA32088FB2A005BE853 /* UINavigationBarIOS.swift */; };
 		5C93AEA62088FB51005BE853 /* UINavigationBarAndroid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEA52088FB51005BE853 /* UINavigationBarAndroid.swift */; };
 		5C93AEA82088FB70005BE853 /* UINavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEA72088FB70005BE853 /* UINavigationBar.swift */; };
+		5C93AEAA208A1541005BE853 /* UINavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEA9208A1541005BE853 /* UINavigationItem.swift */; };
+		5C93AEAE208A4242005BE853 /* UINavigationControllerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEAD208A4242005BE853 /* UINavigationControllerContainerView.swift */; };
+		5C93AEB0208A44BC005BE853 /* UIModalPresentationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEAF208A44BC005BE853 /* UIModalPresentationStyle.swift */; };
 		5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */; };
 		5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */; };
 		5CB6E1A6202387CE001FEAC9 /* CALayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCF1C12202382FF00AAF598 /* CALayerTests.swift */; };
@@ -328,9 +330,11 @@
 		5C9037201F137FB70058E592 /* CGRectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGRectTests.swift; sourceTree = "<group>"; };
 		5C9037241F138B8A0058E592 /* MeteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MeteringView.swift; path = Sources/MeteringView.swift; sourceTree = SOURCE_ROOT; };
 		5C93AE7B2088F7E7005BE853 /* UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
-		5C93AEA32088FB2A005BE853 /* UINavigationBarIOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBarIOS.swift; sourceTree = "<group>"; };
 		5C93AEA52088FB51005BE853 /* UINavigationBarAndroid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBarAndroid.swift; sourceTree = "<group>"; };
 		5C93AEA72088FB70005BE853 /* UINavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBar.swift; sourceTree = "<group>"; };
+		5C93AEA9208A1541005BE853 /* UINavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationItem.swift; sourceTree = "<group>"; };
+		5C93AEAD208A4242005BE853 /* UINavigationControllerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationControllerContainerView.swift; sourceTree = "<group>"; };
+		5C93AEAF208A44BC005BE853 /* UIModalPresentationStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIModalPresentationStyle.swift; sourceTree = "<group>"; };
 		5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "AVPlayerLayer+Mac.swift"; path = "Sources/AVPlayerLayer+Mac.swift"; sourceTree = SOURCE_ROOT; };
 		5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CABasicAnimation.swift; path = Sources/CABasicAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CAAction.swift; path = Sources/CAAction.swift; sourceTree = SOURCE_ROOT; };
@@ -664,9 +668,11 @@
 			children = (
 				5C93AEA72088FB70005BE853 /* UINavigationBar.swift */,
 				5C93AEA52088FB51005BE853 /* UINavigationBarAndroid.swift */,
-				5C93AEA32088FB2A005BE853 /* UINavigationBarIOS.swift */,
 				5C93AE7B2088F7E7005BE853 /* UINavigationController.swift */,
+				5C93AEAD208A4242005BE853 /* UINavigationControllerContainerView.swift */,
+				5C93AEA9208A1541005BE853 /* UINavigationItem.swift */,
 				5C1F06AE1F3210F200EFF087 /* UIViewController.swift */,
+				5C93AEAF208A44BC005BE853 /* UIModalPresentationStyle.swift */,
 			);
 			name = UIViewController;
 			sourceTree = "<group>";
@@ -1034,12 +1040,14 @@
 				5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */,
 				5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */,
 				5CB6E1C52035BC4F001FEAC9 /* CGPoint+animations.swift in Sources */,
+				5C93AEAE208A4242005BE853 /* UINavigationControllerContainerView.swift in Sources */,
 				5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */,
 				8333B2C01F1D11B800D98662 /* NSAttributedString.swift in Sources */,
 				838545631F26458100B64986 /* UIVisualEffect.swift in Sources */,
 				5C6AB7181ED3BECD006F90AC /* Button.swift in Sources */,
 				5CCF1C0A201B887400AAF598 /* CATransform3D.swift in Sources */,
 				5BA1FC4E1F6694CA005843B9 /* UITextView.swift in Sources */,
+				5C93AEB0208A44BC005BE853 /* UIModalPresentationStyle.swift in Sources */,
 				5C6AB71C1ED3BECD006F90AC /* UIImage.swift in Sources */,
 				5C664CD81FA0E640008F41D6 /* ShaderProgram.swift in Sources */,
 				5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */,
@@ -1048,6 +1056,7 @@
 				5C6AB7711ED680BC006F90AC /* UIResponder.swift in Sources */,
 				83E5F8181EF8323500279C59 /* CGAffineTransform.swift in Sources */,
 				5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */,
+				5C93AEAA208A1541005BE853 /* UINavigationItem.swift in Sources */,
 				5CE5C57A1EDDAE5000680154 /* CGPath.swift in Sources */,
 				5C664CD41FA0DBFC008F41D6 /* MaskingShaders.swift in Sources */,
 				5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */,
@@ -1097,7 +1106,6 @@
 				8337A8131F39F37500475F80 /* UIScreen.swift in Sources */,
 				83E5F8151EF8322800279C59 /* CGSize.swift in Sources */,
 				5C4CD51120615FCF00217B4C /* SDL+handleEventsIfNeeded.swift in Sources */,
-				5C93AEA42088FB2A005BE853 /* UINavigationBarIOS.swift in Sources */,
 				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
 				5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */,

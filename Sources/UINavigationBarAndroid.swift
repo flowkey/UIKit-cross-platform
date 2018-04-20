@@ -1,3 +1,3 @@
-open class UINavigationBarAndroid: UIView {
+open class UINavigationBarAndroid: UINavigationBar {
 
 }
