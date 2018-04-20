@@ -16,6 +16,7 @@ public class UIPopoverPresentationController: UIPresentationController {
 open class UIViewController: UIResponder {
     public var title: String?
     private var _view: UIView?
+    private var _navigationItem: UINavigationItem?
 
     open private(set) var view: UIView! {
         get {
@@ -23,6 +24,19 @@ open class UIViewController: UIResponder {
             return _view
         }
         set { _view = newValue }
+    }
+
+    open private(set) var navigationItem: UINavigationItem! {
+        get {
+            if let item = _navigationItem {
+                return item
+            } else {
+                let navItem = UINavigationItem()
+                _navigationItem = navItem
+                return navItem
+            }
+        }
+        set { _navigationItem = newValue }
     }
 
     open var viewIsLoaded: Bool {
