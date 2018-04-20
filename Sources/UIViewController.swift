@@ -13,6 +13,7 @@ open class UIViewController: UIResponder {
         return _view != nil
     }
 
+    open internal(set) var navigationController: UINavigationController?
     open internal(set) var presentingViewController: UIViewController?
     open internal(set) var presentedViewController: UIViewController?
 

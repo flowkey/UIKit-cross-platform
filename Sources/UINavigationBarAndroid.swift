@@ -1,0 +1,3 @@
+open class UINavigationBarAndroid: UIView {
+
+}
