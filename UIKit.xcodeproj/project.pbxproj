@@ -15,6 +15,7 @@
 		5B1D6F3E1F8E264F009CE5B4 /* NSMutableAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D961341F2635D5005176DC /* NSMutableAttributedString.swift */; };
 		5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */; };
 		5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */; };
+		5B520DB5208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B520DB4208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift */; };
 		5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */; };
 		5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */; };
 		5B840BB71F42FCBD0010AC95 /* AnimatableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */; };
@@ -257,6 +258,7 @@
 		5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIProgressView.swift; path = Sources/UIProgressView.swift; sourceTree = SOURCE_ROOT; };
 		5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CAMediaTimingFunction.swift; path = Sources/CAMediaTimingFunction.swift; sourceTree = SOURCE_ROOT; };
 		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = Sources/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
+		5B520DB4208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontRenderer+renderAttributedString.swift"; sourceTree = "<group>"; };
 		5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CALayer+animations.swift"; path = "Sources/CALayer+animations.swift"; sourceTree = SOURCE_ROOT; };
 		5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewAnimationGroup.swift; path = Sources/UIViewAnimationGroup.swift; sourceTree = SOURCE_ROOT; };
 		5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimatableProperty.swift; path = Sources/AnimatableProperty.swift; sourceTree = SOURCE_ROOT; };
@@ -629,6 +631,7 @@
 				83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */,
 				5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */,
 				5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */,
+				5B520DB4208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift */,
 				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
 				5C4CD51020615FCF00217B4C /* SDL+handleEventsIfNeeded.swift */,
 				5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */,
@@ -1034,6 +1037,7 @@
 				5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */,
 				5CE5C57A1EDDAE5000680154 /* CGPath.swift in Sources */,
 				5C664CD41FA0DBFC008F41D6 /* MaskingShaders.swift in Sources */,
+				5B520DB5208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift in Sources */,
 				5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */,
 				83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */,
 				5C6AB71D1ED3BECD006F90AC /* UIImageView.swift in Sources */,
