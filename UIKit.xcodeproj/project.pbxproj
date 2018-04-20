@@ -11,6 +11,8 @@
 		0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */; };
 		03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03760AE51F67E73300F36283 /* UIScrollViewTests.swift */; };
 		03C4872A1F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */; };
+		03FF4F5B20892B010011D81E /* UINavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF4F5A20892B010011D81E /* UINavigationItem.swift */; };
+		03FF4F5F208939730011D81E /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF4F5E208939730011D81E /* UINavigationController.swift */; };
 		5B115C5E1F61DBF800AAB895 /* UIProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */; };
 		5B1D6F3E1F8E264F009CE5B4 /* NSMutableAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D961341F2635D5005176DC /* NSMutableAttributedString.swift */; };
 		5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */; };
@@ -253,6 +255,8 @@
 		03760AE51F67E73300F36283 /* UIScrollViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewTests.swift; sourceTree = "<group>"; };
 		03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPanGestureRecognizerTests.swift; sourceTree = "<group>"; };
 		03CC73971FB5B2C6000A2C91 /* UITouchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITouchTests.swift; sourceTree = "<group>"; };
+		03FF4F5A20892B010011D81E /* UINavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationItem.swift; sourceTree = "<group>"; };
+		03FF4F5E208939730011D81E /* UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
 		5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIProgressView.swift; path = Sources/UIProgressView.swift; sourceTree = SOURCE_ROOT; };
 		5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CAMediaTimingFunction.swift; path = Sources/CAMediaTimingFunction.swift; sourceTree = SOURCE_ROOT; };
 		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = Sources/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
@@ -559,6 +563,8 @@
 				5C6AB76A1ED5A648006F90AC /* UIView+animate.swift */,
 				5C4CD519206160EC00217B4C /* UIView+printViewHierarchy.swift */,
 				5C1F06AE1F3210F200EFF087 /* UIViewController.swift */,
+				03FF4F5A20892B010011D81E /* UINavigationItem.swift */,
+				03FF4F5E208939730011D81E /* UINavigationController.swift */,
 				838545621F26458100B64986 /* UIVisualEffect.swift */,
 				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
 				5C6AB7171ED3BECD006F90AC /* UIWindow.swift */,
@@ -1076,6 +1082,8 @@
 				8337A8131F39F37500475F80 /* UIScreen.swift in Sources */,
 				83E5F8151EF8322800279C59 /* CGSize.swift in Sources */,
 				5C4CD51120615FCF00217B4C /* SDL+handleEventsIfNeeded.swift in Sources */,
+				03FF4F5F208939730011D81E /* UINavigationController.swift in Sources */,
+				03FF4F5B20892B010011D81E /* UINavigationItem.swift in Sources */,
 				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
 				5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */,
