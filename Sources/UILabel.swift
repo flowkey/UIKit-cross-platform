@@ -30,7 +30,10 @@ open class UILabel: UIView {
     }
 
     public var attributedText: NSAttributedString? {
-        didSet { setNeedsDisplay() }
+        didSet {
+            text = attributedText?.string
+            setNeedsDisplay()
+        }
     }
 
     public var textColor: UIColor = .black {
