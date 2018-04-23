@@ -53,31 +53,6 @@ public class UIWindow: UIView {
             UIEvent.activeEvents.remove(event)
         }
     }
-
-    internal func deepestPresentedView() -> UIView {
-        // We want to use the presented view controllers to catch pop-over views etc
-        // that are not necessarily visible at the centre of the window.
-
-        let deepestViewControllerView = (rootViewController?.deepestPresentedViewController.view) ?? self
-
-        return deepestViewControllerView.deepestVisibleViewAtCenter()
-    }
-}
-
-private extension UIView {
-    func deepestVisibleViewAtCenter() -> UIView {
-        return hitTest(CGPoint(x: bounds.midX, y: bounds.midY), with: nil) ?? self
-    }
-}
-
-private extension UIViewController {
-    var deepestPresentedViewController: UIViewController {
-        var deepestViewController = self
-        while let newDeepest = deepestViewController.presentedViewController {
-            deepestViewController = newDeepest
-        }
-        return deepestViewController
-    }
 }
 
 private extension UITouch {

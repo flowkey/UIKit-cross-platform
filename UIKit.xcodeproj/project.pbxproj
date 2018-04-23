@@ -87,6 +87,7 @@
 		5C93AEB3208DDE61005BE853 /* ic_arrow_back_black.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C93AEB1208DDE61005BE853 /* ic_arrow_back_black.png */; };
 		5C93AEB4208DDE61005BE853 /* ic_arrow_back_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C93AEB2208DDE61005BE853 /* ic_arrow_back_black@2x.png */; };
 		5C93AEB6208E09B5005BE853 /* UIViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEB5208E09B5005BE853 /* UIViewControllerTests.swift */; };
+		5C93AEBA208E2D1E005BE853 /* UIWindow+hardwareBackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEB8208E2D1A005BE853 /* UIWindow+hardwareBackButton.swift */; };
 		5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */; };
 		5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */; };
 		5CB6E1A6202387CE001FEAC9 /* CALayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCF1C12202382FF00AAF598 /* CALayerTests.swift */; };
@@ -341,6 +342,7 @@
 		5C93AEB1208DDE61005BE853 /* ic_arrow_back_black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_arrow_back_black.png; sourceTree = "<group>"; };
 		5C93AEB2208DDE61005BE853 /* ic_arrow_back_black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrow_back_black@2x.png"; sourceTree = "<group>"; };
 		5C93AEB5208E09B5005BE853 /* UIViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerTests.swift; sourceTree = "<group>"; };
+		5C93AEB8208E2D1A005BE853 /* UIWindow+hardwareBackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+hardwareBackButton.swift"; sourceTree = "<group>"; };
 		5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "AVPlayerLayer+Mac.swift"; path = "Sources/AVPlayerLayer+Mac.swift"; sourceTree = SOURCE_ROOT; };
 		5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CABasicAnimation.swift; path = Sources/CABasicAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CAAction.swift; path = Sources/CAAction.swift; sourceTree = SOURCE_ROOT; };
@@ -580,6 +582,7 @@
 				838545621F26458100B64986 /* UIVisualEffect.swift */,
 				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
 				5C6AB7171ED3BECD006F90AC /* UIWindow.swift */,
+				5C93AEB8208E2D1A005BE853 /* UIWindow+hardwareBackButton.swift */,
 				5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */,
 				833075381F697613002089AC /* Video */,
 			);
@@ -1129,6 +1132,7 @@
 				83E5F7F61EF81AB500279C59 /* UIFont.swift in Sources */,
 				5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */,
 				5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */,
+				5C93AEBA208E2D1E005BE853 /* UIWindow+hardwareBackButton.swift in Sources */,
 				5C3716B61F10050600B2C366 /* Timer.swift in Sources */,
 				5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
