@@ -33,6 +33,12 @@ open class Button: UIControl {
         didSet { self.setNeedsLayout() }
     }
 
+    public override var tintColor: UIColor! {
+        didSet {
+            if tintColor != nil { setTitleColor(tintColor, for: .normal) }
+        }
+    }
+
     override open func sizeToFit() {
         updateLabelAndImageForCurrentState()
         sizeToFitWasCalled = true

@@ -40,10 +40,12 @@ open class UINavigationBar: UIView {
 
     internal func setInitialAppearance() {
         frame.size.height = self.barHeight // varies per platform
-        backgroundColor = .lightGray
+        backgroundColor = UIColor(red: 0.91, green: 0.91, blue: 0.91)
 
         titleLabel.font = .systemFont(ofSize: 18, weight: .bold)
         rightButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
+        rightButton.tintColor = tintColor
+
         addSubview(titleLabel)
         addSubview(leftButton)
         addSubview(rightButton)
