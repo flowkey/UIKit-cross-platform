@@ -1,33 +1,33 @@
-//
-//  UINavigationItem.swift
-//  UIKit
-//
-//  Created by flowing erik on 19.04.18.
-//  Copyright © 2018 flowkey. All rights reserved.
-//
-
-import Foundation
-
 open class UINavigationItem {
-    public func setRightBarButton(_ item: UIBarButtonItem?, animated: Bool) {
+    open var title: String?
+    open var rightBarButtonItem: UIBarButtonItemWithClosure?
 
+    public init(title: String) {
+        self.title = title
     }
 
+    /// Note that `animated` is currently ignored
+    open func setRightBarButton(_ item: UIBarButtonItemWithClosure?, animated: Bool) {
+        rightBarButtonItem = item
+    }
 }
 
 
-open class UIBarButtonItem : UIBarItem/*, NSCoding*/ {
-    public init (barButtonSystemItem: UIBarButtonSystemItem, action: () -> Void) {
+open class UIBarButtonItemWithClosure {
+    open var action: (() -> Void)?
+    open var title: String?
 
+    public init() {}
+    public convenience init(barButtonSystemItem systemItem: UIBarButtonSystemItem, action: (() -> Void)? = nil) {
+        self.init()
+        self.action = action
+
+        if systemItem == .done {
+            self.title = "Done"
+        }
     }
-}
-
-open class UIBarItem/* : NSObject, NSCoding, UIAppearance*/ {
-
 }
 
 public enum UIBarButtonSystemItem {
     case done
-    // TODO: add others
 }
-
