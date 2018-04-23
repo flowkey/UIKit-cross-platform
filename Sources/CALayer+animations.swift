@@ -31,7 +31,7 @@ extension CALayer {
 
     func onWillSet(keyPath: AnimationKeyPath) {
         if let animation = action(forKey: keyPath.rawValue) as? CABasicAnimation,
-            self.hasBeenRenderedInThisPartOfOverallLayerHierarchy,
+            self.hasBeenRenderedInThisPartOfOverallLayerHierarchy || animation.animationGroup != nil, // animationGroup is non-nil when part of explicit UIAnimate block
             !disableAnimations,
             !CATransaction.disableActions
         {

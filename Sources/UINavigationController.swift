@@ -14,7 +14,7 @@ open class UINavigationController: UIViewController {
         view.addSubview(navigationBar)
     }
 
-    open internal(set) var navigationBar = UINavigationBar()
+    open internal(set) var navigationBar = UINavigationBarAndroid()
     internal var transitionView = UIView() // animates the other views on push/pop
 
     open internal(set) var viewControllers: [UIViewController] = [] {
@@ -26,9 +26,10 @@ open class UINavigationController: UIViewController {
     }
 
     private func updateUIFromViewControllerStack(animated: Bool) {
-        guard let view = _view else { return }
+        guard _view != nil else { return }
 
         transitionView.subviews.forEach { $0.removeFromSuperview() }
+        presentedViewController = viewControllers.last
 
         if let viewOnTopOfStack = viewControllers.last?.view {
             // TODO: Animate here
@@ -39,6 +40,7 @@ open class UINavigationController: UIViewController {
 
     open func pushViewController(_ otherViewController: UIViewController, animated: Bool) {
         otherViewController.navigationController = self
+        otherViewController.presentingViewController = self
         viewControllers.append(otherViewController)
         updateUIFromViewControllerStack(animated: animated)
     }
@@ -53,18 +55,20 @@ open class UINavigationController: UIViewController {
         return topOfStack
     }
 
-    open override func dismiss(animated: Bool, completion: (() -> Void)?) {
+    open override func dismiss(animated: Bool, completion: (() -> Void)? = nil) {
         let topOfStack = viewControllers.last
-        topOfStack?.viewWillDisappear()
+        topOfStack?.viewWillDisappear(animated)
 
-        // XXX: without the following line it's impossible to present the
-        // `topOfStack` viewController again - you just get a blank screen.
-        // Although it's correct to have this line here, it's creepy that it breaks
-        // without it. We should investigate a possible memory leak or logic error.
-        topOfStack?.view?.removeFromSuperview()
+        super.dismiss(animated: animated, completion: {
+            // XXX: without the following line it's impossible to present the
+            // `topOfStack` viewController again - you just get a blank screen.
+            // Although it's correct to have this line here, it's creepy that it breaks
+            // without it. We should investigate a possible memory leak or logic error.
+            topOfStack?.view?.removeFromSuperview()
+            topOfStack?.viewDidDisappear(animated)
 
-        topOfStack?.viewDidDisappear()
-        super.dismiss(animated: animated, completion: completion)
+            completion?()
+        })
     }
 
     open override func viewWillAppear(_ animated: Bool) {
@@ -74,10 +78,8 @@ open class UINavigationController: UIViewController {
         }
 
         super.viewWillAppear(animated)
-        navigationBar.frame = view.bounds
-        navigationBar.frame.size.height = 40
-        navigationBar.backgroundColor = .lightGray
-
+        navigationBar.setInitialAppearance()
+        navigationBar.frame.size.width = view.bounds.width
         transitionView.frame = view.bounds
 
         // This `animated` bool is unrelated to the one passed into viewWillAppear:

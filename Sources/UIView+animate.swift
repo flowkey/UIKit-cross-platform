@@ -77,5 +77,6 @@ public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
     public static let curveEaseIn = UIViewAnimationOptions(rawValue: 1 << 2)
     public static let curveEaseOut = UIViewAnimationOptions(rawValue: 1 << 3)
     public static let curveEaseInOut = UIViewAnimationOptions(rawValue: 1 << 4)
-    static let customEaseOut = UIViewAnimationOptions(rawValue: 1 << 5)
+    public static let curveLinear = UIViewAnimationOptions(rawValue: 1 << 5)
+    static let customEaseOut = UIViewAnimationOptions(rawValue: 1 << 9)
 }

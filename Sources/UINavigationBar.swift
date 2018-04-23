@@ -1,4 +1,7 @@
 open class UINavigationBar: UIView {
+    internal var barHeight: CGFloat { return 40 }
+    internal var horizontalMargin: CGFloat { return 20 }
+
     open var items: [UINavigationItem]? = nil {
         didSet { updateUI() }
     }
@@ -17,15 +20,28 @@ open class UINavigationBar: UIView {
     }
 
     private func updateUI() {
+        if let backItem = backItem {
+            leftButton.isHidden = false
+            leftButton.setTitle(backItem.title ?? "Back", for: .normal)
+            leftButton.onPress = { [weak self] in
+                self?.popItem(animated: true)
+            }
+        } else {
+            leftButton.isHidden = true
+        }
+
         titleLabel.text = topItem?.title
+
         rightButton.setTitle(topItem?.rightBarButtonItem?.title, for: .normal)
         rightButton.onPress = { [weak self] in
             self?.topItem?.rightBarButtonItem?.action?()
-            print("Pressed")
         }
     }
 
-    open override func didMoveToSuperview() {
+    internal func setInitialAppearance() {
+        frame.size.height = self.barHeight // varies per platform
+        backgroundColor = .lightGray
+
         titleLabel.font = .systemFont(ofSize: 18, weight: .bold)
         rightButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
         addSubview(titleLabel)
@@ -36,14 +52,16 @@ open class UINavigationBar: UIView {
     open override func layoutSubviews() {
         super.layoutSubviews()
 
+        leftButton.sizeToFit()
+        leftButton.frame.origin.x = horizontalMargin
+        leftButton.center.y = bounds.midY
+
         titleLabel.sizeToFit()
         titleLabel.center = CGPoint(x: bounds.midX, y: bounds.midY)
 
         rightButton.sizeToFit()
-        rightButton.frame.maxX = bounds.maxX - 20
+        rightButton.frame.maxX = bounds.maxX - horizontalMargin
         rightButton.center.y = bounds.midY
-
-        // XXX: layout left button
     }
 
     let titleLabel = UILabel()
@@ -53,5 +71,10 @@ open class UINavigationBar: UIView {
     open func pushItem(_ item: UINavigationItem, animated: Bool) {
         items = items ?? []
         items?.append(item)
+    }
+
+    @discardableResult
+    open func popItem(animated: Bool) -> UINavigationItem? {
+        return items?.popLast()
     }
 }

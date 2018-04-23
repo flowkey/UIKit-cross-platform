@@ -17,13 +17,16 @@ open class UIBarButtonItemWithClosure {
     open var action: (() -> Void)?
     open var title: String?
 
+    internal private (set) var systemItem: UIBarButtonSystemItem?
+
     public init() {}
     public convenience init(barButtonSystemItem systemItem: UIBarButtonSystemItem, action: (() -> Void)? = nil) {
         self.init()
         self.action = action
+        self.systemItem = systemItem
 
         if systemItem == .done {
-            self.title = "Done"
+            self.title = "Done" // TODO: Translate
         }
     }
 }

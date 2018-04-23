@@ -84,6 +84,9 @@
 		5C93AEAA208A1541005BE853 /* UINavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEA9208A1541005BE853 /* UINavigationItem.swift */; };
 		5C93AEAE208A4242005BE853 /* UINavigationControllerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEAD208A4242005BE853 /* UINavigationControllerContainerView.swift */; };
 		5C93AEB0208A44BC005BE853 /* UIModalPresentationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEAF208A44BC005BE853 /* UIModalPresentationStyle.swift */; };
+		5C93AEB3208DDE61005BE853 /* ic_arrow_back_black.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C93AEB1208DDE61005BE853 /* ic_arrow_back_black.png */; };
+		5C93AEB4208DDE61005BE853 /* ic_arrow_back_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C93AEB2208DDE61005BE853 /* ic_arrow_back_black@2x.png */; };
+		5C93AEB6208E09B5005BE853 /* UIViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEB5208E09B5005BE853 /* UIViewControllerTests.swift */; };
 		5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */; };
 		5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */; };
 		5CB6E1A6202387CE001FEAC9 /* CALayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCF1C12202382FF00AAF598 /* CALayerTests.swift */; };
@@ -335,6 +338,9 @@
 		5C93AEA9208A1541005BE853 /* UINavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationItem.swift; sourceTree = "<group>"; };
 		5C93AEAD208A4242005BE853 /* UINavigationControllerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationControllerContainerView.swift; sourceTree = "<group>"; };
 		5C93AEAF208A44BC005BE853 /* UIModalPresentationStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIModalPresentationStyle.swift; sourceTree = "<group>"; };
+		5C93AEB1208DDE61005BE853 /* ic_arrow_back_black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_arrow_back_black.png; sourceTree = "<group>"; };
+		5C93AEB2208DDE61005BE853 /* ic_arrow_back_black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrow_back_black@2x.png"; sourceTree = "<group>"; };
+		5C93AEB5208E09B5005BE853 /* UIViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerTests.swift; sourceTree = "<group>"; };
 		5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "AVPlayerLayer+Mac.swift"; path = "Sources/AVPlayerLayer+Mac.swift"; sourceTree = SOURCE_ROOT; };
 		5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CABasicAnimation.swift; path = Sources/CABasicAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CAAction.swift; path = Sources/CAAction.swift; sourceTree = SOURCE_ROOT; };
@@ -586,19 +592,20 @@
 			children = (
 				5BA7B40D1F45A6C30040CB58 /* Animations */,
 				83F02DBB1F179B0300347AA8 /* Button */,
+				5CCF1C12202382FF00AAF598 /* CALayerTests.swift */,
+				5CB6E1B52031D801001FEAC9 /* CGRect+TransformTests.swift */,
 				5C9037201F137FB70058E592 /* CGRectTests.swift */,
 				03C487271F750C74004BAA0C /* Gestures */,
 				5C27E7BE1ECB2F6500F5020D /* Info.plist */,
 				83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */,
 				8323F27F1F2FA2EE00C121BB /* TestSetup.swift */,
 				83F02DB01F17988F00347AA8 /* Texture+Size.swift */,
+				5CB6E1BF2031ECCE001FEAC9 /* TransformTests.swift */,
 				5CF2BEED1F8D1BD7009FCA1E /* UIFontTests.swift */,
 				83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */,
 				03760AE51F67E73300F36283 /* UIScrollViewTests.swift */,
 				5CFFFA0E2017454300D989BC /* UIView */,
-				5CCF1C12202382FF00AAF598 /* CALayerTests.swift */,
-				5CB6E1B52031D801001FEAC9 /* CGRect+TransformTests.swift */,
-				5CB6E1BF2031ECCE001FEAC9 /* TransformTests.swift */,
+				5C93AEB5208E09B5005BE853 /* UIViewControllerTests.swift */,
 			);
 			path = UIKitTests;
 			sourceTree = "<group>";
@@ -749,6 +756,8 @@
 		83C18F391F0FB486008FEA07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				5C93AEB1208DDE61005BE853 /* ic_arrow_back_black.png */,
+				5C93AEB2208DDE61005BE853 /* ic_arrow_back_black@2x.png */,
 				83F02DC31F17D84000347AA8 /* roboto-black.ttf */,
 				83F02DC81F17D84000347AA8 /* roboto-blackitalic.ttf */,
 				83F02DC01F17D84000347AA8 /* roboto-bold.ttf */,
@@ -993,8 +1002,10 @@
 				83F02DDB1F18F18500347AA8 /* roboto-italic.ttf in Resources */,
 				83F02DE01F18F18500347AA8 /* roboto-regular.ttf in Resources */,
 				83F02DE21F18F18500347AA8 /* roboto-thinitalic.ttf in Resources */,
+				5C93AEB4208DDE61005BE853 /* ic_arrow_back_black@2x.png in Resources */,
 				83F02DD91F18F18500347AA8 /* roboto-bold.ttf in Resources */,
 				83F02DDC1F18F18500347AA8 /* roboto-light.ttf in Resources */,
+				5C93AEB3208DDE61005BE853 /* ic_arrow_back_black.png in Resources */,
 				83F02DDF1F18F18500347AA8 /* roboto-mediumitalic.ttf in Resources */,
 				83F02DDD1F18F18500347AA8 /* roboto-lightitalic.ttf in Resources */,
 				83F02DD71F18F18500347AA8 /* roboto-black.ttf in Resources */,
@@ -1134,6 +1145,7 @@
 			files = (
 				83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */,
 				834C94971F6BDE6200F5B40F /* ButtonLayoutingTests.swift in Sources */,
+				5C93AEB6208E09B5005BE853 /* UIViewControllerTests.swift in Sources */,
 				03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */,
 				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				03C4872A1F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift in Sources */,

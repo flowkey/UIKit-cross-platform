@@ -37,6 +37,8 @@ extension CAMediaTimingFunction {
             return .init(name: kCAMediaTimingFunctionEaseInEaseOut)
         } else if options.contains(.customEaseOut) {
             return .init(name: kCAMediaTimingFunctionCustomEaseOut)
+        } else if options.contains(.curveLinear) {
+            return .init(name: kCAMediaTimingFunctionLinear)
         }
 
         return .init(name: kCAMediaTimingFunctionDefault)

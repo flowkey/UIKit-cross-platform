@@ -28,7 +28,7 @@ class UIViewAnimationTests: XCTestCase {
 
         view.frame = frameToStartFrom
 
-        UIView.animate(withDuration: 5.0, delay: 0, options: [], animations: {
+        UIView.animate(withDuration: 5.0, delay: 0, options: [.curveLinear], animations: {
             view.frame = expectedFrame
         })
 
@@ -47,7 +47,7 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testCanAnimateOpacity() {
-        UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
+        UIView.animate(withDuration: 5, delay: 0, options: [.curveLinear], animations: {
             view.alpha = 0.2
         })
 
@@ -68,7 +68,7 @@ class UIViewAnimationTests: XCTestCase {
 
         view.bounds = boundsToStartFrom
 
-        UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
+        UIView.animate(withDuration: 5, delay: 0, options: [.curveLinear], animations: {
             view.bounds = expectedBounds
         })
         XCTAssertEqual(view.bounds, expectedBounds)
@@ -92,7 +92,7 @@ class UIViewAnimationTests: XCTestCase {
     func testDelay() {
 
 
-        UIView.animate(withDuration: 2, delay: 2, options: [], animations: {
+        UIView.animate(withDuration: 2, delay: 2, options: [.curveLinear], animations: {
             view.alpha = 0
         })
 
@@ -239,7 +239,7 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testBeginFromCurrentState() {
-        UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
+        UIView.animate(withDuration: 10, delay: 0, options: [.curveLinear], animations: {
             view.bounds.origin.x = 10
         })
 
@@ -253,7 +253,7 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testModifyLayerWhileAnimationIsInFlight() {
-        UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
+        UIView.animate(withDuration: 10, delay: 0, options: [.curveLinear], animations: {
             view.frame.origin.x = 200
         })
 
@@ -270,7 +270,7 @@ class UIViewAnimationTests: XCTestCase {
     }
 
     func testModifyPropertyWhichIsCurrentlyAnimating() {
-        UIView.animate(withDuration: 10, delay: 0, options: [], animations: {
+        UIView.animate(withDuration: 10, delay: 0, options: [.curveLinear], animations: {
             view.frame.origin.x = 200
         })
 
