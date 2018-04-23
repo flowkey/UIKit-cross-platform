@@ -10,7 +10,7 @@ import SDL_ttf
 
 extension FontRenderer {
     func render(attributedString: NSAttributedString, color fallbackColour: UIColor) -> UnsafeMutablePointer<SDLSurface>? {
-        guard let surface = createSurface(text: attributedString.string) else { return nil }
+        guard let surface = createSurface(attributedstring: attributedString) else { return nil }
 
         var color = fallbackColour.sdlColor
         if color.a == 0 {
@@ -35,6 +35,7 @@ extension FontRenderer {
         let lastValidPixel = surface.pointee.pixels.assumingMemoryBound(to: UInt32.self)
             + Int(surface.pointee.pitch / 4 * surface.pointee.h)
 
+        var previousGlyphIndex: FT_UInt?
         for (index, unicodeScalar) in attributedString.string.unicodeScalars.enumerated() {
             let c: UInt32 = unicodeScalar.value
 
@@ -55,7 +56,9 @@ extension FontRenderer {
                 width = glyph.maxx - glyph.minx
             }
 
-            xOffset += getKerningOffset(for: index) >> 6
+
+            xOffset += getFontKerningOffset(previousIndex: previousGlyphIndex, currentIndex: glyph.index) >> 6
+            previousGlyphIndex = glyph.index
 
             let attributedColorForCharacter = attributedString.attribute(
                 .foregroundColor, at: index, effectiveRange: nil) as? UIColor
@@ -94,6 +97,12 @@ extension FontRenderer {
                 }
             }
 
+            if let attributedKerningOffset =
+                attributedString.attribute(.kern, at: index, effectiveRange: nil) as? CGFloat
+            {
+                xOffset += Int32(attributedKerningOffset)
+            }
+
             xOffset += glyph.advance
         }
 
@@ -101,35 +110,39 @@ extension FontRenderer {
     }
 }
 
+extension FontRenderer {
+    func singleLineSize(of attributedString: NSAttributedString) -> CGSize {
+        var width: Int32 = 0
+        var height: Int32 = 0
+        if TTF_SizeUTF8(rawPointer, attributedString.string, &width, &height) < 0 || width == 0 {
+            return .zero
+        }
+
+        return CGSize(width: CGFloat(width) + attributedString.entireKerningWidth, height: CGFloat(height))
+    }
+}
+
+
 private extension FontRenderer {
-    func createSurface(text: String) -> UnsafeMutablePointer<SDLSurface>? {
-        let (width, height) = getSize(of: text)
+    func createSurface(attributedstring: NSAttributedString) -> UnsafeMutablePointer<SDLSurface>? {
+        let size = self.singleLineSize(of: attributedstring)
 
         return SDL_CreateRGBSurface(
-            UInt32(SDL_SWSURFACE), width, height, 32,
+            UInt32(SDL_SWSURFACE), Int32(size.width), Int32(size.height), 32,
             0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000
         )
     }
 
-    func getSize(of text: String) -> (Int32, Int32) {
-        var width: Int32 = 0
-        var height: Int32 = 0
-        if TTF_SizeUTF8(rawPointer, text, &width, &height) < 0 || width == 0 {
-            return (0, 0)
-        }
+    func getFontKerningOffset(previousIndex: FT_UInt?, currentIndex: FT_UInt) -> Int32 {
+        guard let previousIndex = previousIndex else { return 0 }
 
-        return (width, height)
-    }
-
-    func getKerningOffset(for index: Int) -> Int32 {
         let useKerning = (rawPointer.pointee.face.pointee.face_flags & FT_FACE_FLAG_KERNING) != 0
-
-        if useKerning && index > 0 {
+        if useKerning {
             var delta = FT_Vector()
             FT_Get_Kerning(
                 self.rawPointer.pointee.face,
-                FT_UInt(index - 1),
-                FT_UInt(index),
+                previousIndex,
+                currentIndex,
                 FT_KERNING_DEFAULT.rawValue,
                 &delta
             )
@@ -137,5 +150,17 @@ private extension FontRenderer {
         }
 
         return 0
+    }
+}
+
+private extension NSAttributedString {
+    var entireKerningWidth: CGFloat {
+        var extraWidthFromAttributedKerning: CGFloat = 0
+        for index in 0 ..< self.string.count {
+            if let offset = self.attribute(.kern, at: index, effectiveRange: nil) as? CGFloat {
+                extraWidthFromAttributedKerning += offset
+            }
+        }
+        return extraWidthFromAttributedKerning
     }
 }

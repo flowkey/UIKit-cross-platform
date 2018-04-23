@@ -77,6 +77,11 @@ open class UILabel: UIView {
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         guard let text = self.attributedText?.string ?? self.text else { return .zero }
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
+
+        if let attributedText = attributedText {
+            return attributedText.size(with: self.font, wrapLength: wrapLength)
+        }
+
         return text.size(with: self.font, wrapLength: wrapLength)
     }
 
