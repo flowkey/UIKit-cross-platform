@@ -45,16 +45,25 @@ open class UINavigationController: UIViewController {
 
     open func popViewController(animated: Bool) -> UIViewController? {
         // You can't pop the rootViewController (per iOS docs)
-        if viewControllers.count == 1 { return nil }
+        if viewControllers.count <= 1 { return nil }
 
-        let topOfStack = viewControllers.popLast()
+        let topOfStack = viewControllers.popLast()!
+        topOfStack.dismiss(animated: false) // XXX: not sure if this is correct.
         updateUIFromViewControllerStack(animated: animated)
         return topOfStack
     }
 
     open override func dismiss(animated: Bool, completion: (() -> Void)?) {
-        viewControllers.last?.viewWillDisappear()
-        viewControllers.last?.viewDidDisappear()
+        let topOfStack = viewControllers.last
+        topOfStack?.viewWillDisappear()
+
+        // XXX: without the following line it's impossible to present the
+        // `topOfStack` viewController again - you just get a blank screen.
+        // Although it's correct to have this line here, it's creepy that it breaks
+        // without it. We should investigate a possible memory leak or logic error.
+        topOfStack?.view?.removeFromSuperview()
+
+        topOfStack?.viewDidDisappear()
         super.dismiss(animated: animated, completion: completion)
     }
 
