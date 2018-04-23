@@ -9,30 +9,13 @@
 import SDL_ttf
 
 extension FontRenderer {
-    func render(attributedString: NSAttributedString, color fallbackColour: UIColor) -> UnsafeMutablePointer<SDLSurface>? {
-        guard let surface = createSurface(attributedstring: attributedString) else { return nil }
-
-        var color = fallbackColour.sdlColor
-        if color.a == 0 {
-            color.a = UInt8(SDL_ALPHA_OPAQUE)
-        }
-
-        var alpha_table = [UInt8](0...255)
-        if color.a == SDL_ALPHA_OPAQUE {
-            for i in alpha_table.indices {
-                alpha_table[i] = UInt8(i)
-            }
-        } else {
-            for i in alpha_table.indices {
-                alpha_table[i] = UInt8(i * Int(color.a) / 255)
-            }
-            SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_BLEND)
-        }
+    func render(attributedString: NSAttributedString, color fallbackColor: UIColor) -> UnsafeMutablePointer<SDLSurface>? {
+        guard let surface = createSurface(toFit: attributedString) else { return nil }
 
         var xOffset: Int32 = 0
 
         // Adding bound checking to avoid all kinds of memory corruption errors
-        let lastValidPixel = surface.pointee.pixels.assumingMemoryBound(to: UInt32.self)
+        let surfaceEndIndex = surface.pointee.pixels.assumingMemoryBound(to: UInt32.self)
             + Int(surface.pointee.pitch / 4 * surface.pointee.h)
 
         var previousGlyphIndex: FT_UInt?
@@ -50,22 +33,19 @@ extension FontRenderer {
             }
 
             let glyph = rawPointer.pointee.current.pointee
-            var width = glyph.pixmap.width
+            let width = rawPointer.pointee.outline > 0 ?
+                glyph.pixmap.width :
+                min(glyph.pixmap.width, glyph.maxx - glyph.minx)
 
-            if rawPointer.pointee.outline <= 0 && width > glyph.maxx - glyph.minx {
-                width = glyph.maxx - glyph.minx
-            }
-
-
-            xOffset += getFontKerningOffset(previousIndex: previousGlyphIndex, currentIndex: glyph.index) >> 6
+            xOffset += getFontKerningOffset(previousIndex: previousGlyphIndex, currentIndex: glyph.index)
             previousGlyphIndex = glyph.index
 
             let attributedColorForCharacter = attributedString.attribute(
                 .foregroundColor, at: index, effectiveRange: nil) as? UIColor
-            let colorForCharacter = attributedColorForCharacter?.sdlColor ?? color
+            let colorForCharacter = (attributedColorForCharacter ?? fallbackColor).sdlColor
 
             let currentColor =
-                UInt32(colorForCharacter.r) << 16
+                      UInt32(colorForCharacter.r) << 16
                     | UInt32(colorForCharacter.g) << 8
                     | UInt32(colorForCharacter.b)
 
@@ -87,12 +67,12 @@ extension FontRenderer {
                     .advanced(by: Int(row * glyph.pixmap.pitch))
 
                 for _ in 0 ..< width {
-                    guard currentPixel < lastValidPixel else { break }
+                    guard currentPixel < surfaceEndIndex else { break }
 
                     let alpha = Int(source.pointee)
                     source = source.advanced(by: 1)
 
-                    currentPixel.pointee |= (currentColor | UInt32(alpha_table[alpha]) << 24)
+                    currentPixel.pointee |= (currentColor | UInt32(alpha) << 24)
                     currentPixel = currentPixel.advanced(by: 1)
                 }
             }
@@ -118,19 +98,24 @@ extension FontRenderer {
             return .zero
         }
 
-        return CGSize(width: CGFloat(width) + attributedString.entireKerningWidth, height: CGFloat(height))
+        return CGSize(
+            width: CGFloat(width) + attributedString.entireKerningWidth,
+            height: CGFloat(height)
+        )
     }
 }
 
 
 private extension FontRenderer {
-    func createSurface(attributedstring: NSAttributedString) -> UnsafeMutablePointer<SDLSurface>? {
+    func createSurface(toFit attributedstring: NSAttributedString) -> UnsafeMutablePointer<SDLSurface>? {
         let size = self.singleLineSize(of: attributedstring)
 
-        return SDL_CreateRGBSurface(
+        let surface = SDL_CreateRGBSurface(
             UInt32(SDL_SWSURFACE), Int32(size.width), Int32(size.height), 32,
             0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000
         )
+        SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_BLEND)
+        return surface
     }
 
     func getFontKerningOffset(previousIndex: FT_UInt?, currentIndex: FT_UInt) -> Int32 {
@@ -140,7 +125,7 @@ private extension FontRenderer {
         if useKerning {
             var delta = FT_Vector()
             FT_Get_Kerning(
-                self.rawPointer.pointee.face,
+                rawPointer.pointee.face,
                 previousIndex,
                 currentIndex,
                 FT_KERNING_DEFAULT.rawValue,
@@ -155,12 +140,14 @@ private extension FontRenderer {
 
 private extension NSAttributedString {
     var entireKerningWidth: CGFloat {
-        var extraWidthFromAttributedKerning: CGFloat = 0
-        for index in 0 ..< self.string.count {
-            if let offset = self.attribute(.kern, at: index, effectiveRange: nil) as? CGFloat {
-                extraWidthFromAttributedKerning += offset
+        var width: CGFloat = 0
+
+        enumerateAttribute(.kern, in: NSRange(location: 0, length: length)) { (value, range, _) in
+            if let value = value as? CGFloat {
+                width += value * CGFloat(range.length)
             }
         }
-        return extraWidthFromAttributedKerning
+
+        return width
     }
 }
