@@ -12,9 +12,12 @@ open class UINavigationBarAndroid: UINavigationBar {
 
             titleLabel.textColor = .white
             rightButton.tintColor = .white
+
+            leftButton.setImage(UIImage(path: "ic_arrow_back_white@2x.png"), for: .normal)
+        } else {
+            leftButton.setImage(UIImage(path: "ic_arrow_back_black@2x.png"), for: .normal)
         }
 
-        leftButton.setImage(UIImage(path: "ic_arrow_back_black@2x.png"), for: .normal)
         rightButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .regular)
     }
 
