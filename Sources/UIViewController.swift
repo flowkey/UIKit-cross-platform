@@ -16,9 +16,8 @@ public class UIPopoverPresentationController: UIPresentationController {
 open class UIViewController: UIResponder {
     public var title: String?
     private var _view: UIView?
-    private var _navigationItem: UINavigationItem?
 
-    open private(set) var view: UIView! {
+    open var view: UIView! {
         get {
             loadViewIfNeeded()
             return _view
@@ -26,18 +25,7 @@ open class UIViewController: UIResponder {
         set { _view = newValue }
     }
 
-    open private(set) var navigationItem: UINavigationItem! {
-        get {
-            if let item = _navigationItem {
-                return item
-            } else {
-                let navItem = UINavigationItem()
-                _navigationItem = navItem
-                return navItem
-            }
-        }
-        set { _navigationItem = newValue }
-    }
+    open internal(set) lazy var navigationItem = UINavigationItem()
 
     open var viewIsLoaded: Bool {
         return _view != nil
@@ -60,12 +48,12 @@ open class UIViewController: UIResponder {
     public func loadViewIfNeeded() {
         if !viewIsLoaded {
             loadView()
+            viewDidLoad()
         }
     }
 
     open func loadView() {
         view = UIView()
-        viewDidLoad()
     }
 
     // Most of these methods are designed to be overriden in `UIViewController` subclasses

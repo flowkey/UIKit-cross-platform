@@ -16,7 +16,7 @@ public class UIAlertAction {
     public let title: String?
     public let style: UIAlertActionStyle
     
-    private let handler: ((UIAlertAction) -> Void)?
+    internal(set) var handler: ((UIAlertAction) -> Void)?
 
     public init(title: String?, style: UIAlertActionStyle, handler: ((UIAlertAction) -> Void)? = nil) {
         self.title = title
