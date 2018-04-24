@@ -80,7 +80,7 @@ extension FontRenderer {
             if let attributedKerningOffset =
                 attributedString.attribute(.kern, at: index, effectiveRange: nil) as? CGFloat
             {
-                xOffset += Int32(attributedKerningOffset)
+                xOffset += Int32(attributedKerningOffset * UIScreen.main.scale)
             }
 
             xOffset += glyph.advance
@@ -148,6 +148,6 @@ private extension NSAttributedString {
             }
         }
 
-        return width
+        return width * UIScreen.main.scale
     }
 }
