@@ -19,6 +19,10 @@ open class UIViewController: UIResponder {
     open internal(set) weak var navigationController: UINavigationController?
     open internal(set) weak var presentingViewController: UIViewController?
 
+    // TODO: tablet only
+    open var modalPresentationStyle: UIModalPresentationStyle = .popover
+    open var popoverPresentationController: UIPopoverPresentationController?
+
     // The `presentedViewController` is owned by its parent, but not the other way around:
     open internal(set) var presentedViewController: UIViewController?
 
@@ -135,3 +139,22 @@ open class UIViewController: UIResponder {
         return true
     }
 }
+
+public class UIPresentationController {
+
+}
+
+public class UIPopoverPresentationController: UIPresentationController {
+    open var sourceView: UIView?
+    open var sourceRect: CGRect = .zero
+    open var permittedArrowDirections: UIPopoverArrowDirection = .unknown
+
+    public override init() {
+        super.init()
+    }
+}
+
+public enum UIPopoverArrowDirection {
+    case unknown
+}
+
