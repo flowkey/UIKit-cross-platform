@@ -39,6 +39,15 @@ extension NSAttributedString {
     open func attribute(_ attrName: NSAttributedStringKey, at location: Int, effectiveRange range: NSRangePointer?) -> Any? {
         return self.attribute(attrName.rawValue, at: location, effectiveRange: range)
     }
+
+    open func enumerateAttribute(
+        _ attrName: NSAttributedStringKey,
+        in enumerationRange: NSRange,
+        options opts: NSAttributedString.EnumerationOptions = [],
+        using block: (Any?, NSRange, UnsafeMutablePointer<Bool>
+    ) -> Void) {
+        self.enumerateAttribute(attrName.rawValue, in: enumerationRange, options: opts, using: block)
+    }
 }
 
 extension NSMutableAttributedString {
