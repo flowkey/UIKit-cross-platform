@@ -71,7 +71,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         Log.v(TAG, "Model: " + android.os.Build.MODEL)
 
         System.loadLibrary("JNI")
-        System.loadLibrary("AndroidPlayer")
         System.loadLibrary("SDL2")
 
         // Set up the surface
