@@ -19,44 +19,51 @@ open class UINavigationBar: UIView {
         return items[secondLastItemIndex]
     }
 
-    private func updateUI() {
+    internal func updateUI() {
         if let backItem = backItem {
-            leftButton.isHidden = false
-            leftButton.setTitle(backItem.title ?? "Back", for: .normal)
-            leftButton.onPress = { [weak self] in
-                self?.popItem(animated: true)
-            }
+            backButton.isHidden = false
+            backButton.setTitle(backItem.title ?? "Back", for: .normal)
         } else {
-            leftButton.isHidden = true
+            backButton.isHidden = true
         }
 
-        titleLabel.text = topItem?.title
+        setTitleLabelText()
+        setRightButtonTitle()
+    }
 
+    internal func setTitleLabelText() {
+        titleLabel.text = topItem?.title
+    }
+
+    internal func setRightButtonTitle() {
         rightButton.setTitle(topItem?.rightBarButtonItem?.title, for: .normal)
+    }
+
+    internal func platformSpecificSetup() {
+        frame.size.height = self.barHeight // varies per platform
+        backgroundColor = UIColor(red: 0.91, green: 0.91, blue: 0.91)
+
+        backButton.onPress = { [weak self] in
+            self?.popItem(animated: true)
+        }
+
         rightButton.onPress = { [weak self] in
             self?.topItem?.rightBarButtonItem?.action?()
         }
-    }
-
-    internal func setInitialAppearance() {
-        frame.size.height = self.barHeight // varies per platform
-        backgroundColor = UIColor(red: 0.91, green: 0.91, blue: 0.91)
 
         titleLabel.font = .systemFont(ofSize: 18, weight: .bold)
         rightButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
         rightButton.tintColor = tintColor
 
         addSubview(titleLabel)
-        addSubview(leftButton)
+        addSubview(backButton)
         addSubview(rightButton)
     }
 
     open override func layoutSubviews() {
-        super.layoutSubviews()
-
-        leftButton.sizeToFit()
-        leftButton.frame.origin.x = horizontalMargin
-        leftButton.center.y = bounds.midY
+        backButton.sizeToFit()
+        backButton.frame.origin.x = horizontalMargin
+        backButton.center.y = bounds.midY
 
         titleLabel.sizeToFit()
         titleLabel.center = CGPoint(x: bounds.midX, y: bounds.midY)
@@ -66,9 +73,9 @@ open class UINavigationBar: UIView {
         rightButton.center.y = bounds.midY
     }
 
-    let titleLabel = UILabel()
-    let leftButton = Button()
-    let rightButton = Button()
+    internal var titleLabel = UILabel()
+    internal var backButton = Button()
+    internal var rightButton = Button()
 
     open func pushItem(_ item: UINavigationItem, animated: Bool) {
         items = items ?? []

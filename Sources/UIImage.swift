@@ -22,6 +22,13 @@ public class UIImage {
     }
 
     public convenience init?(path: String) {
+        #if os(macOS)
+        var path = path
+        if !path.hasPrefix("/") { // make absolute path if one wasn't already provided.
+            path = Bundle(for: UIImage.self).path(forResource: path, ofType: nil) ?? path
+        }
+        #endif
+
         guard let cgImage = CGImage(GPU_LoadImage(path)) else { return nil }
 
         let pathWithoutExtension = String(path.dropLast(4))

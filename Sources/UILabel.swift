@@ -22,11 +22,11 @@ public enum NSTextAlignment: Int {
 
 open class UILabel: UIView {
     public var numberOfLines: Int = 1 {
-        didSet { setNeedsDisplay() }
+        didSet { if numberOfLines != oldValue { setNeedsDisplay() } }
     }
     
     public var text: String? {
-        didSet { setNeedsDisplay() }
+        didSet { if text != oldValue { setNeedsDisplay() } }
     }
 
     public var attributedText: NSAttributedString? {
@@ -36,7 +36,7 @@ open class UILabel: UIView {
     }
 
     public var textColor: UIColor = .black {
-        didSet { setNeedsDisplay() }
+        didSet { if textColor != oldValue { setNeedsDisplay() } }
     }
 
     public var textAlignment: NSTextAlignment = .left {
@@ -48,7 +48,7 @@ open class UILabel: UIView {
     }
 
     public var font: UIFont = .systemFont(ofSize: 16) {
-        didSet { setNeedsDisplay() }
+        didSet { if font != oldValue { setNeedsDisplay() } }
     }
 
     override open var frame: CGRect {

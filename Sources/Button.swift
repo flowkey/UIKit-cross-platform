@@ -95,6 +95,7 @@ open class Button: UIControl {
 
         let imageView = UIImageView()
         imageView.isHidden = true
+        imageView.contentMode = .scaleAspectFit
         addSubview(imageView)
         self.imageView = imageView
 

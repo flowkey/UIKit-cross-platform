@@ -88,6 +88,8 @@
 		5C93AEB4208DDE61005BE853 /* ic_arrow_back_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C93AEB2208DDE61005BE853 /* ic_arrow_back_black@2x.png */; };
 		5C93AEB6208E09B5005BE853 /* UIViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEB5208E09B5005BE853 /* UIViewControllerTests.swift */; };
 		5C93AEBA208E2D1E005BE853 /* UIWindow+hardwareBackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEB8208E2D1A005BE853 /* UIWindow+hardwareBackButton.swift */; };
+		5C93AEBF208E4014005BE853 /* ic_arrow_back_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C93AEBC208E3D5A005BE853 /* ic_arrow_back_white.png */; };
+		5C93AEC0208E4014005BE853 /* ic_arrow_back_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C93AEBB208E3D59005BE853 /* ic_arrow_back_white@2x.png */; };
 		5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */; };
 		5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */; };
 		5CB6E1A6202387CE001FEAC9 /* CALayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCF1C12202382FF00AAF598 /* CALayerTests.swift */; };
@@ -343,6 +345,8 @@
 		5C93AEB2208DDE61005BE853 /* ic_arrow_back_black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrow_back_black@2x.png"; sourceTree = "<group>"; };
 		5C93AEB5208E09B5005BE853 /* UIViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerTests.swift; sourceTree = "<group>"; };
 		5C93AEB8208E2D1A005BE853 /* UIWindow+hardwareBackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+hardwareBackButton.swift"; sourceTree = "<group>"; };
+		5C93AEBB208E3D59005BE853 /* ic_arrow_back_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrow_back_white@2x.png"; sourceTree = "<group>"; };
+		5C93AEBC208E3D5A005BE853 /* ic_arrow_back_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_arrow_back_white.png; sourceTree = "<group>"; };
 		5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "AVPlayerLayer+Mac.swift"; path = "Sources/AVPlayerLayer+Mac.swift"; sourceTree = SOURCE_ROOT; };
 		5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CABasicAnimation.swift; path = Sources/CABasicAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CAAction.swift; path = Sources/CAAction.swift; sourceTree = SOURCE_ROOT; };
@@ -761,6 +765,8 @@
 			children = (
 				5C93AEB1208DDE61005BE853 /* ic_arrow_back_black.png */,
 				5C93AEB2208DDE61005BE853 /* ic_arrow_back_black@2x.png */,
+				5C93AEBC208E3D5A005BE853 /* ic_arrow_back_white.png */,
+				5C93AEBB208E3D59005BE853 /* ic_arrow_back_white@2x.png */,
 				83F02DC31F17D84000347AA8 /* roboto-black.ttf */,
 				83F02DC81F17D84000347AA8 /* roboto-blackitalic.ttf */,
 				83F02DC01F17D84000347AA8 /* roboto-bold.ttf */,
@@ -1001,6 +1007,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83F02DDE1F18F18500347AA8 /* roboto-medium.ttf in Resources */,
+				5C93AEBF208E4014005BE853 /* ic_arrow_back_white.png in Resources */,
 				83F02DE11F18F18500347AA8 /* roboto-thin.ttf in Resources */,
 				83F02DDB1F18F18500347AA8 /* roboto-italic.ttf in Resources */,
 				83F02DE01F18F18500347AA8 /* roboto-regular.ttf in Resources */,
@@ -1012,6 +1019,7 @@
 				83F02DDF1F18F18500347AA8 /* roboto-mediumitalic.ttf in Resources */,
 				83F02DDD1F18F18500347AA8 /* roboto-lightitalic.ttf in Resources */,
 				83F02DD71F18F18500347AA8 /* roboto-black.ttf in Resources */,
+				5C93AEC0208E4014005BE853 /* ic_arrow_back_white@2x.png in Resources */,
 				83F02DDA1F18F18500347AA8 /* roboto-bolditalic.ttf in Resources */,
 				83F02DD81F18F18500347AA8 /* roboto-blackitalic.ttf in Resources */,
 			);
@@ -1331,7 +1339,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
+				COMBINE_HIDPI_IMAGES = NO;
 				DEVELOPMENT_TEAM = FTSYMMN5B5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1359,7 +1367,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
+				COMBINE_HIDPI_IMAGES = NO;
 				DEVELOPMENT_TEAM = FTSYMMN5B5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

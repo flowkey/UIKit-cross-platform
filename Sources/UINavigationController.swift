@@ -14,6 +14,12 @@ open class UINavigationController: UIViewController {
         view.addSubview(navigationBar)
     }
 
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationBar.next = self
+        transitionView.next = self
+    }
+
     open internal(set) var navigationBar = UINavigationBarAndroid()
     internal var transitionView = UIView() // animates the other views on push/pop
 
@@ -78,11 +84,20 @@ open class UINavigationController: UIViewController {
         }
 
         super.viewWillAppear(animated)
-        navigationBar.setInitialAppearance()
+        navigationBar.platformSpecificSetup()
         navigationBar.frame.size.width = view.bounds.width
         transitionView.frame = view.bounds
 
         // This `animated` bool is unrelated to the one passed into viewWillAppear:
         updateUIFromViewControllerStack(animated: false)
+    }
+
+    open override func handleHardwareBackButtonPress() -> Bool {
+        if let onPress = navigationBar.backButton.onPress {
+            onPress()
+            return true
+        } else {
+            return super.handleHardwareBackButtonPress()
+        }
     }
 }

@@ -26,7 +26,6 @@ public class CGImage {
         GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR)
 
         size = CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
-        GPU_GenerateMipmaps(rawPointer)
     }
 
     convenience init?(surface: UnsafeMutablePointer<SDLSurface>) {
