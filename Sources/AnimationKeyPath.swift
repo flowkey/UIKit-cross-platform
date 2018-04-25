@@ -7,10 +7,11 @@
 //
 
 public enum AnimationKeyPath: String, ExpressibleByStringLiteral {
-    case opacity, bounds, transform, position, anchorPoint, unknown
+    case backgroundColor, opacity, bounds, transform, position, anchorPoint, unknown
 
     public init(stringLiteral value: String) {
         switch value {
+        case "backgroundColor": self = .backgroundColor
         case "opacity": self = .opacity
         case "bounds": self = .bounds
         case "transform": self = .transform
