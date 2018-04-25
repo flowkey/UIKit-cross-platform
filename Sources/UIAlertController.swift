@@ -28,13 +28,6 @@ public class UIAlertController: UIViewController {
     }
 
     public func addAction(_ action: UIAlertAction) {
-//        // if 'cancel' button has no handler fallback to self.dismiss (iOS behaviour)
-//        if action.style == .cancel && action.handler == nil {
-//            action.handler = { [weak self] _ in
-//                self?.dismiss(animated: true, completion: nil)
-//            }
-//        }
-
         actions.append(action)
     }
 
