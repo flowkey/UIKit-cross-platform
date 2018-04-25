@@ -14,6 +14,7 @@ public typealias NSAttributedStringKey = Foundation.NSAttributedStringKey
 #else
 
 import class Foundation.NSMutableAttributedString
+import struct Foundation.NSRangePointer
 
 public struct NSAttributedStringKey: Hashable, RawRepresentable {
     public typealias RawValue = String
@@ -33,9 +34,25 @@ public struct NSAttributedStringKey: Hashable, RawRepresentable {
     public static let foregroundColor = NSAttributedStringKey(rawValue: "NSColor")
 }
 
+
+extension NSAttributedString {
+    open func attribute(_ attrName: NSAttributedStringKey, at location: Int, effectiveRange range: NSRangePointer?) -> Any? {
+        return self.attribute(attrName.rawValue, at: location, effectiveRange: range)
+    }
+
+    open func enumerateAttribute(
+        _ attrName: NSAttributedStringKey,
+        in enumerationRange: NSRange,
+        options opts: NSAttributedString.EnumerationOptions = [],
+        using block: (Any?, NSRange, UnsafeMutablePointer<Bool>
+    ) -> Void) {
+        self.enumerateAttribute(attrName.rawValue, in: enumerationRange, options: opts, using: block)
+    }
+}
+
 extension NSMutableAttributedString {
     open func addAttribute(_ name: NSAttributedStringKey, value: Any, range: NSRange) {
-        self.addAttribute(name, value: value, range: range)
+        self.addAttribute(name.rawValue, value: value, range: range)
     }
 
     open func addAttributes(_ attrs: [NSAttributedStringKey : Any], range: NSRange) {

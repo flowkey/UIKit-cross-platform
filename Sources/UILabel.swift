@@ -31,7 +31,8 @@ open class UILabel: UIView {
 
     public var attributedText: NSAttributedString? {
         didSet {
-            text = attributedText?.string // TODO: also set textColor etc according to attributes
+            text = attributedText?.string
+            setNeedsDisplay()
         }
     }
 
@@ -58,7 +59,13 @@ open class UILabel: UIView {
     open override func draw() {
         super.draw()
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
-        layer.contents = font.render(text, color: textColor, wrapLength: wrapLength)
+
+        if let attributedText = attributedText {
+            layer.contents = font.render(attributedText, color: textColor, wrapLength: wrapLength)
+        } else {
+            layer.contents = font.render(text, color: textColor, wrapLength: wrapLength)
+        }
+
     }
 
     override public init(frame: CGRect) {
@@ -68,8 +75,13 @@ open class UILabel: UIView {
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
-        guard let text = self.text else { return .zero }
+        guard let text = self.attributedText?.string ?? self.text else { return .zero }
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
+
+        if let attributedText = attributedText {
+            return attributedText.size(with: self.font, wrapLength: wrapLength)
+        }
+
         return text.size(with: self.font, wrapLength: wrapLength)
     }
 

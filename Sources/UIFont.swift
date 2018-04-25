@@ -65,6 +65,10 @@ open class UIFont: Equatable {
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
         return renderer.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.main.scale))
     }
+
+    internal func render(_ attributedString: NSAttributedString?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
+        return renderer.render(attributedString, color: color)
+    }
 }
 
 extension UIFont {
@@ -125,6 +129,15 @@ extension UIFont {
     }
 }
 
+extension NSAttributedString {
+    public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
+
+        return wrapLength == 0 ?
+            font.renderer.singleLineSize(of: self) / UIScreen.main.scale :
+            string.size(with: font, wrapLength: wrapLength) // fallback to String.size for multiline text
+    }
+}
+
 extension String {
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
         let retinaResolutionSize =
@@ -135,9 +148,6 @@ extension String {
                     wrapLength: UInt(wrapLength * UIScreen.main.scale)
                 )
 
-        return CGSize(
-            width: retinaResolutionSize.width / UIScreen.main.scale,
-            height: retinaResolutionSize.height / UIScreen.main.scale
-        )
+        return retinaResolutionSize / UIScreen.main.scale
     }
 }
