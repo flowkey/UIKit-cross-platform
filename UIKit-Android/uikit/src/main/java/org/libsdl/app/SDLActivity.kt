@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.RelativeLayout
 import android.util.Log
 import android.graphics.*
-import android.hardware.*
 import android.content.pm.ActivityInfo
 import android.view.KeyEvent.*
 import android.content.Context
@@ -67,12 +66,13 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     private var isRunning = false
 
+    open val libraries: Array<String> get() = arrayOf("JNI", "SDL2")
+
     init {
         Log.v(TAG, "Device: " + android.os.Build.DEVICE)
         Log.v(TAG, "Model: " + android.os.Build.MODEL)
 
-        System.loadLibrary("JNI")
-        System.loadLibrary("SDL2")
+        libraries.forEach { System.loadLibrary(it) }
 
         // Set up the surface
         mSurface = SurfaceView(context)
@@ -100,7 +100,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     @Suppress("unused") // accessed via JNI
-    private fun getDeviceDensity(): Float = context.resources.displayMetrics.density
+    fun getDeviceDensity(): Float = context.resources.displayMetrics.density
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
@@ -178,27 +178,27 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     /** Called by SDL using JNI. */
     @Suppress("unused")
-    private fun setActivityTitle(title: String): Boolean {
+    fun setActivityTitle(title: String): Boolean {
         // Called from SDLMain() thread and can't directly affect the view
         return commandHandler.sendCommand(COMMAND_CHANGE_TITLE, title)
     }
 
     /** Called by SDL using JNI. */
     @Suppress("unused")
-    private fun sendMessage(command: Int, param: Int): Boolean {
+    fun sendMessage(command: Int, param: Int): Boolean {
         return commandHandler.sendCommand(command, param)
     }
 
     /** Called by SDL using JNI. */
     @Suppress("unused")
-    private val nativeSurface: Surface get() = this.mSurface.holder.surface
+    val nativeSurface: Surface get() = this.mSurface.holder.surface
 
 
     // Input
 
     /** Called by SDL using JNI. */
     @Suppress("unused")
-    private fun inputGetInputDeviceIds(sources: Int): IntArray {
+    fun inputGetInputDeviceIds(sources: Int): IntArray {
         return InputDevice.getDeviceIds().fold(intArrayOf(0)) { result: IntArray, id: Int ->
             val device = InputDevice.getDevice(id)
             return if (device.sources and sources != 0) (result + device.id) else result
