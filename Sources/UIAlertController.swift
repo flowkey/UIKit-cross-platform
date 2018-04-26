@@ -15,7 +15,7 @@ public enum UIAlertControllerStyle {
 public class UIAlertController: UIViewController {
     override var animationTime: Double { return 0.3 }
 
-    public var message: String?
+    open var message: String?
     public let preferredStyle: UIAlertControllerStyle
     public private(set) var actions: [UIAlertAction] = []
 
@@ -27,14 +27,14 @@ public class UIAlertController: UIViewController {
         self.title = title
     }
 
-    public func addAction(_ action: UIAlertAction) {
+    open func addAction(_ action: UIAlertAction) {
         actions.append(action)
     }
 
     fileprivate var alertControllerView: UIAlertControllerView?
 
     override public func loadView() {
-        self.view = UIView()
+        self.view = UIAlertControllerBackdrop()
 
         let alertControllerView = UIAlertControllerView(
             title: self.title,
@@ -52,9 +52,6 @@ public class UIAlertController: UIViewController {
     override func makeViewAppear(animated: Bool, presentingViewController: UIViewController) {
         presentingViewController.view.addSubview(view)
         alertControllerView?.sizeToFit()
-
-        // Default is `nil`, meaning this wouldn't animate otherwise:
-        self.view.backgroundColor = .clear
 
         UIView.animate(withDuration: animated ? animationTime * 1.25 : 0.0, animations: {
             self.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
