@@ -24,4 +24,9 @@ open class UIResponder {
     open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         next?.touchesCancelled(touches, with: event)
     }
+
+    /// Returns whether we handled the press or not
+    open func handleHardwareBackButtonPress() -> Bool {
+        return next?.handleHardwareBackButtonPress() ?? false
+    }
 }
