@@ -248,8 +248,11 @@ class UIViewAnimationTests: XCTestCase {
             view.bounds.origin.x = 20
         })
 
-        let fromValue = view.layer.animations["bounds"]?.fromValue as? CGRect
-        XCTAssertEqual(fromValue?.origin.x ?? -1, CGFloat(5), accuracy: 0.01)
+        guard let fromValue = view.layer.animations["bounds"]?.fromValue as? CGRect else {
+            return XCTFail("fromValue must not be nil!")
+        }
+
+        XCTAssertEqual(fromValue.origin.x, CGFloat(5.0), accuracy: 0.01)
     }
 
     func testModifyLayerWhileAnimationIsInFlight() {
