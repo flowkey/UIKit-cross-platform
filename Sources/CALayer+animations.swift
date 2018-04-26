@@ -7,7 +7,7 @@
 //
 
 extension CALayer {
-    open func add(_ animation: CABasicAnimation, forKey key: String) {
+    open func add(_ animation: CABasicAnimation, forKey keyPath: String) {
         let copy = CABasicAnimation(from: animation)
         copy.creationTime = Timer()
 
@@ -16,16 +16,10 @@ extension CALayer {
             copy.fromValue = (_presentation ?? self).value(forKeyPath: keyPath)
         }
 
-        animations[key]?.animationGroup?.animationDidStop(finished: false)
+        copy.animationGroup?.queuedAnimations += 1
 
-        // Only queue animation if we're actually going to animate something
-        if copy.duration > 0 {
-            copy.animationGroup?.queuedAnimations += 1
-            animations[key] = copy
-        } else {
-            // XXX: Not sure this is needed @michaelknoch?
-            animations[key] = nil
-        }
+        animations[keyPath]?.animationGroup?.animationDidStop(finished: false)
+        animations[keyPath] = copy
     }
 
     open func removeAnimation(forKey key: String) {
@@ -37,12 +31,14 @@ extension CALayer {
     }
 
     func onWillSet(keyPath: AnimationKeyPath) {
-        if let animation = action(forKey: keyPath.rawValue) as? CABasicAnimation,
-            self.hasBeenRenderedInThisPartOfOverallLayerHierarchy || animation.animationGroup != nil, // animationGroup is non-nil when part of explicit UIAnimate block
+        let animationKey = keyPath.rawValue
+        if let animation = action(forKey: animationKey) as? CABasicAnimation,
+            self.hasBeenRenderedInThisPartOfOverallLayerHierarchy ||
+                animation.animationGroup != nil, // change is part of explicit UIAnimate block
             !disableAnimations,
             !CATransaction.disableActions
         {
-            add(animation, forKey: keyPath.rawValue)
+            add(animation, forKey: animationKey)
         }
     }
 
@@ -64,10 +60,7 @@ extension CALayer {
 
         animations.forEach { (key, animation) in
             let animationProgress = animation.progress(for: currentTime)
-
-            if animationProgress.isFinite {
-                update(presentation, for: animation, with: animationProgress)
-            }
+            update(presentation, for: animation, with: animationProgress)
 
             if animationProgress == 1 && animation.isRemovedOnCompletion {
                 animation.animationGroup?.animationDidStop(finished: true)
