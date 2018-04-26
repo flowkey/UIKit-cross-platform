@@ -5,7 +5,10 @@ open class UIViewController: UIResponder {
             loadViewIfNeeded()
             return _view
         }
-        set { _view = newValue }
+        set {
+            _view = newValue
+            newValue.next = self
+        }
     }
 
     open var viewIsLoaded: Bool {
