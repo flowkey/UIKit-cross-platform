@@ -8,6 +8,7 @@ open class UIViewController: UIResponder {
         set {
             _view = newValue
             newValue.next = self
+            viewDidLoad()
         }
     }
 
@@ -35,7 +36,6 @@ open class UIViewController: UIResponder {
     public func loadViewIfNeeded() {
         if !viewIsLoaded {
             loadView()
-            viewDidLoad()
         }
     }
 
