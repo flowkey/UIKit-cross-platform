@@ -6,27 +6,73 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import func Foundation.round
+
 public enum UIAlertControllerStyle {
     case actionSheet
+    case popover
     case alert
 }
 
 public class UIAlertController: UIViewController {
-    public var message: String?
-    public var preferredStyle: UIAlertControllerStyle
+    override var animationTime: Double { return 0.3 }
 
-    public var actions: [UIAlertAction]
+    open var message: String?
+    public let preferredStyle: UIAlertControllerStyle
+    public private(set) var actions: [UIAlertAction] = []
 
     public init(title: String?, message: String?, preferredStyle: UIAlertControllerStyle) {
         self.message = message
+        assert(message == nil, "We haven't implemented `message` yet")
         self.preferredStyle = preferredStyle
-        self.actions = []
-
         super.init(nibName: nil, bundle: nil)
         self.title = title
     }
 
-    public func addAction(_ action: UIAlertAction) {
+    open func addAction(_ action: UIAlertAction) {
         actions.append(action)
+    }
+
+    fileprivate var alertControllerView: UIAlertControllerView?
+
+    override public func loadView() {
+        self.view = UIAlertControllerBackdrop()
+
+        let alertControllerView = UIAlertControllerView(
+            title: self.title,
+            message: self.message,
+            actions: self.actions,
+            style: preferredStyle
+        )
+
+        view.addSubview(alertControllerView)
+        self.alertControllerView = alertControllerView
+        alertControllerView.next = self
+    }
+
+
+    override func makeViewAppear(animated: Bool, presentingViewController: UIViewController) {
+        presentingViewController.view.addSubview(view)
+        alertControllerView?.sizeToFit()
+
+        UIView.animate(
+            withDuration: animated ? animationTime * 1.25 : 0.0,
+            options: [.allowUserInteraction],
+            animations: { self.view.backgroundColor = UIColor.black.withAlphaComponent(0.5) }
+        )
+
+        self.alertControllerView?.center = CGPoint(
+            x: round(self.view.bounds.midX),
+            y: round(self.view.bounds.midY)
+        )
+    }
+
+    override func makeViewDisappear(animated: Bool, completion: @escaping (Bool) -> Void) {
+        UIView.animate(
+            withDuration: animated ? animationTime : 0.0,
+            options: [.allowUserInteraction],
+            animations: { view.alpha = 0 },
+            completion: completion
+        )
     }
 }

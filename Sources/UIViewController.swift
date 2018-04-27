@@ -5,7 +5,11 @@ open class UIViewController: UIResponder {
             loadViewIfNeeded()
             return _view
         }
-        set { _view = newValue }
+        set {
+            _view = newValue
+            newValue.next = self
+            viewDidLoad()
+        }
     }
 
     open var viewIsLoaded: Bool {
@@ -32,20 +36,16 @@ open class UIViewController: UIResponder {
     public func loadViewIfNeeded() {
         if !viewIsLoaded {
             loadView()
-            viewDidLoad()
         }
     }
 
     open func loadView() {
         view = UIView()
+        view.backgroundColor = .white
     }
 
     // Most of these methods are designed to be overriden in `UIViewController` subclasses
-    open func viewDidLoad() {
-        view.backgroundColor = .white
-        view.next = self // set responder
-    }
-
+    open func viewDidLoad() {}
     open func viewWillAppear(_ animated: Bool) {}
     open func viewDidAppear(_ animated: Bool) {}
     open func viewWillDisappear(_ animated: Bool) {}
@@ -53,7 +53,7 @@ open class UIViewController: UIResponder {
 
     open func viewWillLayoutSubviews() {}
 
-    private let animationTime = 0.4
+    internal var animationTime: Double { return 0.4 }
 
     open func present(
         _ otherViewController: UIViewController,
@@ -74,17 +74,7 @@ open class UIViewController: UIResponder {
 
         otherViewController.view.frame = UIScreen.main.bounds
         otherViewController.viewWillAppear(animated)
-
-        // TODO: Add a background modal overlay here.
-        self.view.addSubview(otherViewController.view)
-
-        if animated {
-            otherViewController.view.frame.origin.y = view.bounds.maxY
-            UIView.animate(withDuration: animationTime, options: [.allowUserInteraction], animations: {
-                otherViewController.view.frame.origin.y = view.bounds.origin.y
-            }, completion: nil)
-        }
-
+        otherViewController.makeViewAppear(animated: animated, presentingViewController: self)
         otherViewController.viewDidAppear(animated)
 
         otherViewController.viewWillLayoutSubviews()
@@ -102,18 +92,14 @@ open class UIViewController: UIResponder {
 
         viewWillDisappear(animated)
 
-        UIView.animate(
-            withDuration: animated ? animationTime : 0.0,
-            options: [],
-            animations: {
-                view.frame.origin.y = view.superview?.bounds.height ?? view.frame.height
-            }, completion: { _ in
-                self.view.removeFromSuperview()
-                self.viewDidDisappear(animated)
-                completion?()
+        // This comes before completion because we may want to check if any presentedViewControllers are present before the animation is completed. In that case we're not really "presenting" anything anymore so we should return `nil`. This is particularly important for a `UIAlertController` that presents another UIViewController after dismissing itself.
+        self.presentingViewController?.presentedViewController = nil
 
-                self.presentingViewController?.presentedViewController = nil
-                self.presentingViewController = nil
+        makeViewDisappear(animated: animated, completion: { _ in
+            self.view.removeFromSuperview()
+            self.viewDidDisappear(animated)
+            completion?()
+            self.presentingViewController = nil
         })
     }
 
@@ -132,5 +118,29 @@ open class UIViewController: UIResponder {
 
         self.dismiss(animated: true)
         return true
+    }
+
+
+    // MARK: Mocking UIPresentationController with these two methods for now!
+
+    internal func makeViewAppear(animated: Bool, presentingViewController: UIViewController) {
+        presentingViewController.view.addSubview(view)
+
+        let originalOriginY = view.frame.origin.y
+        view.frame.origin.y = presentingViewController.view.bounds.maxY
+
+        UIView.animate(withDuration: animated ? animationTime : 0.0, options: [.allowUserInteraction], animations: {
+            self.view.frame.origin.y = originalOriginY
+        }, completion: nil)
+    }
+
+    /// Note: you MUST call `completion` or you will end up in a broken state.
+    internal func makeViewDisappear(animated: Bool, completion: @escaping (Bool) -> Void) {
+        UIView.animate(
+            withDuration: animated ? animationTime : 0.0,
+            options: [.allowUserInteraction],
+            animations: {
+                view.frame.origin.y = view.superview?.bounds.height ?? view.frame.height
+        }, completion: completion)
     }
 }

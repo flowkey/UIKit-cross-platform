@@ -67,7 +67,12 @@ open class CALayer {
         superlayer = nil
     }
 
-    open var backgroundColor: CGColor?
+    open var backgroundColor: CGColor? {
+        willSet(newColor) {
+            guard newColor != backgroundColor else { return }
+            onWillSet(keyPath: .backgroundColor)
+        }
+    }
 
     open var frame: CGRect {
         get {

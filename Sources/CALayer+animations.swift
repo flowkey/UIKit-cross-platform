@@ -7,9 +7,8 @@
 //
 
 extension CALayer {
-    open func add(_ animation: CABasicAnimation, forKey key: String) {
+    open func add(_ animation: CABasicAnimation, forKey keyPath: String) {
         let copy = CABasicAnimation(from: animation)
-        copy.animationGroup?.queuedAnimations += 1
         copy.creationTime = Timer()
 
         // animation.fromValue is optional, set it to currently visible state if nil
@@ -17,8 +16,10 @@ extension CALayer {
             copy.fromValue = (_presentation ?? self).value(forKeyPath: keyPath)
         }
 
-        animations[key]?.animationGroup?.animationDidStop(finished: false)
-        animations[key] = copy
+        copy.animationGroup?.queuedAnimations += 1
+
+        animations[keyPath]?.animationGroup?.animationDidStop(finished: false)
+        animations[keyPath] = copy
     }
 
     open func removeAnimation(forKey key: String) {
@@ -30,13 +31,14 @@ extension CALayer {
     }
 
     func onWillSet(keyPath: AnimationKeyPath) {
-        if let animation = action(forKey: keyPath.rawValue) as? CABasicAnimation,
+        let animationKey = keyPath.rawValue
+        if let animation = action(forKey: animationKey) as? CABasicAnimation,
             self.hasBeenRenderedInThisPartOfOverallLayerHierarchy
                 || animation.wasCreatedInUIAnimateBlock,
             !self.disableAnimations,
             !CATransaction.disableActions
         {
-            add(animation, forKey: keyPath.rawValue)
+            add(animation, forKey: animationKey)
         }
     }
 
@@ -58,7 +60,6 @@ extension CALayer {
 
         animations.forEach { (key, animation) in
             let animationProgress = animation.progress(for: currentTime)
-
             update(presentation, for: animation, with: animationProgress)
 
             if animationProgress == 1 && animation.isRemovedOnCompletion {
@@ -74,6 +75,11 @@ extension CALayer {
         guard let keyPath = animation.keyPath else { return }
 
         switch keyPath {
+        case .backgroundColor:
+            guard let start = animation.fromValue as? UIColor else { return }
+            let end = animation.toValue as? UIColor ?? self.backgroundColor ?? UIColor.clear
+            presentation.backgroundColor = start.interpolation(to: end, progress: progress)
+
         case .position:
             guard let start = animation.fromValue as? CGPoint else { return }
             let end = animation.toValue as? CGPoint ?? self.position
@@ -117,6 +123,7 @@ extension CALayer {
 extension CALayer {
     func value(forKeyPath: AnimationKeyPath) -> AnimatableProperty? {
         switch forKeyPath as AnimationKeyPath  {
+        case .backgroundColor: return backgroundColor
         case .opacity: return opacity
         case .bounds: return bounds
         case .transform: return transform

@@ -49,6 +49,8 @@
 		5C27E8181ECB301900F5020D /* UIKit+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27E8051ECB301900F5020D /* UIKit+SDL.swift */; };
 		5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C361E221ECC348700B3F561 /* UIView+SDL.swift */; };
 		5C3716B61F10050600B2C366 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3716B51F10050600B2C366 /* Timer.swift */; };
+		5C3DCCEF2090F072001DEDAF /* UIAlertControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3DCCEE2090F072001DEDAF /* UIAlertControllerView.swift */; };
+		5C3DCD1D20920F07001DEDAF /* UIAlertControllerBackdrop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3DCD1C20920F07001DEDAF /* UIAlertControllerBackdrop.swift */; };
 		5C4AD7E3204EE2B70021DD4A /* AVPlayerItem+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4AD7E1204EE2B60021DD4A /* AVPlayerItem+Mac.swift */; };
 		5C4CD51120615FCF00217B4C /* SDL+handleEventsIfNeeded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4CD51020615FCF00217B4C /* SDL+handleEventsIfNeeded.swift */; };
 		5C4CD51A206160EC00217B4C /* UIView+printViewHierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4CD519206160EC00217B4C /* UIView+printViewHierarchy.swift */; };
@@ -307,6 +309,8 @@
 		5C27E8051ECB301900F5020D /* UIKit+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+SDL.swift"; sourceTree = "<group>"; };
 		5C361E221ECC348700B3F561 /* UIView+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SDL.swift"; sourceTree = "<group>"; };
 		5C3716B51F10050600B2C366 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		5C3DCCEE2090F072001DEDAF /* UIAlertControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertControllerView.swift; sourceTree = "<group>"; };
+		5C3DCD1C20920F07001DEDAF /* UIAlertControllerBackdrop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertControllerBackdrop.swift; sourceTree = "<group>"; };
 		5C4AD7E1204EE2B60021DD4A /* AVPlayerItem+Mac.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+Mac.swift"; sourceTree = "<group>"; };
 		5C4AD7E2204EE2B60021DD4A /* AVPlayerItem+Android.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+Android.swift"; sourceTree = "<group>"; };
 		5C4AD7E6204EE45F0021DD4A /* AVPlayerLayer+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayerLayer+Android.swift"; sourceTree = "<group>"; };
@@ -560,7 +564,7 @@
 				83CC3CD01F275DB600144E85 /* NSRange.swift */,
 				8337A8581F3B143400475F80 /* UIActivityIndicatorView.swift */,
 				83AB7B4B1F2B515B00C7997D /* UIAlertAction.swift */,
-				83AB7B471F2B504300C7997D /* UIAlertController.swift */,
+				5C3DCCED2090F04A001DEDAF /* UIAlertController */,
 				5C6AB7131ED3BECD006F90AC /* UIColor.swift */,
 				8318D27A1F0695080029816A /* UIControl.swift */,
 				5C6AB7601ED5762A006F90AC /* UIEdgeInsets.swift */,
@@ -667,6 +671,16 @@
 			);
 			name = SDL;
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		5C3DCCED2090F04A001DEDAF /* UIAlertController */ = {
+			isa = PBXGroup;
+			children = (
+				83AB7B471F2B504300C7997D /* UIAlertController.swift */,
+				5C3DCCEE2090F072001DEDAF /* UIAlertControllerView.swift */,
+				5C3DCD1C20920F07001DEDAF /* UIAlertControllerBackdrop.swift */,
+			);
+			name = UIAlertController;
 			sourceTree = "<group>";
 		};
 		5C664CD11FA0DBDF008F41D6 /* Shaders */ = {
@@ -1128,6 +1142,7 @@
 				5C6AB75F1ED575CF006F90AC /* UIScrollView.swift in Sources */,
 				5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */,
 				8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */,
+				5C3DCD1D20920F07001DEDAF /* UIAlertControllerBackdrop.swift in Sources */,
 				5C6AB7651ED5A0C3006F90AC /* UIEvent.swift in Sources */,
 				8337A8131F39F37500475F80 /* UIScreen.swift in Sources */,
 				83E5F8151EF8322800279C59 /* CGSize.swift in Sources */,
@@ -1147,6 +1162,7 @@
 				5C93AEBA208E2D1E005BE853 /* UIWindow+hardwareBackButton.swift in Sources */,
 				5C3716B61F10050600B2C366 /* Timer.swift in Sources */,
 				5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */,
+				5C3DCCEF2090F072001DEDAF /* UIAlertControllerView.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
 				5C2714A21F2A3FC50026BBA9 /* SDL+JNIExtensions.swift in Sources */,
 				0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */,
