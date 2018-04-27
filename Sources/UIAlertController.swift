@@ -6,6 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import func Foundation.round // for rounding CGFloats
+
 public enum UIAlertControllerStyle {
     case actionSheet
     case popover
