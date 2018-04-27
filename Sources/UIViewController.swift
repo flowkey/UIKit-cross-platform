@@ -45,10 +45,7 @@ open class UIViewController: UIResponder {
     }
 
     // Most of these methods are designed to be overriden in `UIViewController` subclasses
-    open func viewDidLoad() {
-        view.next = self // set responder
-    }
-
+    open func viewDidLoad() {}
     open func viewWillAppear(_ animated: Bool) {}
     open func viewDidAppear(_ animated: Bool) {}
     open func viewWillDisappear(_ animated: Bool) {}

@@ -6,7 +6,6 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-// TODO: to be adjusted
 private let verticalPadding: CGFloat = 18
 private let horizontalPadding: CGFloat = 24
 private let minWidth: CGFloat = 300
