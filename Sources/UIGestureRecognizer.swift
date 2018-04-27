@@ -34,7 +34,7 @@ open class UIGestureRecognizer {
             switch state {
             case .failed, .cancelled:
                 // touchesCancelled(touches: Set<UITouch>, with: UIEvent)
-                state = .possible
+                state = .cancelled
             case .recognized, .ended:
                 state = .possible
             default: break
@@ -66,7 +66,9 @@ open class UIGestureRecognizer {
     open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {}
 
     // Cancelled arrives when the in-flight gesture
-    open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {}
+    open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+        state = .cancelled
+    }
 }
 
 // Allow UIGestureRecognizers to be added to a `Set` etc.

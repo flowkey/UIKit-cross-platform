@@ -46,9 +46,6 @@ public class UITouch {
     func runTouchActionOnRecognizerHierachy(_ action: (_ recognizer: UIGestureRecognizer) -> Void) {
         for recognizer in gestureRecognizers {
             action(recognizer)
-
-            // actually continue when other recognizers shouldRecognizeSimultaneously
-            return
         }
     }
 }
