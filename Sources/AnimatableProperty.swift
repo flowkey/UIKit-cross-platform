@@ -23,17 +23,16 @@ extension CGColor: AnimatableProperty {
         let currentProgress = Int(progress.normalisedToUInt8())
         let maxProgress = Int(UInt8.max)
 
-        
-        let resultR = abs(startR + (endR - startR) * currentProgress / maxProgress)
-        let resultG = abs(startG + (endG - startG) * currentProgress / maxProgress)
-        let resultB = abs(startB + (endB - startB) * currentProgress / maxProgress)
-        let resultA = abs(startA + (endA - startA) * currentProgress / maxProgress)
+        let resultR = startR + (endR - startR) * currentProgress / maxProgress
+        let resultG = startG + (endG - startG) * currentProgress / maxProgress
+        let resultB = startB + (endB - startB) * currentProgress / maxProgress
+        let resultA = startA + (endA - startA) * currentProgress / maxProgress
 
         return CGColor((
-            r: UInt8(resultR),
-            g: UInt8(resultG),
-            b: UInt8(resultB),
-            a: UInt8(resultA)
+            r: UInt8(abs(resultR)),
+            g: UInt8(abs(resultG)),
+            b: UInt8(abs(resultB)),
+            a: UInt8(abs(resultA))
         ))
     }
 }
