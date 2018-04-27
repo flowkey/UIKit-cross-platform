@@ -48,7 +48,7 @@ public class UIWindow: UIView {
             if !gestureRecognizers.isEmpty {
                 gestureRecognizers.removeFirst()
 
-                gestureRecognizers.filter { $0.state == .began} .forEach {
+                gestureRecognizers.filter { $0.state != .cancelled } .forEach {
                     $0.touchesCancelled(allTouches, with: event)
                 }
             }
