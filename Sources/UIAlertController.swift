@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import func Foundation.round // for rounding CGFloats
+import func Foundation.round
 
 public enum UIAlertControllerStyle {
     case actionSheet
@@ -55,9 +55,11 @@ public class UIAlertController: UIViewController {
         presentingViewController.view.addSubview(view)
         alertControllerView?.sizeToFit()
 
-        UIView.animate(withDuration: animated ? animationTime * 1.25 : 0.0, animations: {
-            self.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        })
+        UIView.animate(
+            withDuration: animated ? animationTime * 1.25 : 0.0,
+            options: [.allowUserInteraction],
+            animations: { self.view.backgroundColor = UIColor.black.withAlphaComponent(0.5) }
+        )
 
         self.alertControllerView?.center = CGPoint(
             x: round(self.view.bounds.midX),
@@ -66,8 +68,11 @@ public class UIAlertController: UIViewController {
     }
 
     override func makeViewDisappear(animated: Bool, completion: @escaping (Bool) -> Void) {
-        UIView.animate(withDuration: animated ? animationTime : 0.0, animations: {
-            view.alpha = 0
-        }, completion: completion)
+        UIView.animate(
+            withDuration: animated ? animationTime : 0.0,
+            options: [.allowUserInteraction],
+            animations: { view.alpha = 0 },
+            completion: completion
+        )
     }
 }

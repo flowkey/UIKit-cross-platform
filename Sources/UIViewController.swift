@@ -141,7 +141,7 @@ open class UIViewController: UIResponder {
     internal func makeViewDisappear(animated: Bool, completion: @escaping (Bool) -> Void) {
         UIView.animate(
             withDuration: animated ? animationTime : 0.0,
-            options: [],
+            options: [.allowUserInteraction],
             animations: {
                 view.frame.origin.y = view.superview?.bounds.height ?? view.frame.height
         }, completion: completion)
