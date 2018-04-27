@@ -34,8 +34,8 @@ extension CALayer {
         let animationKey = keyPath.rawValue
         if let animation = action(forKey: animationKey) as? CABasicAnimation,
             self.hasBeenRenderedInThisPartOfOverallLayerHierarchy ||
-                animation.animationGroup != nil, // change is part of explicit UIAnimate block
-            !disableAnimations,
+                || animation.wasCreatedInUIAnimateBlock,
+            !self.disableAnimations,
             !CATransaction.disableActions
         {
             add(animation, forKey: animationKey)
@@ -131,5 +131,11 @@ extension CALayer {
         case .anchorPoint: return anchorPoint
         case .unknown: return nil
         }
+    }
+}
+
+private extension CABasicAnimation {
+    var wasCreatedInUIAnimateBlock: Bool {
+        return animationGroup != nil
     }
 }
