@@ -28,6 +28,7 @@ open class UIImageView: UIView {
 
     public var image: UIImage? {
         didSet {
+            if image === oldValue { return }
             updateTextureFromImage()
             setNeedsLayout()
         }

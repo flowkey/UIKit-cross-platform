@@ -33,6 +33,12 @@ open class Button: UIControl {
         didSet { self.setNeedsLayout() }
     }
 
+    public override var tintColor: UIColor! {
+        didSet {
+            if tintColor != nil { setTitleColor(tintColor, for: .normal) }
+        }
+    }
+
     override open func sizeToFit() {
         updateLabelAndImageForCurrentState()
         sizeToFitWasCalled = true
@@ -89,6 +95,7 @@ open class Button: UIControl {
 
         let imageView = UIImageView()
         imageView.isHidden = true
+        imageView.contentMode = .scaleAspectFit
         addSubview(imageView)
         self.imageView = imageView
 

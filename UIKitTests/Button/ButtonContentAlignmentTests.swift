@@ -42,7 +42,7 @@ class ButtonContentAlignmentTests: XCTestCase {
 
         XCTAssertEqual(button.contentHorizontalAlignment, .center)
         XCTAssertEqual(button.contentVerticalAlignment, .center)
-        XCTAssertEqual(button.titleLabel!.frame.origin.x, buttonSize.width / 2 - button.titleLabel!.bounds.midX)
+        XCTAssertEqual(button.titleLabel!.frame.origin.x, buttonSize.width / 2 - button.titleLabel!.bounds.midX, accuracy: 0.5)
         XCTAssertEqual(button.titleLabel!.frame.origin.y.rounded(), (buttonSize.height / 2 - button.titleLabel!.bounds.midY).rounded())
     }
 
@@ -146,9 +146,9 @@ class ButtonContentAlignmentTests: XCTestCase {
 
         XCTAssertEqual(button.contentHorizontalAlignment, .center)
         XCTAssertEqual(button.contentVerticalAlignment, .center)
-        XCTAssertEqual(button.imageView!.frame.origin.x, (buttonSize.width - (testImageSize.width + button.titleLabel!.frame.width)) / 2, accuracy: 0.0001)
+        XCTAssertEqual(button.imageView!.frame.origin.x, (buttonSize.width - (testImageSize.width + button.titleLabel!.frame.width)) / 2, accuracy: 0.5)
         XCTAssertEqual(button.imageView!.frame.origin.y, buttonSize.height / 2 - testImageSize.height / 2)
-        XCTAssertEqual(button.titleLabel!.frame.origin.x, (buttonSize.width - button.titleLabel!.frame.width + testImageSize.width) / 2, accuracy: 0.0001)
+        XCTAssertEqual(button.titleLabel!.frame.origin.x, (buttonSize.width - button.titleLabel!.frame.width + testImageSize.width) / 2, accuracy: 0.5)
         XCTAssertEqual(button.titleLabel!.frame.origin.y.rounded(), ((buttonSize.height - button.titleLabel!.frame.height) / 2).rounded())
     }
 

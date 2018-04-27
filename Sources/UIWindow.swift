@@ -17,6 +17,7 @@ public class UIWindow: UIView {
         if let viewController = rootViewController {
             viewController.loadViewIfNeeded()
             viewController.view.frame = self.bounds
+            viewController.view.backgroundColor = nil
             addSubview(viewController.view)
             viewController.next = self // set responder
         }

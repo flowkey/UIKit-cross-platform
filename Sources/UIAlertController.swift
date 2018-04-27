@@ -12,19 +12,18 @@ public enum UIAlertControllerStyle {
 }
 
 public class UIAlertController: UIViewController {
-    public var title: String?
     public var message: String?
     public var preferredStyle: UIAlertControllerStyle
 
     public var actions: [UIAlertAction]
 
     public init(title: String?, message: String?, preferredStyle: UIAlertControllerStyle) {
-        self.title = title
         self.message = message
         self.preferredStyle = preferredStyle
         self.actions = []
 
         super.init(nibName: nil, bundle: nil)
+        self.title = title
     }
 
     public func addAction(_ action: UIAlertAction) {

@@ -70,8 +70,14 @@ extension SDL {
                         break
                     }
                 }
-                if e.key.keysym.scancode.rawValue == 270 {
-                    onHardwareBackButtonPress?()
+
+                let scancode = e.key.keysym.scancode
+                if scancode == .androidHardwareBackButton || scancode == .escapeKey {
+                    // If not handled already:
+                    if window.deepestPresentedView().handleHardwareBackButtonPress() == false {
+                        // This emulates the behaviour that UIApplication (which is what `SDL` should be) is actually the last responder in the responder chain.
+                        SDL.onHardwareBackButtonPress?()
+                    }
                 }
             default:
                 break
@@ -80,6 +86,11 @@ extension SDL {
 
         return eventWasHandled
     }
+}
+
+extension SDL_Scancode {
+    static let escapeKey = SDL_Scancode(rawValue: 41)
+    static let androidHardwareBackButton = SDL_Scancode(rawValue: 270)
 }
 
 extension SDL {

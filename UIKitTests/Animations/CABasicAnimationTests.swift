@@ -60,6 +60,7 @@ class CABasicAnimationTests: XCTestCase {
         let layer = CALayer()
         layer.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
         layer.opacity = 0 // should be animated implicitly with duration of 0.25
+        layer.animations.first?.value.timingFunction = CAMediaTimingFunction(name: UIKit.kCAMediaTimingFunctionLinear)
 
         UIView.animateIfNeeded(at: Timer(startingAt: 125))
 
