@@ -13,9 +13,7 @@ open class UINavigationBar: UIView {
     open var backItem: UINavigationItem? {
         guard let items = items, items.count >= 2 else { return nil }
 
-        let lastItemIndex = items.endIndex - 1 // == items.indexOf(items.last)
-        let secondLastItemIndex = lastItemIndex - 1
-
+        let secondLastItemIndex = items.indices.last! - 1
         return items[secondLastItemIndex]
     }
 

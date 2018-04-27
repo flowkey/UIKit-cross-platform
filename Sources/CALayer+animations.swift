@@ -31,8 +31,9 @@ extension CALayer {
 
     func onWillSet(keyPath: AnimationKeyPath) {
         if let animation = action(forKey: keyPath.rawValue) as? CABasicAnimation,
-            self.hasBeenRenderedInThisPartOfOverallLayerHierarchy || animation.animationGroup != nil, // animationGroup is non-nil when part of explicit UIAnimate block
-            !disableAnimations,
+            self.hasBeenRenderedInThisPartOfOverallLayerHierarchy
+                || animation.wasCreatedInUIAnimateBlock,
+            !self.disableAnimations,
             !CATransaction.disableActions
         {
             add(animation, forKey: keyPath.rawValue)
@@ -123,5 +124,11 @@ extension CALayer {
         case .anchorPoint: return anchorPoint
         case .unknown: return nil
         }
+    }
+}
+
+private extension CABasicAnimation {
+    var wasCreatedInUIAnimateBlock: Bool {
+        return animationGroup != nil
     }
 }

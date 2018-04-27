@@ -19,7 +19,8 @@ open class UIBarButtonItemWithClosure {
 
     internal private (set) var systemItem: UIBarButtonSystemItem?
 
-    public init() {}
+    public init() {} // match iOS init
+
     public convenience init(barButtonSystemItem systemItem: UIBarButtonSystemItem, action: (() -> Void)? = nil) {
         self.init()
         self.action = action
