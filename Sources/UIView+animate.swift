@@ -10,10 +10,6 @@ extension UIView {
     static var layersWithAnimations = Set<CALayer>()
     static var currentAnimationPrototype: CABasicAnimationPrototype?
 
-    static var animationsArePending: Bool {
-        return !layersWithAnimations.isEmpty
-    }
-
     public static func animate(
         withDuration duration: Double,
         delay: Double = 0.0,
@@ -61,7 +57,6 @@ extension UIView {
     }
 
     static func animateIfNeeded(at currentTime: Timer) {
-        if layersWithAnimations.isEmpty { return }
         layersWithAnimations.forEach { $0.animate(at: currentTime) }
     }
 }

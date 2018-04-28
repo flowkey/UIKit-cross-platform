@@ -23,7 +23,6 @@ final public class SDL { // Only public for rootView!
 
     public static func initialize() {
         self.shouldQuit = false
-        self.firstRender = true
         self.glRenderer = nil // triggers GLRenderer deinit
 
         self.glRenderer = GLRenderer()
@@ -60,8 +59,6 @@ final public class SDL { // Only public for rootView!
         UIFont.fontRendererCache.removeAll()
     }
 
-    private static var firstRender = true // screen is black until first touch if we don't check for this
-
     /// Returns: time taken (in milliseconds) to render current frame
     public static func render() -> Double {
         let frameTimer = Timer()
@@ -71,17 +68,16 @@ final public class SDL { // Only public for rootView!
     }
 
     private static func doRender(at frameTimer: Timer) {
-        let eventWasHandled = handleEventsIfNeeded()
+        handleEventsIfNeeded()
         if shouldQuit { return }
 
-        if !DisplayLink.activeDisplayLinks.isEmpty {
-            DisplayLink.activeDisplayLinks.forEach { $0.callback() }
-        } else if !eventWasHandled && !firstRender && !UIView.animationsArePending {
-            // Sleep unless there are active touch inputs or pending animations
+        DisplayLink.activeDisplayLinks.forEach { $0.callback() }
+        UIView.animateIfNeeded(at: frameTimer)
+        window.sdlDrawAndLayoutTreeIfNeeded()
+
+        if CALayer.layerTreeIsDirty == false {
             return
         }
-
-        UIView.animateIfNeeded(at: frameTimer)
 
         glRenderer.clear()
 
@@ -89,11 +85,10 @@ final public class SDL { // Only public for rootView!
         GPU_LoadIdentity()
 
         glRenderer.clippingRect = window.bounds
-        window.sdlDrawAndLayoutTreeIfNeeded()
         window.layer.sdlRender()
         glRenderer.flip()
 
-        firstRender = false
+        CALayer.layerTreeIsDirty = false
     }
 }
 

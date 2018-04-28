@@ -21,6 +21,12 @@ struct ContentsGravityTransformation {
     /// `scale` is a proportion by which the `layer` will be transformed in each `width` and `height`
     let scale: CGSize
 
+    /// Default initializer with no offset and scale == 1
+    init() {
+        offset = .zero
+        scale = .defaultScale
+    }
+
     /// Warning, this assumes `layer` has `contents` and will crash otherwise!
     init(for layer: CALayer) {
         let scaledContents = CGSize(

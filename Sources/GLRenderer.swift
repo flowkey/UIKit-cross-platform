@@ -18,6 +18,10 @@ internal final class GLRenderer {
     // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
     // The easiest solution is just to work in 1:1 pixels
     init() {
+        #if DEBUG
+        GPU_SetDebugLevel(GPU_DEBUG_LEVEL_MAX)
+        #endif
+
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best")
 
     #if os(Android)

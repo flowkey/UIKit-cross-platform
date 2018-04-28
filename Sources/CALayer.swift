@@ -11,7 +11,9 @@ import SDL
 open class CALayer {
     open weak var delegate: CALayerDelegate?
 
-    open var contents: CGImage?
+    open var contents: CGImage? {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
 
     /// Defaults to 1.0 but if the layer is associated with a view,
     /// the view sets this value to match the screen.
@@ -24,7 +26,9 @@ open class CALayer {
     }
 
     internal (set) public weak var superlayer: CALayer?
-    internal (set) public var sublayers: [CALayer]?
+    internal (set) public var sublayers: [CALayer]? {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
 
     open func insertSublayer(_ layer: CALayer, at index: UInt32) {
         layer.removeFromSuperlayer()

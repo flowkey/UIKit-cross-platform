@@ -7,6 +7,8 @@
 //
 
 extension CALayer {
+    static var layerTreeIsDirty = true
+
     open func add(_ animation: CABasicAnimation, forKey keyPath: String) {
         let copy = CABasicAnimation(from: animation)
         copy.creationTime = Timer()
@@ -31,6 +33,7 @@ extension CALayer {
     }
 
     func onWillSet(keyPath: AnimationKeyPath) {
+        CALayer.layerTreeIsDirty = true
         let animationKey = keyPath.rawValue
         if let animation = action(forKey: animationKey) as? CABasicAnimation,
             self.hasBeenRenderedInThisPartOfOverallLayerHierarchy
