@@ -31,6 +31,7 @@ extension CALayer {
     }
 
     func onWillSet(keyPath: AnimationKeyPath) {
+        CALayer.layerTreeIsDirty = true
         let animationKey = keyPath.rawValue
         if let animation = action(forKey: animationKey) as? CABasicAnimation,
             self.hasBeenRenderedInThisPartOfOverallLayerHierarchy

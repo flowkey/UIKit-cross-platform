@@ -11,7 +11,9 @@ import SDL
 open class CALayer {
     open weak var delegate: CALayerDelegate?
 
-    open var contents: CGImage?
+    open var contents: CGImage? {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
 
     /// Defaults to 1.0 but if the layer is associated with a view,
     /// the view sets this value to match the screen.
@@ -24,7 +26,9 @@ open class CALayer {
     }
 
     internal (set) public weak var superlayer: CALayer?
-    internal (set) public var sublayers: [CALayer]?
+    internal (set) public var sublayers: [CALayer]? {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
 
     open func insertSublayer(_ layer: CALayer, at index: UInt32) {
         layer.removeFromSuperlayer()
@@ -157,7 +161,10 @@ open class CALayer {
         return CATransform3DGetAffineTransform(transform)
     }
 
-    public var isHidden = false
+    public var isHidden = false {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
+    
     public var cornerRadius: CGFloat = 0
 
     // TODO: Implement these!
@@ -254,6 +261,18 @@ extension CALayer: CustomStringConvertible {
                 - position: \(position)\(anchorPointDescription)\(colourDescription)
             """
     }
+}
+
+extension CALayer {
+    /**
+     Indicates whether a layer somewhere has changed since the last render pass.
+
+     The current implementation of this is quite simple and doesn't check whether the layer is actually in
+     the layer hierarchy or not. In theory this means that we're wasting render passes if users frequently
+     update layers that aren't in the tree. In practice it's not expected that UIKit users would do that
+     often enough for us to care about it.
+    **/
+    public static var layerTreeIsDirty = true
 }
 
 extension CALayer: Hashable {

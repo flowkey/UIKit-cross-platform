@@ -10,20 +10,18 @@ import SDL
 import struct Foundation.TimeInterval
 
 extension SDL {
-    static func handleEventsIfNeeded() -> Bool {
-        var eventWasHandled = false
+    static func handleEventsIfNeeded() {
         var e = SDL_Event()
 
         while SDL_PollEvent(&e) == 1 {
             switch SDL_EventType(rawValue: e.type) {
             case SDL_QUIT:
                 handleSDLQuit()
-                return true
+                return
             case SDL_MOUSEBUTTONDOWN:
                 let touch = UITouch(touchId: 0, at: .from(e.button), in: window, timestamp: e.timestampInSeconds)
                 let event = UIEvent(touch: touch)
                 window.sendEvent(event)
-                eventWasHandled = true
             case SDL_MOUSEMOTION:
                 if
                     let event = UIEvent.activeEvents.first,
@@ -42,7 +40,6 @@ extension SDL {
                         window.sendEvent(event)
                     }
                 }
-                eventWasHandled = true
             case SDL_MOUSEBUTTONUP:
                 if
                     let event = UIEvent.activeEvents.first,
@@ -52,7 +49,6 @@ extension SDL {
                     touch.phase = .ended
                     window.sendEvent(event)
                 }
-                eventWasHandled = true
             case SDL_KEYUP:
                 let keyModifier = SDL_Keymod(UInt32(e.key.keysym.mod))
                 if keyModifier.contains(KMOD_LSHIFT) || keyModifier.contains(KMOD_RSHIFT) {
@@ -83,8 +79,6 @@ extension SDL {
                 break
             }
         }
-
-        return eventWasHandled
     }
 }
 
