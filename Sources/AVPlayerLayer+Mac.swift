@@ -103,7 +103,7 @@ public final class AVPlayerLayer: CALayer {
         let pixelData = CVPixelBufferGetBaseAddress(pixelBuffer)!
         let pixelBytes = pixelData.assumingMemoryBound(to: UInt8.self)
 
-        if contents?.size != CGSize(width: width, height: height) {
+        if contents?.width != width || contents?.height != height {
             contentsScale = 1.0 // this doesn't work on init because we set contentsScale in UIView.init afterwards
             contents = VideoTexture(width: width, height: height, format: GPU_FORMAT_RGBA)
         }

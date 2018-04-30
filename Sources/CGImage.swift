@@ -12,7 +12,9 @@ import Foundation
 
 public class CGImage {
     let rawPointer: UnsafeMutablePointer<GPU_Image>
-    let size: CGSize
+
+    public let width: Int
+    public let height: Int
 
     /**
      Initialize a `CGImage` by passing a reference to a `GPU_Image`, which is usually the result of SDL_gpu's `GPU_*Image*` creation functions. May be null.
@@ -25,7 +27,8 @@ public class CGImage {
         GPU_SetBlendMode(rawPointer, GPU_BLEND_NORMAL_FACTOR_ALPHA)
         GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR)
 
-        size = CGSize(width: Int(rawPointer.pointee.w), height: Int(rawPointer.pointee.h))
+        width = Int(rawPointer.pointee.w)
+        height = Int(rawPointer.pointee.h)
     }
 
     convenience init?(surface: UnsafeMutablePointer<SDLSurface>) {

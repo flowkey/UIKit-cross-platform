@@ -13,7 +13,10 @@ import Foundation
 public class UIImage {
     public let cgImage: CGImage
 
-    public var size: CGSize { return cgImage.size }
+    public var size: CGSize {
+        return CGSize(width: CGFloat(cgImage.width), height: CGFloat(cgImage.height))
+    }
+
     public let scale: CGFloat
 
     public init(cgImage: CGImage, scale: CGFloat) {

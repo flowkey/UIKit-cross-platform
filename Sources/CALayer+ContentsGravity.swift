@@ -24,8 +24,8 @@ struct ContentsGravityTransformation {
     /// Warning, this assumes `layer` has `contents` and will crash otherwise!
     init(for layer: CALayer) {
         let scaledContents = CGSize(
-            width: layer.contents!.size.width / layer.contentsScale,
-            height: layer.contents!.size.height / layer.contentsScale
+            width: CGFloat(layer.contents!.width) / layer.contentsScale,
+            height: CGFloat(layer.contents!.height) / layer.contentsScale
         )
 
         let bounds = layer.bounds
