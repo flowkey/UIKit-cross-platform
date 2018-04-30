@@ -7,8 +7,6 @@
 //
 
 extension CALayer {
-    static var layerTreeIsDirty = true
-
     open func add(_ animation: CABasicAnimation, forKey keyPath: String) {
         let copy = CABasicAnimation(from: animation)
         copy.creationTime = Timer()

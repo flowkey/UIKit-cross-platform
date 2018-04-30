@@ -260,6 +260,18 @@ extension CALayer: CustomStringConvertible {
     }
 }
 
+extension CALayer {
+    /**
+     Indicates whether a layer somewhere has changed since the last render pass.
+
+     The current implementation of this is quite simple and doesn't check whether the layer is actually in
+     the layer hierarchy or not. In theory this means that we're wasting render passes if users frequently
+     update layers that aren't in the tree. In practice it's not expected that UIKit users would do that
+     often enough for us to care about it.
+    **/
+    static var layerTreeIsDirty = true
+}
+
 extension CALayer: Hashable {
     public var hashValue: Int {
         return ObjectIdentifier(self).hashValue
