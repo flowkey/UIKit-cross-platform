@@ -7,7 +7,8 @@
 //
 
 public struct CATransaction {
-    var areActionsDisabled = false
+    var actionsAreDisabled = false
+    var animationDuration: CGFloat = CALayer.defaultAnimationDuration
 
     private static var transactionStack = [CATransaction]()
 
@@ -19,13 +20,22 @@ public struct CATransaction {
         transactionStack.removeLast()
     }
 
-    public static func setDisableActions(_ newValue: Bool) {
-        if transactionStack.isEmpty { return }
-        transactionStack[transactionStack.count - 1].areActionsDisabled = newValue
+    public static func disableActions() -> Bool {
+        return transactionStack.last?.actionsAreDisabled ?? false
     }
 
-    static var disableActions: Bool {
-        return transactionStack.last?.areActionsDisabled ?? false
+    public static func setDisableActions(_ newValue: Bool) {
+        if transactionStack.isEmpty { return }
+        transactionStack[transactionStack.count - 1].actionsAreDisabled = newValue
+    }
+
+    public static func animationDuration() -> CGFloat {
+        return transactionStack.last?.animationDuration ?? CALayer.defaultAnimationDuration
+    }
+
+    public static func setAnimationDuration(_ newValue: CGFloat) {
+        if transactionStack.isEmpty { return }
+        transactionStack[transactionStack.count - 1].animationDuration = newValue
     }
 }
     

@@ -36,7 +36,7 @@ extension CALayer {
             self.hasBeenRenderedInThisPartOfOverallLayerHierarchy
                 || animation.wasCreatedInUIAnimateBlock,
             !self.disableAnimations,
-            !CATransaction.disableActions
+            !CATransaction.disableActions()
         {
             add(animation, forKey: animationKey)
         }
@@ -115,7 +115,7 @@ extension CALayer {
 
     static func defaultAction(forKey event: String) -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: AnimationKeyPath(stringLiteral: event))
-        animation.duration = defaultAnimationDuration
+        animation.duration = CATransaction.animationDuration()
         return animation
     }
 }
