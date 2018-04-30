@@ -161,7 +161,10 @@ open class CALayer {
         return CATransform3DGetAffineTransform(transform)
     }
 
-    public var isHidden = false
+    public var isHidden = false {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
+    
     public var cornerRadius: CGFloat = 0
 
     // TODO: Implement these!
@@ -269,7 +272,7 @@ extension CALayer {
      update layers that aren't in the tree. In practice it's not expected that UIKit users would do that
      often enough for us to care about it.
     **/
-    static var layerTreeIsDirty = true
+    public static var layerTreeIsDirty = true
 }
 
 extension CALayer: Hashable {
