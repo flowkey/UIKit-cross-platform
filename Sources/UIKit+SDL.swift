@@ -75,7 +75,8 @@ final public class SDL { // Only public for rootView!
         UIView.animateIfNeeded(at: frameTimer)
         window.sdlDrawAndLayoutTreeIfNeeded()
 
-        if CALayer.layerTreeIsDirty == false {
+        guard CALayer.layerTreeIsDirty else {
+            // Nothing changed, so we can leave the existing image on the screen.
             return
         }
 
