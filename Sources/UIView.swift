@@ -17,7 +17,10 @@ open class UIView: UIResponder, CALayerDelegate {
 
     open var frame: CGRect {
         get { return layer.frame }
-        set { layer.frame = newValue }
+        set {
+            layer.frame = newValue
+            setNeedsLayout()
+        }
     }
 
     open var bounds: CGRect {
