@@ -52,6 +52,7 @@ public class UIImage {
         let dataCount = Int32(data.count)
         let gpuImagePtr = data.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<Int8>) -> UnsafeMutablePointer<GPU_Image>? in
             let rw = SDL_RWFromMem(ptr, dataCount)
+            defer { SDL_FreeRW(rw) }
             return GPU_LoadImage_RW(rw, false)
         }
 
