@@ -41,7 +41,7 @@ public final class AVPlayerLayer: CALayer {
 
     private let displayLink = DisplayLink()
     private func addDisplayLinkIfNeeded() {
-        displayLink.callback = updateVideoFrame
+        displayLink.callback = { [unowned self] in self.updateVideoFrame() }
         displayLink.isPaused = false
     }
 
