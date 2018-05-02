@@ -36,9 +36,9 @@ final public class SDL { // Only public for rootView!
     static func handleSDLQuit() {
         print("SDL_QUIT was called")
         shouldQuit = true
+        unload() // unload first so deinit succeeds on e.g. `GPU_Image`s
         window = nil
         glRenderer = nil
-        unload()
         #if os(Android)
             try? jni.call("removeCallbacks", on: getSDLView())
         #endif
