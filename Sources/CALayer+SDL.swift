@@ -50,7 +50,6 @@ extension CALayer {
             parentOriginTransform.setAsSDLgpuMatrix()
         }
 
-
         let previousClippingRect = SDL.glRenderer.clippingRect
 
         if masksToBounds {
@@ -58,32 +57,29 @@ extension CALayer {
             SDL.glRenderer.clippingRect = previousClippingRect?.intersection(absoluteFrame) ?? absoluteFrame
         }
 
-        defer {
-            // Reset clipping bounds no matter what happens between now and the end of this function
-            // We can't `defer` within the previous `if` block because defers always execute at the end of (any) scope
-            if masksToBounds { SDL.glRenderer.clippingRect = previousClippingRect }
-        }
-
-
         if let mask = mask {
-
+            //If a mask exists, take it into account when rendering by combining your absoluteFrame with the mask's frame
+            
             let areaOfInterest = (mask._presentation ?? mask)
             
             let desiredOrigin = CGPoint(x: absoluteFrame.origin.x + areaOfInterest.frame.origin.x, y: absoluteFrame.origin.y + areaOfInterest.frame.origin.y)
             let desiredSize = areaOfInterest.frame.size
             let absoluteFrameOfMaskedArea = CGRect(origin: desiredOrigin, size: desiredSize)
             
-            SDL.glRenderer.clippingRect = previousClippingRect?.intersection(absoluteFrameOfMaskedArea) ?? absoluteFrameOfMaskedArea
-
+            //Do not intersect with the previousClippingRect, because in a case where both masksToBounds and mask are present,
+            //using previousClippingRect would not constrain the area further (or not constrain as much as it could)
+            SDL.glRenderer.clippingRect = SDL.glRenderer.clippingRect?.intersection(absoluteFrameOfMaskedArea) ?? absoluteFrameOfMaskedArea
 
             if let maskContents = mask.contents {
                 ShaderProgram.mask.activate() // must activate before setting parameters (below)!
                 ShaderProgram.mask.set(maskImage: maskContents, frame: mask.bounds)
             }
-            
-            
         }
-
+        
+        defer {
+            // Reset clipping bounds no matter what happens between now and the end of this function
+            SDL.glRenderer.clippingRect = previousClippingRect
+        }
         
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
