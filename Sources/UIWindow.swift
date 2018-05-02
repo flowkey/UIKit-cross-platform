@@ -41,17 +41,6 @@ public class UIWindow: UIView {
 
         case .moved:
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(allTouches, with: event) }
-            cancelTapGestureRecognizersIfTouchReachesPanGestureRecognizers(for: currentTouch)
-
-
-            var gestureRecognizers = currentTouch.gestureRecognizers.filter { !($0 is UITapGestureRecognizer) }
-            if !gestureRecognizers.isEmpty {
-                gestureRecognizers.removeFirst()
-
-                gestureRecognizers.filter { $0.state != .cancelled } .forEach {
-                    $0.touchesCancelled(allTouches, with: event)
-                }
-            }
 
             if !currentTouch.hasBeenCancelledByAGestureRecognizer {
                 hitView.touchesMoved(allTouches, with: event)
@@ -64,18 +53,6 @@ public class UIWindow: UIView {
             }
 
             UIEvent.activeEvents.remove(event)
-        }
-    }
-
-    private func cancelTapGestureRecognizersIfTouchReachesPanGestureRecognizers(for touch: UITouch) {
-        let cancelTapGestureRecognizers = touch.gestureRecognizers.contains(where: {
-            $0 is UIPanGestureRecognizer && $0.state == .changed
-        })
-
-        if cancelTapGestureRecognizers {
-            touch.gestureRecognizers.filter { $0 is UITapGestureRecognizer } .forEach {
-                $0.touchesCancelled([touch], with: UIEvent())
-            }
         }
     }
 }

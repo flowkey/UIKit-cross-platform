@@ -37,6 +37,8 @@ open class UIGestureRecognizer {
                 state = .cancelled
             case .recognized, .ended:
                 state = .possible
+            case .changed:
+                cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
             default: break
             }
         }
@@ -68,6 +70,25 @@ open class UIGestureRecognizer {
     // Cancelled arrives when the in-flight gesture
     open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
         state = .cancelled
+    }
+}
+
+private extension UIGestureRecognizer {
+    private func cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously() {
+        guard let touch = self.trackedTouch else { return }
+
+        touch.gestureRecognizers.filter {
+            $0 != self && $0.state != .cancelled
+        } .forEach {
+            if
+                let delegate = $0.delegate,
+                delegate.gestureRecognizer($0, shouldRecognizeSimultaneouslyWith: self)
+            {
+                return
+            }
+
+            $0.touchesCancelled([touch], with: UIEvent())
+        }
     }
 }
 
