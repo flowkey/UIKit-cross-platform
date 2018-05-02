@@ -42,7 +42,11 @@ open class UIView: UIResponder, CALayerDelegate {
 
     open let safeAreaInsets: UIEdgeInsets = .zero
 
-    open var mask: UIView?
+    open var mask: UIView? {
+        willSet(newValue) {
+            layer.mask = newValue?.layer
+        }
+    }
 
     open var isHidden: Bool {
         get { return layer.isHidden }

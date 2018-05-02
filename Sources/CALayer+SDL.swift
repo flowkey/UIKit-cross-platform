@@ -65,11 +65,26 @@ extension CALayer {
         }
 
 
-        if let mask = mask, let maskContents = mask.contents {
-            ShaderProgram.mask.activate() // must activate before setting parameters (below)!
-            ShaderProgram.mask.set(maskImage: maskContents, frame: mask.bounds)
+        if let mask = mask {
+
+            let areaOfInterest = (mask._presentation ?? mask)
+            
+            let desiredOrigin = CGPoint(x: absoluteFrame.origin.x + areaOfInterest.frame.origin.x, y: absoluteFrame.origin.y + areaOfInterest.frame.origin.y)
+            let desiredSize = areaOfInterest.frame.size
+            let absoluteFrameOfMaskedArea = CGRect(origin: desiredOrigin, size: desiredSize)
+            
+            SDL.glRenderer.clippingRect = previousClippingRect?.intersection(absoluteFrameOfMaskedArea) ?? absoluteFrameOfMaskedArea
+
+
+            if let maskContents = mask.contents {
+                ShaderProgram.mask.activate() // must activate before setting parameters (below)!
+                ShaderProgram.mask.set(maskImage: maskContents, frame: mask.bounds)
+            }
+            
+            
         }
 
+        
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
             SDL.glRenderer.fill(
