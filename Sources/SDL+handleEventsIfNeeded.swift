@@ -50,6 +50,7 @@ extension SDL {
                     window.sendEvent(event)
                 }
             case SDL_KEYUP:
+                #if DEBUG
                 let keyModifier = SDL_Keymod(UInt32(e.key.keysym.mod))
                 if keyModifier.contains(KMOD_LSHIFT) || keyModifier.contains(KMOD_RSHIFT) {
                     switch e.key.keysym.sym {
@@ -66,6 +67,15 @@ extension SDL {
                         break
                     }
                 }
+
+                if keyModifier.contains(KMOD_LGUI) || keyModifier.contains(KMOD_RGUI) {
+                    if e.key.keysym.sym == 114 { // CMD-R
+                        handleSDLQuit()
+                        SDL.initialize()
+                        SDL.onReload?()
+                    }
+                }
+                #endif
 
                 let scancode = e.key.keysym.scancode
                 if scancode == .androidHardwareBackButton || scancode == .escapeKey {
@@ -88,9 +98,13 @@ extension SDL_Scancode {
 }
 
 extension SDL {
+    public static var onHardwareBackButtonPress: (() -> Void)?
+
+    #if DEBUG
     public static var onPressPlus: (() -> Void)?
     public static var onPressMinus: (() -> Void)?
-    public static var onHardwareBackButtonPress: (() -> Void)?
+    public static var onReload: (() -> Void)?
+    #endif
 }
 
 extension SDL_Keymod: OptionSet {}
