@@ -69,12 +69,12 @@ public class UIImage {
 
 private extension String {
     func pathAndExtension() -> (pathWithoutExtension: String, fileExtension: String) {
-        let path = self.asAbsolutePath() as NSString
+        let path = NSString(string: self.asAbsolutePath())
         return (path.deletingPathExtension, "." + path.pathExtension)
     }
 
     func extractImageScale() -> CGFloat {
-        let pathWithoutExtension = (self as NSString).deletingPathExtension
+        let pathWithoutExtension = NSString(string: self).deletingPathExtension
 
         if pathWithoutExtension.hasSuffix("@3x") {
             return 3.0
