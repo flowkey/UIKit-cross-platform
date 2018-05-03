@@ -26,13 +26,9 @@ public class UIImage {
 
     public convenience init?(named name: String) {
         let (pathWithoutExtension, fileExtension) = name.pathAndExtension()
+        let possibleFileExtensions = ["", ".\(fileExtension)", ".png", ".jpg", ".jpeg", ".bmp"]
 
-        let possibleFileExtensions = ((fileExtension != nil) ?
-            [fileExtension!] :
-            [".png", ".jpg", ".bmp"]
-        )
-
-        // scale can be max @3x at time of writing
+        // e.g. ["@3x", "@2x", "@1x", ""]
         let scale = Int(UIScreen.main.scale.rounded())
         let possibleScaleStrings = stride(from: scale, through: 1, by: -1)
             .map { "@\($0)x" }
@@ -79,20 +75,13 @@ private extension String {
      - the path without its extension
      - the extension itself (or `nil` if none was present)
      **/
-    func pathAndExtension() -> (pathWithoutExtension: String, fileExtension: String?) {
-        let path = self.asAbsolutePath()
-        let lastFourCharacters = path.suffix(4)
-
-        if lastFourCharacters.first == "." {
-            return (String(path.dropLast(4)), String(lastFourCharacters))
-        } else {
-            // We have a path that doesn't end with ".png" etc:
-            return (path, nil)
-        }
+    func pathAndExtension() -> (pathWithoutExtension: String, fileExtension: String) {
+        let path = self.asAbsolutePath() as NSString
+        return (path.deletingPathExtension, path.pathExtension)
     }
 
     func extractImageScale() -> CGFloat {
-        let pathWithoutExtension = self.dropLast(4)
+        let pathWithoutExtension = (self as NSString).deletingPathExtension
 
         if pathWithoutExtension.hasSuffix("@3x") {
             return 3.0
