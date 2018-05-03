@@ -26,7 +26,7 @@ public class UIImage {
 
     public convenience init?(named name: String) {
         let (pathWithoutExtension, fileExtension) = name.pathAndExtension()
-        let possibleFileExtensions = ["", ".\(fileExtension)", ".png", ".jpg", ".jpeg", ".bmp"]
+        let possibleFileExtensions = [fileExtension, ".png", ".jpg", ".jpeg", ".bmp"]
 
         // e.g. ["@3x", "@2x", "@1x", ""]
         let scale = Int(UIScreen.main.scale.rounded())
@@ -68,16 +68,9 @@ public class UIImage {
 }
 
 private extension String {
-    /**
-     Get the absolute path of the current string (if needed / possible on this platform), and split the file extension from it (if one is present).
-
-     Returns:
-     - the path without its extension
-     - the extension itself (or `nil` if none was present)
-     **/
     func pathAndExtension() -> (pathWithoutExtension: String, fileExtension: String) {
         let path = self.asAbsolutePath() as NSString
-        return (path.deletingPathExtension, path.pathExtension)
+        return (path.deletingPathExtension, "." + path.pathExtension)
     }
 
     func extractImageScale() -> CGFloat {
