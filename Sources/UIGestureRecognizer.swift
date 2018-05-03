@@ -78,7 +78,7 @@ private extension UIGestureRecognizer {
         guard let touch = self.trackedTouch else { return }
 
         touch.gestureRecognizers.filter {
-            $0 != self && $0.state != .cancelled
+            $0 != self && $0.state == .began
         } .forEach {
             if
                 let delegate = $0.delegate,
