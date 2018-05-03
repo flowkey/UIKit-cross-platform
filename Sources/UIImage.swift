@@ -12,39 +12,45 @@ import Foundation
 
 public class UIImage {
     public let cgImage: CGImage
-
-    public var size: CGSize {
-        return CGSize(width: CGFloat(cgImage.width), height: CGFloat(cgImage.height))
-    }
-
+    public let size: CGSize
     public let scale: CGFloat
 
     public init(cgImage: CGImage, scale: CGFloat) {
         self.cgImage = cgImage
         self.scale = scale
+        self.size = CGSize(
+            width: CGFloat(cgImage.width),
+            height: CGFloat(cgImage.height)
+        )
+    }
+
+    public convenience init?(named name: String) {
+        let (pathWithoutExtension, fileExtension) = name.pathAndExtension()
+        let possibleFileExtensions = [fileExtension, ".png", ".jpg", ".jpeg", ".bmp"]
+
+        // e.g. ["@3x", "@2x", "@1x", ""]
+        let scale = Int(UIScreen.main.scale.rounded())
+        let possibleScaleStrings = stride(from: scale, through: 1, by: -1)
+            .map { "@\($0)x" }
+            + [""] // it's possible to have no scale string (e.g. "image.png")
+
+        for ext in possibleFileExtensions {
+            for scaleString in possibleScaleStrings {
+                let attemptedFilePath = "\(pathWithoutExtension)\(scaleString)\(ext)"
+                if let cgImage = CGImage(GPU_LoadImage(attemptedFilePath)) {
+                    let scale = attemptedFilePath.extractImageScale()
+                    self.init(cgImage: cgImage, scale: scale)
+                    return
+                }
+            }
+        }
+
+        return nil
     }
 
     public convenience init?(path: String) {
-        #if os(macOS)
-        var path = path
-        if !path.hasPrefix("/") { // make absolute path if one wasn't already provided.
-            path = Bundle(for: UIImage.self).path(forResource: path, ofType: nil) ?? path
-        }
-        #endif
-
         guard let cgImage = CGImage(GPU_LoadImage(path)) else { return nil }
-
-        let pathWithoutExtension = String(path.dropLast(4))
-        let scale: CGFloat
-        if pathWithoutExtension.hasSuffix("@2x") {
-            scale = 2.0
-        } else if pathWithoutExtension.hasSuffix("@3x") {
-            scale = 3.0
-        } else {
-            scale = 1.0
-        }
-
-        self.init(cgImage: cgImage, scale: scale)
+        self.init(cgImage: cgImage, scale: path.extractImageScale())
     }
 
     public convenience init?(data: Data) {
@@ -58,5 +64,35 @@ public class UIImage {
 
         guard let cgImage = CGImage(gpuImagePtr) else { return nil }
         self.init(cgImage: cgImage, scale: 1.0) // matches iOS
+    }
+}
+
+private extension String {
+    func pathAndExtension() -> (pathWithoutExtension: String, fileExtension: String) {
+        let path = NSString(string: self.asAbsolutePath())
+        return (path.deletingPathExtension, "." + path.pathExtension)
+    }
+
+    func extractImageScale() -> CGFloat {
+        let pathWithoutExtension = NSString(string: self).deletingPathExtension
+
+        if pathWithoutExtension.hasSuffix("@3x") {
+            return 3.0
+        } else if pathWithoutExtension.hasSuffix("@2x") {
+            return 2.0
+        }
+
+        return 1.0
+    }
+
+    private func asAbsolutePath() -> String {
+        #if os(macOS)
+        if !self.hasPrefix("/") {
+            return Bundle(for: UIImage.self).path(forResource: self, ofType: nil) ?? self
+        }
+        // Mac can fall through to the following code if we already have an absolute path:
+        #endif
+        // Android doesn't need absolute paths:
+        return self
     }
 }
