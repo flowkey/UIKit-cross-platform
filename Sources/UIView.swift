@@ -18,20 +18,20 @@ open class UIView: UIResponder, CALayerDelegate {
     open var frame: CGRect {
         get { return layer.frame }
         set {
-            layer.frame = newValue
             if frame != newValue {
                 needsLayout = true
             }
+            layer.frame = newValue
         }
     }
 
     open var bounds: CGRect {
         get { return layer.bounds }
         set {
-            layer.bounds = newValue
             if bounds != newValue {
                 needsLayout = true
             }
+            layer.bounds = newValue
         }
     }
 
