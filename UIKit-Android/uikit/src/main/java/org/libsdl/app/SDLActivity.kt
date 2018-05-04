@@ -33,7 +33,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     private var mSurface: SurfaceView
-    private var mIsPaused = false
     private var mIsSurfaceReady = false
     private var mHasFocus = false
 
@@ -107,8 +106,12 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         Log.v(TAG, "onWindowFocusChanged(): " + hasFocus)
 
         this.mHasFocus = hasFocus
+
         if (hasFocus) {
-            handleSurfaceResume()
+            handleResume()
+        } else {
+            // XXX: this is incredibly annoying if you get a modal notification while learning etc.
+            removeFrameCallbackAndQuit()
         }
     }
 
@@ -145,23 +148,21 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     private fun doNativeInitAndPostFrameCallbackIfNotRunning() {
-        // This is the entry point to the C app.
         if (this.isRunning) return
         this.isRunning = true
         this.nativeInit()
         Choreographer.getInstance().postFrameCallback(this)
     }
 
+    fun removeFrameCallbackAndQuit() {
+        // Without this check it's possible to try to "nativeRender" when the SDL.window is nil
+        if (!isRunning) { return }
 
-    private fun removeFrameCallbackAndPause() {
-        // Send a removeFrameCallbackAndQuit message to the application
+        // Remove any frame callback that may exist to ensure we don't try to render after destroy
         // This eventually stops the run loop and nulls the native SDL.window
         Choreographer.getInstance().removeFrameCallback(this)
         this.isRunning = false
-    }
 
-    fun removeFrameCallbackAndQuit() {
-        this.removeFrameCallbackAndPause()
         this.nativeQuit()
 
         // cleanup UIKit after nativeQuit
@@ -211,10 +212,12 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * every time we get one of those events, only if it comes after surfaceDestroyed
      */
     private fun handleResume() {
-        if (this.mIsPaused && this.mIsSurfaceReady && this.mHasFocus) {
-            this.mIsPaused = false
+        Log.v(TAG, "handleResume()")
+        if (!isRunning && mIsSurfaceReady && mHasFocus) {
+            Log.d(TAG, "handleResume, all conditions met")
             this.nativeResume()
             this.handleSurfaceResume()
+            doNativeInitAndPostFrameCallbackIfNotRunning() // does what nativeResume used to
         }
     }
 
@@ -302,9 +305,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         Log.v(TAG, "surfaceDestroyed()")
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
-        removeFrameCallbackAndPause()
+        removeFrameCallbackAndQuit()
     }
-
 }
 
 
