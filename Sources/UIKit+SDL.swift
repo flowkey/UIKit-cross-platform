@@ -22,7 +22,7 @@ final public class SDL { // Only public for rootView!
     fileprivate static var shouldQuit = false
 
     public static var isInitialized: Bool {
-        return rootView != nil && glRenderer != nil
+        return window != nil && glRenderer != nil
     }
 
     public static func initialize() {
