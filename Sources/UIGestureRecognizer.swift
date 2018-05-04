@@ -82,10 +82,7 @@ private extension UIGestureRecognizer {
         }
 
         otherRecognizersThatHaveBeganToRecogize.forEach {
-            if
-                let delegate = $0.delegate,
-                delegate.gestureRecognizer($0, shouldRecognizeSimultaneouslyWith: self)
-            {
+            if $0.delegate?.gestureRecognizer($0, shouldRecognizeSimultaneouslyWith: self) == true {
                 return
             }
 
