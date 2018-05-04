@@ -10,14 +10,16 @@
 import SDL
 import CJNI
 
-public var onNativeInitCompleted: (() -> Void)? {
-    didSet {
-        if SDL.isInitialized {
-            onNativeInitCompleted?()
-            onNativeInitCompleted = nil
-        }
+private var onNativeInitCompleted: (() -> Void)?
+public func setOnNativeInitCompleted(_ callback: (() -> Void)?) {
+    onNativeInitCompleted = callback
+    if SDL.isInitialized {
+        onNativeInitCompleted?()
+        onNativeInitCompleted = nil
     }
+
 }
+
 
 @_silgen_name("SDL_Android_Init")
 public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
@@ -29,6 +31,7 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
     SDL.initialize()
     
     onNativeInitCompleted?()
+    onNativeInitCompleted = nil
     
     return 0
 }
