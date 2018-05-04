@@ -41,14 +41,11 @@ extension CALayer {
 
         self.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
 
-
         // We only actually set the transform here to avoid unneccesary work if the guard above fails
         modelViewTransform.setAsSDLgpuMatrix()
-        defer { // Queue this up here in case we return before the actual end of the function
-            // We'll be done rendering this part of the tree by the time this is called.
-            // To render further siblings we need to return to our parent's transform (at its `origin`).
-            parentOriginTransform.setAsSDLgpuMatrix()
-        }
+
+
+        // MARK: Masking / clipping rect
 
         let previousClippingRect = SDL.glRenderer.clippingRect
 
@@ -57,30 +54,22 @@ extension CALayer {
             SDL.glRenderer.clippingRect = previousClippingRect?.intersection(absoluteFrame) ?? absoluteFrame
         }
 
+        // If a mask exists, take it into account when rendering by combining absoluteFrame with the mask's frame
         if let mask = mask {
-            //If a mask exists, take it into account when rendering by combining your absoluteFrame with the mask's frame
-            
-            let areaOfInterest = (mask._presentation ?? mask)
-            
-            let desiredOrigin = CGPoint(x: absoluteFrame.origin.x + areaOfInterest.frame.origin.x, y: absoluteFrame.origin.y + areaOfInterest.frame.origin.y)
-            let desiredSize = areaOfInterest.frame.size
-            let absoluteFrameOfMaskedArea = CGRect(origin: desiredOrigin, size: desiredSize)
-            
-            //Do not intersect with the previousClippingRect, because in a case where both masksToBounds and mask are present,
-            //using previousClippingRect would not constrain the area further (or not constrain as much as it could)
-            SDL.glRenderer.clippingRect = SDL.glRenderer.clippingRect?.intersection(absoluteFrameOfMaskedArea) ?? absoluteFrameOfMaskedArea
+            // XXX: we're probably not doing exactly what iOS does if there is a transform on here somewhere
+            let maskFrame = (mask._presentation ?? mask).frame
+            let maskAbsoluteFrame = maskFrame.offsetBy(absoluteFrame.origin)
+
+            // Don't intersect with previousClippingRect: in a case where both `masksToBounds` and `mask` are
+            // present, using previousClippingRect would not constrain the area as much as it might otherwise
+            SDL.glRenderer.clippingRect = SDL.glRenderer.clippingRect?.intersection(maskAbsoluteFrame) ?? maskAbsoluteFrame
 
             if let maskContents = mask.contents {
                 ShaderProgram.mask.activate() // must activate before setting parameters (below)!
                 ShaderProgram.mask.set(maskImage: maskContents, frame: mask.bounds)
             }
         }
-        
-        defer {
-            // Reset clipping bounds no matter what happens between now and the end of this function
-            SDL.glRenderer.clippingRect = previousClippingRect
-        }
-        
+
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
             SDL.glRenderer.fill(
@@ -146,7 +135,10 @@ extension CALayer {
             }
         }
 
-        // Defer blocks (above) reset the global `transform` and `clippingRect`s here
-        // to those that were set before we started rendering `self`.
+        // We're done rendering this part of the tree
+        // To render further siblings we need to return to our parent's transform (at its `origin`).
+        parentOriginTransform.setAsSDLgpuMatrix()
+
+        SDL.glRenderer.clippingRect = previousClippingRect
     }
 }
