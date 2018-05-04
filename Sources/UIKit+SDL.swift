@@ -102,12 +102,11 @@ private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
 
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeRender")
 public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
-
     guard SDL.window != nil else {
         assertionFailure("Attempted to render while the window was nil")
         return
     }
-    
+
     let timeTaken = SDL.render()
     let remainingFrameTime = maxFrameRenderTimeInMilliseconds - timeTaken
     CFRunLoopRunInMode(kCFRunLoopDefaultMode, max(0.001, remainingFrameTime / 1000), true)
