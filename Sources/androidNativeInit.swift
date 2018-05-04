@@ -1,5 +1,5 @@
 //
-//  setAndroidMain.swift
+//  androidNativeInit.swift
 //  UIKit
 //
 //  Created by Chris on 10.10.17.
@@ -10,9 +10,17 @@
 import SDL
 import CJNI
 
-private var onNativeInitCompleted: (()->Void)?
-public func setOnNativeInitCompleted(_ callback: (()->Void)?) {
-    onNativeInitCompleted = callback
+private var _onNativeInitCompleted: (() -> Void)?
+public func setOnNativeInitCompleted(_ callback: (() -> Void)?) {
+    _onNativeInitCompleted = callback
+    if SDL.isInitialized {
+        onNativeInitCompleted()
+    }
+}
+
+private func onNativeInitCompleted() {
+    _onNativeInitCompleted?()
+    _onNativeInitCompleted = nil
 }
 
 @_silgen_name("SDL_Android_Init")
@@ -24,7 +32,7 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
     SDL_SetMainReady()
     SDL.initialize()
     
-    onNativeInitCompleted?()
+    onNativeInitCompleted()
     
     return 0
 }
