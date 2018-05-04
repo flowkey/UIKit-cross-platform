@@ -17,12 +17,22 @@ open class UIView: UIResponder, CALayerDelegate {
 
     open var frame: CGRect {
         get { return layer.frame }
-        set { layer.frame = newValue }
+        set {
+            if frame != newValue {
+                needsLayout = true
+            }
+            layer.frame = newValue
+        }
     }
 
     open var bounds: CGRect {
         get { return layer.bounds }
-        set { layer.bounds = newValue }
+        set {
+            if bounds != newValue {
+                needsLayout = true
+            }
+            layer.bounds = newValue
+        }
     }
 
     open var center: CGPoint {
