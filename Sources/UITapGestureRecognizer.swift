@@ -29,7 +29,7 @@ open class UITapGestureRecognizer: UIGestureRecognizer {
             let trackedTouchLocationInView = trackedTouch.location(in: view)
             if
                 let view = self.view, view.point(inside: trackedTouchLocationInView, with: event),
-                self.state != .cancelled
+                self.state == .began
             {
                 self.state = .recognized
                 onPress?()

@@ -34,7 +34,7 @@ open class UIGestureRecognizer {
             switch state {
             case .failed, .cancelled:
                 // touchesCancelled(touches: Set<UITouch>, with: UIEvent)
-                state = .cancelled
+                state = .possible
             case .recognized, .ended:
                 state = .possible
             case .changed:
