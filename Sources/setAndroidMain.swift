@@ -10,9 +10,13 @@
 import SDL
 import CJNI
 
-private var onNativeInitCompleted: (()->Void)?
-public func setOnNativeInitCompleted(_ callback: (()->Void)?) {
-    onNativeInitCompleted = callback
+public var onNativeInitCompleted: (() -> Void)? {
+    didSet {
+        if SDL.isInitialized {
+            onNativeInitCompleted?()
+            onNativeInitCompleted = nil
+        }
+    }
 }
 
 @_silgen_name("SDL_Android_Init")

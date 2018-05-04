@@ -21,6 +21,10 @@ final public class SDL { // Only public for rootView!
 
     fileprivate static var shouldQuit = false
 
+    public static var isInitialized: Bool {
+        return rootView != nil && glRenderer != nil
+    }
+
     public static func initialize() {
         self.shouldQuit = false
         self.glRenderer = nil // triggers GLRenderer deinit
