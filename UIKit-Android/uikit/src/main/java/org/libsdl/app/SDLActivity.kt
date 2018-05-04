@@ -169,11 +169,12 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     override fun doFrame(frameTimeNanos: Long) {
-        this.nativeRender()
-
-        // Request the next frame only after rendering the current one.
-        // This should skip next frame if the current one takes too long.
-        Choreographer.getInstance().postFrameCallback(this)
+        if (mIsSurfaceReady) {
+            this.nativeRender()
+            // Request the next frame only after rendering the current one.
+            // This should skip next frame if the current one takes too long.
+            Choreographer.getInstance().postFrameCallback(this)
+        }
     }
 
     /** Called by SDL using JNI. */
@@ -231,7 +232,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         handleResume()
     }
 
-    // Called when the surface is resized
+    // Called when the surface is resized, e.g. orientation change or activity creation
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         Log.v(TAG, "surfaceChanged()")
 
