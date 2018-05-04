@@ -41,27 +41,17 @@ class TouchHandlingTests: XCTestCase {
     }
 
     func testCancelsTouchesInView() {
-        let anotherSubview = UIView(frame: window.bounds)
-        subsubview.addSubview(anotherSubview)
-
-        let anotherGestureRecognizer = TestGestureRecognizer()
-        anotherSubview.addGestureRecognizer(anotherGestureRecognizer)
+        recognizer.cancelsTouchesInView = true
 
         handleTouchDown(CGPoint(x: 10, y: 10))
         handleTouchMove(CGPoint(x: 15, y: 10))
         handleTouchUp(CGPoint(x: 15, y: 10))
 
         XCTAssertFalse(view.touchesMovedWasCalled)
-        XCTAssertTrue(anotherGestureRecognizer.onActionWasCalled)
     }
 
     func testDoesNotCancelTouchesInView() {
-        let anotherSubview = UIView(frame: window.bounds)
-        subsubview.addSubview(anotherSubview)
-
-        let anotherGestureRecognizer = UIGestureRecognizer()
-        anotherGestureRecognizer.cancelsTouchesInView = false
-        anotherSubview.addGestureRecognizer(anotherGestureRecognizer)
+        recognizer.cancelsTouchesInView = false
 
         handleTouchDown(CGPoint(x: 10, y: 10))
         handleTouchMove(CGPoint(x: 15, y: 10))
@@ -69,6 +59,22 @@ class TouchHandlingTests: XCTestCase {
 
         XCTAssertTrue(view.touchesMovedWasCalled)
     }
+
+    func testShouldNotRecognizeSimultaneously() {
+        let anotherRecognizer = TestGestureRecognizer()
+        let anotherView = UIView()
+        anotherView.frame = view.bounds
+        anotherView.addGestureRecognizer(anotherRecognizer)
+        view.addSubview(anotherView)
+
+        handleTouchDown(CGPoint(x: 10, y: 10))
+        handleTouchMove(CGPoint(x: 15, y: 10))
+        handleTouchUp(CGPoint(x: 15, y: 10))
+
+        XCTAssertFalse(recognizer.onActionWasCalled)
+        XCTAssertTrue(anotherRecognizer.onActionWasCalled)
+    }
+
 }
 
 private extension TouchHandlingTests {
