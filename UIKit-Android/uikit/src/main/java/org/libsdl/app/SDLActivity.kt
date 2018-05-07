@@ -91,14 +91,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     @Suppress("unused") // accessed via JNI
-    fun removeCallbacks() {
-        Log.v(TAG, "removeCallbacks()")
-        mSurface.setOnTouchListener(null)
-        mSurface.holder?.removeCallback(this)
-        nativeSurface.release()
-    }
-
-    @Suppress("unused") // accessed via JNI
     fun getDeviceDensity(): Float = context.resources.displayMetrics.density
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -110,8 +102,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         if (hasFocus) {
             handleResume()
         } else {
-            // XXX: this is incredibly annoying if you get a modal notification while learning etc.
-            removeFrameCallbackAndQuit()
+            removeFrameCallback()
         }
     }
 
@@ -147,11 +138,18 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         return context.getSystemService(name)
     }
 
-    private fun doNativeInitAndPostFrameCallbackIfNotRunning() {
-        if (this.isRunning) return
-        this.isRunning = true
-        this.nativeInit()
+    private fun postFrameCallbackIfNotRunning() {
+        if (isRunning) return
+
+        isRunning = true
         Choreographer.getInstance().postFrameCallback(this)
+    }
+
+    private fun doNativeInitAndPostFrameCallbackIfNotRunning() {
+        if (isRunning) return
+
+        nativeInit()
+        postFrameCallbackIfNotRunning()
     }
 
     fun removeFrameCallbackAndQuit() {
@@ -159,18 +157,22 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         if (!isRunning) { return }
 
         // Remove any frame callback that may exist to ensure we don't try to render after destroy
-        // This eventually stops the run loop and nulls the native SDL.window
-        Choreographer.getInstance().removeFrameCallback(this)
-        this.isRunning = false
+        removeFrameCallback()
 
+        // This eventually stops the run loop and nulls the native SDL.window
         this.nativeQuit()
 
         // cleanup UIKit after nativeQuit
         this.nativeRender()
     }
 
+    fun removeFrameCallback() {
+        Choreographer.getInstance().removeFrameCallback(this)
+        this.isRunning = false
+    }
+
     override fun doFrame(frameTimeNanos: Long) {
-        if (mIsSurfaceReady) {
+        if (isRunning && mIsSurfaceReady) {
             this.nativeRender()
             // Request the next frame only after rendering the current one.
             // This should skip next frame if the current one takes too long.
@@ -213,12 +215,15 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      */
     private fun handleResume() {
         Log.v(TAG, "handleResume()")
+
         if (!isRunning && mIsSurfaceReady && mHasFocus) {
             Log.d(TAG, "handleResume, all conditions met")
             this.nativeResume()
             this.handleSurfaceResume()
             doNativeInitAndPostFrameCallbackIfNotRunning() // does what nativeResume used to
         }
+
+        postFrameCallbackIfNotRunning()
     }
 
     private fun handleSurfaceResume() {
@@ -306,6 +311,14 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
         removeFrameCallbackAndQuit()
+        removeCallbacks()
+    }
+
+    private fun removeCallbacks() {
+        Log.v(TAG, "removeCallbacks()")
+        mSurface.setOnTouchListener(null)
+        mSurface.holder?.removeCallback(this)
+        nativeSurface.release()
     }
 }
 

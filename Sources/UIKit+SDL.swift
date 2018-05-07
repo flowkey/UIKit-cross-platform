@@ -45,9 +45,6 @@ final public class SDL { // Only public for rootView!
         unload() // unload first so deinit succeeds on e.g. `GPU_Image`s
         window = nil
         glRenderer = nil
-        #if os(Android)
-            try? jni.call("removeCallbacks", on: getSDLView())
-        #endif
     }
 
     private static var onUnloadListeners: [() -> Void] = []
