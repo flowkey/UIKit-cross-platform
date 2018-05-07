@@ -63,8 +63,6 @@ final public class SDL { // Only public for rootView!
         UIEvent.activeEvents.removeAll()
         UIView.currentAnimationPrototype = nil
         UIFont.fontRendererCache.removeAll()
-
-        // prevent player from loading old songData on next player start
         onSDLInitialized(callback: nil)
     }
 
