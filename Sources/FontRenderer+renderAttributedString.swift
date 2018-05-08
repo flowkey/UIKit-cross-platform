@@ -14,7 +14,7 @@ extension FontRenderer {
             let surface = createSurface(toFit: attributedString),
             surface.pointee.pixels != nil
         else {
-            assertionFailure("Couldn't render attributed string \(attributedString)")
+            assertionFailure("Couldn't render attributed string '\(attributedString.string)'")
             return nil
         }
 

@@ -24,7 +24,6 @@
 		5BA87A9C2018FC990080C876 /* CATransform3D+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA87A942018FC980080C876 /* CATransform3D+animations.swift */; };
 		5BAF8E4A203DA89D00DA1EBF /* TouchHandlingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BAF8E49203DA89D00DA1EBF /* TouchHandlingTests.swift */; };
 		5BBEECA51F39E7A6006E3416 /* CGRect+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */; };
-		5BC4DB1620A06D9B00246C95 /* onSDLInitialized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4DB1520A06D9B00246C95 /* onSDLInitialized.swift */; };
 		5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */; };
 		5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */; };
 		5BD4762E1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD4762D1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift */; };
@@ -48,6 +47,7 @@
 		5C27E7E51ECB2F9100F5020D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7DB1ECB2F9100F5020D /* Foundation.framework */; };
 		5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */; };
 		5C27E8181ECB301900F5020D /* UIKit+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27E8051ECB301900F5020D /* UIKit+SDL.swift */; };
+		5C32F2C420A1C69C006D64C5 /* GLRenderer+Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C32F2C320A1C69C006D64C5 /* GLRenderer+Errors.swift */; };
 		5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C361E221ECC348700B3F561 /* UIView+SDL.swift */; };
 		5C3716B61F10050600B2C366 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3716B51F10050600B2C366 /* Timer.swift */; };
 		5C3DCCEF2090F072001DEDAF /* UIAlertControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3DCCEE2090F072001DEDAF /* UIAlertControllerView.swift */; };
@@ -281,7 +281,6 @@
 		5BA87A942018FC980080C876 /* CATransform3D+animations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CATransform3D+animations.swift"; path = "Sources/CATransform3D+animations.swift"; sourceTree = SOURCE_ROOT; };
 		5BAF8E49203DA89D00DA1EBF /* TouchHandlingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchHandlingTests.swift; sourceTree = "<group>"; };
 		5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CGRect+animations.swift"; path = "Sources/CGRect+animations.swift"; sourceTree = SOURCE_ROOT; };
-		5BC4DB1520A06D9B00246C95 /* onSDLInitialized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = onSDLInitialized.swift; sourceTree = "<group>"; };
 		5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CABasicAnimation+updateProgress.swift"; path = "Sources/CABasicAnimation+updateProgress.swift"; sourceTree = SOURCE_ROOT; };
 		5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimationKeyPath.swift; path = Sources/AnimationKeyPath.swift; sourceTree = SOURCE_ROOT; };
 		5BD4762D1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAMediaTimingFunctionTests.swift; sourceTree = "<group>"; };
@@ -309,6 +308,7 @@
 		5C27E7DB1ECB2F9100F5020D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL2 Shims.swift"; sourceTree = "<group>"; };
 		5C27E8051ECB301900F5020D /* UIKit+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+SDL.swift"; sourceTree = "<group>"; };
+		5C32F2C320A1C69C006D64C5 /* GLRenderer+Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GLRenderer+Errors.swift"; sourceTree = "<group>"; };
 		5C361E221ECC348700B3F561 /* UIView+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SDL.swift"; sourceTree = "<group>"; };
 		5C3716B51F10050600B2C366 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		5C3DCCEE2090F072001DEDAF /* UIAlertControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertControllerView.swift; sourceTree = "<group>"; };
@@ -668,9 +668,9 @@
 				8356933B1F8CF6C500C6D253 /* androidNativeInit.swift */,
 				5C3716B51F10050600B2C366 /* Timer.swift */,
 				5C27E8051ECB301900F5020D /* UIKit+SDL.swift */,
-				5BC4DB1520A06D9B00246C95 /* onSDLInitialized.swift */,
 				5C361E221ECC348700B3F561 /* UIView+SDL.swift */,
 				83E5F7EC1EF8157300279C59 /* GLRenderer.swift */,
+				5C32F2C320A1C69C006D64C5 /* GLRenderer+Errors.swift */,
 			);
 			name = SDL;
 			path = Sources;
@@ -1159,7 +1159,6 @@
 				5B1D6F3E1F8E264F009CE5B4 /* NSMutableAttributedString.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,
-				5BC4DB1620A06D9B00246C95 /* onSDLInitialized.swift in Sources */,
 				83E5F7F61EF81AB500279C59 /* UIFont.swift in Sources */,
 				5C6AB71B1ED3BECD006F90AC /* UIColor.swift in Sources */,
 				5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */,
@@ -1168,6 +1167,7 @@
 				5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */,
 				5C3DCCEF2090F072001DEDAF /* UIAlertControllerView.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
+				5C32F2C420A1C69C006D64C5 /* GLRenderer+Errors.swift in Sources */,
 				5C2714A21F2A3FC50026BBA9 /* SDL+JNIExtensions.swift in Sources */,
 				0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */,
 				83AB7B5A1F2B679600C7997D /* UIPinchGestureRecognizer.swift in Sources */,

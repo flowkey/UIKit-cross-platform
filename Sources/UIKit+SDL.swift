@@ -35,15 +35,23 @@ final public class SDL { // Only public for rootView!
 
         UIFont.loadSystemFonts()
 
-        print("SDL sdlInitialized")
-        sdlInitialized?()
+        print("Calling all SDL.onInitializedListeners")
+        onInitializedListeners.forEach { $0() }
+    }
+
+    private static var onInitializedListeners: [() -> Void] = []
+    public static func onInitialized(_ callback: @escaping () -> Void) {
+        onInitializedListeners.append(callback)
+        if SDL.isInitialized {
+            callback()
+        }
     }
 
     static func handleSDLQuit() {
         print("SDL_QUIT was called")
         shouldQuit = true
         unload() // unload first so deinit succeeds on e.g. `GPU_Image`s
-        onSDLInitialized(callback: nil)
+        onInitializedListeners.removeAll()
         #if os(Android)
             try? jni.call("removeCallbacks", on: getSDLView())
         #endif

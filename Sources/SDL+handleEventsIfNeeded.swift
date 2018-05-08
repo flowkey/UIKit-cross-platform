@@ -70,9 +70,7 @@ extension SDL {
 
                 if keyModifier.contains(KMOD_LGUI) || keyModifier.contains(KMOD_RGUI) {
                     if e.key.keysym.sym == 114 { // CMD-R
-                        handleSDLQuit()
                         SDL.initialize()
-                        SDL.onReload?()
                     }
                 }
                 #endif
@@ -103,7 +101,6 @@ extension SDL {
     #if DEBUG
     public static var onPressPlus: (() -> Void)?
     public static var onPressMinus: (() -> Void)?
-    public static var onReload: (() -> Void)?
     #endif
 }
 
