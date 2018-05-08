@@ -18,6 +18,8 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
     SDL_SetMainReady()
     if !SDL.isInitialized {
         SDL.initialize()
+    } else {
+        print("[nativeInit] SDL is already initialized, skipping SDL.initialize()")
     }
     return 0
 }
