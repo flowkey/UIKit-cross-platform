@@ -10,7 +10,13 @@ import SDL_ttf
 
 extension FontRenderer {
     func render(attributedString: NSAttributedString, color fallbackColor: UIColor) -> UnsafeMutablePointer<SDLSurface>? {
-        guard let surface = createSurface(toFit: attributedString) else { return nil }
+        guard
+            let surface = createSurface(toFit: attributedString),
+            surface.pointee.pixels != nil
+        else {
+            assertionFailure("Couldn't render attributed string \(attributedString)")
+            return nil
+        }
 
         var xOffset: Int32 = 0
 
@@ -109,6 +115,9 @@ extension FontRenderer {
 private extension FontRenderer {
     func createSurface(toFit attributedstring: NSAttributedString) -> UnsafeMutablePointer<SDLSurface>? {
         let size = self.singleLineSize(of: attributedstring)
+
+        assert(size.width > 0)
+        assert(size.height > 0)
 
         let surface = SDL_CreateRGBSurface(
             UInt32(SDL_SWSURFACE), Int32(size.width), Int32(size.height), 32,

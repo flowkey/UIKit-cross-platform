@@ -56,13 +56,16 @@ public class UIImage {
     public convenience init?(data: Data) {
         var data = data
         let dataCount = Int32(data.count)
-        let gpuImagePtr = data.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<Int8>) -> UnsafeMutablePointer<GPU_Image>? in
+
+        guard let cgImage = data.withUnsafeMutableBytes({ (ptr: UnsafeMutablePointer<Int8>) -> CGImage? in
             let rw = SDL_RWFromMem(ptr, dataCount)
             defer { SDL_FreeRW(rw) }
-            return GPU_LoadImage_RW(rw, false)
+            let gpuImagePtr = GPU_LoadImage_RW(rw, false)
+            return CGImage(gpuImagePtr)
+        }) else {
+            return nil
         }
 
-        guard let cgImage = CGImage(gpuImagePtr) else { return nil }
         self.init(cgImage: cgImage, scale: 1.0) // matches iOS
     }
 }

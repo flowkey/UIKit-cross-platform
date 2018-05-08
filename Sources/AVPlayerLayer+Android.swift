@@ -28,6 +28,14 @@ public class AVPlayerLayer: JNIObject {
             ])
         }
     }
+
+    deinit {
+        do {
+            try call(methodName: "removeFromParent")
+        } catch {
+            assertionFailure("Couldn't remove AVPlayerLayer from parent")
+        }
+    }
 }
 
 extension AVPlayerLayer: JavaParameterConvertible {

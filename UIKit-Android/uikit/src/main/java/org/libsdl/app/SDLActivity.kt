@@ -139,18 +139,24 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     private fun postFrameCallbackIfNotRunning() {
-        if (isRunning) return
+        Log.v(TAG, "postFrameCallbackIfNotRunning()")
+        if (isRunning) {
+            Log.v(TAG, "postFrameCallbackIfNotRunning() was already running")
+            return
+        }
 
         isRunning = true
         Choreographer.getInstance().postFrameCallback(this)
     }
 
     private fun doNativeInitAndPostFrameCallbackIfNotRunning() {
+        Log.v(TAG, "doNativeInitAndPostFrameCallbackIfNotRunning()")
         nativeInit()
         postFrameCallbackIfNotRunning()
     }
 
     fun removeFrameCallbackAndQuit() {
+        Log.v(TAG, "removeFrameCallbackAndQuit()")
         // Without this check it's possible to try to "nativeRender" when the SDL.window is nil
         if (!isRunning) { return }
 
@@ -165,6 +171,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     fun removeFrameCallback() {
+        Log.v(TAG, "removeFrameCallback()")
         Choreographer.getInstance().removeFrameCallback(this)
         this.isRunning = false
     }
@@ -311,41 +318,12 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         removeFrameCallbackAndQuit()
     }
 
-
+    /** Called by SDL using JNI. */
+    @Suppress("unused")
     fun removeCallbacks() {
         Log.v(TAG, "removeCallbacks()")
         mSurface.setOnTouchListener(null)
-        mSurface.holder?.removeCallback(this)
+        mSurface.holder?.removeCallback(this) // should only happen on SDL_Quit
         nativeSurface.release()
     }
 }
-
-
-    // The code below was unused and used a deprecated API anyway.
-    // It would be good to have some access to native dialogs though, so
-    // we should rethink it based on the up-to-date information at:
-    // https://developer.android.com/guide/topics/ui/dialogs.html#FullscreenDialog
-
-//    /**
-//     * This method is called by SDL using JNI.
-//     * Shows the messagebox from UI thread and block calling thread.
-//     * buttonFlags, buttonIds and buttonTexts must have same length.
-//     * @param buttonFlags array containing flags for every button.
-//     * @param buttonIds array containing id for every button.
-//     * @param buttonTexts array containing text for every button.
-//     * @param colors null for default or array of length 5 containing colors.
-//     * @return button id or -1.
-//     */
-//    fun messageboxShowMessageBox(
-//            flags: Int,
-//            title: String,
-//            message: String,
-//            buttonFlags: IntArray,
-//            buttonIds: IntArray,
-//            buttonTexts: Array<String>,
-//            colors: IntArray): Int {
-//    }
-
-//    override fun onCreateDialog(ignore: Int, args: Bundle): Dialog? {
-//    }
-

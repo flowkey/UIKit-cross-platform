@@ -19,8 +19,6 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
     SDLAndroidInit(env, view)
     SDL_SetMainReady()
     SDL.initialize()
-
     return 0
 }
-
 #endif

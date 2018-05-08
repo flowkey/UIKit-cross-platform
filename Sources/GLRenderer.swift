@@ -72,6 +72,15 @@ internal final class GLRenderer {
         // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
         setShapeBlending(true)
         setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
+
+        clearErrors() // by now we have handled any errors we might have wanted to
+    }
+
+    func clearErrors() {
+        let lastError = GPU_PopErrorCode()
+        if lastError.error != GPU_ERROR_NONE {
+            clearErrors() // keep clearing the stack recursively
+        }
     }
 
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
@@ -150,8 +159,24 @@ internal final class GLRenderer {
         }
     }
 
-    func flip() {
+    func flip() throws {
         GPU_Flip(rawPointer)
+
+        let lastError = GPU_PopErrorCode()
+        switch lastError.error {
+        case GPU_ERROR_NONE:
+            break
+        case GPU_ERROR_USER_ERROR, // could be "Mismatched renderer" -> check for this specifically?
+             GPU_ERROR_BACKEND_ERROR:
+            clearErrors()
+            print(String(cString: lastError.details))
+            print(lastError.error)
+            throw lastError.error
+        default:
+            print(String(cString: lastError.details))
+            print(lastError.error)
+            assertionFailure("Unexpected error in GLRenderer.flip()")
+        }
     }
 
     deinit {
@@ -166,6 +191,34 @@ internal final class GLRenderer {
         let existingWindowID = gpuContext.pointee.windowID
         let existingWindow = SDL_GetWindowFromID(existingWindowID)
         SDL_DestroyWindow(existingWindow)
+    }
+}
+
+extension GPU_ErrorEnum: Hashable {
+    public var hashValue: Int { return Int(self.rawValue) }
+}
+
+extension GPU_ErrorEnum: Error, CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case GPU_ERROR_DATA_ERROR:
+            return "GPU_ERROR_DATA_ERROR"
+        case GPU_ERROR_NULL_ARGUMENT:
+            return "GPU_ERROR_NULL_ARGUMENT"
+        case GPU_ERROR_BACKEND_ERROR:
+            return "GPU_ERROR_BACKEND_ERROR"
+        case GPU_ERROR_NONE:
+            return "GPU_ERROR_NONE"
+        case GPU_ERROR_USER_ERROR:
+            return "GPU_ERROR_USER_ERROR"
+        case GPU_ERROR_FILE_NOT_FOUND:
+            return "GPU_ERROR_FILE_NOT_FOUND"
+        case GPU_ERROR_UNSUPPORTED_FUNCTION:
+            return "GPU_ERROR_UNSUPPORTED_FUNCTION"
+        default:
+            assertionFailure("Unknown GPU_ErrorEnum error type")
+            return "Unknown"
+        }
     }
 }
 

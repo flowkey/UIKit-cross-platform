@@ -28,7 +28,6 @@ final public class SDL { // Only public for rootView!
     public static func initialize() {
         unload()
         shouldQuit = false
-
         glRenderer = GLRenderer()
         window = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
         window.rootViewController = UIViewController(nibName: nil, bundle: nil)
@@ -45,7 +44,6 @@ final public class SDL { // Only public for rootView!
         shouldQuit = true
         unload() // unload first so deinit succeeds on e.g. `GPU_Image`s
         onSDLInitialized(callback: nil)
-
         #if os(Android)
             try? jni.call("removeCallbacks", on: getSDLView())
         #endif
@@ -84,6 +82,7 @@ final public class SDL { // Only public for rootView!
         DisplayLink.activeDisplayLinks.forEach { $0.callback() }
         UIView.animateIfNeeded(at: frameTimer)
         window.sdlDrawAndLayoutTreeIfNeeded()
+        // it's possible for drawing to fail if the context
 
         guard CALayer.layerTreeIsDirty else {
             // Nothing changed, so we can leave the existing image on the screen.
@@ -97,9 +96,15 @@ final public class SDL { // Only public for rootView!
 
         glRenderer.clippingRect = window.bounds
         window.layer.sdlRender()
-        glRenderer.flip()
 
-        CALayer.layerTreeIsDirty = false
+        do {
+            try glRenderer.flip()
+            CALayer.layerTreeIsDirty = false
+        } catch {
+            print("glRenderer failed to render, reiniting")
+            unload()
+            initialize()
+        }
     }
 }
 
