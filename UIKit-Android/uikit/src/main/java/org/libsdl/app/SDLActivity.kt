@@ -38,8 +38,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     private external fun nativeRender()
     private external fun nativeInit(): Int
+    private external fun nativeDeinit() // from this state we can still reinit without issues
     private external fun nativeQuit()
-    private external fun nativePause()
     private external fun nativeResume()
     private external fun onNativeResize(x: Int, y: Int, format: Int, rate: Float)
     private external fun onNativeSurfaceChanged()
@@ -101,8 +101,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
         if (hasFocus) {
             handleResume()
-        } else {
-            removeFrameCallback()
         }
     }
 
@@ -315,7 +313,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         Log.v(TAG, "surfaceDestroyed()")
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
-        removeFrameCallbackAndQuit()
+        nativeDeinit()
+        removeFrameCallback()
     }
 
     /** Called by SDL using JNI. */

@@ -9,8 +9,6 @@
 import SDL
 import CJNI
 
-#if os(Android)
-
 @_silgen_name("SDL_Android_Init")
 public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
 
@@ -18,7 +16,13 @@ public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObje
 public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
     SDLAndroidInit(env, view)
     SDL_SetMainReady()
-    SDL.initialize()
+    if !SDL.isInitialized {
+        SDL.initialize()
+    }
     return 0
 }
-#endif
+
+@_silgen_name("Java_org_libsdl_app_SDLActivity_nativeDeinit")
+public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
+    SDL.deinitialize()
+}

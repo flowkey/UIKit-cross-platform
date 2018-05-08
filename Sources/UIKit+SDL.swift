@@ -26,7 +26,7 @@ final public class SDL { // Only public for rootView!
     }
 
     public static func initialize() {
-        unload()
+        deinitialize()
         shouldQuit = false
         glRenderer = GLRenderer()
         window = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
@@ -50,7 +50,7 @@ final public class SDL { // Only public for rootView!
     static func handleSDLQuit() {
         print("SDL_QUIT was called")
         shouldQuit = true
-        unload() // unload first so deinit succeeds on e.g. `GPU_Image`s
+        deinitialize() // unload first so deinit succeeds on e.g. `GPU_Image`s
         onInitializedListeners.removeAll()
         #if os(Android)
             try? jni.call("removeCallbacks", on: getSDLView())
@@ -62,7 +62,7 @@ final public class SDL { // Only public for rootView!
         onUnloadListeners.append(callback)
     }
 
-    private static func unload() {
+    static func deinitialize() {
         print("unload")
         onUnloadListeners.forEach { $0() }
         onUnloadListeners.removeAll()
@@ -110,7 +110,7 @@ final public class SDL { // Only public for rootView!
             CALayer.layerTreeIsDirty = false
         } catch {
             print("glRenderer failed to render, reiniting")
-            unload()
+            deinitialize()
             initialize()
         }
     }
