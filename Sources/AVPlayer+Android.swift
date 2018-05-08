@@ -16,6 +16,7 @@ public class AVPlayer: JNIObject {
         let parentView = JavaSDLView(getSDLView())
         try! self.init("org.uikit.AVPlayer", arguments: [parentView, playerItem])
         globalAVPlayer = self
+        print("init", self)
     }
 
     public func play() {
@@ -47,6 +48,7 @@ public class AVPlayer: JNIObject {
     }
 
     deinit {
+        print("deinit AVPlayer", self)
         try? call(methodName: "cleanup")
     }
 }

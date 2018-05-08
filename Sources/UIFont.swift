@@ -11,6 +11,11 @@ private let systemFontName = "Roboto" // XXX: change this depending on platform?
 open class UIFont: Equatable {
     static var fontRendererCache = [String: FontRenderer]()
 
+    public static func cleanup() {
+        fontRendererCache.removeAll()
+        availableFontData.removeAll()
+    }
+
     public static func == (lhs: UIFont, rhs: UIFont) -> Bool {
         return lhs.fontName == rhs.fontName && lhs.pointSize == rhs.pointSize
     }

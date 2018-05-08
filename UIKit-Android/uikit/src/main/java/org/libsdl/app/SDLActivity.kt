@@ -146,8 +146,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     private fun doNativeInitAndPostFrameCallbackIfNotRunning() {
-        if (isRunning) return
-
         nativeInit()
         postFrameCallbackIfNotRunning()
     }
@@ -311,10 +309,10 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
         removeFrameCallbackAndQuit()
-        removeCallbacks()
     }
 
-    private fun removeCallbacks() {
+
+    fun removeCallbacks() {
         Log.v(TAG, "removeCallbacks()")
         mSurface.setOnTouchListener(null)
         mSurface.holder?.removeCallback(this)

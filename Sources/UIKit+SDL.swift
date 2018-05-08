@@ -26,16 +26,17 @@ final public class SDL { // Only public for rootView!
     }
 
     public static func initialize() {
-        self.shouldQuit = false
-        self.glRenderer = nil // triggers GLRenderer deinit
+        unload()
+        shouldQuit = false
 
-        self.glRenderer = GLRenderer()
-        self.window = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
+        glRenderer = GLRenderer()
+        window = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
         window.rootViewController = UIViewController(nibName: nil, bundle: nil)
         window.makeKeyAndVisible()
 
         UIFont.loadSystemFonts()
 
+        print("SDL sdlInitialized")
         sdlInitialized?()
     }
 
@@ -43,8 +44,11 @@ final public class SDL { // Only public for rootView!
         print("SDL_QUIT was called")
         shouldQuit = true
         unload() // unload first so deinit succeeds on e.g. `GPU_Image`s
-        window = nil
-        glRenderer = nil
+        onSDLInitialized(callback: nil)
+
+        #if os(Android)
+            try? jni.call("removeCallbacks", on: getSDLView())
+        #endif
     }
 
     private static var onUnloadListeners: [() -> Void] = []
@@ -53,14 +57,16 @@ final public class SDL { // Only public for rootView!
     }
 
     private static func unload() {
+        print("unload")
         onUnloadListeners.forEach { $0() }
         onUnloadListeners.removeAll()
         DisplayLink.activeDisplayLinks.removeAll()
         UIView.layersWithAnimations.removeAll()
         UIEvent.activeEvents.removeAll()
         UIView.currentAnimationPrototype = nil
-        UIFont.fontRendererCache.removeAll()
-        onSDLInitialized(callback: nil)
+        UIFont.cleanup()
+        window = nil
+        glRenderer = nil
     }
 
     /// Returns: time taken (in milliseconds) to render current frame
