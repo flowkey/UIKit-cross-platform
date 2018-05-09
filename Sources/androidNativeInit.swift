@@ -25,6 +25,6 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
 }
 
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeDeinit")
-public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
+public func nativeDeinit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
     SDL.deinitialize()
 }
