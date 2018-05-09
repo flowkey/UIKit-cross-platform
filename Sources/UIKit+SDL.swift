@@ -69,7 +69,6 @@ final public class SDL { // Only public for rootView!
         shouldQuit = true
         deinitialize()
         onInitializedListeners.removeAll()
-        onDeinitializedListeners.removeAll()
         #if os(Android)
         try? jni.call("removeCallbacks", on: getSDLView())
         #endif
