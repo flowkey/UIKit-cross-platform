@@ -110,7 +110,6 @@ final public class SDL { // Only public for rootView!
             CALayer.layerTreeIsDirty = false
         } catch {
             print("glRenderer failed to render, reiniting")
-            deinitialize()
             initialize()
         }
     }
