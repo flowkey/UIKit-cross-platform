@@ -29,7 +29,7 @@ internal final class GLRenderer {
         var size = CGSize.zero
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
     #else
-        var size: CGSize = .samsungS7
+        var size: CGSize = .huaweiM3lite
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
             //SDL_WINDOW_FULLSCREEN
@@ -219,6 +219,17 @@ private extension CGRect {
 }
 
 private extension CGSize {
-    static let samsungS7 = CGSize(width: 2560 / 3.0, height: 1440 / 3.0) // 1080p 1.5x Retina
+    // smartphones:
+    static let samsungGalaxyJ5 = CGSize(width: 1280 / 2.0, height: 720 / 2.0)
+    static let samsungGalaxyS5 = CGSize(width: 1920 / 3.0, height: 1080 / 3.0)
+    static let samsungGalaxyS7 = CGSize(width: 2560 / 3.0, height: 1440 / 3.0) // 1080p 1.5x Retina
+    static let samsungGalaxyS8 = CGSize(width: 2960 / 3.0, height: 1440 / 3.0)
+
+    // tablets:
     static let nexus9 = CGSize(width: 2048 / 2.0, height: 1536 / 2.0)
+    static let huaweiM3lite = CGSize(width: 1920 / 2.0, height: 1200 / 2.0)
+    static let samsungGalaxyTabS_T800 = CGSize(width: 2560 / 2.0, height: 1600 / 2.0)
+    static let samsungGalaxyTab10 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
+    static let samsungGalaxyTabA_T380 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
+    static let samsungGalaxyTabA_T580 = CGSize(width: 1920 / 1.0, height: 1200 / 1.0)
 }
