@@ -54,7 +54,7 @@ final public class SDL { // Only public for rootView!
         UIView.layersWithAnimations.removeAll()
         UIEvent.activeEvents.removeAll()
         UIView.currentAnimationPrototype = nil
-        UIFont.cleanup()
+        UIFont.clearCaches()
         window = nil
         glRenderer = nil
     }

@@ -11,7 +11,7 @@ private let systemFontName = "Roboto" // XXX: change this depending on platform?
 open class UIFont: Equatable {
     static var fontRendererCache = [String: FontRenderer]()
 
-    public static func cleanup() {
+    public static func clearCaches() {
         fontRendererCache.removeAll()
         availableFontData.removeAll()
     }
