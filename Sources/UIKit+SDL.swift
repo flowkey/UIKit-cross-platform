@@ -28,10 +28,12 @@ final public class SDL { // Only public for rootView!
     public static func initialize() {
         deinitialize()
         shouldQuit = false
+
         glRenderer = GLRenderer()
         window = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
         window.rootViewController = UIViewController(nibName: nil, bundle: nil)
         window.makeKeyAndVisible()
+
         UIFont.loadSystemFonts()
 
         onInitializedListeners.forEach { $0() }
@@ -45,24 +47,9 @@ final public class SDL { // Only public for rootView!
         }
     }
 
-    static func handleSDLQuit() {
-        print("SDL_QUIT was called")
-        shouldQuit = true
-        deinitialize() // unload first so deinit succeeds on e.g. `GPU_Image`s
-        onInitializedListeners.removeAll()
-        #if os(Android)
-            try? jni.call("removeCallbacks", on: getSDLView())
-        #endif
-    }
-
-    private static var onUnloadListeners: [() -> Void] = []
-    public static func onUnload(_ callback: @escaping () -> Void) {
-        onUnloadListeners.append(callback)
-    }
-
     static func deinitialize() {
-        onUnloadListeners.forEach { $0() }
-        onUnloadListeners.removeAll()
+        onDeinitializedListeners.forEach { $0() }
+        onDeinitializedListeners.removeAll()
         DisplayLink.activeDisplayLinks.removeAll()
         UIView.layersWithAnimations.removeAll()
         UIEvent.activeEvents.removeAll()
@@ -70,6 +57,22 @@ final public class SDL { // Only public for rootView!
         UIFont.cleanup()
         window = nil
         glRenderer = nil
+    }
+
+    private static var onDeinitializedListeners: [() -> Void] = []
+    public static func onDeinitialize(_ callback: @escaping () -> Void) {
+        onDeinitializedListeners.append(callback)
+    }
+
+    static func handleSDLQuit() {
+        print("SDL_QUIT was called")
+        shouldQuit = true
+        deinitialize()
+        onInitializedListeners.removeAll()
+        onDeinitializedListeners.removeAll()
+        #if os(Android)
+        try? jni.call("removeCallbacks", on: getSDLView())
+        #endif
     }
 
     /// Returns: time taken (in milliseconds) to render current frame
@@ -86,7 +89,7 @@ final public class SDL { // Only public for rootView!
 
         DisplayLink.activeDisplayLinks.forEach { $0.callback() }
         UIView.animateIfNeeded(at: frameTimer)
-        // XXX it's possible for drawing to crash if the context is invalid:
+        // XXX: It's possible for drawing to crash if the context is invalid:
         window.sdlDrawAndLayoutTreeIfNeeded()
 
         guard CALayer.layerTreeIsDirty else {
