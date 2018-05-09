@@ -136,7 +136,6 @@ extension UIFont {
 
 extension NSAttributedString {
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
-
         return wrapLength == 0 ?
             font.renderer.singleLineSize(of: self) / UIScreen.main.scale :
             string.size(with: font, wrapLength: wrapLength) // fallback to String.size for multiline text
