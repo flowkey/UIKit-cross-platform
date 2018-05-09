@@ -155,8 +155,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     fun removeFrameCallbackAndQuit() {
         Log.v(TAG, "removeFrameCallbackAndQuit()")
-        // Without this check it's possible to try to "nativeRender" when the SDL.window is nil
-        if (!isRunning) { return }
 
         // Remove any frame callback that may exist to ensure we don't try to render after destroy
         removeFrameCallback()
