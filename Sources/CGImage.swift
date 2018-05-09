@@ -24,7 +24,9 @@ public class CGImage {
             // We check for GPU errors on render, so clear any error that may have caused GPU_Image to be nil.
             // It's possible there are unrelated errors on the stack at this point, but we immediately catch and
             // handle any errors that interest us *when they occur*, so it's fine to clear unrelated ones here.
-            SDL.glRenderer.clearErrors()
+            if let renderer = SDL.glRenderer {
+                renderer.clearErrors()
+            }
             return nil
         }
 
