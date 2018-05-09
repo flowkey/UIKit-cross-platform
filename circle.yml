@@ -19,7 +19,7 @@ jobs:
               -sdk "macosx10.13"
               -scheme "UIKit"
               test |
-            xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
+            xcpretty --color --report junit
 
       - run:
           name: Test UIKit for macOS
@@ -32,4 +32,4 @@ jobs:
               -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
               -scheme "iOSTestTarget"
               test |
-            xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
+            xcpretty --color --report junit
