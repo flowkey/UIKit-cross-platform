@@ -115,9 +115,8 @@ extension FontRenderer {
 private extension FontRenderer {
     func createSurface(toFit attributedstring: NSAttributedString) -> UnsafeMutablePointer<SDLSurface>? {
         let size = self.singleLineSize(of: attributedstring)
-
-        assert(size.width > 0)
-        assert(size.height > 0)
+        precondition(size.width > 0)
+        precondition(size.height > 0)
 
         let surface = SDL_CreateRGBSurface(
             UInt32(SDL_SWSURFACE), Int32(size.width), Int32(size.height), 32,
