@@ -18,7 +18,7 @@ open class UIScrollView: UIView {
     private var verticalScrollIndicator = CALayer()
     private var horizontalScrollIndicator = CALayer()
     
-    public var indicatorStyle: UIScrollViewIndicatorStyle = .black //TODO: change this approach, can't hadcode style here in the general class
+    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` //TODO: implement and use `default`
 
     var weightedAverageVelocity: CGPoint = .zero
 
@@ -29,13 +29,13 @@ open class UIScrollView: UIView {
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
 
-        //JANEKTODO: search for
-        
         
         for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
             scrollIndicator.cornerRadius = 1
             scrollIndicator.disableAnimations = true
             scrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
+            scrollIndicator.borderWidth = 0.5
+            scrollIndicator.borderColor = self.indicatorStyle.borderColor
             layer.addSublayer(scrollIndicator)
         }
 
@@ -177,4 +177,13 @@ public enum UIScrollViewIndicatorStyle {
         case .white: return UIColor.white
         }
     }
+    
+    var borderColor: UIColor {
+        switch self {
+        case .`default`: return UIColor.white // TBD: default in iOS UIKit is "black with a white border"
+        case .black: return UIColor.black
+        case .white: return UIColor.white
+        }
+    }
+    
 }
