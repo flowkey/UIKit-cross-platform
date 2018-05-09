@@ -325,4 +325,15 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         mSurface.holder?.removeCallback(this) // should only happen on SDL_Quit
         nativeSurface.release()
     }
+
+    override fun requestLayout() {
+        super.requestLayout()
+
+        // ReactViewGroup overrides "onLayout" meaning requestLayout has no effect
+        // Simulate an android layout pass here...
+        post {
+            measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
+            layout(left, top, right, bottom)
+        }
+    }
 }
