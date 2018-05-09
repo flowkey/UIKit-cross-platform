@@ -16,13 +16,13 @@ jobs:
               CODE_SIGNING_REQUIRED=NO
               CODE_SIGN_IDENTITY=""
               PROVISIONING_PROFILE=""
-              -sdk "macosx10.13"
+              -sdk "macosx"
               -scheme "UIKit"
               test |
             xcpretty --color --report junit
 
       - run:
-          name: Test UIKit for macOS
+          name: Test iOSTestTarget
           command: set -o pipefail &&
             xcodebuild
               CODE_SIGNING_REQUIRED=NO
