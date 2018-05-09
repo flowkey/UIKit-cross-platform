@@ -1,33 +1,35 @@
-machine:
-  xcode:
-    version: "9.2"
+version: 2
 
-checkout:
-  post:
-    - git submodule sync --recursive
-    - git submodule update --recursive --init
+jobs:
+  build:
+    macos:
+      xcode: "9.3.0"
+    
+    steps:
+      - checkout
+      - run: git submodule update --recursive --init
+    
+      - run:
+          name: Test UIKit for macOS
+          command: set -o pipefail &&
+            xcodebuild
+              CODE_SIGNING_REQUIRED=NO
+              CODE_SIGN_IDENTITY=""
+              PROVISIONING_PROFILE=""
+              -sdk "macosx10.13"
+              -scheme "UIKit"
+              test |
+            xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
 
-test:
-  override:
-    - set -o pipefail &&
-      xcodebuild
-        CODE_SIGNING_REQUIRED=NO
-        CODE_SIGN_IDENTITY=""
-        PROVISIONING_PROFILE=""
-        -sdk "macosx10.13"
-        -scheme "UIKit"
-        clean build test |
-      tee $CIRCLE_ARTIFACTS/xcode_raw.log |
-      xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
-    - set -o pipefail &&
-      xcodebuild
-        CODE_SIGNING_REQUIRED=NO
-        CODE_SIGN_IDENTITY=""
-        PROVISIONING_PROFILE=""
-        -sdk "iphonesimulator"
-        -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
-        -scheme "iOSTestTarget"
-        clean build test |
-      tee $CIRCLE_ARTIFACTS/xcode_raw.log |
-      xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
-
+      - run:
+          name: Test UIKit for macOS
+          command: set -o pipefail &&
+            xcodebuild
+              CODE_SIGNING_REQUIRED=NO
+              CODE_SIGN_IDENTITY=""
+              PROVISIONING_PROFILE=""
+              -sdk "iphonesimulator"
+              -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
+              -scheme "iOSTestTarget"
+              test |
+            xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
