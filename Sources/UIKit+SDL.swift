@@ -26,41 +26,52 @@ final public class SDL { // Only public for rootView!
     }
 
     public static func initialize() {
-        self.shouldQuit = false
-        self.glRenderer = nil // triggers GLRenderer deinit
+        deinitialize()
+        shouldQuit = false
 
-        self.glRenderer = GLRenderer()
-        self.window = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
+        glRenderer = GLRenderer()
+        window = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
         window.rootViewController = UIViewController(nibName: nil, bundle: nil)
         window.makeKeyAndVisible()
 
         UIFont.loadSystemFonts()
+
+        onInitializedListeners.forEach { $0() }
+    }
+
+    private static var onInitializedListeners: [() -> Void] = []
+    public static func onInitialized(_ callback: @escaping () -> Void) {
+        onInitializedListeners.append(callback)
+        if SDL.isInitialized {
+            callback()
+        }
+    }
+
+    static func deinitialize() {
+        onDeinitializedListeners.forEach { $0() }
+        onDeinitializedListeners.removeAll()
+        DisplayLink.activeDisplayLinks.removeAll()
+        UIView.layersWithAnimations.removeAll()
+        UIEvent.activeEvents.removeAll()
+        UIView.currentAnimationPrototype = nil
+        UIFont.clearCaches()
+        window = nil
+        glRenderer = nil
+    }
+
+    private static var onDeinitializedListeners: [() -> Void] = []
+    public static func onDeinitialize(_ callback: @escaping () -> Void) {
+        onDeinitializedListeners.append(callback)
     }
 
     static func handleSDLQuit() {
         print("SDL_QUIT was called")
         shouldQuit = true
-        unload() // unload first so deinit succeeds on e.g. `GPU_Image`s
-        window = nil
-        glRenderer = nil
+        deinitialize()
+        onInitializedListeners.removeAll()
         #if os(Android)
-            try? jni.call("removeCallbacks", on: getSDLView())
+        try? jni.call("removeCallbacks", on: getSDLView())
         #endif
-    }
-
-    private static var onUnloadListeners: [() -> Void] = []
-    public static func onUnload(_ callback: @escaping () -> Void) {
-        onUnloadListeners.append(callback)
-    }
-
-    private static func unload() {
-        onUnloadListeners.forEach { $0() }
-        onUnloadListeners.removeAll()
-        DisplayLink.activeDisplayLinks.removeAll()
-        UIView.layersWithAnimations.removeAll()
-        UIEvent.activeEvents.removeAll()
-        UIView.currentAnimationPrototype = nil
-        UIFont.fontRendererCache.removeAll()
     }
 
     /// Returns: time taken (in milliseconds) to render current frame
@@ -73,10 +84,14 @@ final public class SDL { // Only public for rootView!
 
     private static func doRender(at frameTimer: Timer) {
         handleEventsIfNeeded()
-        if shouldQuit { return }
+        if shouldQuit || SDL.window == nil {
+            print("Not rendering because `SDL.window` was `nil` or `shouldQuit == true`")
+            return
+        }
 
         DisplayLink.activeDisplayLinks.forEach { $0.callback() }
         UIView.animateIfNeeded(at: frameTimer)
+        // XXX: It's possible for drawing to crash if the context is invalid:
         window.sdlDrawAndLayoutTreeIfNeeded()
 
         guard CALayer.layerTreeIsDirty else {
@@ -91,9 +106,14 @@ final public class SDL { // Only public for rootView!
 
         glRenderer.clippingRect = window.bounds
         window.layer.sdlRender()
-        glRenderer.flip()
 
-        CALayer.layerTreeIsDirty = false
+        do {
+            try glRenderer.flip()
+            CALayer.layerTreeIsDirty = false
+        } catch {
+            print("glRenderer failed to render, reiniting")
+            initialize()
+        }
     }
 }
 
@@ -102,11 +122,6 @@ private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
 
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeRender")
 public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
-    guard SDL.window != nil else {
-        assertionFailure("Attempted to render while the window was nil")
-        return
-    }
-
     let timeTaken = SDL.render()
     let remainingFrameTime = maxFrameRenderTimeInMilliseconds - timeTaken
     CFRunLoopRunInMode(kCFRunLoopDefaultMode, max(0.001, remainingFrameTime / 1000), true)

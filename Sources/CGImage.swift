@@ -20,7 +20,14 @@ public class CGImage {
      Initialize a `CGImage` by passing a reference to a `GPU_Image`, which is usually the result of SDL_gpu's `GPU_*Image*` creation functions. May be null.
      */
     internal init?(_ pointer: UnsafeMutablePointer<GPU_Image>?) {
-        guard let pointer = pointer else { return nil }
+        guard let pointer = pointer else {
+            // We check for GPU errors on render, so clear any error that may have caused GPU_Image to be nil.
+            // It's possible there are unrelated errors on the stack at this point, but we immediately catch and
+            // handle any errors that interest us *when they occur*, so it's fine to clear unrelated ones here.
+            SDL.glRenderer?.clearErrors()
+            return nil
+        }
+
         rawPointer = pointer
 
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)

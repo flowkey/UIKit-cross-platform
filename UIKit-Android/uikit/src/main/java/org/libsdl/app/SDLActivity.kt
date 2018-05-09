@@ -33,14 +33,13 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     private var mSurface: SurfaceView
-    private var mIsPaused = false
     private var mIsSurfaceReady = false
     private var mHasFocus = false
 
     private external fun nativeRender()
     private external fun nativeInit(): Int
+    private external fun nativeDeinit() // from this state we can still reinit without issues
     private external fun nativeQuit()
-    private external fun nativePause()
     private external fun nativeResume()
     private external fun onNativeResize(x: Int, y: Int, format: Int, rate: Float)
     private external fun onNativeSurfaceChanged()
@@ -92,14 +91,6 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     }
 
     @Suppress("unused") // accessed via JNI
-    fun removeCallbacks() {
-        Log.v(TAG, "removeCallbacks()")
-        mSurface.setOnTouchListener(null)
-        mSurface.holder?.removeCallback(this)
-        nativeSurface.release()
-    }
-
-    @Suppress("unused") // accessed via JNI
     fun getDeviceDensity(): Float = context.resources.displayMetrics.density
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -107,8 +98,9 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         Log.v(TAG, "onWindowFocusChanged(): " + hasFocus)
 
         this.mHasFocus = hasFocus
+
         if (hasFocus) {
-            handleSurfaceResume()
+            handleResume()
         }
     }
 
@@ -144,32 +136,44 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         return context.getSystemService(name)
     }
 
-    private fun doNativeInitAndPostFrameCallbackIfNotRunning() {
-        // This is the entry point to the C app.
-        if (this.isRunning) return
-        this.isRunning = true
-        this.nativeInit()
+    private fun postFrameCallbackIfNotRunning() {
+        Log.v(TAG, "postFrameCallbackIfNotRunning()")
+        if (isRunning) {
+            Log.v(TAG, "postFrameCallbackIfNotRunning() was already running")
+            return
+        }
+
+        isRunning = true
         Choreographer.getInstance().postFrameCallback(this)
     }
 
-
-    private fun removeFrameCallbackAndPause() {
-        // Send a removeFrameCallbackAndQuit message to the application
-        // This eventually stops the run loop and nulls the native SDL.window
-        Choreographer.getInstance().removeFrameCallback(this)
-        this.isRunning = false
+    private fun doNativeInitAndPostFrameCallbackIfNotRunning() {
+        Log.v(TAG, "doNativeInitAndPostFrameCallbackIfNotRunning()")
+        nativeInit()
+        postFrameCallbackIfNotRunning()
     }
 
     fun removeFrameCallbackAndQuit() {
-        this.removeFrameCallbackAndPause()
+        Log.v(TAG, "removeFrameCallbackAndQuit()")
+
+        // Remove any frame callback that may exist to ensure we don't try to render after destroy
+        removeFrameCallback()
+
+        // This eventually stops the run loop and nulls the native SDL.window
         this.nativeQuit()
 
         // cleanup UIKit after nativeQuit
         this.nativeRender()
     }
 
+    fun removeFrameCallback() {
+        Log.v(TAG, "removeFrameCallback()")
+        Choreographer.getInstance().removeFrameCallback(this)
+        this.isRunning = false
+    }
+
     override fun doFrame(frameTimeNanos: Long) {
-        if (mIsSurfaceReady) {
+        if (isRunning && mIsSurfaceReady) {
             this.nativeRender()
             // Request the next frame only after rendering the current one.
             // This should skip next frame if the current one takes too long.
@@ -211,11 +215,16 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
      * every time we get one of those events, only if it comes after surfaceDestroyed
      */
     private fun handleResume() {
-        if (this.mIsPaused && this.mIsSurfaceReady && this.mHasFocus) {
-            this.mIsPaused = false
+        Log.v(TAG, "handleResume()")
+
+        if (!isRunning && mIsSurfaceReady && mHasFocus) {
+            Log.d(TAG, "handleResume, all conditions met")
             this.nativeResume()
             this.handleSurfaceResume()
+            doNativeInitAndPostFrameCallbackIfNotRunning() // does what nativeResume used to
         }
+
+        postFrameCallbackIfNotRunning()
     }
 
     private fun handleSurfaceResume() {
@@ -302,37 +311,27 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         Log.v(TAG, "surfaceDestroyed()")
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
-        removeFrameCallbackAndPause()
+        nativeDeinit()
+        removeFrameCallback()
     }
 
+    /** Called by SDL using JNI. */
+    @Suppress("unused")
+    fun removeCallbacks() {
+        Log.v(TAG, "removeCallbacks()")
+        mSurface.setOnTouchListener(null)
+        mSurface.holder?.removeCallback(this) // should only happen on SDL_Quit
+        nativeSurface.release()
+    }
+
+    override fun requestLayout() {
+        super.requestLayout()
+
+        // react native breaks layouting
+        // this is a temporary workaround for missing videos on android 6
+        post {
+            measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
+            layout(left, top, right, bottom)
+        }
+    }
 }
-
-
-    // The code below was unused and used a deprecated API anyway.
-    // It would be good to have some access to native dialogs though, so
-    // we should rethink it based on the up-to-date information at:
-    // https://developer.android.com/guide/topics/ui/dialogs.html#FullscreenDialog
-
-//    /**
-//     * This method is called by SDL using JNI.
-//     * Shows the messagebox from UI thread and block calling thread.
-//     * buttonFlags, buttonIds and buttonTexts must have same length.
-//     * @param buttonFlags array containing flags for every button.
-//     * @param buttonIds array containing id for every button.
-//     * @param buttonTexts array containing text for every button.
-//     * @param colors null for default or array of length 5 containing colors.
-//     * @return button id or -1.
-//     */
-//    fun messageboxShowMessageBox(
-//            flags: Int,
-//            title: String,
-//            message: String,
-//            buttonFlags: IntArray,
-//            buttonIds: IntArray,
-//            buttonTexts: Array<String>,
-//            colors: IntArray): Int {
-//    }
-
-//    override fun onCreateDialog(ignore: Int, args: Bundle): Dialog? {
-//    }
-

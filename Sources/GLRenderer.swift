@@ -72,6 +72,8 @@ internal final class GLRenderer {
         // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
         setShapeBlending(true)
         setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
+
+        clearErrors() // by now we have handled any errors we might have wanted to
     }
 
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
@@ -150,8 +152,9 @@ internal final class GLRenderer {
         }
     }
 
-    func flip() {
+    func flip() throws {
         GPU_Flip(rawPointer)
+        try throwOnErrors(ofType: [GPU_ERROR_USER_ERROR, GPU_ERROR_BACKEND_ERROR])
     }
 
     deinit {
@@ -215,9 +218,7 @@ private extension CGRect {
     }
 }
 
-#if !os(Android)
-    private extension CGSize {
-        static let samsungS7 = CGSize(width: 2560 / 3.0, height: 1440 / 3.0) // 1080p 1.5x Retina
-        static let nexus9 = CGSize(width: 2048 / 2.0, height: 1536 / 2.0)
-    }
-#endif
+private extension CGSize {
+    static let samsungS7 = CGSize(width: 2560 / 3.0, height: 1440 / 3.0) // 1080p 1.5x Retina
+    static let nexus9 = CGSize(width: 2048 / 2.0, height: 1536 / 2.0)
+}

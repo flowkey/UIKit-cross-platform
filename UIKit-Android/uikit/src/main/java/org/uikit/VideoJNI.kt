@@ -1,6 +1,8 @@
 package org.uikit
 
 import android.net.Uri
+import android.util.Log
+import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -137,7 +139,7 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
 }
 
 @Suppress("unused")
-class AVPlayerLayer(parent: SDLActivity, player: AVPlayer) {
+class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
     private var exoPlayerLayout: PlayerView
 
     init {
@@ -155,5 +157,10 @@ class AVPlayerLayer(parent: SDLActivity, player: AVPlayer) {
         val layoutParams = RelativeLayout.LayoutParams(width, height)
         layoutParams.setMargins(x, y, 0, 0)
         exoPlayerLayout.layoutParams = layoutParams
+    }
+
+    fun removeFromParent() {
+        Log.v("SDL", "Removing video from parent layout")
+        parent.removeViewInLayout(exoPlayerLayout)
     }
 }

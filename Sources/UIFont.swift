@@ -11,6 +11,11 @@ private let systemFontName = "Roboto" // XXX: change this depending on platform?
 open class UIFont: Equatable {
     static var fontRendererCache = [String: FontRenderer]()
 
+    public static func clearCaches() {
+        fontRendererCache.removeAll()
+        availableFontData.removeAll()
+    }
+
     public static func == (lhs: UIFont, rhs: UIFont) -> Bool {
         return lhs.fontName == rhs.fontName && lhs.pointSize == rhs.pointSize
     }
@@ -131,7 +136,6 @@ extension UIFont {
 
 extension NSAttributedString {
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
-
         return wrapLength == 0 ?
             font.renderer.singleLineSize(of: self) / UIScreen.main.scale :
             string.size(with: font, wrapLength: wrapLength) // fallback to String.size for multiline text
