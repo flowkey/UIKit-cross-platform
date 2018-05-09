@@ -329,8 +329,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     override fun requestLayout() {
         super.requestLayout()
 
-        // ReactViewGroup overrides "onLayout" meaning requestLayout has no effect
-        // Simulate an android layout pass here...
+        // react native breaks layouting
+        // this is a temporary workaround for missing videos on android 6
         post {
             measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
             layout(left, top, right, bottom)
