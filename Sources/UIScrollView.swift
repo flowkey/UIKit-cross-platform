@@ -16,7 +16,9 @@ open class UIScrollView: UIView {
     open var panGestureRecognizer = UIPanGestureRecognizer()
 
     private var verticalScrollIndicator = CALayer()
-    public var indicatorStyle: UIScrollViewIndicatorStyle = .white
+    private var horizontalScrollIndicator = CALayer()
+    
+    public var indicatorStyle: UIScrollViewIndicatorStyle = .black //TODO: change this approach, can't hadcode style here in the general class
 
     var weightedAverageVelocity: CGPoint = .zero
 
@@ -27,10 +29,16 @@ open class UIScrollView: UIView {
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
 
-        verticalScrollIndicator.cornerRadius = 1
-        verticalScrollIndicator.disableAnimations = true
-        verticalScrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
-        layer.addSublayer(verticalScrollIndicator)
+        //JANEKTODO: search for
+        
+        
+        for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
+            scrollIndicator.cornerRadius = 1
+            scrollIndicator.disableAnimations = true
+            scrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
+            layer.addSublayer(scrollIndicator)
+        }
+
     }
 
     open var isDecelerating: Bool = false
@@ -81,14 +89,16 @@ open class UIScrollView: UIView {
         set {
             layer.removeAnimation(forKey: "bounds")
             bounds.origin = newValue
+            //TODO: how's this relate to layoutSubviews? abstract out to a func?
+            //TODO: framing called twice, check it 
             if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
+            if showsHorizontalScrollIndicator { layoutHorizontalScrollIndicator() }
         }
     }
 
+    
     open var showsVerticalScrollIndicator = true
-
-    // TODO: Implement this:
-    open var showsHorizontalScrollIndicator = true
+    open var showsHorizontalScrollIndicator = true //TODO: implement this
 
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         precondition(point.x.isFinite)
@@ -105,7 +115,10 @@ open class UIScrollView: UIView {
 
     override open func layoutSubviews() {
         super.layoutSubviews()
+        
+        //TODO: implement as one func?
         if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
+        if showsHorizontalScrollIndicator { layoutHorizontalScrollIndicator() }
     }
 
     private func layoutVerticalScrollIndicator() {
@@ -123,9 +136,26 @@ open class UIScrollView: UIView {
             height: indicatorHeight
         )
     }
+    
+    private func layoutHorizontalScrollIndicator() {
+        horizontalScrollIndicator.isHidden = (contentSize.width == bounds.width)
+        if horizontalScrollIndicator.isHidden { return }
+        
+        
+        let indicatorWidth: CGFloat = (bounds.width / contentSize.width) * bounds.width
+        let indicatorHeight: CGFloat = 2
+        let indicatorXOffset = contentOffset.x + (contentOffset.x / contentSize.width) * bounds.width
+        
+        horizontalScrollIndicator.frame = CGRect(
+            x: indicatorXOffset,
+            y: bounds.maxY - indicatorHeight,
+            width: indicatorWidth,
+            height: indicatorHeight
+        )
+    }
 
     open func flashScrollIndicators() {
-
+        //
     }
 }
 
