@@ -32,10 +32,8 @@ final public class SDL { // Only public for rootView!
         window = UIWindow(frame: CGRect(origin: .zero, size: self.glRenderer.size))
         window.rootViewController = UIViewController(nibName: nil, bundle: nil)
         window.makeKeyAndVisible()
-
         UIFont.loadSystemFonts()
 
-        print("Calling all SDL.onInitializedListeners")
         onInitializedListeners.forEach { $0() }
     }
 
@@ -63,7 +61,6 @@ final public class SDL { // Only public for rootView!
     }
 
     static func deinitialize() {
-        print("unload")
         onUnloadListeners.forEach { $0() }
         onUnloadListeners.removeAll()
         DisplayLink.activeDisplayLinks.removeAll()
@@ -89,8 +86,8 @@ final public class SDL { // Only public for rootView!
 
         DisplayLink.activeDisplayLinks.forEach { $0.callback() }
         UIView.animateIfNeeded(at: frameTimer)
+        // XXX it's possible for drawing to crash if the context is invalid:
         window.sdlDrawAndLayoutTreeIfNeeded()
-        // it's possible for drawing to fail if the context
 
         guard CALayer.layerTreeIsDirty else {
             // Nothing changed, so we can leave the existing image on the screen.
