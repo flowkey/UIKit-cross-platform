@@ -200,6 +200,7 @@ open class CALayer {
         shadowRadius = layer.shadowRadius
         shadowOpacity = layer.shadowOpacity
         mask = layer.mask
+        masksToBounds = layer.masksToBounds
         contents = layer.contents // XXX: we should make a copy here
         contentsScale = layer.contentsScale
         superlayer = layer.superlayer
