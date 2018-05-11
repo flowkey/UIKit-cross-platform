@@ -113,22 +113,28 @@ open class UIScrollView: UIView {
         CATransaction.commit()
     }
 
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-        
-        //TODO: implement as one func?
-        if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
-        if showsHorizontalScrollIndicator { layoutHorizontalScrollIndicator() }
-    }
-
-    private func layoutVerticalScrollIndicator() {
+    public func layoutVerticalScrollIndicator() {
         verticalScrollIndicator.isHidden = (contentSize.height == bounds.height)
         if verticalScrollIndicator.isHidden { return }
-
-        let indicatorWidth: CGFloat = 2
+        
+        
+        
+        let indicatorWidth: CGFloat = 3
         let indicatorHeight: CGFloat = (bounds.height / contentSize.height) * bounds.height
-        let indicatorYOffset = contentOffset.y + (contentOffset.y / contentSize.height) * bounds.height
-
+        
+        
+        
+        // Calculating the displacemement of the indicator:
+        // 1. base offset of the scrollview (`contentOffset.x`) puts us on the beginning edge of the scrollView
+        // 2. then we add a representation of progress through the scrollview (`progressTerm`)
+        // 3. and correct for the anchor point being in the middle of the indicator
+        //   (by adding half the width of the indicator and penalizing high/far positions appropriately)
+        
+        let progressTerm = (contentOffset.y / contentSize.height) * bounds.height
+        let indicatorLenghtCompensationTerm = (1 - (bounds.height - indicatorHeight) / bounds.height)
+        
+        let indicatorYOffset =  (contentOffset.y + progressTerm + (indicatorHeight / 2)) - indicatorWidthCompensationTerm * progressTerm
+        
         verticalScrollIndicator.frame = CGRect(
             x: bounds.maxX - indicatorWidth,
             y: indicatorYOffset,
@@ -137,14 +143,26 @@ open class UIScrollView: UIView {
         )
     }
     
-    private func layoutHorizontalScrollIndicator() {
+    public func layoutHorizontalScrollIndicator() {
         horizontalScrollIndicator.isHidden = (contentSize.width == bounds.width)
         if horizontalScrollIndicator.isHidden { return }
         
         
         let indicatorWidth: CGFloat = (bounds.width / contentSize.width) * bounds.width
-        let indicatorHeight: CGFloat = 2
-        let indicatorXOffset = contentOffset.x + (contentOffset.x / contentSize.width) * bounds.width
+        let indicatorHeight: CGFloat = 3
+        
+        
+        // Calculating the displacemement of the indicator:
+        // 1. base offset of the scrollview (`contentOffset.x`) puts us on the beginning edge of the scrollView
+        // 2. then we add a representation of progress through the scrollview (`progressTerm`)
+        // 3. and correct for the anchor point being in the middle of the indicator
+        //   (by adding half the width of the indicator and penalizing high/far positions appropriately)
+        
+        let progressTerm = (contentOffset.x / contentSize.width) * bounds.width
+        let indicatorLenghtCompensationTerm = (1 - (bounds.width - indicatorWidth) / bounds.width)
+        
+        let indicatorXOffset =  (contentOffset.x + progressTerm + (indicatorWidth / 2)) - indicatorLenghtCompensationTerm * progressTerm
+        
         
         horizontalScrollIndicator.frame = CGRect(
             x: indicatorXOffset,
@@ -187,3 +205,4 @@ public enum UIScrollViewIndicatorStyle {
     }
     
 }
+
