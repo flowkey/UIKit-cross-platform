@@ -222,8 +222,8 @@ private extension CGSize {
     // smartphones:
     static let samsungGalaxyJ5 = CGSize(width: 1280 / 2.0, height: 720 / 2.0)
     static let samsungGalaxyS5 = CGSize(width: 1920 / 3.0, height: 1080 / 3.0)
-    static let samsungGalaxyS7 = CGSize(width: 2560 / 3.0, height: 1440 / 3.0) // 1080p 1.5x Retina
-    static let samsungGalaxyS8 = CGSize(width: 2960 / 3.0, height: 1440 / 3.0)
+    static let samsungGalaxyS7 = CGSize(width: 2560 / 4.0, height: 1440 / 4.0) // 1080p 1.5x Retina
+    static let samsungGalaxyS8 = CGSize(width: 2960 / 4.0, height: 1440 / 4.0)
 
     // tablets:
     static let nexus9 = CGSize(width: 2048 / 2.0, height: 1536 / 2.0)
