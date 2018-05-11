@@ -68,10 +68,13 @@ public final class AVPlayerLayer: CALayer {
         player?.currentItem?.remove(playerOutput)
 
         let aspectRatio = presentationSize.width / presentationSize.height
-        let widthAlignedTo4PixelPadding = (size.width.remainder(dividingBy: 4) == 0) ?
+        
+        
+        let widthAlignedTo4PixelPadding = (size.width.remainder(dividingBy: 8) == 0) ?
             size.width : // <-- no padding required
-            size.width + (4 - round(size.width).remainder(dividingBy: 4))
+            size.width + (8 - round(size.width).remainder(dividingBy: 8))
 
+        
         playerOutput = AVPlayerItemVideoOutput(pixelBufferAttributes: [
             kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
             kCVPixelBufferOpenGLCompatibilityKey as String: true,
