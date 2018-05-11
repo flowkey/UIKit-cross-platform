@@ -31,12 +31,11 @@ open class UIScrollView: UIView {
 
         
         for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
-            scrollIndicator.cornerRadius = 1
-            scrollIndicator.disableAnimations = true
+            scrollIndicator.layer.cornerRadius = 1.5
             scrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
-            scrollIndicator.borderWidth = 0.5
-            scrollIndicator.borderColor = self.indicatorStyle.borderColor
-            layer.addSublayer(scrollIndicator)
+            scrollIndicator.layer.borderWidth = 0.5
+            scrollIndicator.layer.borderColor = self.indicatorStyle.borderColor
+            addSubview(scrollIndicator)
         }
 
     }
@@ -89,8 +88,7 @@ open class UIScrollView: UIView {
         set {
             layer.removeAnimation(forKey: "bounds")
             bounds.origin = newValue
-            //TODO: how's this relate to layoutSubviews? abstract out to a func?
-            //TODO: framing called twice, check it 
+            
             if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
             if showsHorizontalScrollIndicator { layoutHorizontalScrollIndicator() }
         }
@@ -173,7 +171,7 @@ open class UIScrollView: UIView {
     }
 
     open func flashScrollIndicators() {
-        //
+        //TODO
     }
 }
 
@@ -190,7 +188,7 @@ public enum UIScrollViewIndicatorStyle {
 
     var backgroundColor: UIColor {
         switch self {
-        case .`default`: return UIColor.black // TBD: default in iOS UIKit is "black with a white border"
+        case .`default`: return UIColor.lightGray // TBD: default in iOS UIKit is "black with a white border"
         case .black: return UIColor.black
         case .white: return UIColor.white
         }
