@@ -132,7 +132,7 @@ open class UIScrollView: UIView {
         let progressTerm = (contentOffset.y / contentSize.height) * bounds.height
         let indicatorLenghtCompensationTerm = (1 - (bounds.height - indicatorHeight) / bounds.height)
         
-        let indicatorYOffset =  (contentOffset.y + progressTerm + (indicatorHeight / 2)) - indicatorWidthCompensationTerm * progressTerm
+        let indicatorYOffset =  (contentOffset.y + progressTerm + (indicatorHeight / 2)) - indicatorLenghtCompensationTerm * progressTerm
         
         verticalScrollIndicator.frame = CGRect(
             x: bounds.maxX - indicatorWidth,
