@@ -15,8 +15,8 @@ open class UIScrollView: UIView {
     open weak var delegate: UIScrollViewDelegate? // TODO: change this to individually settable callbacks
     open var panGestureRecognizer = UIPanGestureRecognizer()
 
-    private var verticalScrollIndicator = CALayer()
-    private var horizontalScrollIndicator = CALayer()
+    var verticalScrollIndicator = UIView()
+    var horizontalScrollIndicator = UIView()
     
     public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` //TODO: implement and use `default`
 
@@ -43,6 +43,7 @@ open class UIScrollView: UIView {
     open var isDecelerating: Bool = false
 
     private func onPan() {
+
         let translation = panGestureRecognizer.translation(in: self)
         panGestureRecognizer.setTranslation(.zero, in: self)
 
