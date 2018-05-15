@@ -18,7 +18,7 @@ open class UIScrollView: UIView {
     var verticalScrollIndicator = UIView()
     var horizontalScrollIndicator = UIView()
     
-    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` //TODO: implement and use `default`
+    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default`
 
     var weightedAverageVelocity: CGPoint = .zero
 
@@ -33,8 +33,12 @@ open class UIScrollView: UIView {
         for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
             scrollIndicator.layer.cornerRadius = 1.5
             scrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
-            scrollIndicator.layer.borderWidth = 0.5
-            scrollIndicator.layer.borderColor = self.indicatorStyle.borderColor
+            
+            if let borderColor = self.indicatorStyle.borderColor {
+                scrollIndicator.layer.borderWidth = 0.5
+                scrollIndicator.layer.borderColor = borderColor
+            }
+            
             addSubview(scrollIndicator)
         }
 
@@ -97,7 +101,7 @@ open class UIScrollView: UIView {
 
     
     open var showsVerticalScrollIndicator = true
-    open var showsHorizontalScrollIndicator = true //TODO: implement this
+    open var showsHorizontalScrollIndicator = true
 
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         precondition(point.x.isFinite)
@@ -189,17 +193,16 @@ public enum UIScrollViewIndicatorStyle {
 
     var backgroundColor: UIColor {
         switch self {
-        case .`default`: return UIColor.lightGray // TBD: default in iOS UIKit is "black with a white border"
+        case .`default`: return UIColor.lightGray // Default according to iOS UIKit docs is "black with a white border", but it's actually grey with no border/grey border (as observable in any default iOS app)
         case .black: return UIColor.black
         case .white: return UIColor.white
         }
     }
     
-    var borderColor: UIColor {
+    var borderColor: UIColor? {
         switch self {
-        case .`default`: return UIColor.white // TBD: default in iOS UIKit is "black with a white border"
-        case .black: return UIColor.black
-        case .white: return UIColor.white
+        case .`default`: return UIColor.white
+        default : return nil
         }
     }
     
