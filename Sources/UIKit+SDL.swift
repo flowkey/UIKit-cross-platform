@@ -74,15 +74,7 @@ final public class SDL { // Only public for rootView!
         #endif
     }
 
-    /// Returns: time taken (in milliseconds) to render current frame
-    public static func render() -> Double {
-        let frameTimer = Timer()
-        doRender(at: frameTimer)
-        if shouldQuit { return -1.0 }
-        return frameTimer.elapsedTimeInMilliseconds
-    }
-
-    private static func doRender(at frameTimer: Timer) {
+    static func render(atTime frameTimer: Timer) {
         handleEventsIfNeeded()
         if shouldQuit || SDL.window == nil {
             print("Not rendering because `SDL.window` was `nil` or `shouldQuit == true`")
@@ -118,12 +110,13 @@ final public class SDL { // Only public for rootView!
 }
 
 #if os(Android)
-private let maxFrameRenderTimeInMilliseconds = 1000.0 / 60.0
+private let maxFrameRenderTimeInSeconds = 1.0 / 60.0
 
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeRender")
 public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
-    let timeTaken = SDL.render()
-    let remainingFrameTime = maxFrameRenderTimeInMilliseconds - timeTaken
-    CFRunLoopRunInMode(kCFRunLoopDefaultMode, max(0.001, remainingFrameTime / 1000), true)
+    let frameTime = Timer()
+    SDL.render(atTime: frameTime)
+    let remainingFrameTime = maxFrameRenderTimeInSeconds - frameTime.elapsedTimeInSeconds
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, max(0.001, remainingFrameTime / 2), true)
 }
 #endif
