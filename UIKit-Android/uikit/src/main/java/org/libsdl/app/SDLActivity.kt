@@ -267,6 +267,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
             else -> Log.w("SDL", "pixel format unknown " + format)
         }
 
+        if (width == 0 || height == 0) {
+            Log.v(TAG, "skipping due to invalid dimensions: ${width} x ${height}")
+            return
+        }
+
         mWidth = Math.max(width, height).toFloat()
         mHeight = Math.min(width, height).toFloat()
 
