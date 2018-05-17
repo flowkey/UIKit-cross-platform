@@ -269,37 +269,18 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
         mWidth = width.toFloat()
         mHeight = height.toFloat()
-        this.onNativeResize(width, height, sdlFormat, display.refreshRate)
+
+        val min = Math.min(mWidth, mHeight)
+        val max = Math.max(mWidth, mHeight)
+
+        this.onNativeResize(max.toInt(), min.toInt(), sdlFormat, display.refreshRate)
         Log.v(TAG, "Window size: " + width + "x" + height)
-
-
-        // FIXME: Remove this hack
-        val requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
-        // Skip if the provided surface isn't in the requested orientation
-        val skip =
-                (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && mWidth > mHeight) ||
-                (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE && mWidth < mHeight)
-
-        if (skip) {
-            val min = Math.min(mWidth, mHeight)
-            val max = Math.max(mWidth, mHeight)
-
-            if (max / min < 1.20f) {
-                // Special Patch for Square Resolution: Black Berry Passport
-                Log.v(TAG, "Avoid skip on near-square aspect-ratio, just in case.")
-            } else {
-                Log.v(TAG, "Surface is not ready. Skipping creation for now...")
-                return
-            }
-        }
 
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
 
         doNativeInitAndPostFrameCallbackIfNotRunning()
-
 
         if (mHasFocus) {
             handleSurfaceResume()
