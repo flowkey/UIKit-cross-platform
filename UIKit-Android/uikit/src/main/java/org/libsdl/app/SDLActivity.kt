@@ -268,7 +268,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         }
 
         if (width == 0 || height == 0) {
-            Log.v(TAG, "skipping due to invalid dimensions: ${width} x ${height}")
+            Log.v(TAG, "skipping due to invalid surface dimensions: ${width} x ${height}")
             return
         }
 
