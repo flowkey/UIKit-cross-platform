@@ -267,14 +267,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
             else -> Log.w("SDL", "pixel format unknown " + format)
         }
 
-        mWidth = width.toFloat()
-        mHeight = height.toFloat()
+        mWidth = Math.max(width, height).toFloat()
+        mHeight = Math.min(width, height).toFloat()
 
-        val min = Math.min(mWidth, mHeight)
-        val max = Math.max(mWidth, mHeight)
-
-        this.onNativeResize(max.toInt(), min.toInt(), sdlFormat, display.refreshRate)
-        Log.v(TAG, "Window size: " + width + "x" + height)
+        this.onNativeResize(mWidth.toInt(), mHeight.toInt(), sdlFormat, display.refreshRate)
+        Log.v(TAG, "Window size: " + mWidth + "x" + mHeight)
 
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
