@@ -267,39 +267,22 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
             else -> Log.w("SDL", "pixel format unknown " + format)
         }
 
-        mWidth = width.toFloat()
-        mHeight = height.toFloat()
-        this.onNativeResize(width, height, sdlFormat, display.refreshRate)
-        Log.v(TAG, "Window size: " + width + "x" + height)
-
-
-        // FIXME: Remove this hack
-        val requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
-        // Skip if the provided surface isn't in the requested orientation
-        val skip =
-                (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && mWidth > mHeight) ||
-                (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE && mWidth < mHeight)
-
-        if (skip) {
-            val min = Math.min(mWidth, mHeight)
-            val max = Math.max(mWidth, mHeight)
-
-            if (max / min < 1.20f) {
-                // Special Patch for Square Resolution: Black Berry Passport
-                Log.v(TAG, "Avoid skip on near-square aspect-ratio, just in case.")
-            } else {
-                Log.v(TAG, "Surface is not ready. Skipping creation for now...")
-                return
-            }
+        if (width == 0 || height == 0) {
+            Log.v(TAG, "skipping due to invalid surface dimensions: ${width} x ${height}")
+            return
         }
+
+        mWidth = Math.max(width, height).toFloat()
+        mHeight = Math.min(width, height).toFloat()
+
+        this.onNativeResize(mWidth.toInt(), mHeight.toInt(), sdlFormat, display.refreshRate)
+        Log.v(TAG, "Window size: " + mWidth + "x" + mHeight)
 
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
 
         doNativeInitAndPostFrameCallbackIfNotRunning()
-
 
         if (mHasFocus) {
             handleSurfaceResume()
