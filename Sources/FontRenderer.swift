@@ -69,10 +69,7 @@ internal class FontRenderer {
 
 extension FontRenderer {
     func singleLineSize(of text: String) -> CGSize {
-        var width: Int32 = 0
-        var height: Int32 = 0
-        TTF_SizeUTF8(rawPointer, text, &width, &height)
-
+        let (width, height) = size(text)
         return CGSize(width: CGFloat(width), height: CGFloat(height))
     }
 }
