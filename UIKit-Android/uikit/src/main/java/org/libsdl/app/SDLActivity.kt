@@ -139,7 +139,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private fun postFrameCallbackIfNotRunning() {
         Log.v(TAG, "postFrameCallbackIfNotRunning()")
         if (isRunning) {
-            Log.v(TAG, "postFrameCallbackIfNotRunning() was already running")
+            Log.v(TAG, "-> Was already running")
             return
         }
 
@@ -175,6 +175,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     override fun doFrame(frameTimeNanos: Long) {
         if (isRunning && mIsSurfaceReady) {
             this.nativeRender()
+
             // Request the next frame only after rendering the current one.
             // This should skip next frame if the current one takes too long.
             Choreographer.getInstance().postFrameCallback(this)
@@ -217,14 +218,17 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
     private fun handleResume() {
         Log.v(TAG, "handleResume()")
 
-        if (!isRunning && mIsSurfaceReady && mHasFocus) {
+        if (mIsSurfaceReady && mHasFocus) {
             Log.d(TAG, "handleResume, all conditions met")
             this.nativeResume()
             this.handleSurfaceResume()
-            doNativeInitAndPostFrameCallbackIfNotRunning() // does what nativeResume used to
-        }
 
-        postFrameCallbackIfNotRunning()
+            if (!isRunning) { // I suspect this won't happen very often
+                Log.d(TAG, "... and we weren't running!")
+                // This is what nativeResume used to do:
+                doNativeInitAndPostFrameCallbackIfNotRunning()
+            }
+        }
     }
 
     private fun handleSurfaceResume() {
