@@ -95,7 +95,9 @@ open class UIScrollView: UIView {
         set {
             layer.removeAnimation(forKey: "bounds")
             bounds.origin = newValue
-            layoutScrollIndicators()
+            if (showsVerticalScrollIndicator || showsHorizontalScrollIndicator) {
+                layoutScrollIndicators()
+            }
         }
     }
     
