@@ -30,24 +30,18 @@ class AVPlayerItem(parent: SDLActivity, url: String) {
     internal val videoSource: ExtractorMediaSource
 
     init {
-        val regularVideoSourceUri = Uri.parse(url)
-
-        // Produces DataSource instances through which media data is loaded.
-        val dataSourceFactory = DefaultDataSourceFactory(parent.context,
-                Util.getUserAgent(parent.context, "com.flowkey.uikit"))
+        val videoSourceUri = Uri.parse(url)
 
         // ExtractorMediaSource works for regular media files such as mp4, webm, mkv
-        videoSource = ExtractorMediaSource(
-                regularVideoSourceUri,
-                CacheDataSourceFactory(
-                        parent.context,
-                        256 * 1024 * 1024,
-                        32 * 1024 * 1024
-                ),
-                DefaultExtractorsFactory(),
-                null,
-                null
+        val cacheDataSourceFactory = CacheDataSourceFactory(
+                parent.context,
+                256 * 1024 * 1024,
+                32 * 1024 * 1024
         )
+
+        videoSource = ExtractorMediaSource
+                        .Factory(cacheDataSourceFactory)
+                        .createMediaSource(videoSourceUri)
     }
 }
 
@@ -190,6 +184,7 @@ private class CacheDataSourceFactory(private val context: Context, private val m
 
     private val defaultDatasourceFactory: DefaultDataSourceFactory
 
+    // The cache survives the application lifetime, otherwise the cache keys can get confused
     companion object {
         var simpleCache: SimpleCache? = null
     }
