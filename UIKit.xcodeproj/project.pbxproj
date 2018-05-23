@@ -96,6 +96,7 @@
 		5C93AEC0208E4014005BE853 /* ic_arrow_back_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C93AEBB208E3D59005BE853 /* ic_arrow_back_white@2x.png */; };
 		5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */; };
 		5CAF2D101EE67DA2004C6380 /* CAAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */; };
+		5CAF5A3020ADD09500760FD4 /* FontRenderer+singleLineSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF5A2F20ADD09500760FD4 /* FontRenderer+singleLineSize.swift */; };
 		5CB6E1A6202387CE001FEAC9 /* CALayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCF1C12202382FF00AAF598 /* CALayerTests.swift */; };
 		5CB6E1B62031D801001FEAC9 /* CGRect+TransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB6E1B52031D801001FEAC9 /* CGRect+TransformTests.swift */; };
 		5CB6E1B72031D801001FEAC9 /* CGRect+TransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB6E1B52031D801001FEAC9 /* CGRect+TransformTests.swift */; };
@@ -358,6 +359,7 @@
 		5CAF2D0B1EE67D69004C6380 /* CABasicAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CABasicAnimation.swift; path = Sources/CABasicAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CAAction.swift; path = Sources/CAAction.swift; sourceTree = SOURCE_ROOT; };
 		5CAF2D1D1EE6FD29004C6380 /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		5CAF5A2F20ADD09500760FD4 /* FontRenderer+singleLineSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontRenderer+singleLineSize.swift"; sourceTree = "<group>"; };
 		5CB6E1B52031D801001FEAC9 /* CGRect+TransformTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+TransformTests.swift"; sourceTree = "<group>"; };
 		5CB6E1BF2031ECCE001FEAC9 /* TransformTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformTests.swift; sourceTree = "<group>"; };
 		5CB6E1C22033460C001FEAC9 /* CATransform3D+SDL_gpu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CATransform3D+SDL_gpu.swift"; sourceTree = "<group>"; };
@@ -660,6 +662,7 @@
 				5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */,
 				5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */,
 				5B520DB4208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift */,
+				5CAF5A2F20ADD09500760FD4 /* FontRenderer+singleLineSize.swift */,
 				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
 				5C4CD51020615FCF00217B4C /* SDL+handleEventsIfNeeded.swift */,
 				5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */,
@@ -1137,6 +1140,7 @@
 				5C93AEA82088FB70005BE853 /* UINavigationBar.swift in Sources */,
 				8318D27B1F0695080029816A /* UIControl.swift in Sources */,
 				5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */,
+				5CAF5A3020ADD09500760FD4 /* FontRenderer+singleLineSize.swift in Sources */,
 				83AB7B481F2B504300C7997D /* UIAlertController.swift in Sources */,
 				5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */,
 				83E5F7EB1EF8156400279C59 /* CGImage.swift in Sources */,
