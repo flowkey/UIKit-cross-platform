@@ -18,7 +18,7 @@ open class UIFont {
         `UIFont` as the value here, because each `UIFont` is associated with a size. `CGFont` would be a
         better level of abstraction for that reason, but we haven't implemented it (yet?)
      */
-    public static var systemFontFamilyName = "Roboto"
+    public internal(set) static var systemFontFamilyName = "Roboto"
 
     public static func boldSystemFont(ofSize size: CGFloat) -> UIFont {
         return systemFont(ofSize: size, weight: Weight.bold)
