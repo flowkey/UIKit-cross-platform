@@ -12,7 +12,7 @@ private func initSDL_ttf() -> Bool {
     return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
 }
 
-internal class FontRenderer {
+public class FontRenderer {
     let rawPointer: UnsafeMutablePointer<TTF_Font>
     deinit { TTF_CloseFont(rawPointer) }
 
