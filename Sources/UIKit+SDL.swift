@@ -74,6 +74,12 @@ final public class SDL { // Only public for rootView!
         #endif
     }
 
+    #if os(macOS)
+    public static func render() {
+        render(atTime: Timer())
+    }
+    #endif
+
     static func render(atTime frameTimer: Timer) {
         handleEventsIfNeeded()
         if shouldQuit || SDL.window == nil {
