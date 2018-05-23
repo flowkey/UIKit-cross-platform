@@ -14,24 +14,26 @@ let UIScrollViewDecelerationRateFast: CGFloat = 0.99
 open class UIScrollView: UIView {
     open weak var delegate: UIScrollViewDelegate? // TODO: change this to individually settable callbacks
     open var panGestureRecognizer = UIPanGestureRecognizer()
-
+    
     var verticalScrollIndicator = UIView()
     var horizontalScrollIndicator = UIView()
     
+    var indicatorThickness: CGFloat = 3
+    
     public var indicatorStyle: UIScrollViewIndicatorStyle = .`default`
-
+    
     var weightedAverageVelocity: CGPoint = .zero
-
+    
     override public init(frame: CGRect) {
         super.init(frame: frame)
         panGestureRecognizer.onAction = { [weak self] in self?.onPan() }
         panGestureRecognizer.onStateChanged = { [weak self] in self?.onPanGestureStateChanged() }
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
-
+        
         
         for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
-            scrollIndicator.layer.cornerRadius = 1.5
+            scrollIndicator.layer.cornerRadius = indicatorThickness / 2
             scrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
             
             if let borderColor = self.indicatorStyle.borderColor {
@@ -41,24 +43,24 @@ open class UIScrollView: UIView {
             
             addSubview(scrollIndicator)
         }
-
+        
     }
-
+    
     open var isDecelerating: Bool = false
-
+    
     private func onPan() {
-
+        
         let translation = panGestureRecognizer.translation(in: self)
         panGestureRecognizer.setTranslation(.zero, in: self)
-
+        
         let panGestureVelocity = panGestureRecognizer.velocity(in: self)
         self.weightedAverageVelocity = self.weightedAverageVelocity * 0.2 + panGestureVelocity * 0.8
-
+        
         let visibleContentOffset = (layer._presentation ?? layer).bounds.origin
         let newOffset = getBoundsCheckedContentOffset(visibleContentOffset - translation)
         setContentOffset(newOffset, animated: false)
     }
-
+    
     /// does some min/max checks to prevent newOffset being out of bounds
     func getBoundsCheckedContentOffset(_ newContentOffset: CGPoint) -> CGPoint {
         return CGPoint(
@@ -66,7 +68,7 @@ open class UIScrollView: UIView {
             y: min(max(newContentOffset.y, -contentInset.top), (contentSize.height + contentInset.bottom) - bounds.height)
         )
     }
-
+    
     private func onPanGestureStateChanged() {
         switch panGestureRecognizer.state {
         case .began:
@@ -75,106 +77,78 @@ open class UIScrollView: UIView {
         case .ended:
             startDeceleratingIfNecessary()
             weightedAverageVelocity = .zero
-
+            
             // XXX: Spring back with animation:
             //case .ended, .cancelled:
             //if contentOffset.x < contentInset.left {
             //    setContentOffset(CGPoint(x: contentInset.left, y: contentOffset.y), animated: true)
-            //}
+        //}
         default: break
         }
     }
-
+    
     open var contentInset: UIEdgeInsets = .zero
     open var contentSize: CGSize = .zero
-
+    
     open var contentOffset: CGPoint {
         get { return bounds.origin }
         set {
             layer.removeAnimation(forKey: "bounds")
             bounds.origin = newValue
-            
-            if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
-            if showsHorizontalScrollIndicator { layoutHorizontalScrollIndicator() }
+            layoutScrollIndicators()
         }
     }
-
+    
     
     open var showsVerticalScrollIndicator = true
     open var showsHorizontalScrollIndicator = true
-
+    
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         precondition(point.x.isFinite)
         precondition(point.y.isFinite)
-
+        
         contentOffset = point
-
+        
         // otherwise everything subscribing to scrollViewDidScroll is implicitly animated from velocity scroll
         CATransaction.begin()
         CATransaction.setDisableActions(!animated)
         delegate?.scrollViewDidScroll(self)
         CATransaction.commit()
     }
+    
+    
+    
+    public func layoutScrollIndicators() {
 
-    public func layoutVerticalScrollIndicator() {
-        verticalScrollIndicator.isHidden = (contentSize.height == bounds.height)
-        if verticalScrollIndicator.isHidden { return }
+        // all calculations are done for both dimensions at once
+        let indicatorLengths = (bounds.size / contentSize) * bounds.size
+        let scrollViewProgress = contentOffset / contentSize
+        let indicatorProgress = scrollViewProgress * bounds.size
+        let baseOffsetsOfScrollView = contentOffset
         
+        let indicatorLenghtsCompensationTerm = scrollViewProgress * indicatorLengths - (indicatorLengths / 2)
+        let indicatorOffsets =  baseOffsetsOfScrollView + indicatorProgress - indicatorLenghtsCompensationTerm
         
+        // layout only the indicator(s) that should be visible
+        if showsVerticalScrollIndicator && !(contentSize.height == bounds.height) {
+            verticalScrollIndicator.frame = CGRect(
+                x: bounds.maxX - indicatorThickness,
+                y: indicatorOffsets.y,
+                width: indicatorThickness,
+                height: indicatorLengths.height
+            )
+        }
         
-        let indicatorWidth: CGFloat = 3
-        let indicatorHeight: CGFloat = (bounds.height / contentSize.height) * bounds.height
-        
-        
-        
-        // Calculating the displacemement of the indicator:
-        // 1. base offset of the scrollview (`contentOffset.x`) puts us on the beginning edge of the scrollView
-        // 2. then we add a representation of progress through the scrollview (`progressTerm`)
-        // 3. and correct for the anchor point being in the middle of the indicator
-        //   (by adding half the width of the indicator and penalizing high/far positions appropriately)
-        
-        let progressTerm = (contentOffset.y / contentSize.height) * bounds.height
-        let indicatorLenghtCompensationTerm = (1 - (bounds.height - indicatorHeight) / bounds.height)
-        
-        let indicatorYOffset =  (contentOffset.y + progressTerm + (indicatorHeight / 2)) - indicatorLenghtCompensationTerm * progressTerm
-        
-        verticalScrollIndicator.frame = CGRect(
-            x: bounds.maxX - indicatorWidth,
-            y: indicatorYOffset,
-            width: indicatorWidth,
-            height: indicatorHeight
-        )
+        if showsHorizontalScrollIndicator && !(contentSize.width == bounds.width) {
+            horizontalScrollIndicator.frame = CGRect(
+                x: indicatorOffsets.x,
+                y: bounds.maxY - indicatorThickness,
+                width: indicatorLengths.width,
+                height: indicatorThickness
+            )
+        }
     }
     
-    public func layoutHorizontalScrollIndicator() {
-        horizontalScrollIndicator.isHidden = (contentSize.width == bounds.width)
-        if horizontalScrollIndicator.isHidden { return }
-        
-        
-        let indicatorWidth: CGFloat = (bounds.width / contentSize.width) * bounds.width
-        let indicatorHeight: CGFloat = 3
-        
-        
-        // Calculating the displacemement of the indicator:
-        // 1. base offset of the scrollview (`contentOffset.x`) puts us on the beginning edge of the scrollView
-        // 2. then we add a representation of progress through the scrollview (`progressTerm`)
-        // 3. and correct for the anchor point being in the middle of the indicator
-        //   (by adding half the width of the indicator and penalizing high/far positions appropriately)
-        
-        let progressTerm = (contentOffset.x / contentSize.width) * bounds.width
-        let indicatorLenghtCompensationTerm = (1 - (bounds.width - indicatorWidth) / bounds.width)
-        
-        let indicatorXOffset =  (contentOffset.x + progressTerm + (indicatorWidth / 2)) - indicatorLenghtCompensationTerm * progressTerm
-        
-        
-        horizontalScrollIndicator.frame = CGRect(
-            x: indicatorXOffset,
-            y: bounds.maxY - indicatorHeight,
-            width: indicatorWidth,
-            height: indicatorHeight
-        )
-    }
-
     open func flashScrollIndicators() {
         //TODO
     }
@@ -190,7 +164,7 @@ public enum UIScrollViewIndicatorStyle {
     case `default`
     case black
     case white
-
+    
     var backgroundColor: UIColor {
         switch self {
         case .`default`: return UIColor.lightGray // Default according to iOS UIKit docs is "black with a white border", but it's actually grey with no border/grey border (as observable in any default iOS app)
@@ -207,4 +181,5 @@ public enum UIScrollViewIndicatorStyle {
     }
     
 }
+
 

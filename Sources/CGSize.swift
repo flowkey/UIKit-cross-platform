@@ -33,6 +33,23 @@ extension CGSize {
     }
 }
 
+extension CGSize {
+    public static func / (lhs: CGSize, rhs: CGSize) -> CGSize {
+        return CGSize(
+            width: lhs.width / rhs.width,
+            height: lhs.height / rhs.height
+        )
+    }
+    
+    public static func * (lhs: CGSize, rhs: CGSize) -> CGSize {
+        return CGSize(
+            width: lhs.width * rhs.width,
+            height: lhs.height * rhs.height
+        )
+    }
+}
+
+
 extension CGSize: CustomStringConvertible {
     public var description: String {
         return "(\(width), \(height))"

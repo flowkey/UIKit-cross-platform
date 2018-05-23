@@ -46,3 +46,23 @@ extension CGPoint: Equatable {
         return lhs.x == rhs.x && lhs.y == rhs.y
     }
 }
+
+
+extension CGPoint {
+    public static func / (lhs: CGPoint, rhs: CGSize) -> CGPoint {
+        return CGPoint(x: lhs.x / rhs.width, y: lhs.y / rhs.height)
+    }
+    
+    public static func * (lhs: CGPoint, rhs: CGSize) -> CGPoint {
+        return CGPoint(x: lhs.x * rhs.width, y: lhs.y * rhs.height)
+    }
+    
+    public static func + (lhs: CGPoint, rhs: CGSize) -> CGPoint {
+        return CGPoint(x: lhs.x + rhs.width, y: lhs.y + rhs.height)
+    }
+    
+    public static func - (lhs: CGPoint, rhs: CGSize) -> CGPoint {
+        return CGPoint(x: lhs.x - rhs.width, y: lhs.y - rhs.height)
+    }
+    
+}
