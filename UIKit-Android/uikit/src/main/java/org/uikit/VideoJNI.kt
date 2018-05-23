@@ -178,7 +178,7 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
 
 
 ///// Caching data source
-// Thank you
+// Thank you https://stackoverflow.com/a/45488510/3086440
 
 private class CacheDataSourceFactory(private val context: Context, private val maxCacheSize: Long, private val maxFileSize: Long) : DataSource.Factory {
 
