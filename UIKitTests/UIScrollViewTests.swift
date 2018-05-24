@@ -12,26 +12,36 @@ import XCTest
 let initialSize = CGSize(width: 1000, height: 1000)
 let initialOrigin = CGPoint(x: 0, y: 0)
 
-class UIScrollViewTests: XCTestCase {
-    // REVIEW NOTE: is there a way to run the same tests on iOS? would be pretty cool to ensure behaviour is the same or compare it
 
-    func testDefaultValuesOfProperties() {
-        // anything set by default: contentSize zero, shows both indicators, etc
+class UIScrollViewTests: XCTestCase {
+    
+    var scrollView: UIScrollView!
+    
+    
+    override func setUp() {
+        scrollView = UIScrollView(frame: CGRect(origin: initialOrigin, size: initialSize))
     }
     
-    func testInitialProperties() {
-        let scrollView = UIScrollView(frame: CGRect(origin: initialOrigin, size: initialSize))
+    func testDefaultValuesOfProperties() {
+        XCTAssertTrue(scrollView.showsHorizontalScrollIndicator)
+        XCTAssertTrue(scrollView.showsVerticalScrollIndicator)
         
         XCTAssertEqual(scrollView.frame.origin, initialOrigin)
         XCTAssertEqual(scrollView.frame.size, initialSize)
         
-        XCTAssertEqual(scrollView.contentOffset, CGPoint.zero)
-        XCTAssertEqual(scrollView.contentSize, CGSize.zero)
-        XCTAssertEqual(scrollView.contentInset, UIEdgeInsets.zero)
-        
+        XCTAssertEqual(scrollView.contentOffset, .zero)
+        XCTAssertEqual(scrollView.contentSize, .zero)
+        XCTAssertEqual(scrollView.contentInset, .zero)
+    }
+    
+    
+    func testInitialProperties() { //name change
+
+        //instead test if bounds are set
         let arbitraryContentOffset = CGPoint(x: 10, y: 20)
         scrollView.contentOffset = arbitraryContentOffset
-        XCTAssertEqual(scrollView.contentOffset, arbitraryContentOffset)
+        XCTAssertEqual(scrollView.bounds.origin, arbitraryContentOffset)
+        
         
         let arbitraryContentSize = CGSize(width: 5, height: 10)
         scrollView.contentSize = arbitraryContentSize
@@ -44,51 +54,33 @@ class UIScrollViewTests: XCTestCase {
     }
     
     
-    func testShowsIndicatorsProperties() {
-        let scrollView = UIScrollView(frame: CGRect(origin: initialOrigin, size: initialSize))
-        // REVIEW NOTE: this is testing sth very basic and might be unnecessary or too bloated
-        // REVIEW NOTE: perhaps inclue in testInitial or testDefault
-        
-        // true by default
-        XCTAssertTrue(scrollView.showsHorizontalScrollIndicator)
-        XCTAssertTrue(scrollView.showsVerticalScrollIndicator)
-        
-        // reacts to setting to false
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        
-        XCTAssertFalse(scrollView.showsHorizontalScrollIndicator)
-        XCTAssertFalse(scrollView.showsVerticalScrollIndicator)
-        
-        // reacts to setting to true
-        scrollView.showsHorizontalScrollIndicator = true
-        scrollView.showsVerticalScrollIndicator = true
-        
-        XCTAssertTrue(scrollView.showsHorizontalScrollIndicator)
-        XCTAssertTrue(scrollView.showsVerticalScrollIndicator)
-    }
-    
-
-    
     func testScrollIndicatorsVisibility() {
-        let scrollView = UIScrollView(frame: CGRect(origin: initialOrigin, size: initialSize))
-        
-        // initially not visible
+        XCTAssertEqual(scrollView.contentSize, CGSize.zero)
         XCTAssertEqual(scrollView.verticalScrollIndicator.frame, CGRect.zero)
         XCTAssertEqual(scrollView.horizontalScrollIndicator.frame, CGRect.zero)
-        XCTAssertEqual(scrollView.contentSize, CGSize.zero)
 
-        // with touch, (but contentSize < bounds) - not visible. section can probably be removed later
+
         mockTouch(toPoint: CGPoint(x: 100, y: 100), inScrollView: scrollView)
         XCTAssertEqual(scrollView.contentSize, CGSize.zero)
         XCTAssertEqual(scrollView.verticalScrollIndicator.frame, CGRect.zero)
         XCTAssertEqual(scrollView.horizontalScrollIndicator.frame, CGRect.zero)
         
-        // setting contenOffset artificially
         scrollView.contentSize = CGSize(width: 3000, height: 3000)
+        
+        
+        // setting contenOffset artificially with small contentsize
+        scrollView.contentOffset = CGPoint(x: 100, y: 100)
+        XCTAssertEqual(scrollView.verticalScrollIndicator.frame, CGRect.zero)
+        XCTAssertEqual(scrollView.horizontalScrollIndicator.frame, CGRect.zero)
+        
+        // setting contenOffset artificially
+        //TODO: chceck x and y separately
+        
         scrollView.contentOffset = CGPoint(x: 100, y: 100)
         XCTAssertNotEqual(scrollView.verticalScrollIndicator.frame, CGRect.zero)
         XCTAssertNotEqual(scrollView.horizontalScrollIndicator.frame, CGRect.zero)
+        
+        
         
         // settingContentOffset with a drag
         // NOTE: scrollIndicators currently never fade out,
@@ -103,28 +95,25 @@ class UIScrollViewTests: XCTestCase {
     }
     
     func testScrollIndicatorsInitialAndFinalPositions() {
-        // for now just test if they're not out of bounds
         let scrollView = UIScrollView(frame: CGRect(origin: initialOrigin, size: initialSize))
         scrollView.contentSize = CGSize(width: 3000, height: 3000)
         scrollView.contentOffset = CGPoint(x: 0, y: 0)
-        // note: `origin` in case of scrollViews is currently anchored in the middle
-        let desiredVerticalIndicatorStartPosition = CGPoint(x: scrollView.bounds.size.width - scrollView.verticalScrollIndicator.frame.size.width,
-                                                            y: 0 + scrollView.verticalScrollIndicator.frame.size.height / 2)
-        let desiredHorizontalIndicatorStartPosition = CGPoint(x: 0 + scrollView.horizontalScrollIndicator.frame.size.width / 2,
-                                                              y: scrollView.bounds.size.height - scrollView.horizontalScrollIndicator.frame.size.height)
+        let desiredVerticalIndicatorStartPosition = CGPoint(x: scrollView.bounds.size.width - scrollView.verticalScrollIndicator.frame.size.width, y: 0 )
+        let desiredHorizontalIndicatorStartPosition = CGPoint(x: 0, y: scrollView.bounds.size.height - scrollView.horizontalScrollIndicator.frame.size.height)
         
+        XCTAssertEqual(scrollView.verticalScrollIndicator.frame.origin, desiredVerticalIndicatorStartPosition)
+        XCTAssertEqual(scrollView.horizontalScrollIndicator.frame.origin, desiredHorizontalIndicatorStartPosition)
         
-        
-        // TODO: scrollView should not be able to set it's contentoffset larger than size
-        // test how this works in iOS and reimplement
-        scrollView.contentOffset = CGPoint(x: 5000, y: 5000)
+        scrollView.contentOffset = CGPoint(x: 3000, y: 0)
         let desiredVerticalIndicatorMaxPosition = CGPoint(x: scrollView.bounds.size.width - scrollView.verticalScrollIndicator.frame.size.width,
-                                                            y: 0 + scrollView.verticalScrollIndicator.frame.size.height / 2)
-        let desiredHorizontalIndicatorMaxPosition = CGPoint(x: 0 + scrollView.horizontalScrollIndicator.frame.size.width / 2,
-                                                              y: scrollView.bounds.size.height - scrollView.horizontalScrollIndicator.frame.size.height)
-        //would fail
-//        XCTAssertEqual(scrollView.verticalScrollIndicator.frame.origin, desiredVerticalIndicatorMaxPosition)
-//        XCTAssertEqual(scrollView.horizontalScrollIndicator.frame.origin, desiredHorizontalIndicatorMaxPosition)
+                                                          y: scrollView.contentSize.height - scrollView.verticalScrollIndicator.frame.size.height)
+        
+        
+        let desiredHorizontalIndicatorMaxPosition = CGPoint(x: scrollView.contentSize.width - scrollView.horizontalScrollIndicator.frame.size.width,
+                                                            y: scrollView.bounds.size.height - scrollView.horizontalScrollIndicator.frame.size.height)
+        
+        XCTAssertEqual(scrollView.verticalScrollIndicator.frame.origin, desiredVerticalIndicatorMaxPosition)
+        XCTAssertEqual(scrollView.horizontalScrollIndicator.frame.origin, desiredHorizontalIndicatorMaxPosition)
     }
     
 
@@ -139,7 +128,6 @@ class UIScrollViewTests: XCTestCase {
     func testScrollViewIndicatorStyles() {
         // XXX: set style, test bgr -> does this need to be tested?
     }
-    
     
     func testDelegateMethods() {
         class DelegationTestScrollView: UIScrollView, UIScrollViewDelegate {
