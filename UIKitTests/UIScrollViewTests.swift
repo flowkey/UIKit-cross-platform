@@ -96,6 +96,7 @@ class UIScrollViewTests: XCTestCase {
     
     func testScrollIndicatorsInitialAndFinalPositions() {
         let scrollView = UIScrollView(frame: CGRect(origin: initialOrigin, size: initialSize))
+        
         scrollView.contentSize = CGSize(width: 3000, height: 3000)
         scrollView.contentOffset = CGPoint(x: 0, y: 0)
         let desiredVerticalIndicatorStartPosition = CGPoint(x: scrollView.bounds.size.width - scrollView.verticalScrollIndicator.frame.size.width, y: 0 )
@@ -104,16 +105,21 @@ class UIScrollViewTests: XCTestCase {
         XCTAssertEqual(scrollView.verticalScrollIndicator.frame.origin, desiredVerticalIndicatorStartPosition)
         XCTAssertEqual(scrollView.horizontalScrollIndicator.frame.origin, desiredHorizontalIndicatorStartPosition)
         
-        scrollView.contentOffset = CGPoint(x: 3000, y: 0)
-        let desiredVerticalIndicatorMaxPosition = CGPoint(x: scrollView.bounds.size.width - scrollView.verticalScrollIndicator.frame.size.width,
-                                                          y: scrollView.contentSize.height - scrollView.verticalScrollIndicator.frame.size.height)
         
-        
-        let desiredHorizontalIndicatorMaxPosition = CGPoint(x: scrollView.contentSize.width - scrollView.horizontalScrollIndicator.frame.size.width,
+        scrollView.contentSize = CGSize(width: 0, height: 3000)
+        scrollView.contentOffset = CGPoint(x: 0, y: 10000)
+        let desiredHorizontalIndicatorMaxPosition = CGPoint(x: scrollView.contentSize.width, //Q: why is this correct? shouldn't it be width - indicatorLength?
                                                             y: scrollView.bounds.size.height - scrollView.horizontalScrollIndicator.frame.size.height)
         
-        XCTAssertEqual(scrollView.verticalScrollIndicator.frame.origin, desiredVerticalIndicatorMaxPosition)
+
         XCTAssertEqual(scrollView.horizontalScrollIndicator.frame.origin, desiredHorizontalIndicatorMaxPosition)
+        
+        scrollView.contentSize = CGSize(width: 3000, height: 0)
+        scrollView.contentOffset = CGPoint(x: 10000, y: 0)
+        let desiredVerticalIndicatorMaxPosition = CGPoint(x: scrollView.bounds.size.width - scrollView.verticalScrollIndicator.frame.size.width,
+                                                          y: scrollView.contentSize.height) //Q: why is this correct? shouldn't it be height - indicatorLength?
+        
+        XCTAssertEqual(scrollView.verticalScrollIndicator.frame.origin, desiredVerticalIndicatorMaxPosition)
     }
     
 
