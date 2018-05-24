@@ -127,6 +127,7 @@ extension UIFont {
         }
     }
 
+    @discardableResult
     public static func loadFont(fromPath path: String) throws -> FontRenderer {
         guard let dataProvider = CGDataProvider(filepath: path) else {
             throw LoadingError.couldNotOpenDataFile
