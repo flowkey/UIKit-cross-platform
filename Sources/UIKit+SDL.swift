@@ -71,6 +71,8 @@ final public class SDL { // Only public for rootView!
         onInitializedListeners.removeAll()
         #if os(Android)
         try? jni.call("removeCallbacks", on: getSDLView())
+        #elseif os(macOS)
+        exit(0)
         #endif
     }
 
