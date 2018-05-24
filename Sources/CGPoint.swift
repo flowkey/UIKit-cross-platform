@@ -47,6 +47,17 @@ extension CGPoint: Equatable {
     }
 }
 
+extension CGPoint {
+
+    public static func + (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
+        return CGPoint(x: lhs.x + rhs, y: lhs.y + rhs)
+    }
+    
+    public static func - (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
+        return CGPoint(x: lhs.x - rhs, y: lhs.y - rhs)
+    }
+    
+}
 
 extension CGPoint {
     public static func / (lhs: CGPoint, rhs: CGSize) -> CGPoint {

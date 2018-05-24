@@ -129,18 +129,17 @@ open class UIScrollView: UIView {
 
         // all calculations are done for both dimensions at once
         let indicatorLengths = (bounds.size / contentSize) * bounds.size
-        let scrollViewProgress = contentOffset / contentSize
-        let indicatorProgress = scrollViewProgress * bounds.size
-        let baseOffsetsOfScrollView = contentOffset
+        let scrollViewProgress = (contentOffset + contentInset.left) / (contentSize + contentInset.left + contentInset.right)
+        let indicatorOffsetInBounds = scrollViewProgress * bounds.size
         
-        let indicatorLenghtsCompensationTerm = scrollViewProgress * indicatorLengths - (indicatorLengths / 2)
-        let indicatorOffsets =  baseOffsetsOfScrollView + indicatorProgress - indicatorLenghtsCompensationTerm
+        let indicatorOffsetsInContentSpace =  contentOffset + indicatorOffsetInBounds
         
+
         // layout only the indicator(s) that should be visible
         if showsVerticalScrollIndicator && contentSize.height > bounds.height {
             verticalScrollIndicator.frame = CGRect(
-                x: bounds.maxX - indicatorThickness,
-                y: indicatorOffsets.y,
+                x: bounds.width - indicatorThickness,
+                y: indicatorOffsetsInContentSpace.y,
                 width: indicatorThickness,
                 height: indicatorLengths.height
             )
@@ -148,8 +147,8 @@ open class UIScrollView: UIView {
         
         if showsHorizontalScrollIndicator && contentSize.width > bounds.width {
             horizontalScrollIndicator.frame = CGRect(
-                x: indicatorOffsets.x,
-                y: bounds.maxY - indicatorThickness,
+                x: indicatorOffsetsInContentSpace.x,
+                y: bounds.height - indicatorThickness,
                 width: indicatorLengths.width,
                 height: indicatorThickness
             )
