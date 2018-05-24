@@ -39,6 +39,14 @@ extension CGPoint {
             y: x * t.m12 + y * t.m22 + t.tY
         )
     }
+    
+    public func castBetween(_ minPoint: CGPoint, _ maxPoint: CGPoint) -> CGPoint {
+        return CGPoint(
+            x: max(minPoint.x, min(x, maxPoint.x)),
+            y: max(minPoint.y, min(y, maxPoint.y))
+        )
+    }
+    
 }
 
 extension CGPoint: Equatable {
@@ -47,8 +55,9 @@ extension CGPoint: Equatable {
     }
 }
 
-extension CGPoint {
 
+
+extension CGPoint {
     public static func + (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
         return CGPoint(x: lhs.x + rhs, y: lhs.y + rhs)
     }

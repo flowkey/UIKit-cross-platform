@@ -98,8 +98,15 @@ open class UIScrollView: UIView {
     open var contentOffset: CGPoint {
         get { return bounds.origin }
         set {
+            
+            //Q: is this a performance concern? where should they be set if they need both contentSize and contentInset?
+            let minContentOffset = CGPoint(x: -contentInset.left, y: -contentInset.top)
+            let maxContentOffset = CGPoint(x: contentSize.width - bounds.size.width + contentInset.right,
+                                           y: contentSize.width - bounds.size.width + contentInset.bottom)
+            
             layer.removeAnimation(forKey: "bounds")
-            bounds.origin = newValue
+            bounds.origin = newValue.castBetween(minContentOffset, maxContentOffset)
+            
             if (showsVerticalScrollIndicator || showsHorizontalScrollIndicator) {
                 layoutScrollIndicators()
             }
@@ -113,7 +120,7 @@ open class UIScrollView: UIView {
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         precondition(point.x.isFinite)
         precondition(point.y.isFinite)
-        //TODO: it should not be possible to set a contentOffset >> contentSize
+        
         
         contentOffset = point
         
