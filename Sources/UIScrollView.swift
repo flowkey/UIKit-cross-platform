@@ -22,6 +22,9 @@ open class UIScrollView: UIView {
     
     public var indicatorStyle: UIScrollViewIndicatorStyle = .`default`
     
+    //TODO: var scrollIndicatorInsets
+    
+    
     var weightedAverageVelocity: CGPoint = .zero
     
     override public init(frame: CGRect) {
@@ -132,7 +135,7 @@ open class UIScrollView: UIView {
         let indicatorOffsets =  baseOffsetsOfScrollView + indicatorProgress - indicatorLenghtsCompensationTerm
         
         // layout only the indicator(s) that should be visible
-        if showsVerticalScrollIndicator && !(contentSize.height == bounds.height) {
+        if showsVerticalScrollIndicator && contentSize.height > bounds.height {
             verticalScrollIndicator.frame = CGRect(
                 x: bounds.maxX - indicatorThickness,
                 y: indicatorOffsets.y,
@@ -141,7 +144,7 @@ open class UIScrollView: UIView {
             )
         }
         
-        if showsHorizontalScrollIndicator && !(contentSize.width == bounds.width) {
+        if showsHorizontalScrollIndicator && contentSize.width > bounds.width {
             horizontalScrollIndicator.frame = CGRect(
                 x: indicatorOffsets.x,
                 y: bounds.maxY - indicatorThickness,
