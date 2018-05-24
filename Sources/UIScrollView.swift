@@ -113,6 +113,7 @@ open class UIScrollView: UIView {
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         precondition(point.x.isFinite)
         precondition(point.y.isFinite)
+        //TODO: it should not be possible to set a contentOffset >> contentSize
         
         contentOffset = point
         
@@ -134,7 +135,6 @@ open class UIScrollView: UIView {
         
         let indicatorOffsetsInContentSpace =  contentOffset + indicatorOffsetInBounds
         
-
         // layout only the indicator(s) that should be visible
         if showsVerticalScrollIndicator && contentSize.height > bounds.height {
             verticalScrollIndicator.frame = CGRect(
@@ -153,6 +153,8 @@ open class UIScrollView: UIView {
                 height: indicatorThickness
             )
         }
+        
+        //TODO: indicators are not placed correctly when both of them should be present
     }
     
     open func flashScrollIndicators() {
