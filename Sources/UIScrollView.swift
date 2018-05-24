@@ -24,6 +24,8 @@ open class UIScrollView: UIView {
     
     //TODO: var scrollIndicatorInsets
     
+    //TODO: scroll indicators should fade immediately when drag is finger-stopped or with a delay when drag ends
+    //TOOO: bouncing/contentInset
     
     var weightedAverageVelocity: CGPoint = .zero
     
@@ -43,8 +45,8 @@ open class UIScrollView: UIView {
                 scrollIndicator.layer.borderWidth = 0.5
                 scrollIndicator.layer.borderColor = borderColor
             }
-            
             addSubview(scrollIndicator)
+            //NOTE: should indicators be laid out here?
         }
         
     }
