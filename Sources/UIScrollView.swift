@@ -138,6 +138,7 @@ open class UIScrollView: UIView {
                 vertical: contentOffset.y + indicatorOffsetInBounds.vertical)
     }
 
+
     public func layoutScrollIndicatorsIfNeeded() {
         let shouldLayoutHorizontalScrollIndicator = showsHorizontalScrollIndicator && contentSize.width > bounds.width
         let shouldLayoutVerticalScrollIndicator = showsVerticalScrollIndicator && contentSize.height > bounds.height
@@ -151,6 +152,7 @@ open class UIScrollView: UIView {
         // TODO: indicator lenghts and offsets are always rounded up to nearest 0.5 in iOS
 
         if shouldLayoutHorizontalScrollIndicator {
+
             horizontalScrollIndicator.frame = CGRect(
                 x: indicatorOffsetsInContentSpace().horizontal,
                 y: bounds.height - (indicatorThickness + indicatorDistanceFromScrollViewFrame),
@@ -199,6 +201,7 @@ public enum UIScrollViewIndicatorStyle {
     }
 
 }
+
 
 
 
