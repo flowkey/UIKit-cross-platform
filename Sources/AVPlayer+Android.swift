@@ -26,11 +26,11 @@ public class AVPlayer: JNIObject {
         try! call(methodName: "pause")
     }
 
-    public func getCurrentTimeInMS() -> Double {
+    public func getCurrentTimeInMS() -> Int64 {
         return try! call(methodName: "getCurrentTimeInMilliseconds")
     }
 
-    public func seek(to timeInMilliseconds: Double) {
+    public func seek(to timeInMilliseconds: Int64) {
         try! call(methodName: "seekToTimeInMilliseconds", arguments: [timeInMilliseconds])
     }
 

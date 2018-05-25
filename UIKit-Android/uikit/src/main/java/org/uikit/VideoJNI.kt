@@ -72,10 +72,14 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
                 }
             }
 
-            // not used but necessary to implement EventListener interface:
             override fun onSeekProcessed() {
                 isSeeking = false
+                if (desiredSeekPosition != getCurrentTimeInMilliseconds()) {
+                    seekToTimeInMilliseconds(desiredSeekPosition)
+                }
             }
+
+            // not used but necessary to implement EventListener interface:
             override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {}
             override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {}
@@ -103,16 +107,16 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
         exoPlayer.volume = newVolume.toFloat()
     }
 
-    fun getCurrentTimeInMilliseconds(): Double {
-        return exoPlayer.currentPosition.toDouble()
+    fun getCurrentTimeInMilliseconds(): Long {
+        return exoPlayer.currentPosition
     }
 
 
     private var isSeeking = false
-    private var desiredSeekPosition: Double = 0.0
-    private var lastSeekedToTime: Double = 0.0
+    private var desiredSeekPosition: Long = 0
+    private var lastSeekedToTime: Long = 0
 
-    private fun seekToTimeInMilliseconds(timeInMilliseconds: Double) {
+    private fun seekToTimeInMilliseconds(timeInMilliseconds: Long) {
         desiredSeekPosition = timeInMilliseconds
 
         // This *should* mean we don't always scroll to the last position provided.
@@ -129,7 +133,7 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
 
         isSeeking = true
         exoPlayer.setSeekParameters(syncParameters)
-        exoPlayer.seekTo(timeInMilliseconds.roundToLong())
+        exoPlayer.seekTo(timeInMilliseconds)
         lastSeekedToTime = timeInMilliseconds
     }
 
