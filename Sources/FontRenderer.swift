@@ -12,7 +12,7 @@ private func initSDL_ttf() -> Bool {
     return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
 }
 
-internal class FontRenderer {
+public class FontRenderer {
     let rawPointer: UnsafeMutablePointer<TTF_Font>
     deinit { TTF_CloseFont(rawPointer) }
 
@@ -69,10 +69,7 @@ internal class FontRenderer {
 
 extension FontRenderer {
     func singleLineSize(of text: String) -> CGSize {
-        var width: Int32 = 0
-        var height: Int32 = 0
-        TTF_SizeUTF8(rawPointer, text, &width, &height)
-
+        let (width, height) = size(text)
         return CGSize(width: CGFloat(width), height: CGFloat(height))
     }
 }

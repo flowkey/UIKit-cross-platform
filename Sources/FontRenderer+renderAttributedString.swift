@@ -43,7 +43,7 @@ extension FontRenderer {
                 glyph.pixmap.width :
                 min(glyph.pixmap.width, glyph.maxx - glyph.minx)
 
-            xOffset += getFontKerningOffset(previousIndex: previousGlyphIndex, currentIndex: glyph.index)
+            xOffset += getFontKerningOffset(between: previousGlyphIndex, and: glyph.index)
             previousGlyphIndex = glyph.index
 
             let attributedColorForCharacter = attributedString.attribute(
@@ -97,23 +97,7 @@ extension FontRenderer {
 }
 
 extension FontRenderer {
-    func singleLineSize(of attributedString: NSAttributedString) -> CGSize {
-        var width: Int32 = 0
-        var height: Int32 = 0
-        if TTF_SizeUTF8(rawPointer, attributedString.string, &width, &height) < 0 || width == 0 {
-            return .zero
-        }
-
-        return CGSize(
-            width: CGFloat(width) + attributedString.entireKerningWidth,
-            height: CGFloat(height)
-        )
-    }
-}
-
-
-private extension FontRenderer {
-    func createSurface(toFit attributedstring: NSAttributedString) -> UnsafeMutablePointer<SDLSurface>? {
+    fileprivate func createSurface(toFit attributedstring: NSAttributedString) -> UnsafeMutablePointer<SDLSurface>? {
         let size = self.singleLineSize(of: attributedstring)
         precondition(size.width > 0)
         precondition(size.height > 0)
@@ -126,36 +110,18 @@ private extension FontRenderer {
         return surface
     }
 
-    func getFontKerningOffset(previousIndex: FT_UInt?, currentIndex: FT_UInt) -> Int32 {
-        guard let previousIndex = previousIndex else { return 0 }
+    func getFontKerningOffset(between previousIndex: FT_UInt?, and currentIndex: FT_UInt) -> Int32 {
+        guard let previousIndex = previousIndex, fontHasKerning else { return 0 }
 
-        let useKerning = (rawPointer.pointee.face.pointee.face_flags & FT_FACE_FLAG_KERNING) != 0
-        if useKerning {
-            var delta = FT_Vector()
-            FT_Get_Kerning(
-                rawPointer.pointee.face,
-                previousIndex,
-                currentIndex,
-                FT_KERNING_DEFAULT.rawValue,
-                &delta
-            )
-            return Int32(delta.x >> 6)
-        }
+        var delta = FT_Vector()
+        FT_Get_Kerning(
+            rawPointer.pointee.face,
+            previousIndex,
+            currentIndex,
+            FT_KERNING_DEFAULT.rawValue,
+            &delta
+        )
 
-        return 0
-    }
-}
-
-private extension NSAttributedString {
-    var entireKerningWidth: CGFloat {
-        var width: CGFloat = 0
-
-        enumerateAttribute(.kern, in: NSRange(location: 0, length: length)) { (value, range, _) in
-            if let value = value as? CGFloat {
-                width += value * CGFloat(range.length)
-            }
-        }
-
-        return width * UIScreen.main.scale
+        return Int32(delta.x >> 6)
     }
 }

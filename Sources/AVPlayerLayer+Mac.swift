@@ -69,10 +69,10 @@ public final class AVPlayerLayer: CALayer {
 
         let aspectRatio = presentationSize.width / presentationSize.height
         
-        
-        let widthAlignedTo4PixelPadding = (size.width.remainder(dividingBy: 8) == 0) ?
-            size.width : // <-- no padding required
-            size.width + (8 - round(size.width).remainder(dividingBy: 8))
+        let width = round(size.width)
+        let widthAlignedTo4PixelPadding = (width.remainder(dividingBy: 8) == 0) ?
+            width : // <-- no padding required
+            width + (8 - width.remainder(dividingBy: 8))
 
         
         playerOutput = AVPlayerItemVideoOutput(pixelBufferAttributes: [

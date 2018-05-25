@@ -6,36 +6,26 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-private let systemFontName = "Roboto" // XXX: change this depending on platform?
-
-open class UIFont: Equatable {
-    static var fontRendererCache = [String: FontRenderer]()
-
-    public static func clearCaches() {
-        fontRendererCache.removeAll()
-        availableFontData.removeAll()
-    }
-
-    public static func == (lhs: UIFont, rhs: UIFont) -> Bool {
-        return lhs.fontName == rhs.fontName && lhs.pointSize == rhs.pointSize
-    }
-
-    fileprivate static var availableFontData: [String: CGDataProvider] = [:]
-    static public var availableFonts: [String] {
-        return Array(availableFontData.keys)
-    }
-
+open class UIFont {
     public let fontName: String
     public var familyName: String?
     public var pointSize: CGFloat
     public let lineHeight: CGFloat
+
+    /**
+        Change this value after loading the desired system font via `UIFont.loadFont(fromPath: String)`.
+        Note: The name you provide here is `.fontName` of the loaded `UIFont` instance. We can't set a
+        `UIFont` as the value here, because each `UIFont` is associated with a size. `CGFont` would be a
+        better level of abstraction for that reason, but we haven't implemented it (yet?)
+     */
+    public internal(set) static var systemFontFamilyName = "Roboto"
 
     public static func boldSystemFont(ofSize size: CGFloat) -> UIFont {
         return systemFont(ofSize: size, weight: Weight.bold)
     }
 
     public static func systemFont(ofSize size: CGFloat, weight: Weight = .regular) -> UIFont {
-        return UIFont(name: systemFontName + "-" + weight.toString(), size: size)!
+        return UIFont(name: systemFontFamilyName + "-" + weight.toString(), size: size)!
     }
 
     public init?(name: String, size: CGFloat) {
@@ -43,7 +33,7 @@ open class UIFont: Equatable {
         let size = Int32(size * UIScreen.main.scale)
 
         guard let fontData = UIFont.availableFontData[name] else {
-            print("Tried to load \(name) but it wasn't in UIFont.availableFonts")
+            print("Tried to load \(name) but it wasn't in UIFont.availableFonts: \(UIFont.availableFontData)")
             return nil
         }
 
@@ -73,6 +63,26 @@ open class UIFont: Equatable {
 
     internal func render(_ attributedString: NSAttributedString?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
         return renderer.render(attributedString, color: color)
+    }
+}
+
+// MARK: Caches
+extension UIFont {
+    static var fontRendererCache = [String: FontRenderer]()
+    fileprivate static var availableFontData: [String: CGDataProvider] = [:]
+    static public var availableFonts: [String] {
+        return Array(availableFontData.keys)
+    }
+
+    public static func clearCaches() {
+        fontRendererCache.removeAll()
+        availableFontData.removeAll()
+    }
+}
+
+extension UIFont: Equatable {
+    public static func == (lhs: UIFont, rhs: UIFont) -> Bool {
+        return lhs.fontName == rhs.fontName && lhs.pointSize == rhs.pointSize
     }
 }
 
@@ -113,24 +123,31 @@ extension UIFont {
 
     internal static func loadSystemFonts() {
         Bundle(for: UIFont.self).paths(forResourcesOfType: "ttf", inDirectory: nil).forEach { path in
-            (try? loadFont(fromPath: path)) ?? print("Couldn't load font from \(path)")
+            (try? setSystemFont(fromPath: path)) ?? print("Couldn't load font from \(path)")
         }
     }
 
-    public static func loadFont(fromPath path: String) throws {
+    @discardableResult
+    public static func loadFont(fromPath path: String) throws -> FontRenderer {
         guard let dataProvider = CGDataProvider(filepath: path) else {
             throw LoadingError.couldNotOpenDataFile
         }
 
-        guard let tempRenderer = FontRenderer(dataProvider, size: 0) else {
+        guard let fontRenderer = FontRenderer(dataProvider, size: 0) else {
             throw LoadingError.couldNotDecodeFont
         }
 
-        let fontStyleName = tempRenderer.getFontStyleName() ?? "unknown"
-        let fontFamilyName = tempRenderer.getFontFamilyName() ?? "unknown"
+        let fontFamilyName = fontRenderer.getFontFamilyName() ?? "unknown"
+        let fontStyleName = fontRenderer.getFontStyleName() ?? "unknown"
         let fontName = "\(fontFamilyName)-\(fontStyleName)".lowercased()
 
         UIFont.availableFontData[fontName] = dataProvider
+
+        return fontRenderer
+    }
+
+    public static func setSystemFont(fromPath path: String) throws {
+        systemFontFamilyName = try loadFont(fromPath: path).getFontFamilyName()!
     }
 }
 

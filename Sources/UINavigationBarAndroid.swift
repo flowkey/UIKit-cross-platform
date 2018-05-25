@@ -14,9 +14,9 @@ open class UINavigationBarAndroid: UINavigationBar {
         if backgroundColor?.isDarkEnoughToWarrantWhiteText() == true {
             titleLabel.textColor = .white
             rightButton.tintColor = .white
-            backButtonImage = UIImage(path: "ic_arrow_back_white@2x.png")
+            backButtonImage = UIImage(named: "ic_arrow_back_white@2x.png")
         } else {
-            backButtonImage = UIImage(path: "ic_arrow_back_black@2x.png")
+            backButtonImage = UIImage(named: "ic_arrow_back_black@2x.png")
         }
 
         backButton.setImage(backButtonImage, for: .normal)

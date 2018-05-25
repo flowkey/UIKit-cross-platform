@@ -2,9 +2,10 @@ package org.uikit
 
 import android.net.Uri
 import android.util.Log
-import android.view.ViewGroup
 import android.widget.RelativeLayout
+import android.content.Context
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
@@ -12,27 +13,35 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
 import org.libsdl.app.SDLActivity
 import kotlin.math.absoluteValue
 import kotlin.math.roundToLong
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
+import com.google.android.exoplayer2.upstream.cache.CacheDataSink
+import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
+import java.io.File
+
 
 @Suppress("unused")
 class AVPlayerItem(parent: SDLActivity, url: String) {
     internal val videoSource: ExtractorMediaSource
 
     init {
-        val regularVideoSourceUri = Uri.parse(url)
-
-        // Produces DataSource instances through which media data is loaded.
-        val dataSourceFactory = DefaultDataSourceFactory(parent.context,
-                Util.getUserAgent(parent.context, "com.flowkey.uikit"))
+        val videoSourceUri = Uri.parse(url)
 
         // ExtractorMediaSource works for regular media files such as mp4, webm, mkv
-        videoSource = ExtractorMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(regularVideoSourceUri)
+        val cacheDataSourceFactory = CacheDataSourceFactory(
+                parent.context,
+                256 * 1024 * 1024,
+                32 * 1024 * 1024
+        )
+
+        videoSource = ExtractorMediaSource
+                        .Factory(cacheDataSourceFactory)
+                        .createMediaSource(videoSourceUri)
     }
 }
 
@@ -63,10 +72,14 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
                 }
             }
 
-            // not used but necessary to implement EventListener interface:
             override fun onSeekProcessed() {
                 isSeeking = false
+                if (desiredSeekPosition != getCurrentTimeInMilliseconds()) {
+                    seekToTimeInMilliseconds(desiredSeekPosition)
+                }
             }
+
+            // not used but necessary to implement EventListener interface:
             override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {}
             override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {}
@@ -94,16 +107,16 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
         exoPlayer.volume = newVolume.toFloat()
     }
 
-    fun getCurrentTimeInMilliseconds(): Double {
-        return exoPlayer.currentPosition.toDouble()
+    fun getCurrentTimeInMilliseconds(): Long {
+        return exoPlayer.currentPosition
     }
 
 
     private var isSeeking = false
-    private var desiredSeekPosition: Double = 0.0
-    private var lastSeekedToTime: Double = 0.0
+    private var desiredSeekPosition: Long = 0
+    private var lastSeekedToTime: Long = 0
 
-    private fun seekToTimeInMilliseconds(timeInMilliseconds: Double) {
+    private fun seekToTimeInMilliseconds(timeInMilliseconds: Long) {
         desiredSeekPosition = timeInMilliseconds
 
         // This *should* mean we don't always scroll to the last position provided.
@@ -112,7 +125,7 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
 
         // Seeking to the exact millisecond is very processor intensive (and SLOW!)
         // Only do put that effort in if we're scrubbing very slowly over a short time period:
-        val syncParameters = if ((desiredSeekPosition - lastSeekedToTime).absoluteValue < 40) {
+        val syncParameters = if ((desiredSeekPosition - lastSeekedToTime).absoluteValue < 250) {
             SeekParameters.EXACT
         } else {
             SeekParameters.CLOSEST_SYNC
@@ -120,7 +133,7 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
 
         isSeeking = true
         exoPlayer.setSeekParameters(syncParameters)
-        exoPlayer.seekTo(timeInMilliseconds.roundToLong())
+        exoPlayer.seekTo(timeInMilliseconds)
         lastSeekedToTime = timeInMilliseconds
     }
 
@@ -162,5 +175,40 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
     fun removeFromParent() {
         Log.v("SDL", "Removing video from parent layout")
         parent.removeViewInLayout(exoPlayerLayout)
+    }
+}
+
+
+
+
+///// Caching data source
+// Thank you https://stackoverflow.com/a/45488510/3086440
+
+private class CacheDataSourceFactory(private val context: Context, private val maxCacheSize: Long, private val maxFileSize: Long) : DataSource.Factory {
+
+    private val defaultDatasourceFactory: DefaultDataSourceFactory
+
+    // The cache survives the application lifetime, otherwise the cache keys can get confused
+    companion object {
+        var simpleCache: SimpleCache? = null
+    }
+
+    init {
+        val userAgent = Util.getUserAgent(context, "com.flowkey.VideoJNI")
+        val bandwidthMeter = DefaultBandwidthMeter()
+        defaultDatasourceFactory = DefaultDataSourceFactory(this.context,
+                bandwidthMeter,
+                DefaultHttpDataSourceFactory(userAgent, bandwidthMeter))
+    }
+
+    override fun createDataSource(): DataSource {
+        if (simpleCache == null) {
+            val evictor = LeastRecentlyUsedCacheEvictor(maxCacheSize)
+            simpleCache = SimpleCache(File(context.cacheDir, "media"), evictor)
+        }
+
+        return CacheDataSource(simpleCache, defaultDatasourceFactory.createDataSource(),
+                FileDataSource(), CacheDataSink(simpleCache, maxFileSize),
+                CacheDataSource.FLAG_BLOCK_ON_CACHE or CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR, null)
     }
 }

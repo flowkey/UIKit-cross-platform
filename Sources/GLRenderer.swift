@@ -29,7 +29,7 @@ internal final class GLRenderer {
         var size = CGSize.zero
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
     #else
-        var size: CGSize = .huaweiM3lite
+        var size: CGSize = .samsungGalaxyS7
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
             //SDL_WINDOW_FULLSCREEN
