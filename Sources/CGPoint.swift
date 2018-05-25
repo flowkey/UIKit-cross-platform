@@ -39,50 +39,10 @@ extension CGPoint {
             y: x * t.m12 + y * t.m22 + t.tY
         )
     }
-    
-    public func castBetween(_ minPoint: CGPoint, _ maxPoint: CGPoint) -> CGPoint {
-        return CGPoint(
-            x: max(minPoint.x, min(x, maxPoint.x)),
-            y: max(minPoint.y, min(y, maxPoint.y))
-        )
-    }
-    
 }
 
 extension CGPoint: Equatable {
     public static func == (lhs: CGPoint, rhs: CGPoint) -> Bool {
         return lhs.x == rhs.x && lhs.y == rhs.y
     }
-}
-
-
-
-extension CGPoint {
-    public static func + (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
-        return CGPoint(x: lhs.x + rhs, y: lhs.y + rhs)
-    }
-    
-    public static func - (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
-        return CGPoint(x: lhs.x - rhs, y: lhs.y - rhs)
-    }
-    
-}
-
-extension CGPoint {
-    public static func / (lhs: CGPoint, rhs: CGSize) -> CGPoint {
-        return CGPoint(x: lhs.x / rhs.width, y: lhs.y / rhs.height)
-    }
-    
-    public static func * (lhs: CGPoint, rhs: CGSize) -> CGPoint {
-        return CGPoint(x: lhs.x * rhs.width, y: lhs.y * rhs.height)
-    }
-    
-    public static func + (lhs: CGPoint, rhs: CGSize) -> CGPoint {
-        return CGPoint(x: lhs.x + rhs.width, y: lhs.y + rhs.height)
-    }
-    
-    public static func - (lhs: CGPoint, rhs: CGSize) -> CGPoint {
-        return CGPoint(x: lhs.x - rhs.width, y: lhs.y - rhs.height)
-    }
-    
 }

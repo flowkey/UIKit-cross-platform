@@ -23,13 +23,17 @@ open class UIScrollView: UIView {
     // might seem pretty arbitrary, but this is what ios values are
     //TODO: implement those values in layouting
     
-    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default`
+    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
+        didSet {
+            applyScrollIndicatorsStyle()
+        }
+    }
     
     //TODO: var scrollIndicatorInsets
+    //TODO: func flashScrollIndicatores (stub below)
     
     //TODO: scroll indicators should fade immediately when drag is finger-stopped or with a delay when drag ends
-    //TOOO: bouncing
-    //TODO: func flashScrollIndicatores (stub below)
+    //TOOO: bouncing [not: blocked by animation update!]
     
     var weightedAverageVelocity: CGPoint = .zero
     
@@ -39,8 +43,10 @@ open class UIScrollView: UIView {
         panGestureRecognizer.onStateChanged = { [weak self] in self?.onPanGestureStateChanged() }
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
-        
-        
+        applyScrollIndicatorsStyle()
+    }
+    
+    private func applyScrollIndicatorsStyle() {
         for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
             scrollIndicator.layer.cornerRadius = indicatorThickness / 2
             scrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
@@ -52,13 +58,11 @@ open class UIScrollView: UIView {
             addSubview(scrollIndicator)
             //NOTE: should indicators be laid out here?
         }
-        
     }
     
     open var isDecelerating: Bool = false
     
     private func onPan() {
-        
         let translation = panGestureRecognizer.translation(in: self)
         panGestureRecognizer.setTranslation(.zero, in: self)
         
@@ -99,27 +103,22 @@ open class UIScrollView: UIView {
     open var contentInset: UIEdgeInsets = .zero
     open var contentSize: CGSize = .zero
     
+    
+    open var showsVerticalScrollIndicator = true
+    open var showsHorizontalScrollIndicator = true
+    
+    //TODO: should getBoundsCheckedContentOffset also be applied here or in setContentOffset? check again with iOS
     open var contentOffset: CGPoint {
         get { return bounds.origin }
         set {
-            
-            //Q: is this a performance concern? where should they be set if they need both contentSize and contentInset?
-            let minContentOffset = CGPoint(x: -contentInset.left, y: -contentInset.top)
-            let maxContentOffset = CGPoint(x: contentSize.width - bounds.size.width + contentInset.right,
-                                           y: contentSize.width - bounds.size.width + contentInset.bottom)
-            
             layer.removeAnimation(forKey: "bounds")
-            bounds.origin = newValue.castBetween(minContentOffset, maxContentOffset)
+            bounds.origin = newValue
             
             if (showsVerticalScrollIndicator || showsHorizontalScrollIndicator) {
                 layoutScrollIndicators()
             }
         }
     }
-    
-    
-    open var showsVerticalScrollIndicator = true
-    open var showsHorizontalScrollIndicator = true
     
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         precondition(point.x.isFinite)
@@ -136,32 +135,50 @@ open class UIScrollView: UIView {
     }
     
     
+    internal func indicatorOffsetsInContentSpace() -> (CGFloat, CGFloat) {
+    
+
+        let scrollViewProgress = (horizontal: (contentInset.left + contentOffset.x) / (contentInset.left + contentSize.width + contentInset.right),
+                                  vertical: (contentInset.top + contentOffset.y) / (contentInset.top + contentSize.height + contentInset.bottom))
+        
+        let indicatorOffsetInBounds = (horizontal: scrollViewProgress.horizontal * bounds.size.width,
+                                       vertical: scrollViewProgress.vertical * bounds.size.height)
+        
+        return (horizontal: contentOffset.x + indicatorOffsetInBounds.horizontal,
+                vertical: contentOffset.y + indicatorOffsetInBounds.vertical)
+    }
+    
     
     public func layoutScrollIndicators() {
-
-        // all calculations are done for both dimensions at once
-        let indicatorLengths = (bounds.size / contentSize) * bounds.size
-        let scrollViewProgress = (contentOffset + contentInset.left) / (contentSize + contentInset.left + contentInset.right)
-        let indicatorOffsetInBounds = scrollViewProgress * bounds.size
+        //Q: this only depends on bounds & size, should it always be recalculated here, or can we do it earlier/less often?
+        let indicatorLengths = (horizontal: (bounds.width / contentSize.width) * bounds.width,
+                                vertical: (bounds.height / contentSize.height) * bounds.height)
         
-        let indicatorOffsetsInContentSpace =  contentOffset + indicatorOffsetInBounds
+//        let indicatorLengths = (bounds.size / contentSize) * bounds.size
+//        let scrollViewProgress = (contentOffset + contentInset.left) / (contentSize + contentInset.left + contentInset.right)
+//        let indicatorOffsetInBounds = scrollViewProgress * bounds.size
+//        let indicatorOffsetsInContentSpace =  contentOffset + indicatorOffsetInBounds
+        
+        let (indicatorOffsetX, indicatorOffsetY) = indicatorOffsetsInContentSpace()
+        
+        //TODO: indicator lenghts and offsets are always rounded up to 0.5 in iOS
         
         // layout only the indicator(s) that should be visible
-        if showsVerticalScrollIndicator && contentSize.height > bounds.height {
-            verticalScrollIndicator.frame = CGRect(
-                x: bounds.width - indicatorThickness,
-                y: indicatorOffsetsInContentSpace.y,
-                width: indicatorThickness,
-                height: indicatorLengths.height
+        if showsHorizontalScrollIndicator && contentSize.width > bounds.width {
+            horizontalScrollIndicator.frame = CGRect(
+                x: indicatorOffsetX,
+                y: bounds.height - indicatorThickness,
+                width: indicatorLengths.horizontal,
+                height: indicatorThickness
             )
         }
         
-        if showsHorizontalScrollIndicator && contentSize.width > bounds.width {
-            horizontalScrollIndicator.frame = CGRect(
-                x: indicatorOffsetsInContentSpace.x,
-                y: bounds.height - indicatorThickness,
-                width: indicatorLengths.width,
-                height: indicatorThickness
+        if showsVerticalScrollIndicator && contentSize.height > bounds.height {
+            verticalScrollIndicator.frame = CGRect(
+                x: bounds.width - indicatorThickness,
+                y: indicatorOffsetY,
+                width: indicatorThickness,
+                height: indicatorLengths.vertical
             )
         }
         
