@@ -52,11 +52,6 @@ open class UIScrollView: UIView {
         for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
             scrollIndicator.layer.cornerRadius = indicatorThickness / 2
             scrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
-
-            if let borderColor = self.indicatorStyle.borderColor {
-                scrollIndicator.layer.borderWidth = 0.5
-                scrollIndicator.layer.borderColor = borderColor
-            }
         }
     }
 
