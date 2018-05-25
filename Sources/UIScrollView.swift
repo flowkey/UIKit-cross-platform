@@ -18,14 +18,18 @@ open class UIScrollView: UIView {
     var verticalScrollIndicator = UIView()
     var horizontalScrollIndicator = UIView()
     
-    var indicatorThickness: CGFloat = 3
+    let indicatorThickness: CGFloat = 2.5
+    let indicatorBaseInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 5.5, right: 8)
+    // might seem pretty arbitrary, but this is what ios values are
+    //TODO: implement those values in layouting
     
     public var indicatorStyle: UIScrollViewIndicatorStyle = .`default`
     
     //TODO: var scrollIndicatorInsets
     
     //TODO: scroll indicators should fade immediately when drag is finger-stopped or with a delay when drag ends
-    //TOOO: bouncing/contentInset
+    //TOOO: bouncing
+    //TODO: func flashScrollIndicatores (stub below)
     
     var weightedAverageVelocity: CGPoint = .zero
     
