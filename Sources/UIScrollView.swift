@@ -138,8 +138,6 @@ open class UIScrollView: UIView {
     
     
     internal func indicatorOffsetsInContentSpace() -> (CGFloat, CGFloat) {
-    
-
         let scrollViewProgress = (horizontal: (contentInset.left + contentOffset.x) / (contentInset.left + contentSize.width + contentInset.right),
                                   vertical: (contentInset.top + contentOffset.y) / (contentInset.top + contentSize.height + contentInset.bottom))
         
@@ -150,22 +148,20 @@ open class UIScrollView: UIView {
                 vertical: contentOffset.y + indicatorOffsetInBounds.vertical)
     }
     
-    
     public func layoutScrollIndicators() {
         //Q: since this only depends on bounds & size,can we avoid recalculating it here?
         let indicatorLengths = (horizontal: (bounds.width / contentSize.width) * bounds.width,
                                 vertical: (bounds.height / contentSize.height) * bounds.height)
         
-       //TODO: indicator lenghts and offsets are always rounded up to 0.5 in iOS
+        //TODO: indicator lenghts and offsets are always rounded up to nearest 0.5 in iOS
         let (indicatorOffsetX, indicatorOffsetY) = indicatorOffsetsInContentSpace()
         
      
-        
-        // layout only the indicator(s) that should be visible
+    
         if showsHorizontalScrollIndicator && contentSize.width > bounds.width {
             horizontalScrollIndicator.frame = CGRect(
                 x: indicatorOffsetX,
-                y: bounds.height - indicatorThickness,
+                y: bounds.height - (indicatorThickness + indicatorDistanceFromScrollViewFrame),
                 width: indicatorLengths.horizontal,
                 height: indicatorThickness
             )
@@ -173,7 +169,7 @@ open class UIScrollView: UIView {
         
         if showsVerticalScrollIndicator && contentSize.height > bounds.height {
             verticalScrollIndicator.frame = CGRect(
-                x: bounds.width - indicatorThickness,
+                x: bounds.width - (indicatorThickness + indicatorDistanceFromScrollViewFrame),
                 y: indicatorOffsetY,
                 width: indicatorThickness,
                 height: indicatorLengths.vertical
@@ -202,16 +198,11 @@ public enum UIScrollViewIndicatorStyle {
     
     var backgroundColor: UIColor {
         switch self {
-        case .`default`: return UIColor.lightGray // Default according to iOS UIKit docs is "black with a white border", but it's actually grey with no border/grey border (as observable in any default iOS app)
+        // Default according to iOS UIKit docs is "black with a white border",
+        // but it's actually grey with no border/grey border (as observable in any default iOS app)
+        case .`default`: return UIColor.lightGray
         case .black: return UIColor.black
         case .white: return UIColor.white
-        }
-    }
-    
-    var borderColor: UIColor? {
-        switch self {
-        case .`default`: return UIColor.white
-        default : return nil
         }
     }
     
