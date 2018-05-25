@@ -97,8 +97,8 @@ class UIScrollViewTests: XCTestCase {
         
         scrollView.contentSize = CGSize(width: 3000, height: 3000)
         scrollView.contentOffset = CGPoint(x: 0, y: 0)
-        let desiredVerticalIndicatorStartPosition = CGPoint(x: scrollView.bounds.size.width - scrollView.verticalScrollIndicator.frame.size.width, y: 0 )
-        let desiredHorizontalIndicatorStartPosition = CGPoint(x: 0, y: scrollView.bounds.size.height - scrollView.horizontalScrollIndicator.frame.size.height)
+        let desiredVerticalIndicatorStartPosition = CGPoint(x: scrollView.bounds.size.width - scrollView.indicatorThickness - scrollView.indicatorDistanceFromScrollViewFrame, y: 0 )
+        let desiredHorizontalIndicatorStartPosition = CGPoint(x: 0, y: scrollView.bounds.size.height - scrollView.indicatorThickness - scrollView.indicatorDistanceFromScrollViewFrame)
         
         XCTAssertEqual(scrollView.verticalScrollIndicator.frame.origin, desiredVerticalIndicatorStartPosition)
         XCTAssertEqual(scrollView.horizontalScrollIndicator.frame.origin, desiredHorizontalIndicatorStartPosition)
