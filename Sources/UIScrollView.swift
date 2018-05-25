@@ -19,9 +19,7 @@ open class UIScrollView: UIView {
     var horizontalScrollIndicator = UIView()
     
     let indicatorThickness: CGFloat = 2.5
-    
-    //TODO: implement those values in layouting
-    let indicatorBaseInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 5.5, right: 8)
+    let indicatorBaseInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 5.5, right: 8) // TODO: implement those values in layouting
     let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5 // TODO: this is assumed, test with iOS
     
     
@@ -31,11 +29,11 @@ open class UIScrollView: UIView {
         }
     }
     
-    //TODO: var scrollIndicatorInsets
-    //TODO: func flashScrollIndicatores (stub below)
+    // TODO: var scrollIndicatorInsets
+    // TODO: func flashScrollIndicatores (stub below)
     
-    //TODO: scroll indicators should fade immediately when drag is finger-stopped or with a delay when drag ends
-    //TOOO: bouncing [not: blocked by animation update!]
+    // TODO: scroll indicators should fade immediately when drag is finger-stopped or with a delay when drag ends
+    // TOOO: bouncing [not: blocked by animation update!]
     
     var weightedAverageVelocity: CGPoint = .zero
     
@@ -109,7 +107,7 @@ open class UIScrollView: UIView {
     open var showsVerticalScrollIndicator = true
     open var showsHorizontalScrollIndicator = true
     
-    //TODO: should getBoundsCheckedContentOffset also be applied here or in setContentOffset? check again with iOS
+    // TODO: should getBoundsCheckedContentOffset also be applied here or in setContentOffset? check again with iOS
     open var contentOffset: CGPoint {
         get { return bounds.origin }
         set {
@@ -149,11 +147,11 @@ open class UIScrollView: UIView {
     }
     
     public func layoutScrollIndicators() {
-        //Q: since this only depends on bounds & size,can we avoid recalculating it here?
+        // Q: since this only depends on bounds & size,can we avoid recalculating it here?
         let indicatorLengths = (horizontal: (bounds.width / contentSize.width) * bounds.width,
                                 vertical: (bounds.height / contentSize.height) * bounds.height)
         
-        //TODO: indicator lenghts and offsets are always rounded up to nearest 0.5 in iOS
+        // TODO: indicator lenghts and offsets are always rounded up to nearest 0.5 in iOS
         let (indicatorOffsetX, indicatorOffsetY) = indicatorOffsetsInContentSpace()
         
      
@@ -176,8 +174,8 @@ open class UIScrollView: UIView {
             )
         }
         
-        //TODO: indicators might not be placed correctly when both of them should be present,
-        //since at all times they both have one dimension represented in scrollView frame space, and not content space
+        // TODO: indicators might not be placed correctly when both of them should be present,
+        // since at all times they both have one dimension represented in scrollView frame space, and not content space
     }
     
     open func flashScrollIndicators() {
