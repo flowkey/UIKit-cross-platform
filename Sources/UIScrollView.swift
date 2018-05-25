@@ -19,9 +19,11 @@ open class UIScrollView: UIView {
     var horizontalScrollIndicator = UIView()
     
     let indicatorThickness: CGFloat = 2.5
-    let indicatorBaseInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 5.5, right: 8)
-    // might seem pretty arbitrary, but this is what ios values are
+    
     //TODO: implement those values in layouting
+    let indicatorBaseInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 5.5, right: 8)
+    let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5 // TODO: this is assumed, test with iOS
+    
     
     public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
         didSet {
@@ -150,18 +152,14 @@ open class UIScrollView: UIView {
     
     
     public func layoutScrollIndicators() {
-        //Q: this only depends on bounds & size, should it always be recalculated here, or can we do it earlier/less often?
+        //Q: since this only depends on bounds & size,can we avoid recalculating it here?
         let indicatorLengths = (horizontal: (bounds.width / contentSize.width) * bounds.width,
                                 vertical: (bounds.height / contentSize.height) * bounds.height)
         
-//        let indicatorLengths = (bounds.size / contentSize) * bounds.size
-//        let scrollViewProgress = (contentOffset + contentInset.left) / (contentSize + contentInset.left + contentInset.right)
-//        let indicatorOffsetInBounds = scrollViewProgress * bounds.size
-//        let indicatorOffsetsInContentSpace =  contentOffset + indicatorOffsetInBounds
-        
+       //TODO: indicator lenghts and offsets are always rounded up to 0.5 in iOS
         let (indicatorOffsetX, indicatorOffsetY) = indicatorOffsetsInContentSpace()
         
-        //TODO: indicator lenghts and offsets are always rounded up to 0.5 in iOS
+     
         
         // layout only the indicator(s) that should be visible
         if showsHorizontalScrollIndicator && contentSize.width > bounds.width {
@@ -182,7 +180,8 @@ open class UIScrollView: UIView {
             )
         }
         
-        //TODO: indicators are not placed correctly when both of them should be present
+        //TODO: indicators might not be placed correctly when both of them should be present,
+        //since at all times they both have one dimension represented in scrollView frame space, and not content space
     }
     
     open func flashScrollIndicators() {
