@@ -33,7 +33,6 @@ extension CGSize {
     }
 }
 
-
 extension CGSize: CustomStringConvertible {
     public var description: String {
         return "(\(width), \(height))"

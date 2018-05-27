@@ -9,8 +9,8 @@
 import XCTest
 @testable import UIKit
 
-let initialSize = CGSize(width: 1000, height: 1000)
-let initialOrigin = CGPoint(x: 0, y: 0)
+private let initialSize = CGSize(width: 1000, height: 1000)
+private let initialOrigin = CGPoint(x: 0, y: 0)
 
 
 class UIScrollViewTests: XCTestCase {
@@ -41,16 +41,14 @@ class UIScrollViewTests: XCTestCase {
         let arbitraryContentOffset = CGPoint(x: 10, y: 20)
         scrollView.contentOffset = arbitraryContentOffset
         XCTAssertEqual(scrollView.bounds.origin, arbitraryContentOffset)
-        
-        
+
         let arbitraryContentSize = CGSize(width: 5, height: 10)
         scrollView.contentSize = arbitraryContentSize
         XCTAssertEqual(scrollView.contentSize, arbitraryContentSize)
-        
+
         let arbitraryContentInset = UIEdgeInsets(top: 12, left: 0, bottom: 2, right: 4)
         scrollView.contentInset = arbitraryContentInset
         XCTAssertEqual(scrollView.contentInset, arbitraryContentInset)
-        
     }
     
     
@@ -62,24 +60,18 @@ class UIScrollViewTests: XCTestCase {
         XCTAssertEqual(scrollView.verticalScrollIndicator.frame, CGRect.zero)
         XCTAssertEqual(scrollView.horizontalScrollIndicator.frame, CGRect.zero)
 
-
         mockTouch(toPoint: CGPoint(x: 100, y: 100), inScrollView: scrollView)
         XCTAssertEqual(scrollView.contentSize, CGSize.zero)
         XCTAssertEqual(scrollView.verticalScrollIndicator.frame, CGRect.zero)
         XCTAssertEqual(scrollView.horizontalScrollIndicator.frame, CGRect.zero)
-        
-        scrollView.contentSize = CGSize(width: 3000, height: 3000)
-        
-        
+
         // setting contenOffset artificially
         //TODO: chceck x and y separately
-        
+        scrollView.contentSize = CGSize(width: 3000, height: 3000)
         scrollView.contentOffset = CGPoint(x: 100, y: 100)
         XCTAssertNotEqual(scrollView.verticalScrollIndicator.frame, CGRect.zero)
         XCTAssertNotEqual(scrollView.horizontalScrollIndicator.frame, CGRect.zero)
-        
-        
-        
+
         // settingContentOffset with a drag
         // NOTE: scrollIndicators currently never fade out,
         // so this will always pass because they were already showing before
@@ -93,18 +85,15 @@ class UIScrollViewTests: XCTestCase {
     }
     
     func testScrollIndicatorsInitialAndFinalPositions() {
-        let scrollView = UIScrollView(frame: CGRect(origin: initialOrigin, size: initialSize))
-        
         scrollView.contentSize = CGSize(width: 3000, height: 3000)
         scrollView.contentOffset = CGPoint(x: 0, y: 0)
-        let desiredVerticalIndicatorStartPosition = CGPoint(x: scrollView.bounds.size.width - scrollView.indicatorThickness - scrollView.indicatorDistanceFromScrollViewFrame, y: 0 )
-        let desiredHorizontalIndicatorStartPosition = CGPoint(x: 0, y: scrollView.bounds.size.height - scrollView.indicatorThickness - scrollView.indicatorDistanceFromScrollViewFrame)
-        
-        XCTAssertEqual(scrollView.verticalScrollIndicator.frame.origin, desiredVerticalIndicatorStartPosition)
-        XCTAssertEqual(scrollView.horizontalScrollIndicator.frame.origin, desiredHorizontalIndicatorStartPosition)
-        
-        //TODO: final position. [blocked by setting contentOffset programatically - test behaviour in iOS]
+        let expectedHorizontalIndicatorStartPosition = CGPoint(x: 0, y: scrollView.bounds.size.height - scrollView.indicatorThickness - scrollView.indicatorDistanceFromScrollViewFrame)
+        let expectedVerticalIndicatorStartPosition = CGPoint(x: scrollView.bounds.size.width - scrollView.indicatorThickness - scrollView.indicatorDistanceFromScrollViewFrame, y: 0 )
 
+        XCTAssertEqual(scrollView.horizontalScrollIndicator.frame.origin, expectedHorizontalIndicatorStartPosition)
+        XCTAssertEqual(scrollView.verticalScrollIndicator.frame.origin, expectedVerticalIndicatorStartPosition)
+
+        //TODO: final position. [blocked by setting contentOffset programatically - test behaviour in iOS]
     }
     
 

@@ -69,7 +69,7 @@ open class UIScrollView: UIView {
         setContentOffset(newOffset, animated: false)
     }
 
-    // does some min/max checks to prevent newOffset being out of bounds
+    /// does some min/max checks to prevent newOffset being out of bounds
     func getBoundsCheckedContentOffset(_ newContentOffset: CGPoint) -> CGPoint {
         return CGPoint(
             x: min(max(newContentOffset.x, -contentInset.left), (contentSize.width + contentInset.right) - bounds.width),
@@ -90,7 +90,7 @@ open class UIScrollView: UIView {
             //case .ended, .cancelled:
             //if contentOffset.x < contentInset.left {
             //    setContentOffset(CGPoint(x: contentInset.left, y: contentOffset.y), animated: true)
-        //}
+            //}
         default: break
         }
     }
@@ -115,7 +115,6 @@ open class UIScrollView: UIView {
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         precondition(point.x.isFinite)
         precondition(point.y.isFinite)
-
 
         contentOffset = point
 
@@ -142,17 +141,12 @@ open class UIScrollView: UIView {
     public func layoutScrollIndicatorsIfNeeded() {
         let shouldLayoutHorizontalScrollIndicator = showsHorizontalScrollIndicator && contentSize.width > bounds.width
         let shouldLayoutVerticalScrollIndicator = showsVerticalScrollIndicator && contentSize.height > bounds.height
-        if !shouldLayoutHorizontalScrollIndicator && !shouldLayoutVerticalScrollIndicator { return }
+        guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
 
-
-        // Q: since this only depends on bounds & size,can we avoid recalculating it here?
         let indicatorLengths = (horizontal: (bounds.width / contentSize.width) * bounds.width,
                                 vertical: (bounds.height / contentSize.height) * bounds.height)
 
-        // TODO: indicator lenghts and offsets are always rounded up to nearest 0.5 in iOS
-
         if shouldLayoutHorizontalScrollIndicator {
-
             horizontalScrollIndicator.frame = CGRect(
                 x: indicatorOffsetsInContentSpace().horizontal,
                 y: bounds.height - (indicatorThickness + indicatorDistanceFromScrollViewFrame),
@@ -199,9 +193,4 @@ public enum UIScrollViewIndicatorStyle {
         case .white: return UIColor.white
         }
     }
-
 }
-
-
-
-
