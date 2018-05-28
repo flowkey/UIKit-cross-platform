@@ -67,7 +67,7 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
                     nativeOnVideoReady()
                 }
 
-                if (!playWhenReady && playbackState == Player.STATE_ENDED) {
+                if (playbackState == Player.STATE_ENDED) {
                     nativeOnVideoEnded()
                 }
             }

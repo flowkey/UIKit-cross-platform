@@ -136,6 +136,11 @@ open class CALayer {
         willSet(newBounds) {
             guard newBounds != bounds else { return }
             onWillSet(keyPath: .bounds)
+
+            if bounds.size != newBounds.size {
+                (self.superlayer?.delegate as? UIView)?.setNeedsLayout()
+            }
+
         }
     }
 
@@ -176,7 +181,12 @@ open class CALayer {
     public var shadowOffset: CGSize = .zero
     public var shadowRadius: CGFloat = 0
 
-    public var mask: CALayer?
+    public var mask: CALayer? {
+        didSet {
+            mask?.superlayer = self
+        }
+    }
+
     public var masksToBounds = false
 
     public required init() {}
