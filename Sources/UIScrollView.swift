@@ -15,8 +15,25 @@ open class UIScrollView: UIView {
     open weak var delegate: UIScrollViewDelegate? // TODO: change this to individually settable callbacks
     open var panGestureRecognizer = UIPanGestureRecognizer()
 
-    private var verticalScrollIndicator = CALayer()
-    public var indicatorStyle: UIScrollViewIndicatorStyle = .white
+    var verticalScrollIndicator = UIView()
+    var horizontalScrollIndicator = UIView()
+
+    let indicatorThickness: CGFloat = 2.5
+    let indicatorBaseInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 5.5, right: 8) // TODO: implement those values in layouting
+    let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5 // TODO: this is assumed, test with iOS
+
+
+    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
+        didSet {
+            applyScrollIndicatorsStyle()
+        }
+    }
+
+    // TODO: var scrollIndicatorInsets
+    // TODO: func flashScrollIndicatores (stub below)
+
+    // TODO: scroll indicators should fade immediately when drag is finger-stopped or with a delay when drag ends
+    // TOOO: bouncing [not: blocked by animation update!]
 
     var weightedAverageVelocity: CGPoint = .zero
 
@@ -26,11 +43,16 @@ open class UIScrollView: UIView {
         panGestureRecognizer.onStateChanged = { [weak self] in self?.onPanGestureStateChanged() }
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
+        addSubview(verticalScrollIndicator)
+        addSubview(horizontalScrollIndicator)
+        applyScrollIndicatorsStyle()
+    }
 
-        verticalScrollIndicator.cornerRadius = 1
-        verticalScrollIndicator.disableAnimations = true
-        verticalScrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
-        layer.addSublayer(verticalScrollIndicator)
+    private func applyScrollIndicatorsStyle() {
+        for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
+            scrollIndicator.layer.cornerRadius = indicatorThickness / 2
+            scrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
+        }
     }
 
     open var isDecelerating: Bool = false
@@ -76,19 +98,19 @@ open class UIScrollView: UIView {
     open var contentInset: UIEdgeInsets = .zero
     open var contentSize: CGSize = .zero
 
+
+    open var showsVerticalScrollIndicator = true
+    open var showsHorizontalScrollIndicator = true
+
+    // TODO: should getBoundsCheckedContentOffset also be applied here or in setContentOffset? check again with iOS
     open var contentOffset: CGPoint {
         get { return bounds.origin }
         set {
             layer.removeAnimation(forKey: "bounds")
             bounds.origin = newValue
-            if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
+            layoutScrollIndicatorsIfNeeded()
         }
     }
-
-    open var showsVerticalScrollIndicator = true
-
-    // TODO: Implement this:
-    open var showsHorizontalScrollIndicator = true
 
     open func setContentOffset(_ point: CGPoint, animated: Bool) {
         precondition(point.x.isFinite)
@@ -103,29 +125,51 @@ open class UIScrollView: UIView {
         CATransaction.commit()
     }
 
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-        if showsVerticalScrollIndicator { layoutVerticalScrollIndicator() }
+
+    internal func indicatorOffsetsInContentSpace() -> (horizontal: CGFloat, vertical: CGFloat) {
+        let scrollViewProgress = (horizontal: (contentInset.left + contentOffset.x) / (contentInset.left + contentSize.width + contentInset.right),
+                                  vertical: (contentInset.top + contentOffset.y) / (contentInset.top + contentSize.height + contentInset.bottom))
+
+        let indicatorOffsetInBounds = (horizontal: scrollViewProgress.horizontal * bounds.size.width,
+                                       vertical: scrollViewProgress.vertical * bounds.size.height)
+
+        return (horizontal: contentOffset.x + indicatorOffsetInBounds.horizontal,
+                vertical: contentOffset.y + indicatorOffsetInBounds.vertical)
     }
 
-    private func layoutVerticalScrollIndicator() {
-        verticalScrollIndicator.isHidden = (contentSize.height == bounds.height)
-        if verticalScrollIndicator.isHidden { return }
 
-        let indicatorWidth: CGFloat = 2
-        let indicatorHeight: CGFloat = (bounds.height / contentSize.height) * bounds.height
-        let indicatorYOffset = contentOffset.y + (contentOffset.y / contentSize.height) * bounds.height
+    public func layoutScrollIndicatorsIfNeeded() {
+        let shouldLayoutHorizontalScrollIndicator = showsHorizontalScrollIndicator && contentSize.width > bounds.width
+        let shouldLayoutVerticalScrollIndicator = showsVerticalScrollIndicator && contentSize.height > bounds.height
+        guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
 
-        verticalScrollIndicator.frame = CGRect(
-            x: bounds.maxX - indicatorWidth,
-            y: indicatorYOffset,
-            width: indicatorWidth,
-            height: indicatorHeight
-        )
+        let indicatorLengths = (horizontal: (bounds.width / contentSize.width) * bounds.width,
+                                vertical: (bounds.height / contentSize.height) * bounds.height)
+
+        if shouldLayoutHorizontalScrollIndicator {
+            horizontalScrollIndicator.frame = CGRect(
+                x: indicatorOffsetsInContentSpace().horizontal,
+                y: bounds.height - (indicatorThickness + indicatorDistanceFromScrollViewFrame),
+                width: indicatorLengths.horizontal,
+                height: indicatorThickness
+            )
+        }
+
+        if shouldLayoutVerticalScrollIndicator {
+            verticalScrollIndicator.frame = CGRect(
+                x: bounds.width - (indicatorThickness + indicatorDistanceFromScrollViewFrame),
+                y: indicatorOffsetsInContentSpace().horizontal,
+                width: indicatorThickness,
+                height: indicatorLengths.vertical
+            )
+        }
+
+        // TODO: indicators might not be placed correctly when both of them should be present,
+        // since at all times they both have one dimension represented in scrollView frame space, and not content space
     }
 
     open func flashScrollIndicators() {
-
+        //TODO
     }
 }
 
@@ -142,7 +186,9 @@ public enum UIScrollViewIndicatorStyle {
 
     var backgroundColor: UIColor {
         switch self {
-        case .`default`: return UIColor.black // TBD: default in iOS UIKit is "black with a white border"
+            // Default according to iOS UIKit docs is "black with a white border",
+        // but it's actually grey with no border/grey border (as observable in any default iOS app)
+        case .`default`: return UIColor.lightGray
         case .black: return UIColor.black
         case .white: return UIColor.white
         }

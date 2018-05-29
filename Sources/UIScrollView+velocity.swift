@@ -50,8 +50,12 @@ extension UIScrollView {
 
         let currentOrigin = layer._presentation?.bounds.origin ?? bounds.origin
         setContentOffset(currentOrigin, animated: false)
+    
+        // Cancel animations of the ScrollView and indicators
         layer.removeAnimation(forKey: "bounds")
-
+        horizontalScrollIndicator.layer.removeAnimation(forKey: "position")
+        verticalScrollIndicator.layer.removeAnimation(forKey: "position")
+    
         isDecelerating = false
     }
 }
