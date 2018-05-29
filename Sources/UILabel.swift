@@ -65,7 +65,6 @@ open class UILabel: UIView {
         } else {
             layer.contents = font.render(text, color: textColor, wrapLength: wrapLength)
         }
-
     }
 
     override public init(frame: CGRect) {
