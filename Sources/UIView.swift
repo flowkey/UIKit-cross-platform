@@ -53,8 +53,9 @@ open class UIView: UIResponder, CALayerDelegate {
     open let safeAreaInsets: UIEdgeInsets = .zero
 
     open var mask: UIView? {
-        willSet(newValue) {
-            layer.mask = newValue?.layer
+        didSet {
+            layer.mask = mask?.layer
+            mask?.superview = self
         }
     }
 

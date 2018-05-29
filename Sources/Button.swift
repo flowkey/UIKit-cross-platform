@@ -47,9 +47,6 @@ open class Button: UIControl {
         titleLabel?.sizeToFit()
 
         super.sizeToFit()
-
-        // It seems weird to access the superview here but it matches the iOS behaviour
-        superview?.setNeedsLayout()
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
