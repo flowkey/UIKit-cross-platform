@@ -242,6 +242,8 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
         Log.v(TAG, "surfaceCreated()")
+        mHasFocus = hasFocus()
+
         handleResume()
     }
 
