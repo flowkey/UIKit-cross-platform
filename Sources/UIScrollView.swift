@@ -18,55 +18,34 @@ open class UIScrollView: UIView {
     var verticalScrollIndicator = UIView()
     var horizontalScrollIndicator = UIView()
 
-    let indicatorThickness: CGFloat = 2.5
-    let indicatorBaseInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 5.5, right: 8) // TODO: implement those values in layouting
-    let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5 // TODO: this is assumed, test with iOS
-
-
-    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
-        didSet {
-            applyScrollIndicatorsStyle()
+    // TODO: should getBoundsCheckedContentOffset also be applied here or in setContentOffset? check again with iOS
+    open var contentOffset: CGPoint {
+        get { return bounds.origin }
+        set {
+            guard newValue != contentOffset else { return }
+            cancelDecelerationAnimations()
+            bounds.origin = newValue
+            layoutScrollIndicatorsIfNeeded()
         }
     }
 
-    // TODO: var scrollIndicatorInsets
-    // TODO: func flashScrollIndicatores (stub below)
+    open func setContentOffset(_ point: CGPoint, animated: Bool) {
+        precondition(point.x.isFinite)
+        precondition(point.y.isFinite)
 
-    // TODO: scroll indicators should fade immediately when drag is finger-stopped or with a delay when drag ends
-    // TOOO: bouncing [not: blocked by animation update!]
+        contentOffset = point
 
-    var weightedAverageVelocity: CGPoint = .zero
-
-    override public init(frame: CGRect) {
-        super.init(frame: frame)
-        panGestureRecognizer.onAction = { [weak self] in self?.onPan() }
-        panGestureRecognizer.onStateChanged = { [weak self] in self?.onPanGestureStateChanged() }
-        addGestureRecognizer(panGestureRecognizer)
-        clipsToBounds = true
-        addSubview(verticalScrollIndicator)
-        addSubview(horizontalScrollIndicator)
-        applyScrollIndicatorsStyle()
+        // otherwise everything subscribing to scrollViewDidScroll is implicitly animated from velocity scroll
+        CATransaction.begin()
+        CATransaction.setDisableActions(!animated)
+        delegate?.scrollViewDidScroll(self)
+        CATransaction.commit()
     }
 
-    private func applyScrollIndicatorsStyle() {
-        for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
-            scrollIndicator.layer.cornerRadius = indicatorThickness / 2
-            scrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
-        }
-    }
-
-    open var isDecelerating: Bool = false
-
-    private func onPan() {
-        let translation = panGestureRecognizer.translation(in: self)
-        panGestureRecognizer.setTranslation(.zero, in: self)
-
-        let panGestureVelocity = panGestureRecognizer.velocity(in: self)
-        self.weightedAverageVelocity = self.weightedAverageVelocity * 0.2 + panGestureVelocity * 0.8
-
-        let visibleContentOffset = (layer._presentation ?? layer).bounds.origin
-        let newOffset = getBoundsCheckedContentOffset(visibleContentOffset - translation)
-        setContentOffset(newOffset, animated: false)
+    /// The contentOffset that is currently shown on the screen
+    /// We won't need this once we implement animations via DisplayLink instead of with UIView.animate
+    var visibleContentOffset: CGPoint {
+        return (layer._presentation ?? layer).bounds.origin
     }
 
     /// does some min/max checks to prevent newOffset being out of bounds
@@ -77,9 +56,52 @@ open class UIScrollView: UIView {
         )
     }
 
+    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
+        didSet { applyScrollIndicatorsStyle() }
+    }
+
+    // TODO: var scrollIndicatorInsets
+
+    var weightedAverageVelocity: CGPoint = .zero
+
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        panGestureRecognizer.onAction = { [weak self] in self?.onPan() }
+        panGestureRecognizer.onStateChanged = { [weak self] in self?.onPanGestureStateChanged() }
+        addGestureRecognizer(panGestureRecognizer)
+        clipsToBounds = true
+
+        applyScrollIndicatorsStyle()
+        [horizontalScrollIndicator, verticalScrollIndicator].forEach {
+            $0.alpha = 0
+            addSubview($0)
+        }
+    }
+
+    open var isDecelerating = false {
+        didSet {
+            // Hide when we stop decelerating, but only when that wasn't because of a pan
+            if !isDecelerating && panGestureRecognizer.state == .possible {
+                hideScrollIndicators()
+            }
+        }
+    }
+
+    private func onPan() {
+        let translation = panGestureRecognizer.translation(in: self)
+        panGestureRecognizer.setTranslation(.zero, in: self)
+
+        let panGestureVelocity = panGestureRecognizer.velocity(in: self)
+        self.weightedAverageVelocity = self.weightedAverageVelocity * 0.2 + panGestureVelocity * 0.8
+
+        let newOffset = getBoundsCheckedContentOffset(visibleContentOffset - translation)
+        setContentOffset(newOffset, animated: false)
+    }
+
     private func onPanGestureStateChanged() {
         switch panGestureRecognizer.state {
         case .began:
+            showScrollIndicators()
             delegate?.scrollViewWillBeginDragging(self)
             cancelDeceleratingIfNeccessary()
         case .ended:
@@ -99,77 +121,23 @@ open class UIScrollView: UIView {
     open var contentSize: CGSize = .zero
 
 
+    // MARK: Scroll Indicators
+
+    let indicatorThickness: CGFloat = 2.5
+
+    private func applyScrollIndicatorsStyle() {
+        for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
+            scrollIndicator.layer.cornerRadius = indicatorThickness / 2
+            scrollIndicator.backgroundColor = self.indicatorStyle.backgroundColor
+        }
+    }
+
     open var showsVerticalScrollIndicator = true
     open var showsHorizontalScrollIndicator = true
 
-    // TODO: should getBoundsCheckedContentOffset also be applied here or in setContentOffset? check again with iOS
-    open var contentOffset: CGPoint {
-        get { return bounds.origin }
-        set {
-            layer.removeAnimation(forKey: "bounds")
-            bounds.origin = newValue
-            layoutScrollIndicatorsIfNeeded()
-        }
-    }
-
-    open func setContentOffset(_ point: CGPoint, animated: Bool) {
-        precondition(point.x.isFinite)
-        precondition(point.y.isFinite)
-
-        contentOffset = point
-
-        // otherwise everything subscribing to scrollViewDidScroll is implicitly animated from velocity scroll
-        CATransaction.begin()
-        CATransaction.setDisableActions(!animated)
-        delegate?.scrollViewDidScroll(self)
-        CATransaction.commit()
-    }
-
-
-    internal func indicatorOffsetsInContentSpace() -> (horizontal: CGFloat, vertical: CGFloat) {
-        let scrollViewProgress = (horizontal: (contentInset.left + contentOffset.x) / (contentInset.left + contentSize.width + contentInset.right),
-                                  vertical: (contentInset.top + contentOffset.y) / (contentInset.top + contentSize.height + contentInset.bottom))
-
-        let indicatorOffsetInBounds = (horizontal: scrollViewProgress.horizontal * bounds.size.width,
-                                       vertical: scrollViewProgress.vertical * bounds.size.height)
-
-        return (horizontal: contentOffset.x + indicatorOffsetInBounds.horizontal,
-                vertical: contentOffset.y + indicatorOffsetInBounds.vertical)
-    }
-
-
-    public func layoutScrollIndicatorsIfNeeded() {
-        let shouldLayoutHorizontalScrollIndicator = showsHorizontalScrollIndicator && contentSize.width > bounds.width
-        let shouldLayoutVerticalScrollIndicator = showsVerticalScrollIndicator && contentSize.height > bounds.height
-        guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
-
-        let indicatorLengths = (horizontal: (bounds.width / contentSize.width) * bounds.width,
-                                vertical: (bounds.height / contentSize.height) * bounds.height)
-
-        if shouldLayoutHorizontalScrollIndicator {
-            horizontalScrollIndicator.frame = CGRect(
-                x: indicatorOffsetsInContentSpace().horizontal,
-                y: bounds.height - (indicatorThickness + indicatorDistanceFromScrollViewFrame),
-                width: indicatorLengths.horizontal,
-                height: indicatorThickness
-            )
-        }
-
-        if shouldLayoutVerticalScrollIndicator {
-            verticalScrollIndicator.frame = CGRect(
-                x: bounds.width - (indicatorThickness + indicatorDistanceFromScrollViewFrame),
-                y: indicatorOffsetsInContentSpace().horizontal,
-                width: indicatorThickness,
-                height: indicatorLengths.vertical
-            )
-        }
-
-        // TODO: indicators might not be placed correctly when both of them should be present,
-        // since at all times they both have one dimension represented in scrollView frame space, and not content space
-    }
-
     open func flashScrollIndicators() {
-        //TODO
+        showScrollIndicators()
+        hideScrollIndicators()
     }
 }
 
@@ -186,9 +154,10 @@ public enum UIScrollViewIndicatorStyle {
 
     var backgroundColor: UIColor {
         switch self {
-            // Default according to iOS UIKit docs is "black with a white border",
-        // but it's actually grey with no border/grey border (as observable in any default iOS app)
-        case .`default`: return UIColor.lightGray
+        // Default according to iOS UIKit docs is "black with a white border".
+        // But actually it's a black stretchable image with a peak opacity of 0.35.
+        // We render it differently, so we add a little opacity to get a similar effect:
+        case .`default`: return UIColor.black.withAlphaComponent(0.37)
         case .black: return UIColor.black
         case .white: return UIColor.white
         }

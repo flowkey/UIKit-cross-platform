@@ -7,7 +7,6 @@
 //
 
 open class UITextView: UIScrollView {
-
     private var label = UILabel()
     public var isEditable = false
     public var isSelectable = false
@@ -46,6 +45,7 @@ open class UITextView: UIScrollView {
         super.init(frame: frame)
         addSubview(label)
         label.numberOfLines = 0
+        label.layer.contentsGravityEnum = .top
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
@@ -53,7 +53,7 @@ open class UITextView: UIScrollView {
         return label.sizeThatFits(size)
     }
 
-    private let spaceToVerticalScrollIndicator: CGFloat = 5
+    private let spaceToVerticalScrollIndicator: CGFloat = 17.5
 
     override open func layoutSubviews() {
         label.frame.width = bounds.width - spaceToVerticalScrollIndicator
@@ -62,7 +62,5 @@ open class UITextView: UIScrollView {
 
         let textHeight = label.frame.height
         contentSize = CGSize(width: bounds.width, height: max(textHeight, bounds.height))
-
-        super.layoutSubviews()
     }
 }

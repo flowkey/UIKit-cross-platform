@@ -26,7 +26,7 @@ extension UIScrollView {
 
         let willDecelerate = (velocityIsLargeEnoughToDecelerate && distanceToBoundsCheckedTarget.magnitude > 0.0)
         delegate?.scrollViewDidEndDragging(self, willDecelerate: willDecelerate)
-        guard willDecelerate else { return }
+        guard willDecelerate else { hideScrollIndicators(); return }
 
         // https://ariya.io/2011/10/flick-list-with-its-momentum-scrolling-and-deceleration
         // TODO: This value should be calculated from `self.decelerationRate` instead
@@ -48,14 +48,15 @@ extension UIScrollView {
     func cancelDeceleratingIfNeccessary() {
         if !isDecelerating { return }
 
-        let currentOrigin = layer._presentation?.bounds.origin ?? bounds.origin
-        setContentOffset(currentOrigin, animated: false)
-    
-        // Cancel animations of the ScrollView and indicators
+        // Get the presentation value from the current animation
+        setContentOffset(visibleContentOffset, animated: false)
+        cancelDecelerationAnimations()
+        isDecelerating = false
+    }
+
+    func cancelDecelerationAnimations() {
         layer.removeAnimation(forKey: "bounds")
         horizontalScrollIndicator.layer.removeAnimation(forKey: "position")
         verticalScrollIndicator.layer.removeAnimation(forKey: "position")
-    
-        isDecelerating = false
     }
 }
