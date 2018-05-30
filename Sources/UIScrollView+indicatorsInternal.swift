@@ -9,9 +9,9 @@
 // NOTE: Everything in this file must be private / internal-only.
 // You can't override methods that were defined in an extension.
 
-private let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5
-
 internal extension UIScrollView {
+    internal static let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5
+
     internal func indicatorOffsetsInContentSpace() -> (horizontal: CGFloat, vertical: CGFloat) {
         let totalContentArea = (
             horizontal: contentInset.left + contentSize.width + contentInset.right,
@@ -46,6 +46,7 @@ internal extension UIScrollView {
     internal func layoutScrollIndicatorsIfNeeded() {
         guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
 
+        let indicatorDistanceFromScrollViewFrame = UIScrollView.indicatorDistanceFromScrollViewFrame
         let indicatorOffsets = indicatorOffsetsInContentSpace()
         let indicatorLengths = (horizontal: (bounds.width / contentSize.width) * bounds.width,
                                 vertical: (bounds.height / contentSize.height) * bounds.height)
