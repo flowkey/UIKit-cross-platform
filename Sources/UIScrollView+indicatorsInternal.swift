@@ -34,16 +34,16 @@ internal extension UIScrollView {
         )
     }
 
-    var shouldLayoutHorizontalScrollIndicator: Bool {
+    internal var shouldLayoutHorizontalScrollIndicator: Bool {
         return showsHorizontalScrollIndicator && contentSize.width > bounds.width
     }
 
-    var shouldLayoutVerticalScrollIndicator: Bool {
+    internal var shouldLayoutVerticalScrollIndicator: Bool {
         return showsVerticalScrollIndicator && contentSize.height > bounds.height
     }
 
 
-    func layoutScrollIndicatorsIfNeeded() {
+    internal func layoutScrollIndicatorsIfNeeded() {
         guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
 
         let indicatorOffsets = indicatorOffsetsInContentSpace()
@@ -70,7 +70,7 @@ internal extension UIScrollView {
     }
 
     // On iOS this seems to occur with no animation at all:
-    func showScrollIndicators() {
+    internal func showScrollIndicators() {
         if shouldLayoutHorizontalScrollIndicator {
             horizontalScrollIndicator.alpha = 1
         }
@@ -80,7 +80,7 @@ internal extension UIScrollView {
         }
     }
 
-    func hideScrollIndicators() {
+    internal func hideScrollIndicators() {
         UIView.animate(
             withDuration: 0.25,  // these values have been hand-tuned
             delay: 0.05,         // to match iOS
