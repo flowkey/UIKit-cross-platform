@@ -30,9 +30,9 @@ struct ContentsGravityTransformation {
 
         let bounds = layer.bounds
 
-        let distanceToMaxX = (bounds.width - scaledContents.width) * (1 - layer.anchorPoint.x)
-        let distanceToMinY = -((bounds.height - scaledContents.height) * layer.anchorPoint.y)
         let distanceToMinX = -((bounds.width - scaledContents.width) * layer.anchorPoint.x)
+        let distanceToMinY = -((bounds.height - scaledContents.height) * layer.anchorPoint.y)
+        let distanceToMaxX = (bounds.width - scaledContents.width) * (1 - layer.anchorPoint.x)
         let distanceToMaxY = (bounds.height - scaledContents.height) * (1 - layer.anchorPoint.y)
 
         switch layer.contentsGravityEnum {
