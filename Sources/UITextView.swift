@@ -45,7 +45,7 @@ open class UITextView: UIScrollView {
         super.init(frame: frame)
         addSubview(label)
         label.numberOfLines = 0
-        label.layer.contentsGravityEnum = .top
+        label.layer.contentsGravityEnum = .topLeft
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {

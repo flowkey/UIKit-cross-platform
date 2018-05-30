@@ -9,7 +9,7 @@
 
 extension CALayer {
     internal enum ContentsGravity: String {
-        case left, center, right, top, bottom
+        case left, center, right, top, bottom, topLeft, topRight
         case resize, resizeAspectFill, resizeAspectFit = "resizeAspect"
     }
 }
@@ -29,6 +29,18 @@ struct ContentsGravityTransformation {
         )
 
         let bounds = layer.bounds
+        var distanceToMinX: CGFloat {
+            return -((bounds.width - scaledContents.width) * layer.anchorPoint.x)
+        }
+        var distanceToMinY: CGFloat {
+            return -((bounds.height - scaledContents.height) * layer.anchorPoint.y)
+        }
+        var distanceToMaxX: CGFloat {
+            return (bounds.width - scaledContents.width) * (1 - layer.anchorPoint.x)
+        }
+        var distanceToMaxY: CGFloat {
+            return (bounds.height - scaledContents.height) * (1 - layer.anchorPoint.y)
+        }
 
         switch layer.contentsGravityEnum {
         case .resize:
@@ -46,20 +58,22 @@ struct ContentsGravityTransformation {
             offset = .zero
             scale = .defaultScale
         case .left:
-            let distanceToMinX = -((bounds.width - scaledContents.width) * layer.anchorPoint.x)
             offset = CGPoint(x: distanceToMinX, y: 0.0)
             scale = .defaultScale
         case .right:
-            let distanceToMaxX = bounds.width * (1 - layer.anchorPoint.x)
-            offset = CGPoint(x: distanceToMaxX - scaledContents.width, y: 0.0)
+            offset = CGPoint(x: distanceToMaxX, y: 0.0)
             scale = .defaultScale
         case .top:
-            let distanceToMinY = -((bounds.height - scaledContents.height) * layer.anchorPoint.y)
             offset = CGPoint(x: 0.0, y: distanceToMinY)
             scale = .defaultScale
         case .bottom:
-            let distanceToMaxY = bounds.height * (1 - layer.anchorPoint.y)
-            offset = CGPoint(x: 0.0, y: distanceToMaxY - scaledContents.height)
+            offset = CGPoint(x: 0.0, y: distanceToMaxY)
+            scale = .defaultScale
+        case .topLeft:
+            offset = CGPoint(x: distanceToMinX, y: distanceToMinY)
+            scale = .defaultScale
+        case .topRight:
+            offset = CGPoint(x: distanceToMaxX, y: distanceToMinY)
             scale = .defaultScale
         }
     }
