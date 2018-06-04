@@ -55,6 +55,7 @@
 		5C4AD7E3204EE2B70021DD4A /* AVPlayerItem+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4AD7E1204EE2B60021DD4A /* AVPlayerItem+Mac.swift */; };
 		5C4CD51120615FCF00217B4C /* SDL+handleEventsIfNeeded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4CD51020615FCF00217B4C /* SDL+handleEventsIfNeeded.swift */; };
 		5C4CD51A206160EC00217B4C /* UIView+printViewHierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4CD519206160EC00217B4C /* UIView+printViewHierarchy.swift */; };
+		5C5095B020C59303002E9DDD /* UIPanGestureRecognizerTests+draggableViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5095AD20C54ECC002E9DDD /* UIPanGestureRecognizerTests+draggableViews.swift */; };
 		5C664CD41FA0DBFC008F41D6 /* MaskingShaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C664CD31FA0DBFC008F41D6 /* MaskingShaders.swift */; };
 		5C664CD61FA0DF1D008F41D6 /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C664CD51FA0DF1D008F41D6 /* Shader.swift */; };
 		5C664CD81FA0E640008F41D6 /* ShaderProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C664CD71FA0E640008F41D6 /* ShaderProgram.swift */; };
@@ -319,6 +320,7 @@
 		5C4AD7E6204EE45F0021DD4A /* AVPlayerLayer+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayerLayer+Android.swift"; sourceTree = "<group>"; };
 		5C4CD51020615FCF00217B4C /* SDL+handleEventsIfNeeded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SDL+handleEventsIfNeeded.swift"; sourceTree = "<group>"; };
 		5C4CD519206160EC00217B4C /* UIView+printViewHierarchy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+printViewHierarchy.swift"; sourceTree = "<group>"; };
+		5C5095AD20C54ECC002E9DDD /* UIPanGestureRecognizerTests+draggableViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIPanGestureRecognizerTests+draggableViews.swift"; sourceTree = "<group>"; };
 		5C664CD31FA0DBFC008F41D6 /* MaskingShaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaskingShaders.swift; sourceTree = "<group>"; };
 		5C664CD51FA0DF1D008F41D6 /* Shader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
 		5C664CD71FA0E640008F41D6 /* ShaderProgram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderProgram.swift; sourceTree = "<group>"; };
@@ -481,6 +483,7 @@
 			isa = PBXGroup;
 			children = (
 				03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */,
+				5C5095AD20C54ECC002E9DDD /* UIPanGestureRecognizerTests+draggableViews.swift */,
 				03CC73971FB5B2C6000A2C91 /* UITouchTests.swift */,
 				5BAF8E49203DA89D00DA1EBF /* TouchHandlingTests.swift */,
 			);
@@ -1200,6 +1203,7 @@
 				8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */,
 				5CB6E1B62031D801001FEAC9 /* CGRect+TransformTests.swift in Sources */,
 				5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */,
+				5C5095B020C59303002E9DDD /* UIPanGestureRecognizerTests+draggableViews.swift in Sources */,
 				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
 				5C8475D7203DC6E700CA2EBF /* UIViewTests+convert.swift in Sources */,
 				83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */,
