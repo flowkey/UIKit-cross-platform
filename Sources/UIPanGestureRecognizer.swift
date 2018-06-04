@@ -23,7 +23,10 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         else { return .zero }
 
         let positionInTargetView = trackedTouch.location(in: view)
-        return (positionInTargetView - initialTouchPoint)
+        let initialPositionInTargetView = view?.convert(initialTouchPoint, from: trackedTouch.window)
+            ?? initialTouchPoint
+
+        return (positionInTargetView - initialPositionInTargetView)
             // if positionInTargetView and initialTouchPoint would be converted correctly
             // this wouldnt be neccesary. TODO: fix slow path in UIView.convert
             .applying(view?.superview?.transform.inverted() ?? .identity)
@@ -31,7 +34,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     open func setTranslation(_ translation: CGPoint, in view: UIView?) {
         guard let trackedTouch = trackedTouch else { return }
-        let positionInTargetView = trackedTouch.location(in: view)
+        let positionInTargetView = trackedTouch.location(in: nil)
         initialTouchPoint = positionInTargetView - translation
     }
 
@@ -62,7 +65,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         guard let trackedTouch = touches.first else { return }
         state = .began
         self.trackedTouch = trackedTouch
-        initialTouchPoint = trackedTouch.location(in: self.view)
+        initialTouchPoint = trackedTouch.location(in: nil)
         touchesMovedTimestamp = trackedTouch.timestamp
     }
 
@@ -77,7 +80,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
             return
         }
 
-        let location = trackedTouch.location(in: self.view?.superview)
+        let location = trackedTouch.location(in: nil)
 
         self.previousTouchesMovedTimestamp = touchesMovedTimestamp ?? 0
         self.touchesMovedTimestamp = trackedTouch.timestamp

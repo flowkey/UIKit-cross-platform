@@ -9,6 +9,12 @@
 import struct Foundation.TimeInterval
 
 public class UITouch {
+    public init() {
+        absoluteLocation = .zero
+        previousAbsoluteLocation = .zero
+        timestamp = 0
+        touchId = 0
+    }
 
     internal init(touchId: Int, at point: CGPoint, in window: UIWindow, timestamp: TimeInterval) {
         absoluteLocation = point
@@ -18,7 +24,7 @@ public class UITouch {
         self.timestamp = timestamp
     }
 
-    let touchId: Int
+    internal let touchId: Int
 
     public weak var view: UIView?
     public weak var window: UIWindow?
