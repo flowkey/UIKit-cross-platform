@@ -19,8 +19,8 @@ internal extension UIScrollView {
         )
 
         let scrollViewProgress = (
-            horizontal: (contentInset.left + contentOffset.x) / (totalContentArea.horizontal + bounds.width),
-            vertical: (contentInset.top + contentOffset.y) / (totalContentArea.vertical + bounds.height)
+            horizontal: (contentOffset.x) / (totalContentArea.horizontal),
+            vertical: (contentInset.top) / (totalContentArea.vertical)
         )
 
         let indicatorOffsetInBounds = (
