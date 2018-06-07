@@ -18,10 +18,21 @@ internal extension UIScrollView {
             vertical: contentInset.top + contentSize.height + contentInset.bottom
         )
 
+
+
+        //TODO: Simplify this
+        let decayTerm = 1-((contentInset.left+contentOffset.x)/totalContentArea.horizontal)
+
         let scrollViewProgress = (
-            horizontal: (contentOffset.x) / (totalContentArea.horizontal),
-            vertical: (contentInset.top) / (totalContentArea.vertical)
+            horizontal: (contentInset.left * decayTerm + contentOffset.x) / totalContentArea.horizontal,
+            vertical: (contentInset.top * decayTerm + contentOffset.y) / totalContentArea.vertical
         )
+        // ((contentInset.left + contentOffset.x) / totalContentArea.horizontal                produces correct position at the beginning, incorrect at the end
+        // ((contentOffset.x) / totalContentArea.horizontal                                    produces correct position at the end, incorrect at the beginning
+        // ((contentInset.left)*decayTerm + contentOffset.x) / totalContentArea.horizontal     interpolates between them, ensuring correct position everywhere
+        // this is marked as TODO, because there must be a simpler way to formulate it
+
+
 
         let indicatorOffsetInBounds = (
             horizontal: scrollViewProgress.horizontal * bounds.size.width,
@@ -58,6 +69,7 @@ internal extension UIScrollView {
                 width: indicatorLengths.horizontal,
                 height: indicatorThickness
             )
+            print(horizontalScrollIndicator.frame)
         }
 
         if shouldLayoutVerticalScrollIndicator {
