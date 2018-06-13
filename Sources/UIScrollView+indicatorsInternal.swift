@@ -22,14 +22,14 @@ internal extension UIScrollView {
             vertical: (contentInset.top + contentOffset.y) / totalContentArea.vertical
         )
 
-        let indicatorOffsetInAvailableSpace = ( //rename
+        let indicatorOffsetInAvailableSpace = (
             horizontal: scrollViewProgress.horizontal * (bounds.size.width - (totalScrollIndicatorInsets.left + totalScrollIndicatorInsets.right)),
             vertical: scrollViewProgress.vertical * (bounds.size.height - (totalScrollIndicatorInsets.top + totalScrollIndicatorInsets.bottom))
         )
 
         return (
             horizontal: contentOffset.x  + totalScrollIndicatorInsets.left + indicatorOffsetInAvailableSpace.horizontal,
-            vertical: contentOffset.y + totalScrollIndicatorInsets.top + indicatorOffsetInAvailableSpace.vertical //adjust
+            vertical: contentOffset.y + totalScrollIndicatorInsets.top + indicatorOffsetInAvailableSpace.vertical
         )
     }
 
@@ -59,10 +59,10 @@ internal extension UIScrollView {
             )
         }
 
-        if shouldLayoutVerticalScrollIndicator {
+        if shouldLayoutVerticalScrollIndicator { // |
             verticalScrollIndicator.frame = CGRect(
-                x: bounds.width - (3*indicatorThickness),
-                y: totalScrollIndicatorInsets.top + indicatorOffsets.vertical,
+                x: bounds.width - (2*indicatorThickness),
+                y: indicatorOffsets.vertical,
                 width: indicatorThickness,
                 height: indicatorLengths.vertical
             )
