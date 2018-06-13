@@ -70,6 +70,7 @@ open class UIScrollView: UIView {
                                                       left: initialScrollIndicatorInsets.left + additionalScrollIndicatorInsets.left,
                                                       bottom: initialScrollIndicatorInsets.bottom + additionalScrollIndicatorInsets.bottom,
                                                       right: initialScrollIndicatorInsets.right + additionalScrollIndicatorInsets.right)
+            layoutScrollIndicatorsIfNeeded()
         }
     }
 
