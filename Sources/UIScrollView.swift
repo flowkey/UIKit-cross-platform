@@ -60,7 +60,16 @@ open class UIScrollView: UIView {
         didSet { applyScrollIndicatorsStyle() }
     }
 
-    // TODO: var scrollIndicatorInsets
+    let initialScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 6.5, right: 8.5)
+    public var scrollIndicatorInsets = UIEdgeInsets.zero  {
+        didSet (additionalScrollIndicatorInsets) {
+            totalScrollIndicatorInsets = UIEdgeInsets(top: initialScrollIndicatorInsets.top + additionalScrollIndicatorInsets.top,
+                                                      left: initialScrollIndicatorInsets.left + additionalScrollIndicatorInsets.left,
+                                                      bottom: initialScrollIndicatorInsets.bottom + additionalScrollIndicatorInsets.bottom,
+                                                      right: initialScrollIndicatorInsets.right + additionalScrollIndicatorInsets.right)
+        }
+    }
+    var totalScrollIndicatorInsets = UIEdgeInsets.zero
 
     var weightedAverageVelocity: CGPoint = .zero
 
