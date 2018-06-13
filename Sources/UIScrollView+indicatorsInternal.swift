@@ -10,7 +10,6 @@
 // You can't override methods that were defined in an extension.
 
 internal extension UIScrollView {
-    internal static let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5
 
     internal func indicatorOffsetsInContentSpace() -> (horizontal: CGFloat, vertical: CGFloat) {
         let totalContentArea = (
@@ -18,30 +17,19 @@ internal extension UIScrollView {
             vertical: contentInset.top + contentSize.height + contentInset.bottom
         )
 
-
-
-        //TODO: Simplify this
-        let decayTerm = 1-((contentInset.left+contentOffset.x)/totalContentArea.horizontal)
-
         let scrollViewProgress = (
-            horizontal: (contentInset.left * decayTerm + contentOffset.x) / totalContentArea.horizontal,
-            vertical: (contentInset.top * decayTerm + contentOffset.y) / totalContentArea.vertical
+            horizontal: (contentInset.left + contentOffset.x) / totalContentArea.horizontal,
+            vertical: (contentInset.top + contentOffset.y) / totalContentArea.vertical
         )
-        // ((contentInset.left + contentOffset.x) / totalContentArea.horizontal                produces correct position at the beginning, incorrect at the end
-        // ((contentOffset.x) / totalContentArea.horizontal                                    produces correct position at the end, incorrect at the beginning
-        // ((contentInset.left)*decayTerm + contentOffset.x) / totalContentArea.horizontal     interpolates between them, ensuring correct position everywhere
-        // this is marked as TODO, because there must be a simpler way to formulate it
 
-
-
-        let indicatorOffsetInBounds = (
-            horizontal: scrollViewProgress.horizontal * bounds.size.width,
-            vertical: scrollViewProgress.vertical * bounds.size.height
+        let indicatorOffsetInAvailableSpace = ( //rename
+            horizontal: scrollViewProgress.horizontal * (bounds.size.width - (totalScrollIndicatorInsets.left + totalScrollIndicatorInsets.right)),
+            vertical: scrollViewProgress.vertical * (bounds.size.height - (totalScrollIndicatorInsets.top + totalScrollIndicatorInsets.bottom))
         )
 
         return (
-            horizontal: contentOffset.x + indicatorOffsetInBounds.horizontal,
-            vertical: contentOffset.y + indicatorOffsetInBounds.vertical
+            horizontal: contentOffset.x  + totalScrollIndicatorInsets.left + indicatorOffsetInAvailableSpace.horizontal,
+            vertical: contentOffset.y + totalScrollIndicatorInsets.top + indicatorOffsetInAvailableSpace.vertical //adjust
         )
     }
 
@@ -57,25 +45,24 @@ internal extension UIScrollView {
     internal func layoutScrollIndicatorsIfNeeded() {
         guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
 
-        let indicatorDistanceFromScrollViewFrame = UIScrollView.indicatorDistanceFromScrollViewFrame
+
         let indicatorOffsets = indicatorOffsetsInContentSpace()
         let indicatorLengths = (horizontal: (bounds.width / contentSize.width) * bounds.width,
                                 vertical: (bounds.height / contentSize.height) * bounds.height)
 
         if shouldLayoutHorizontalScrollIndicator {
             horizontalScrollIndicator.frame = CGRect(
-                x: indicatorDistanceFromScrollViewFrame + indicatorOffsets.horizontal,
-                y: bounds.height - (indicatorThickness + indicatorDistanceFromScrollViewFrame),
+                x: indicatorOffsets.horizontal,
+                y: bounds.height - (2*indicatorThickness),
                 width: indicatorLengths.horizontal,
                 height: indicatorThickness
             )
-            print(horizontalScrollIndicator.frame)
         }
 
         if shouldLayoutVerticalScrollIndicator {
             verticalScrollIndicator.frame = CGRect(
-                x: bounds.width - (indicatorThickness + indicatorDistanceFromScrollViewFrame),
-                y: indicatorDistanceFromScrollViewFrame + indicatorOffsets.vertical,
+                x: bounds.width - (3*indicatorThickness),
+                y: totalScrollIndicatorInsets.top + indicatorOffsets.vertical,
                 width: indicatorThickness,
                 height: indicatorLengths.vertical
             )

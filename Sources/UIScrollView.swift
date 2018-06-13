@@ -56,6 +56,21 @@ open class UIScrollView: UIView {
         )
     }
 
+    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
+        didSet { applyScrollIndicatorsStyle() }
+    }
+
+    let initialScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 6.5, right: 8.5)
+    public var scrollIndicatorInsets = UIEdgeInsets.zero  {
+        didSet (additionalScrollIndicatorInsets) {
+            totalScrollIndicatorInsets = UIEdgeInsets(top: initialScrollIndicatorInsets.top + additionalScrollIndicatorInsets.top,
+                                                      left: initialScrollIndicatorInsets.left + additionalScrollIndicatorInsets.left,
+                                                      bottom: initialScrollIndicatorInsets.bottom + additionalScrollIndicatorInsets.bottom,
+                                                      right: initialScrollIndicatorInsets.right + additionalScrollIndicatorInsets.right)
+        }
+    }
+    var totalScrollIndicatorInsets = UIEdgeInsets.zero
+
     var weightedAverageVelocity: CGPoint = .zero
 
     override public init(frame: CGRect) {
@@ -64,8 +79,6 @@ open class UIScrollView: UIView {
         panGestureRecognizer.onStateChanged = { [weak self] in self?.onPanGestureStateChanged() }
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
-
-
 
         applyScrollIndicatorsStyle()
         [horizontalScrollIndicator, verticalScrollIndicator].forEach {
@@ -116,29 +129,10 @@ open class UIScrollView: UIView {
     open var contentInset: UIEdgeInsets = .zero
     open var contentSize: CGSize = .zero
 
+
     // MARK: Scroll Indicators
 
     let indicatorThickness: CGFloat = 2.5
-    
-    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
-        didSet { applyScrollIndicatorsStyle() }
-    }
-    
-    private var customScrollIndicatorInsets = UIEdgeInsets.zero
-    private let baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
-    
-    public var scrollIndicatorInsets: UIEdgeInsets {
-        get {
-            let totalScrollIndicatorInsets = UIEdgeInsets(top: baseScrollIndicatorInsets.top + customScrollIndicatorInsets.top,
-                                                          left: baseScrollIndicatorInsets.left + customScrollIndicatorInsets.left,
-                                                          bottom: baseScrollIndicatorInsets.bottom + customScrollIndicatorInsets.bottom,
-                                                          right: baseScrollIndicatorInsets.right + customScrollIndicatorInsets.right)
-            return totalScrollIndicatorInsets
-        }
-        set (newValue) {
-            customScrollIndicatorInsets = newValue
-        }
-    }
 
     private func applyScrollIndicatorsStyle() {
         for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
