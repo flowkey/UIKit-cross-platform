@@ -60,7 +60,10 @@ open class UIScrollView: UIView {
         didSet { applyScrollIndicatorsStyle() }
     }
 
-    let initialScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 6.5, right: 8.5)
+
+    var initialScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
+    lazy var totalScrollIndicatorInsets = initialScrollIndicatorInsets
+
     public var scrollIndicatorInsets = UIEdgeInsets.zero  {
         didSet (additionalScrollIndicatorInsets) {
             totalScrollIndicatorInsets = UIEdgeInsets(top: initialScrollIndicatorInsets.top + additionalScrollIndicatorInsets.top,
@@ -69,7 +72,7 @@ open class UIScrollView: UIView {
                                                       right: initialScrollIndicatorInsets.right + additionalScrollIndicatorInsets.right)
         }
     }
-    var totalScrollIndicatorInsets = UIEdgeInsets.zero
+
 
     var weightedAverageVelocity: CGPoint = .zero
 
@@ -79,6 +82,10 @@ open class UIScrollView: UIView {
         panGestureRecognizer.onStateChanged = { [weak self] in self?.onPanGestureStateChanged() }
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
+
+        if shouldLayoutVerticalScrollIndicator && shouldLayoutHorizontalScrollIndicator {
+            initialScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 6.5, right: 8.5)
+        }
 
         applyScrollIndicatorsStyle()
         [horizontalScrollIndicator, verticalScrollIndicator].forEach {
