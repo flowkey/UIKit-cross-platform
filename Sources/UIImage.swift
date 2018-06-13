@@ -24,9 +24,9 @@ public class UIImage {
         )
     }
 
+    /// As on iOS: if no file extension is provided, assume `.png`.
     public convenience init?(named name: String) {
         let (pathWithoutExtension, fileExtension) = name.pathAndExtension()
-        let possibleFileExtensions = [fileExtension, ".png", ".jpg", ".jpeg", ".bmp"]
 
         // e.g. ["@3x", "@2x", "@1x", ""]
         let scale = Int(UIScreen.main.scale.rounded())
@@ -34,14 +34,12 @@ public class UIImage {
             .map { "@\($0)x" }
             + [""] // it's possible to have no scale string (e.g. "image.png")
 
-        for ext in possibleFileExtensions {
-            for scaleString in possibleScaleStrings {
-                let attemptedFilePath = "\(pathWithoutExtension)\(scaleString)\(ext)"
-                if let cgImage = CGImage(GPU_LoadImage(attemptedFilePath)) {
-                    let scale = attemptedFilePath.extractImageScale()
-                    self.init(cgImage: cgImage, scale: scale)
-                    return
-                }
+        for scaleString in possibleScaleStrings {
+            let attemptedFilePath = "\(pathWithoutExtension)\(scaleString)\(fileExtension)"
+            if let cgImage = CGImage(GPU_LoadImage(attemptedFilePath)) {
+                let scale = attemptedFilePath.extractImageScale()
+                self.init(cgImage: cgImage, scale: scale)
+                return
             }
         }
 
@@ -59,8 +57,7 @@ public class UIImage {
 
         guard let cgImage = data.withUnsafeMutableBytes({ (ptr: UnsafeMutablePointer<Int8>) -> CGImage? in
             let rw = SDL_RWFromMem(ptr, dataCount)
-            defer { SDL_FreeRW(rw) }
-            let gpuImagePtr = GPU_LoadImage_RW(rw, false)
+            let gpuImagePtr = GPU_LoadImage_RW(rw, true)
             return CGImage(gpuImagePtr)
         }) else {
             return nil
@@ -73,7 +70,8 @@ public class UIImage {
 private extension String {
     func pathAndExtension() -> (pathWithoutExtension: String, fileExtension: String) {
         let path = NSString(string: self.asAbsolutePath())
-        return (path.deletingPathExtension, "." + path.pathExtension)
+        let fileExtension = path.pathExtension
+        return (path.deletingPathExtension, "." + (fileExtension.isEmpty ? "png" : fileExtension))
     }
 
     func extractImageScale() -> CGFloat {
