@@ -9,7 +9,6 @@
 import SDL
 import SDL_gpu
 import CoreFoundation
-import JNI
 
 final public class SDL { // Only public for rootView!
     public internal(set) static var window: UIWindow!
@@ -118,6 +117,8 @@ final public class SDL { // Only public for rootView!
 }
 
 #if os(Android)
+import JNI
+
 private let maxFrameRenderTimeInSeconds = 1.0 / 60.0
 
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeRender")

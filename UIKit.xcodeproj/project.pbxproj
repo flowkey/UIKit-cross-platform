@@ -33,7 +33,6 @@
 		5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */; };
 		5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */; };
 		5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F06AE1F3210F200EFF087 /* UIViewController.swift */; };
-		5C2714A21F2A3FC50026BBA9 /* SDL+JNIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */; };
 		5C27E7B81ECB2F6500F5020D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7AE1ECB2F6500F5020D /* UIKit.framework */; };
 		5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D21ECB2F9100F5020D /* Cocoa.framework */; };
 		5C27E7DD1ECB2F9100F5020D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D31ECB2F9100F5020D /* AudioToolbox.framework */; };
@@ -105,6 +104,10 @@
 		5CB6E1C12031EDF2001FEAC9 /* SDL_gpu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF8C4201635AF00D989BC /* SDL_gpu.framework */; };
 		5CB6E1C32033460C001FEAC9 /* CATransform3D+SDL_gpu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB6E1C22033460C001FEAC9 /* CATransform3D+SDL_gpu.swift */; };
 		5CB6E1C52035BC4F001FEAC9 /* CGPoint+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB6E1C42035BC4E001FEAC9 /* CGPoint+animations.swift */; };
+		5CBC2FFB20D2209E000388D1 /* JNI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 835693311F8CD3C100C6D253 /* JNI.framework */; };
+		5CBC301320D22145000388D1 /* SDL_gpu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF8C4201635AF00D989BC /* SDL_gpu.framework */; };
+		5CBC301420D22145000388D1 /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF98120163AF900D989BC /* SDL_ttf.framework */; };
+		5CBC301520D22145000388D1 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF8632016328200D989BC /* SDL2.framework */; };
 		5CC7463E20BDB286000D21AF /* UIScrollView+indicatorsInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC7463D20BDB286000D21AF /* UIScrollView+indicatorsInternal.swift */; };
 		5CCF1BD32017821E00AAF598 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CCF1BD22017821E00AAF598 /* AVFoundation.framework */; };
 		5CCF1C00201A292400AAF598 /* VideoTexture+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */; };
@@ -120,9 +123,6 @@
 		5CE5C57A1EDDAE5000680154 /* CGPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5791EDDAE5000680154 /* CGPath.swift */; };
 		5CF2BEEE1F8D1BD7009FCA1E /* UIFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF2BEED1F8D1BD7009FCA1E /* UIFontTests.swift */; };
 		5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */; };
-		5CFFF9EF201741F000D989BC /* SDL_gpu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF8C4201635AF00D989BC /* SDL_gpu.framework */; };
-		5CFFF9F0201741F000D989BC /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF98120163AF900D989BC /* SDL_ttf.framework */; };
-		5CFFF9F1201741F000D989BC /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF8632016328200D989BC /* SDL2.framework */; };
 		5CFFFA172017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
 		5CFFFA182017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
 		5CFFFA1D2017540200D989BC /* UIKit-Mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 5CFFFA1C2017540200D989BC /* UIKit-Mac.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -207,6 +207,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 5C27E7AD1ECB2F6500F5020D;
 			remoteInfo = UIKit;
+		};
+		5CBC301620D22174000388D1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5CFFF97C20163AF900D989BC /* SDL_ttf.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 5CFFF97020163AC900D989BC;
+			remoteInfo = SDL_ttf;
+		};
+		5CBC301820D22174000388D1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5CFFF87F201632FC00D989BC /* SDL-gpu.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 5CFFF873201632FC00D989BC;
+			remoteInfo = "SDL-gpu";
+		};
+		5CBC301A20D22174000388D1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5CFFF85B2016328200D989BC /* SDL.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BECDF5FE0761BA81005FE872;
+			remoteInfo = Framework;
 		};
 		5CFFF8622016328200D989BC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -443,10 +464,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CBC301320D22145000388D1 /* SDL_gpu.framework in Frameworks */,
+				5CBC301420D22145000388D1 /* SDL_ttf.framework in Frameworks */,
+				5CBC301520D22145000388D1 /* SDL2.framework in Frameworks */,
+				5CBC2FFB20D2209E000388D1 /* JNI.framework in Frameworks */,
 				5CCF1BD32017821E00AAF598 /* AVFoundation.framework in Frameworks */,
-				5CFFF9EF201741F000D989BC /* SDL_gpu.framework in Frameworks */,
-				5CFFF9F0201741F000D989BC /* SDL_ttf.framework in Frameworks */,
-				5CFFF9F1201741F000D989BC /* SDL2.framework in Frameworks */,
 				5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */,
 				5C27E7DD1ECB2F9100F5020D /* AudioToolbox.framework in Frameworks */,
 				5C27E7DE1ECB2F9100F5020D /* ForceFeedback.framework in Frameworks */,
@@ -863,6 +885,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				5CBC301720D22174000388D1 /* PBXTargetDependency */,
+				5CBC301920D22174000388D1 /* PBXTargetDependency */,
+				5CBC301B20D22174000388D1 /* PBXTargetDependency */,
 				5C2714E01F2B9FB90026BBA9 /* PBXTargetDependency */,
 			);
 			name = UIKit;
@@ -1177,7 +1202,6 @@
 				5C3DCCEF2090F072001DEDAF /* UIAlertControllerView.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
 				5C32F2C420A1C69C006D64C5 /* GLRenderer+Errors.swift in Sources */,
-				5C2714A21F2A3FC50026BBA9 /* SDL+JNIExtensions.swift in Sources */,
 				0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */,
 				83AB7B5A1F2B679600C7997D /* UIPinchGestureRecognizer.swift in Sources */,
 				5C93AEA62088FB51005BE853 /* UINavigationBarAndroid.swift in Sources */,
@@ -1254,6 +1278,21 @@
 			isa = PBXTargetDependency;
 			target = 5C27E7AD1ECB2F6500F5020D /* UIKit */;
 			targetProxy = 5C27E7B91ECB2F6500F5020D /* PBXContainerItemProxy */;
+		};
+		5CBC301720D22174000388D1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SDL_ttf;
+			targetProxy = 5CBC301620D22174000388D1 /* PBXContainerItemProxy */;
+		};
+		5CBC301920D22174000388D1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "SDL-gpu";
+			targetProxy = 5CBC301820D22174000388D1 /* PBXContainerItemProxy */;
+		};
+		5CBC301B20D22174000388D1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Framework;
+			targetProxy = 5CBC301A20D22174000388D1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
