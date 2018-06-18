@@ -49,6 +49,7 @@ class AVPlayerItem(parent: SDLActivity, url: String) {
 class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
     internal val exoPlayer: SimpleExoPlayer
     private var listener: Player.EventListener
+    private var onEndedHasBeenCalled = false
 
     external fun nativeOnVideoReady()
     external fun nativeOnVideoEnded()
@@ -68,7 +69,14 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
                 }
 
                 if (playbackState == Player.STATE_ENDED) {
-                    nativeOnVideoEnded()
+                    // prevent nativeOnVideoEnded from being called multiple times
+                    if (!onEndedHasBeenCalled) {
+                        nativeOnVideoEnded()
+                        onEndedHasBeenCalled = true
+                    }
+                } else {
+                    // reset on every state != STATE_ENDED
+                    onEndedHasBeenCalled = false
                 }
             }
 
