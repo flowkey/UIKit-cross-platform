@@ -30,6 +30,6 @@ jobs:
               PROVISIONING_PROFILE=""
               -sdk "iphonesimulator"
               -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
-              -scheme "iOSTestTarget"
+              -scheme "UIKit iOSTestTarget"
               test |
             xcpretty --color --report junit
