@@ -43,6 +43,11 @@ class AVPlayerItem(parent: SDLActivity, url: String) {
                         .Factory(cacheDataSourceFactory)
                         .createMediaSource(videoSourceUri)
     }
+
+    internal var duration: Long = 0
+    fun getVideoDurationInMs(): Long {
+        return duration
+    }
 }
 
 @Suppress("unused")
@@ -64,6 +69,7 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
         listener = object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 if (playbackState == Player.STATE_READY) {
+                    playerItem.duration = exoPlayer.duration
                     nativeOnVideoReady()
                 }
 
