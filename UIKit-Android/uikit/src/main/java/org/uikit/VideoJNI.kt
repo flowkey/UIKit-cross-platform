@@ -44,10 +44,8 @@ class AVPlayerItem(parent: SDLActivity, url: String) {
                         .createMediaSource(videoSourceUri)
     }
 
-    internal var duration: Long = 0
-    fun getVideoDurationInMs(): Long {
-        return duration
-    }
+    var duration: Long = 0
+        internal set
 }
 
 @Suppress("unused")

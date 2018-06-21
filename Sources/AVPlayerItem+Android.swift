@@ -16,8 +16,9 @@ public class AVPlayerItem: JNIObject {
         self.url = url
     }
 
-    public var durationInMs: Int64 {
-        return try! call(methodName: "getVideoDurationInMs")
+    public var durationInMs: Double {
+        let duration: Int64 = try! jni.GetField("duration", from: self.instance)
+        return Double(duration)
     }
 }
 
