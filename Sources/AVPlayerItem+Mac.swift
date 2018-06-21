@@ -8,12 +8,11 @@
 
 @_exported import class AVFoundation.AVPlayerItem
 import struct AVFoundation.CMTime
-import func AVFoundation.CMTimeGetSeconds
 
 public typealias CMTime = AVFoundation.CMTime
 
 extension AVPlayerItem {
     public var durationInMs: Double {
-        return CMTimeGetSeconds(self.duration) * 1000
+        return duration.seconds * 1000
     }
 }

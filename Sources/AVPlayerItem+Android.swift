@@ -17,8 +17,8 @@ public class AVPlayerItem: JNIObject {
     }
 
     public var durationInMs: Double {
-        let duration: Int64 = try! jni.GetField("duration", from: self.instance)
-        return Double(duration)
+        let durationInMs: Int64 = try! jni.GetField("durationInMs", from: self.instance)
+        return Double(durationInMs)
     }
 }
 
