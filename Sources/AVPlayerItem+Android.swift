@@ -1,6 +1,6 @@
 //
 //  AVPlayerItem+Android.swift
-//  FlowkeyPlayerSDL
+//  UIKit
 //
 //  Created by Geordie Jay on 24.05.17.
 //  Copyright © 2017 flowkey. All rights reserved.
@@ -14,6 +14,11 @@ public class AVPlayerItem: JNIObject {
     convenience public init(url: URL) {
         try! self.init("org.uikit.AVPlayerItem", arguments: [JavaSDLView(getSDLView()), url.absoluteString])
         self.url = url
+    }
+
+    public var durationInMs: Double {
+        let durationInMs: Int64 = try! jni.GetField("durationInMs", from: self.instance)
+        return Double(durationInMs)
     }
 }
 

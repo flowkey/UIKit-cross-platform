@@ -1,6 +1,6 @@
 //
 //  AVPlayerItem+Mac.swift
-//  FlowkeyPlayerSDL
+//  UIKit
 //
 //  Created by Geordie Jay on 24.05.17.
 //  Copyright © 2017 flowkey. All rights reserved.
@@ -10,3 +10,9 @@
 import struct AVFoundation.CMTime
 
 public typealias CMTime = AVFoundation.CMTime
+
+extension AVPlayerItem {
+    public var durationInMs: Double {
+        return duration.seconds * 1000
+    }
+}
