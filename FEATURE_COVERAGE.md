@@ -22,7 +22,7 @@ If you don't see what you're looking for (or you see that it's not available), s
 
 To add an issue that requests a new feature (class, property or method), add appropriate `tags` to your issue and state the "class - element" in the title, using Apple's naming. Examples:
 
-`class request` **UITextView** - if you're requesting the UITextView class to be
+`class request` **UITextView** - if you're requesting the [UITextView](https://developer.apple.com/documentation/uikit/uitextview) class to be added 
 
 `method request` **UILabel - drawText(in:)** - if you're requesting the [drawText(in:) method from the UILabel class](https://developer.apple.com/documentation/uikit/uilabel/1620527-drawtext?changes=_2) to be added
 
