@@ -8,7 +8,7 @@ The end goal of the project is to provide 100% of the functionality of UIKit*.  
 ** explain how this is measured and provide real value
 the 
 
-## What functionalities are available? 
+### What functionalities are available? 
  
 Our [test app]() will give you a nice overview and demonstration. For details, see the tables below - there is a table for every UIKit class that we cover. The table shows the status of our work on a all elements (properties and methods) of that class. If there is no table, that means we’re not implementing that class at all (yet).
 
