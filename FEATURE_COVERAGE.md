@@ -20,7 +20,7 @@ If you don't see what you're looking for (or you see that it's not available), s
 
 ### Naming policy for new feature requests
 
-To add an issue that requests a new feature (class, property or method), add appropriate tags to your issue and use Apple's naming in the title. Examples:
+To add an issue that requests a new feature (class, property or method), add appropriate `tags` to your issue and state the "class - element" in the title, using Apple's naming. Examples:
 
 `class request` **UITextView** - if you're requesting the UITextView class to be
 
