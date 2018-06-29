@@ -11,15 +11,18 @@ jobs:
     
       - run:
           name: Test UIKit for macOS
-          command: set -o pipefail &&
-            xcodebuild
+          command: xcodebuild
               CODE_SIGNING_REQUIRED=NO
               CODE_SIGN_IDENTITY=""
               PROVISIONING_PROFILE=""
               -sdk "macosx"
               -scheme "UIKit"
-              test |
-            xcpretty --color --report junit
+              build test
+
+      - run:
+          command: bash <(curl -s https://codecov.io/bash) -J 'UIKit'
+          environment:
+            - CODECOV_TOKEN: "4b6cd237-4637-42d6-ad29-0d1a6ee59761"
 
       - run:
           name: Test iOSTestTarget
