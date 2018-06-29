@@ -18,7 +18,7 @@ jobs:
               PROVISIONING_PROFILE=""
               -sdk "macosx"
               -scheme "UIKit"
-              build test
+              build test |
             xcpretty --color --report junit
 
       - run:
