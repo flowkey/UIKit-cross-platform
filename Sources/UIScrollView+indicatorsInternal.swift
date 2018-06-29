@@ -11,26 +11,39 @@
 
 internal extension UIScrollView {
 
-    internal func indicatorOffsetsInContentSpace() -> (horizontal: CGFloat, vertical: CGFloat) {
-        let totalContentArea = (
-            horizontal: contentInset.left + contentSize.width + contentInset.right,
-            vertical: contentInset.top + contentSize.height + contentInset.bottom
-        )
+    internal static let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5
 
-        let scrollViewProgress = (
-            horizontal: (contentInset.left + contentOffset.x) / totalContentArea.horizontal,
-            vertical: (contentInset.top + contentOffset.y) / totalContentArea.vertical
-        )
+    internal var indicatorLengths: (horizontal: CGFloat, vertical: CGFloat) {
+        // TODO: restrict possible values with a minimum length
+        // (this is how iOS does it, but it might require deeper changes than just here)
+        get {
+            return (horizontal: (bounds.width / contentSize.width) * bounds.width,
+                    vertical: (bounds.height / contentSize.height) * bounds.height)
+        }
+    }
 
-        let indicatorOffsetInAvailableSpace = (
-            horizontal: scrollViewProgress.horizontal * (bounds.size.width - (totalScrollIndicatorInsets.left + totalScrollIndicatorInsets.right)),
-            vertical: scrollViewProgress.vertical * (bounds.size.height - (totalScrollIndicatorInsets.top + totalScrollIndicatorInsets.bottom))
-        )
+    internal var indicatorOffsetsInContentSpace: (horizontal: CGFloat, vertical: CGFloat) {
+        get {
+            let totalContentArea = (
+                horizontal: contentInset.left + contentSize.width + contentInset.right,
+                vertical: contentInset.top + contentSize.height + contentInset.bottom
+            )
 
-        return (
-            horizontal: contentOffset.x  + totalScrollIndicatorInsets.left + indicatorOffsetInAvailableSpace.horizontal,
-            vertical: contentOffset.y + totalScrollIndicatorInsets.top + indicatorOffsetInAvailableSpace.vertical
-        )
+            let scrollViewProgress = (
+                horizontal: (contentInset.left + contentOffset.x) / (totalContentArea.horizontal - bounds.width),
+                vertical: (contentInset.top + contentOffset.y) / (totalContentArea.vertical - bounds.height)
+            )
+
+            let indicatorOffsetInBounds = (
+                horizontal: scrollViewProgress.horizontal * (bounds.size.width - indicatorLengths.horizontal - 2*UIScrollView.indicatorDistanceFromScrollViewFrame),
+                vertical: scrollViewProgress.vertical * (bounds.size.height - indicatorLengths.vertical - 2*UIScrollView.indicatorDistanceFromScrollViewFrame)
+            )
+
+            return (
+                horizontal: contentOffset.x + indicatorOffsetInBounds.horizontal,
+                vertical: contentOffset.y + indicatorOffsetInBounds.vertical
+            )
+        }
     }
 
     internal var shouldLayoutHorizontalScrollIndicator: Bool {
@@ -41,18 +54,14 @@ internal extension UIScrollView {
         return showsVerticalScrollIndicator && contentSize.height > bounds.height
     }
 
-
     internal func layoutScrollIndicatorsIfNeeded() {
         guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
 
-
-        let indicatorOffsets = indicatorOffsetsInContentSpace()
-        let indicatorLengths = (horizontal: (bounds.width / contentSize.width) * bounds.width,
-                                vertical: (bounds.height / contentSize.height) * bounds.height)
+        let indicatorDistanceFromScrollViewFrame = UIScrollView.indicatorDistanceFromScrollViewFrame
 
         if shouldLayoutHorizontalScrollIndicator {
             horizontalScrollIndicator.frame = CGRect(
-                x: indicatorOffsets.horizontal,
+                x: indicatorOffsetsInContentSpace.horizontal,
                 y: bounds.height - (2*indicatorThickness),
                 width: indicatorLengths.horizontal,
                 height: indicatorThickness
@@ -62,11 +71,13 @@ internal extension UIScrollView {
         if shouldLayoutVerticalScrollIndicator { // |
             verticalScrollIndicator.frame = CGRect(
                 x: bounds.width - (2*indicatorThickness),
-                y: indicatorOffsets.vertical,
+                y: indicatorOffsetsInContentSpace.vertical,
                 width: indicatorThickness,
                 height: indicatorLengths.vertical
             )
         }
+
+        
     }
 
     // On iOS this seems to occur with no animation at all:
