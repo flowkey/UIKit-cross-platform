@@ -62,7 +62,7 @@ internal extension UIScrollView {
         if shouldLayoutHorizontalScrollIndicator {
             horizontalScrollIndicator.frame = CGRect(
                 x: indicatorDistanceFromScrollViewFrame + indicatorOffsetsInContentSpace.horizontal,
-                y: bounds.height - (2*indicatorThickness),
+                y: bounds.height - (2*indicatorThickness) + contentOffset.y,
                 width: indicatorLengths.horizontal,
                 height: indicatorThickness
             )
@@ -70,7 +70,7 @@ internal extension UIScrollView {
 
         if shouldLayoutVerticalScrollIndicator { // |
             verticalScrollIndicator.frame = CGRect(
-                x: bounds.width - (2*indicatorThickness),
+                x: bounds.width - (2*indicatorThickness) + contentOffset.x,
                 y: indicatorDistanceFromScrollViewFrame + indicatorOffsetsInContentSpace.vertical,
                 width: indicatorThickness,
                 height: indicatorLengths.vertical
