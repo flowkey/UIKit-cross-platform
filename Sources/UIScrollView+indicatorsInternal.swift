@@ -24,6 +24,8 @@ internal extension UIScrollView {
 
     internal var indicatorOffsetsInContentSpace: (horizontal: CGFloat, vertical: CGFloat) {
         get {
+            let indicatorDistanceFromScrollViewFrame =  UIScrollView.indicatorDistanceFromScrollViewFrame
+
             let totalContentArea = (
                 horizontal: contentInset.left + contentSize.width + contentInset.right,
                 vertical: contentInset.top + contentSize.height + contentInset.bottom
@@ -34,9 +36,26 @@ internal extension UIScrollView {
                 vertical: (contentInset.top + contentOffset.y) / (totalContentArea.vertical - bounds.height)
             )
 
+            let bothIndicatorsShowing = shouldLayoutHorizontalScrollIndicator && shouldLayoutVerticalScrollIndicator
+
+            let additionalSpacingToPreventOverlap = (
+                horizontal: bothIndicatorsShowing ? 2*indicatorDistanceFromScrollViewFrame : 0,
+                vertical: bothIndicatorsShowing ? indicatorDistanceFromScrollViewFrame : 0
+            )
+
+            let totalSpacingFromFrame = (
+                horizontal: 2*indicatorDistanceFromScrollViewFrame + additionalSpacingToPreventOverlap.horizontal,
+                vertical: 2*indicatorDistanceFromScrollViewFrame + additionalSpacingToPreventOverlap.vertical
+            )
+
+            let lengthOfAvailableSpaceForIndicators = (
+                horizontal: bounds.size.width - indicatorLengths.horizontal - totalSpacingFromFrame.horizontal,
+                vertical: bounds.size.height - indicatorLengths.vertical - totalSpacingFromFrame.vertical
+            )
+
             let indicatorOffsetInBounds = (
-                horizontal: scrollViewProgress.horizontal * (bounds.size.width - indicatorLengths.horizontal - 2*UIScrollView.indicatorDistanceFromScrollViewFrame),
-                vertical: scrollViewProgress.vertical * (bounds.size.height - indicatorLengths.vertical - 2*UIScrollView.indicatorDistanceFromScrollViewFrame)
+                horizontal: scrollViewProgress.horizontal * lengthOfAvailableSpaceForIndicators.horizontal,
+                vertical: scrollViewProgress.vertical * lengthOfAvailableSpaceForIndicators.vertical
             )
 
             return (
