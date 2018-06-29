@@ -15,7 +15,7 @@ internal extension UIScrollView {
 
     internal var indicatorLengths: (horizontal: CGFloat, vertical: CGFloat) {
         // TODO: restrict possible values with a minimum length
-        // (this is how iOS does it, but it might require deeper changes than just here)
+        // (this is how iOS does it, but it might require deeper changes)
         get {
             return (horizontal: (bounds.width / contentSize.width) * bounds.width,
                     vertical: (bounds.height / contentSize.height) * bounds.height)
@@ -61,7 +61,7 @@ internal extension UIScrollView {
 
         if shouldLayoutHorizontalScrollIndicator {
             horizontalScrollIndicator.frame = CGRect(
-                x: indicatorOffsetsInContentSpace.horizontal,
+                x: indicatorDistanceFromScrollViewFrame + indicatorOffsetsInContentSpace.horizontal,
                 y: bounds.height - (2*indicatorThickness),
                 width: indicatorLengths.horizontal,
                 height: indicatorThickness
@@ -71,7 +71,7 @@ internal extension UIScrollView {
         if shouldLayoutVerticalScrollIndicator { // |
             verticalScrollIndicator.frame = CGRect(
                 x: bounds.width - (2*indicatorThickness),
-                y: indicatorOffsetsInContentSpace.vertical,
+                y: indicatorDistanceFromScrollViewFrame + indicatorOffsetsInContentSpace.vertical,
                 width: indicatorThickness,
                 height: indicatorLengths.vertical
             )
