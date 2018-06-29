@@ -61,15 +61,15 @@ open class UIScrollView: UIView {
     }
 
 
-    var initialScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
-    lazy var totalScrollIndicatorInsets = initialScrollIndicatorInsets
+    var baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
+    lazy var totalScrollIndicatorInsets = baseScrollIndicatorInsets
 
     public var scrollIndicatorInsets = UIEdgeInsets.zero  {
         didSet (additionalScrollIndicatorInsets) {
-            totalScrollIndicatorInsets = UIEdgeInsets(top: initialScrollIndicatorInsets.top + additionalScrollIndicatorInsets.top,
-                                                      left: initialScrollIndicatorInsets.left + additionalScrollIndicatorInsets.left,
-                                                      bottom: initialScrollIndicatorInsets.bottom + additionalScrollIndicatorInsets.bottom,
-                                                      right: initialScrollIndicatorInsets.right + additionalScrollIndicatorInsets.right)
+            totalScrollIndicatorInsets = UIEdgeInsets(top: baseScrollIndicatorInsets.top + additionalScrollIndicatorInsets.top,
+                                                      left: baseScrollIndicatorInsets.left + additionalScrollIndicatorInsets.left,
+                                                      bottom: baseScrollIndicatorInsets.bottom + additionalScrollIndicatorInsets.bottom,
+                                                      right: baseScrollIndicatorInsets.right + additionalScrollIndicatorInsets.right)
             layoutScrollIndicatorsIfNeeded()
         }
     }
@@ -85,7 +85,7 @@ open class UIScrollView: UIView {
         clipsToBounds = true
 
         if shouldLayoutVerticalScrollIndicator && shouldLayoutHorizontalScrollIndicator {
-            initialScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 6.5, right: 8.5)
+            baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 6.5, right: 8.5)
         }
 
         applyScrollIndicatorsStyle()
