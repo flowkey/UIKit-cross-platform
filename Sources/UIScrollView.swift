@@ -61,8 +61,8 @@ open class UIScrollView: UIView {
     }
 
 
-    var baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
-    lazy var totalScrollIndicatorInsets = baseScrollIndicatorInsets
+    private var baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
+    private lazy var totalScrollIndicatorInsets = baseScrollIndicatorInsets
 
     public var scrollIndicatorInsets = UIEdgeInsets.zero  {
         didSet (additionalScrollIndicatorInsets) {
