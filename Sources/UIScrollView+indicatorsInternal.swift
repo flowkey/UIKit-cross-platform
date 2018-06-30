@@ -76,27 +76,29 @@ internal extension UIScrollView {
     internal func layoutScrollIndicatorsIfNeeded() {
         guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
 
-        let indicatorDistanceFromScrollViewFrame = UIScrollView.indicatorDistanceFromScrollViewFrame
+        let distanceFromFrame = (
+            horizontal: (2*indicatorThickness) + scrollIndicatorInsets.bottom,
+            vertical: (2*indicatorThickness) + scrollIndicatorInsets.right
+        )
+
 
         if shouldLayoutHorizontalScrollIndicator {
             horizontalScrollIndicator.frame = CGRect(
                 x: scrollIndicatorInsets.left + indicatorOffsetsInContentSpace.horizontal,
-                y: bounds.height - (2*indicatorThickness) + contentOffset.y,
+                y: bounds.size.height + contentOffset.y - distanceFromFrame.horizontal,
                 width: indicatorLengths.horizontal,
                 height: indicatorThickness
             )
         }
 
-        if shouldLayoutVerticalScrollIndicator { // |
+        if shouldLayoutVerticalScrollIndicator {
             verticalScrollIndicator.frame = CGRect(
-                x: bounds.width - (2*indicatorThickness) + contentOffset.x,
+                x: bounds.size.width + contentOffset.x - distanceFromFrame.vertical,
                 y: scrollIndicatorInsets.top + indicatorOffsetsInContentSpace.vertical,
                 width: indicatorThickness,
                 height: indicatorLengths.vertical
             )
         }
-
-        
     }
 
     // On iOS this seems to occur with no animation at all:
