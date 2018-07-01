@@ -10,12 +10,10 @@
 // You can't override methods that were defined in an extension.
 
 internal extension UIScrollView {
-
     internal static let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5
 
     internal var indicatorLengths: (horizontal: CGFloat, vertical: CGFloat) {
-        // TODO: restrict possible values with a minimum length
-        // (this is how iOS does it, but it might require deeper changes)
+        // XXX: restrict possible values with a minimum of ~30 (like iOS does it)
         get {
             return (horizontal: (bounds.width / contentSize.width) * bounds.width,
                     vertical: (bounds.height / contentSize.height) * bounds.height)
@@ -43,14 +41,14 @@ internal extension UIScrollView {
                 vertical: bothIndicatorsShowing ? indicatorDistanceFromScrollViewFrame : 0
             )
 
-            let totalSpacingFromFrame = (
+            let totalSpacingFromFrameSides = (
                 horizontal: scrollIndicatorInsets.left + scrollIndicatorInsets.right + additionalSpacingToPreventOverlap.horizontal,
                 vertical: scrollIndicatorInsets.bottom + scrollIndicatorInsets.top + additionalSpacingToPreventOverlap.vertical
             )
 
             let lengthOfAvailableSpaceForIndicators = (
-                horizontal: bounds.size.width - (indicatorLengths.horizontal + totalSpacingFromFrame.horizontal),
-                vertical: bounds.size.height - (indicatorLengths.vertical + totalSpacingFromFrame.vertical)
+                horizontal: bounds.size.width - (indicatorLengths.horizontal + totalSpacingFromFrameSides.horizontal),
+                vertical: bounds.size.height - (indicatorLengths.vertical + totalSpacingFromFrameSides.vertical)
             )
 
             let indicatorOffsetInBounds = (
@@ -75,16 +73,15 @@ internal extension UIScrollView {
 
     internal func layoutScrollIndicatorsIfNeeded() {
         guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
-
+        
         let distanceFromFrame = (
-            horizontal: (2*indicatorThickness) + scrollIndicatorInsets.bottom,
-            vertical: (2*indicatorThickness) + scrollIndicatorInsets.right
+            horizontal: indicatorThickness + scrollIndicatorInsets.bottom,
+            vertical: indicatorThickness + scrollIndicatorInsets.right
         )
-
 
         if shouldLayoutHorizontalScrollIndicator {
             horizontalScrollIndicator.frame = CGRect(
-                x: scrollIndicatorInsets.left + indicatorOffsetsInContentSpace.horizontal,
+                x: scrollIndicatorInsets.left + indicatorOffsetsInContentSpace.horizontal, //scrolling direction
                 y: bounds.size.height + contentOffset.y - distanceFromFrame.horizontal,
                 width: indicatorLengths.horizontal,
                 height: indicatorThickness
