@@ -56,25 +56,6 @@ open class UIScrollView: UIView {
         )
     }
 
-    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
-        didSet { applyScrollIndicatorsStyle() }
-    }
-
-
-    private var baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
-    private lazy var totalScrollIndicatorInsets = baseScrollIndicatorInsets
-
-    public var scrollIndicatorInsets = UIEdgeInsets.zero  {
-        didSet (additionalScrollIndicatorInsets) {
-            totalScrollIndicatorInsets = UIEdgeInsets(top: baseScrollIndicatorInsets.top + additionalScrollIndicatorInsets.top,
-                                                      left: baseScrollIndicatorInsets.left + additionalScrollIndicatorInsets.left,
-                                                      bottom: baseScrollIndicatorInsets.bottom + additionalScrollIndicatorInsets.bottom,
-                                                      right: baseScrollIndicatorInsets.right + additionalScrollIndicatorInsets.right)
-            layoutScrollIndicatorsIfNeeded()
-        }
-    }
-
-
     var weightedAverageVelocity: CGPoint = .zero
 
     override public init(frame: CGRect) {
@@ -84,9 +65,7 @@ open class UIScrollView: UIView {
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
 
-        if shouldLayoutVerticalScrollIndicator && shouldLayoutHorizontalScrollIndicator {
-            baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 6.5, right: 8.5)
-        }
+
 
         applyScrollIndicatorsStyle()
         [horizontalScrollIndicator, verticalScrollIndicator].forEach {
@@ -136,11 +115,36 @@ open class UIScrollView: UIView {
 
     open var contentInset: UIEdgeInsets = .zero
     open var contentSize: CGSize = .zero
-
+    
+    public protocol UIScrollViewDelegate: class {
+        func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
+        func scrollViewDidScroll(_ scrollView: UIScrollView)
+        func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)
+    }
 
     // MARK: Scroll Indicators
 
     let indicatorThickness: CGFloat = 2.5
+    
+    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
+        didSet { applyScrollIndicatorsStyle() }
+    }
+    
+    private var customScrollIndicatorInsets = UIEdgeInsets.zero
+    private let baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
+    
+    public var scrollIndicatorInsets: UIEdgeInsets {
+        get {
+            let totalScrollIndicatorInsets = UIEdgeInsets(top: baseScrollIndicatorInsets.top + customScrollIndicatorInsets.top,
+                                                          left: baseScrollIndicatorInsets.left + customScrollIndicatorInsets.left,
+                                                          bottom: baseScrollIndicatorInsets.bottom + customScrollIndicatorInsets.bottom,
+                                                          right: baseScrollIndicatorInsets.right + customScrollIndicatorInsets.right)
+            return totalScrollIndicatorInsets
+        }
+        set (newValue) {
+            customScrollIndicatorInsets = newValue
+        }
+    }
 
     private func applyScrollIndicatorsStyle() {
         for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
@@ -156,12 +160,6 @@ open class UIScrollView: UIView {
         showScrollIndicators()
         hideScrollIndicators()
     }
-}
-
-public protocol UIScrollViewDelegate: class {
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
-    func scrollViewDidScroll(_ scrollView: UIScrollView)
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)
 }
 
 public enum UIScrollViewIndicatorStyle {
