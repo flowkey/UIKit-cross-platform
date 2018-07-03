@@ -11,6 +11,7 @@ import JNI
 public class AVPlayer: JNIObject {
     public var onReady: (() -> Void)?
     public var onVideoEnded: (() -> Void)?
+    public var onError: (() -> Void)?
 
     public convenience init(playerItem: AVPlayerItem) {
         let parentView = JavaSDLView(getSDLView())
@@ -64,6 +65,12 @@ public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObjec
 @_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoEnded")
 public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onVideoEnded?()
+}
+
+@_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoSourceError")
+public func nativeOnVideoSourceError(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
+    globalAVPlayer?.onError?()
+    globalAVPlayer?.onError = nil
 }
 
 extension AVPlayer: JavaParameterConvertible {
