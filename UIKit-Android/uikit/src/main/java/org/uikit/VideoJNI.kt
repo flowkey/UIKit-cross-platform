@@ -85,6 +85,7 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
             override fun onPlayerError(error: ExoPlaybackException?) {
                 if (error?.type == ExoPlaybackException.TYPE_SOURCE) {
                     nativeOnVideoSourceError()
+                    Log.e("SDL", "ExoPlaybackException occurred")
                 }
             }
 
