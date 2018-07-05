@@ -115,12 +115,6 @@ open class UIScrollView: UIView {
 
     open var contentInset: UIEdgeInsets = .zero
     open var contentSize: CGSize = .zero
-    
-    public protocol UIScrollViewDelegate: class {
-        func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
-        func scrollViewDidScroll(_ scrollView: UIScrollView)
-        func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)
-    }
 
     // MARK: Scroll Indicators
 
@@ -160,6 +154,12 @@ open class UIScrollView: UIView {
         showScrollIndicators()
         hideScrollIndicators()
     }
+}
+
+public protocol UIScrollViewDelegate: class {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
+    func scrollViewDidScroll(_ scrollView: UIScrollView)
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)
 }
 
 public enum UIScrollViewIndicatorStyle {
