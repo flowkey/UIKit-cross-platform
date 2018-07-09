@@ -1,5 +1,6 @@
 package org.libsdl.app
 
+import android.app.Activity
 import java.lang.reflect.Method
 
 import android.view.*
@@ -278,8 +279,11 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
             return
         }
 
-        mWidth = Math.max(width, height).toFloat()
-        mHeight = Math.min(width, height).toFloat()
+        val max = Math.max(width, height).toFloat()
+        val min = Math.min(width, height).toFloat()
+
+        mWidth = if (isLandscape) max else min
+        mHeight = if (isLandscape) min else max
 
         this.onNativeResize(mWidth.toInt(), mHeight.toInt(), sdlFormat, display.refreshRate)
         Log.v(TAG, "Window size: " + mWidth + "x" + mHeight)
@@ -323,4 +327,16 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
             layout(left, top, right, bottom)
         }
     }
+
+    val isLandscape: Boolean
+        get() {
+            val landscapeOrientations = arrayOf(
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
+                    ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE,
+                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
+                    ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
+            )
+            val activity = context as Activity
+            return landscapeOrientations.contains(activity.requestedOrientation)
+        }
 }
