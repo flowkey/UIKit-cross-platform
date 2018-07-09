@@ -51,7 +51,6 @@ public class AVPlayer: JNIObject {
     }
 
     public struct DataSourceError: Error {}
-
 }
 
 private weak var globalAVPlayer: AVPlayer?
