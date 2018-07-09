@@ -58,7 +58,7 @@ private weak var globalAVPlayer: AVPlayer?
 @_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoReady")
 public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onLoaded?(nil)
-    globalAVPlayer?.onReady = nil
+    globalAVPlayer?.onLoaded = nil
 }
 
 @_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoEnded")
@@ -68,8 +68,8 @@ public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObjec
 
 @_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoSourceError")
 public func nativeOnVideoSourceError(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onError?(AVPlayer.DataSourceError())
-    globalAVPlayer?.onError = nil
+    globalAVPlayer?.onLoaded?(AVPlayer.DataSourceError())
+    globalAVPlayer?.onLoaded = nil
 }
 
 extension AVPlayer: JavaParameterConvertible {
