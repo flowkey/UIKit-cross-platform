@@ -5,7 +5,6 @@ import android.util.Log
 import android.widget.RelativeLayout
 import android.content.Context
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
@@ -17,7 +16,6 @@ import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
 import org.libsdl.app.SDLActivity
 import kotlin.math.absoluteValue
-import kotlin.math.roundToLong
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSink
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
@@ -55,6 +53,7 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
 
     external fun nativeOnVideoReady()
     external fun nativeOnVideoEnded()
+    external fun nativeOnVideoSourceError()
 
     init {
         val bandwidthMeter = DefaultBandwidthMeter()
@@ -83,6 +82,13 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
                 }
             }
 
+            override fun onPlayerError(error: ExoPlaybackException?) {
+                if (error?.type == ExoPlaybackException.TYPE_SOURCE) {
+                    nativeOnVideoSourceError()
+                    Log.e("SDL", "ExoPlaybackException occurred")
+                }
+            }
+
             // not used but necessary to implement EventListener interface:
             override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {}
@@ -91,7 +97,6 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
             override fun onPositionDiscontinuity(reason: Int) {}
             override fun onRepeatModeChanged(repeatMode: Int) {}
             override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {}
-            override fun onPlayerError(error: ExoPlaybackException?) {}
         }
 
         exoPlayer.addListener(listener)
