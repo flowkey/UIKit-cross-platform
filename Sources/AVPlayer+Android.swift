@@ -9,9 +9,8 @@
 import JNI
 
 public class AVPlayer: JNIObject {
-    public var onReady: (() -> Void)?
+    public var onLoaded: ((Error?) -> Void)?
     public var onVideoEnded: (() -> Void)?
-    public var onError: (() -> Void)?
 
     public convenience init(playerItem: AVPlayerItem) {
         let parentView = JavaSDLView(getSDLView())
@@ -50,15 +49,16 @@ public class AVPlayer: JNIObject {
     deinit {
         try? call(methodName: "cleanup")
     }
+
+    public struct DataSourceError: Error {}
+
 }
-
-
 
 private weak var globalAVPlayer: AVPlayer?
 
 @_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoReady")
 public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onReady?()
+    globalAVPlayer?.onLoaded?(nil)
     globalAVPlayer?.onReady = nil
 }
 
@@ -69,7 +69,7 @@ public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObjec
 
 @_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoSourceError")
 public func nativeOnVideoSourceError(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onError?()
+    globalAVPlayer?.onError?(AVPlayer.DataSourceError())
     globalAVPlayer?.onError = nil
 }
 
