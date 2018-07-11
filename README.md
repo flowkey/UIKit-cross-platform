@@ -30,7 +30,9 @@ This framework uses the [Apple UIKit](https://developer.apple.com/documentation/
 
 ## Feature Coverage
 
-refer to FEATURE_COVERAGE.md here
+This framework currently covers ~40% of the Apple UIKit API.
+
+[FEATURE_COVERAGE.md](docs/FEATURE_COVERAGE.md) provides more details about which features are currently covered and how to request new features.
 
 ## How to contribute
 
