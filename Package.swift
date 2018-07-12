@@ -77,7 +77,7 @@ let package = Package(
                 "VideoPlayer+Mac.swift",
                 "AVPlayerItem+Mac.swift",
                 "AVPlayerLayer+Mac.swift",
-                "UIApplication+Mac.swift"
+                "UIApplicationMain+Mac.swift"
             ]
         ),
         .target(
