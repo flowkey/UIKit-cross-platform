@@ -79,16 +79,6 @@ let package = Package(
                 "AVPlayerLayer+Mac.swift",
                 "UIApplicationMain+Mac.swift"
             ]
-        ),
-        .target(
-            name: "CJNI",
-            dependencies: [],
-            path: "swift-jni/Sources/CJNI"
-        ),
-        .target(
-            name: "JNI",
-            dependencies: ["CJNI"],
-            path: "swift-jni/Sources/JNI"
-        ),
+        )
     ]
 )
