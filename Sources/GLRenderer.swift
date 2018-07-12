@@ -162,7 +162,7 @@ internal final class GLRenderer {
 
         // get and destroy existing GLRenderer because only one SDL_Window can exist on Android at the same time
         guard let gpuContext = self.rawPointer.pointee.context else {
-            //assertionFailure("glRenderer gpuContext not found")
+            assertionFailure("glRenderer gpuContext not found")
             return
         }
 
