@@ -12,19 +12,22 @@ import CJNI
 @_silgen_name("SDL_Android_Init")
 public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
 
+public var uiApplicationClass: UIApplication.Type?
+public var uiApplicationDelegateClass: UIApplicationDelegate.Type?
+
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeInit")
 public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
     SDLAndroidInit(env, view)
     SDL_SetMainReady()
-    if !SDL.isInitialized {
-        SDL.initialize()
-    } else {
-        print("[nativeInit] SDL is already initialized, skipping SDL.initialize()")
+
+    if UIApplication.shared != nil {
+        return 0 // already inited
     }
-    return 0
+
+    return JavaInt(UIApplicationMain(uiApplicationClass, uiApplicationDelegateClass))
 }
 
 @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeDeinit")
 public func nativeDeinit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
-    SDL.deinitialize()
+    UIApplication.shared = nil
 }

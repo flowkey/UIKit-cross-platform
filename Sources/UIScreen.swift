@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public class UIScreen {
+public final class UIScreen {
     public let bounds: CGRect
     public let scale: CGFloat
 
@@ -20,17 +20,17 @@ public extension UIScreen {
     public static let main: UIScreen = {
         #if !DEBUG
         // Crash in production when accessing this without a glRenderer.
-        if SDL.glRenderer == nil {
-            preconditionFailure("Tried to get UIScreen.main dimensions, but no glRenderer exists")
+        if UIApplication.shared == nil {
+            preconditionFailure("Tried to get UIScreen.main dimensions before calling `UIApplicationMain`!")
         }
         #endif
 
         // Otherwise a fallback value e.g. in XCTests, so we don't need to initialize all of SDL:
-        let size = SDL.glRenderer?.size ?? CGSize(width: 1024, height: 768)
+        let size = UIApplication.shared?.glRenderer.size ?? CGSize(width: 1024, height: 768)
 
         return UIScreen(
             bounds: CGRect(origin: .zero, size: size),
-            scale: SDL.glRenderer?.scale ?? 2.0
+            scale: UIApplication.shared?.glRenderer.scale ?? 2.0
         )
     }()
 }

@@ -9,8 +9,9 @@
 import SDL
 import struct Foundation.TimeInterval
 
-extension SDL {
-    static func handleEventsIfNeeded() {
+extension UIApplication {
+    func handleEventsIfNeeded() {
+        guard let window = keyWindow else { return print("Tried to handle events but there was no window") }
         var e = SDL_Event()
 
         while SDL_PollEvent(&e) == 1 {
@@ -56,12 +57,12 @@ extension SDL {
                     switch e.key.keysym.sym {
                     case 43: // plus/multiply key
                         fallthrough
-                    case 61: // plus/equals key
-                        SDL.onPressPlus?()
-                    case 45: // minus/dash key
-                        SDL.onPressMinus?()
+                    case 61: break // plus/equals key
+//                        SDL.onPressPlus?()
+                    case 45: break // minus/dash key
+//                        SDL.onPressMinus?()
                     case 118: // "V"
-                        SDL.rootView.printViewHierarchy()
+                        keyWindow?.printViewHierarchy()
                     default:
                         print(e.key.keysym.sym)
                         break
@@ -70,7 +71,7 @@ extension SDL {
 
                 if keyModifier.contains(KMOD_LGUI) || keyModifier.contains(KMOD_RGUI) {
                     if e.key.keysym.sym == 114 { // CMD-R
-                        SDL.initialize()
+                        UIApplication.restart()
                     }
                 }
                 #endif
@@ -80,7 +81,7 @@ extension SDL {
                     // If not handled already:
                     if window.deepestPresentedView().handleHardwareBackButtonPress() == false {
                         // This emulates the behaviour that UIApplication (which is what `SDL` should be) is actually the last responder in the responder chain.
-                        SDL.onHardwareBackButtonPress?()
+                        delegate?.onHardwareBackButtonPress?()
                     }
                 }
             default:
@@ -93,15 +94,6 @@ extension SDL {
 extension SDL_Scancode {
     static let escapeKey = SDL_Scancode(rawValue: 41)
     static let androidHardwareBackButton = SDL_Scancode(rawValue: 270)
-}
-
-extension SDL {
-    public static var onHardwareBackButtonPress: (() -> Void)?
-
-    #if DEBUG
-    public static var onPressPlus: (() -> Void)?
-    public static var onPressMinus: (() -> Void)?
-    #endif
 }
 
 extension SDL_Keymod: OptionSet {}
