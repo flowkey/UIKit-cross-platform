@@ -421,7 +421,6 @@
 		8337A8121F39F37500475F80 /* UIScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIScreen.swift; path = Sources/UIScreen.swift; sourceTree = SOURCE_ROOT; };
 		8337A8581F3B143400475F80 /* UIActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIActivityIndicatorView.swift; path = Sources/UIActivityIndicatorView.swift; sourceTree = SOURCE_ROOT; };
 		833860AC1F0D55B3004DD55E /* iOSTestTarget.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTestTarget.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		833860B01F0D55B3004DD55E /* iOSTestTarget-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "iOSTestTarget-Info.plist"; path = "../UIKitTests/iOSTestTarget-Info.plist"; sourceTree = "<group>"; };
 		834C94961F6BDE6200F5B40F /* ButtonLayoutingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonLayoutingTests.swift; sourceTree = "<group>"; };
 		8356933B1F8CF6C500C6D253 /* androidNativeInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = androidNativeInit.swift; sourceTree = "<group>"; };
 		8373358F1F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSetTitleColorForStateTests.swift; sourceTree = "<group>"; };
@@ -552,7 +551,6 @@
 				5CFFF87F201632FC00D989BC /* SDL-gpu.xcodeproj */,
 				5CFFF85B2016328200D989BC /* SDL.xcodeproj */,
 				5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */,
-				833860AD1F0D55B3004DD55E /* iOSTestTarget */,
 				5C27E7D11ECB2F9100F5020D /* Frameworks */,
 				5C27E7AF1ECB2F6500F5020D /* Products */,
 				5C27E7F51ECB301900F5020D /* SDL */,
@@ -798,14 +796,6 @@
 				83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */,
 			);
 			name = Video;
-			sourceTree = "<group>";
-		};
-		833860AD1F0D55B3004DD55E /* iOSTestTarget */ = {
-			isa = PBXGroup;
-			children = (
-				833860B01F0D55B3004DD55E /* iOSTestTarget-Info.plist */,
-			);
-			path = iOSTestTarget;
 			sourceTree = "<group>";
 		};
 		8356932D1F8CD2C000C6D253 /* Products */ = {
