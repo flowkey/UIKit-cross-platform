@@ -125,7 +125,6 @@
 		5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */; };
 		5CFFFA172017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
 		5CFFFA182017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
-		5CFFFA1D2017540200D989BC /* UIKit-Mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 5CFFFA1C2017540200D989BC /* UIKit-Mac.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8318D27B1F0695080029816A /* UIControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D27A1F0695080029816A /* UIControl.swift */; };
 		8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323F27F1F2FA2EE00C121BB /* TestSetup.swift */; };
 		8323F2821F2FA42A00C121BB /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323F27F1F2FA2EE00C121BB /* TestSetup.swift */; };
@@ -316,7 +315,7 @@
 		5C1F06AE1F3210F200EFF087 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewController.swift; path = Sources/UIViewController.swift; sourceTree = SOURCE_ROOT; };
 		5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SDL+JNIExtensions.swift"; sourceTree = "<group>"; };
 		5C27E7AE1ECB2F6500F5020D /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C27E7B21ECB2F6500F5020D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5C27E7B21ECB2F6500F5020D /* Mac-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Mac-Info.plist"; path = "../Sources/Mac-Info.plist"; sourceTree = "<group>"; };
 		5C27E7B71ECB2F6500F5020D /* UIKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UIKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C27E7BE1ECB2F6500F5020D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5C27E7D21ECB2F9100F5020D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -406,7 +405,6 @@
 		5CFFF87F201632FC00D989BC /* SDL-gpu.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "SDL-gpu.xcodeproj"; path = "SDL/SDL-gpu.xcodeproj"; sourceTree = "<group>"; };
 		5CFFF97C20163AF900D989BC /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = SDL/SDL_ttf.xcodeproj; sourceTree = "<group>"; };
 		5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+subviews.swift"; sourceTree = "<group>"; };
-		5CFFFA1C2017540200D989BC /* UIKit-Mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIKit-Mac.h"; sourceTree = "<group>"; };
 		83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VideoTexture+Mac.swift"; sourceTree = "<group>"; };
 		8318D27A1F0695080029816A /* UIControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIControl.swift; path = ../Sources/UIControl.swift; sourceTree = "<group>"; };
 		8323F27F1F2FA2EE00C121BB /* TestSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSetup.swift; sourceTree = "<group>"; };
@@ -417,7 +415,7 @@
 		8337A8121F39F37500475F80 /* UIScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIScreen.swift; path = Sources/UIScreen.swift; sourceTree = SOURCE_ROOT; };
 		8337A8581F3B143400475F80 /* UIActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIActivityIndicatorView.swift; path = Sources/UIActivityIndicatorView.swift; sourceTree = SOURCE_ROOT; };
 		833860AC1F0D55B3004DD55E /* iOSTestTarget.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTestTarget.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		833860B01F0D55B3004DD55E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		833860B01F0D55B3004DD55E /* iOSTestTarget-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "iOSTestTarget-Info.plist"; path = "../UIKitTests/iOSTestTarget-Info.plist"; sourceTree = "<group>"; };
 		834C94961F6BDE6200F5B40F /* ButtonLayoutingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonLayoutingTests.swift; sourceTree = "<group>"; };
 		8356933B1F8CF6C500C6D253 /* androidNativeInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = androidNativeInit.swift; sourceTree = "<group>"; };
 		8373358F1F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSetTitleColorForStateTests.swift; sourceTree = "<group>"; };
@@ -675,8 +673,7 @@
 		5C27E7E61ECB2FE000F5020D /* zSupporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				5CFFFA1C2017540200D989BC /* UIKit-Mac.h */,
-				5C27E7B21ECB2F6500F5020D /* Info.plist */,
+				5C27E7B21ECB2F6500F5020D /* Mac-Info.plist */,
 			);
 			name = "zSupporting Files";
 			path = UIKit;
@@ -724,7 +721,8 @@
 				5C664CD71FA0E640008F41D6 /* ShaderProgram.swift */,
 				5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */,
 			);
-			path = Shaders;
+			name = Shaders;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		5C93AE842088F7FA005BE853 /* UIViewController */ = {
@@ -796,7 +794,7 @@
 		833860AD1F0D55B3004DD55E /* iOSTestTarget */ = {
 			isa = PBXGroup;
 			children = (
-				833860B01F0D55B3004DD55E /* Info.plist */,
+				833860B01F0D55B3004DD55E /* iOSTestTarget-Info.plist */,
 			);
 			path = iOSTestTarget;
 			sourceTree = "<group>";
@@ -866,7 +864,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5CFFFA1D2017540200D989BC /* UIKit-Mac.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1421,7 +1418,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = UIKit/Info.plist;
+				INFOPLIST_FILE = "Sources/Mac-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/UIKit";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -1443,7 +1440,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = UIKit/Info.plist;
+				INFOPLIST_FILE = "Sources/Mac-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/UIKit";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -1504,7 +1501,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = FTSYMMN5B5;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = iOSTestTarget/Info.plist;
+				INFOPLIST_FILE = "UIKitTests/iOSTestTarget-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.christianhaug.iOSTestTarget;
@@ -1524,7 +1521,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = FTSYMMN5B5;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = iOSTestTarget/Info.plist;
+				INFOPLIST_FILE = "UIKitTests/iOSTestTarget-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.christianhaug.iOSTestTarget;

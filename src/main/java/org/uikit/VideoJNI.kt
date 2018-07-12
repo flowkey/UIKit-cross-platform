@@ -5,7 +5,6 @@ import android.util.Log
 import android.widget.RelativeLayout
 import android.content.Context
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
@@ -17,7 +16,6 @@ import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
 import org.libsdl.app.SDLActivity
 import kotlin.math.absoluteValue
-import kotlin.math.roundToLong
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSink
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
@@ -43,9 +41,6 @@ class AVPlayerItem(parent: SDLActivity, url: String) {
                         .Factory(cacheDataSourceFactory)
                         .createMediaSource(videoSourceUri)
     }
-
-    var durationInMs: Long = 0
-        internal set
 }
 
 @Suppress("unused")
@@ -67,7 +62,6 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
         listener = object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 if (playbackState == Player.STATE_READY) {
-                    playerItem.durationInMs = exoPlayer.duration
                     nativeOnVideoReady()
                 }
 
