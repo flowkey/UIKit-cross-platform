@@ -17,7 +17,7 @@ public final class UIScreen {
 }
 
 public extension UIScreen {
-    public static let main: UIScreen = {
+    public static var main: UIScreen {
         #if !DEBUG
         // Crash in production when accessing this without a glRenderer.
         if UIApplication.shared == nil {
@@ -32,5 +32,5 @@ public extension UIScreen {
             bounds: CGRect(origin: .zero, size: size),
             scale: UIApplication.shared?.glRenderer.scale ?? 2.0
         )
-    }()
+    }
 }

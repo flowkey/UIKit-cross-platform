@@ -9,7 +9,6 @@ open class UIKitActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(android.R.style.Theme_Black_NoTitleBar_Fullscreen)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 
         super.onCreate(savedInstanceState)
         val view = UIKitView(this)
