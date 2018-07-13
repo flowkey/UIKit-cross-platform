@@ -65,12 +65,26 @@ open class UIScrollView: UIView {
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
 
-
-
         applyScrollIndicatorsStyle()
         [horizontalScrollIndicator, verticalScrollIndicator].forEach {
             $0.alpha = 0
             addSubview($0)
+        }
+    }
+    
+    open override func addSubview(_ view: UIView) {
+        if view == horizontalScrollIndicator || view == verticalScrollIndicator {
+            super.addSubview(view)
+        } else {
+            super.insertSubview(view, at: subviews.count - 2)
+        }
+    }
+    
+    open override func insertSubview(_ view: UIView, at index: Int) {
+        if index > subviews.count - 2 {
+            super.insertSubview(view, at: subviews.count - 2)
+        } else {
+            super.insertSubview(view, at: index)
         }
     }
 
