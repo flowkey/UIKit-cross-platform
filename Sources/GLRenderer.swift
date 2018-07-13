@@ -235,22 +235,18 @@ private extension CGSize {
     
      // change orientation if needed
     var landscape: CGSize {
-        get {
-            if self.width >= self.height {
-                return self
-            } else {
-                return CGSize(width: self.height, height: self.width)
-            }
+        if self.width >= self.height {
+            return self
+        } else {
+            return CGSize(width: self.height, height: self.width)
         }
     }
     
     var portrait: CGSize {
-        get {
-            if self.width <= self.height {
-                return self
-            } else {
-                return CGSize(width: self.height, height: self.width)
-            }
+        if self.width <= self.height {
+            return self
+        } else {
+            return CGSize(width: self.height, height: self.width)
         }
     }
 }
