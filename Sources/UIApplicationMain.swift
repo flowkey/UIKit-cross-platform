@@ -14,7 +14,11 @@ public func UIApplicationMain(_ argc: Int32, _ argv: UnsafeMutablePointer<Unsafe
     let delegateClass: UIApplicationDelegate.Type? = classFromString(delegateClassName)
 
     #if os(macOS)
+    // On Mac (like on iOS), the main thread blocks here via RunLoop.current.run().
     defer { setupRenderAndRunLoop() }
+    #else
+    // Android is handled differently: we don't want to block the main thread because the system needs it.
+    // Instead, we call render periodically from Kotlin via the Android Choreographer API (see UIApplication)
     #endif
 
     return UIApplicationMain(applicationClass, delegateClass)
@@ -33,12 +37,11 @@ internal func UIApplicationMain(
     UIApplication.shared = (applicationClass ?? UIApplication.self).init()
 
     guard let appDelegate = applicationDelegateClass?.init() else {
-        // There was no app delegate specified, just make a default window and return
-        let window = UIWindow(frame: CGRect(origin: .zero, size: UIScreen.main.bounds.size))
-        window.rootViewController = UIViewController(nibName: nil, bundle: nil)
-        window.makeKeyAndVisible()
-        UIApplication.shared.keyWindow = window
-        return 0
+        // iOS doesn't create a window by default either
+        // What it does do is load the main storyboard if one is specified, but we can't do that (yet?)
+        assertionFailure(
+            "There was no AppDelegate class specified. Please provide one using the last parameter of UIApplicationMain, e.g. `UIApplicationMain(0, nil, nil, NSStringFromClass(AppDelegate.self))`")
+        return 1
     }
 
     UIApplication.shared.delegate = appDelegate

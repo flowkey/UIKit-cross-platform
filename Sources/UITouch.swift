@@ -16,11 +16,10 @@ public class UITouch {
         touchId = 0
     }
 
-    internal init(touchId: Int, at point: CGPoint, in window: UIWindow, timestamp: TimeInterval) {
+    internal init(touchId: Int, at point: CGPoint, timestamp: TimeInterval) {
         absoluteLocation = point
         previousAbsoluteLocation = point
         self.touchId = touchId
-        self.window = window
         self.timestamp = timestamp
     }
 

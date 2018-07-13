@@ -20,6 +20,7 @@ public protocol UIApplicationDelegate: class {
 
     func applicationWillTerminate(_ application: UIApplication)
 
+    // NOTE: THE FOLLOWING ARE NOT YET IMPLEMENTED!
     func applicationDidEnterBackground(_ application: UIApplication)
     func applicationWillEnterForeground(_ application: UIApplication)
 

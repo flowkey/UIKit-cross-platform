@@ -14,13 +14,14 @@ open class UIApplication {
     open internal(set) var delegate: UIApplicationDelegate?
     open var isIdleTimerDisabled = false
 
-    // TODO: use this for event handling instead of the custom SDL code we have now
-    open func sendEvent(_ event: UIEvent) {}
+    open func sendEvent(_ event: UIEvent) {
+        event.allTouches?.forEach { touch in touch.window = keyWindow }
+        keyWindow?.sendEvent(event)
+    }
 
     open var keyWindow: UIWindow? {
         didSet { keyWindow?.frame = UIScreen.main.bounds }
     }
-    open var windows: [UIWindow] = []
 
     /// Currently not implemented but could be useful for Android
     open var statusBarStyle = UIStatusBarStyle.`default`
@@ -35,7 +36,6 @@ open class UIApplication {
         UIFont.loadSystemFonts()
     }
 
-    fileprivate var shouldQuit = false
     internal var glRenderer = GLRenderer()
 
     deinit {
@@ -54,8 +54,8 @@ import CoreFoundation
 
 extension UIApplication {
     func handleSDLQuit() {
-        print("SDL_QUIT was called")
-        shouldQuit = true
+        delegate?.applicationWillTerminate(self)
+        keyWindow = nil
         #if os(Android)
         try? jni.call("removeCallbacks", on: getSDLView())
         #elseif os(macOS)
@@ -65,8 +65,8 @@ extension UIApplication {
 
     func render(atTime frameTimer: Timer) {
         handleEventsIfNeeded()
-        guard !shouldQuit, let keyWindow = keyWindow else {
-            print("Not rendering because `keyWindow` was `nil` or `shouldQuit == true`")
+        guard let keyWindow = keyWindow else {
+            print("Not rendering because `keyWindow` was `nil`")
             return
         }
 
@@ -93,7 +93,7 @@ extension UIApplication {
             CALayer.layerTreeIsDirty = false
         } catch {
             print("glRenderer failed to render, reiniting")
-            //UIApplication.restart()
+            UIApplication.restart()
         }
     }
 }
