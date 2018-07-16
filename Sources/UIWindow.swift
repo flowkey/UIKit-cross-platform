@@ -21,9 +21,7 @@ public class UIWindow: UIView {
             viewController.viewWillAppear(false)
             addSubview(viewController.view)
 
-            viewController.viewWillLayoutSubviews()
             viewController.view.layoutSubviews()
-            viewController.viewDidLayoutSubviews()
 
             viewController.viewDidAppear(false)
         }

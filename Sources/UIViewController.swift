@@ -81,9 +81,7 @@ open class UIViewController: UIResponder {
         otherViewController.makeViewAppear(animated: animated, presentingViewController: self)
         otherViewController.viewDidAppear(animated)
 
-        otherViewController.viewWillLayoutSubviews()
         otherViewController.view.layoutSubviews()
-        otherViewController.viewDidLayoutSubviews()
 
         completion?()
     }
