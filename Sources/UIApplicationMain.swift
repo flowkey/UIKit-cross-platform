@@ -59,7 +59,6 @@ extension UIApplication {
         let applicationType = type(of: UIApplication.shared!)
         let delegateType = UIApplication.shared.delegate == nil ? nil : type(of: UIApplication.shared.delegate!).self
 
-        UIApplication.shared.keyWindow = nil
         UIApplication.shared = nil
 
         DispatchQueue.main.async {
