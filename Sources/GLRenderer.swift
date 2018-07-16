@@ -29,7 +29,7 @@ internal final class GLRenderer {
         var size = CGSize.zero
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
     #else
-        var size: CGSize = .samsungGalaxyS7
+        var size = CGSize.samsungGalaxyS7.landscape
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
             //SDL_WINDOW_FULLSCREEN
@@ -232,4 +232,21 @@ private extension CGSize {
     static let samsungGalaxyTab10 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
     static let samsungGalaxyTabA_T380 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
     static let samsungGalaxyTabA_T580 = CGSize(width: 1920 / 1.0, height: 1200 / 1.0)
+    
+    // change orientation if needed
+    var landscape: CGSize {
+        if self.width >= self.height {
+            return self
+        } else {
+            return CGSize(width: self.height, height: self.width)
+        }
+    }
+    
+    var portrait: CGSize {
+        if self.width <= self.height {
+            return self
+        } else {
+            return CGSize(width: self.height, height: self.width)
+        }
+    }
 }
