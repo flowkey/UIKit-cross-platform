@@ -33,6 +33,10 @@ open class UIViewController: UIResponder {
         }
     }
 
+    public override init () {
+        super.init()
+    }
+
     public func loadViewIfNeeded() {
         if !viewIsLoaded {
             loadView()
@@ -51,6 +55,7 @@ open class UIViewController: UIResponder {
     open func viewDidDisappear(_ animated: Bool) {}
 
     open func viewWillLayoutSubviews() {}
+    open func viewDidLayoutSubviews() {}
 
     internal var animationTime: Double { return 0.4 }
 
@@ -78,6 +83,7 @@ open class UIViewController: UIResponder {
 
         otherViewController.viewWillLayoutSubviews()
         otherViewController.view.layoutSubviews()
+        otherViewController.viewDidLayoutSubviews()
 
         completion?()
     }
@@ -124,6 +130,8 @@ open class UIViewController: UIResponder {
     open func prefersHomeIndicatorAutoHidden() -> Bool {
         return false
     }
+
+    open func didReceiveMemoryWarning() {}
 
 
     // MARK: Mocking UIPresentationController with these two methods for now!
