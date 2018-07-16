@@ -20,10 +20,7 @@ open class UIApplication {
     }
 
     open var keyWindow: UIWindow? {
-        didSet {
-            print("UIScreen.main.bounds", UIScreen.main.bounds)
-            keyWindow?.frame = UIScreen.main.bounds
-        }
+        didSet { keyWindow?.frame = UIScreen.main.bounds }
     }
 
     /// Currently not implemented but could be useful for Android
