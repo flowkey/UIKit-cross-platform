@@ -131,6 +131,7 @@ open class UIViewController: UIResponder {
         return false
     }
 
+    /// Currently not implemented
     open func didReceiveMemoryWarning() {}
 
 
