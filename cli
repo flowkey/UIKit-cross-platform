@@ -1,0 +1,65 @@
+#!/bin/bash
+set -e
+
+SCRIPT_PATH=`dirname $0`
+TEMPLATE_PATH=${SCRIPT_PATH}/demo
+
+if ! [ -d ".git" ]; then
+    echo "The current directory needs to be a git repository"  1>&2
+    exit 1
+fi
+
+if ! [[ $1 == "create" ]]; then
+    echo "usage: uikit-cross-platform create" 1>&2
+    exit 1
+fi
+
+read -p "App name: " APP_NAME
+if ! [[ "$APP_NAME" =~ [a-z] ]]; then
+    echo "APP_NAME is invalid" 1>&2
+    exit 1
+fi
+
+read -p "Package (f.e com.example): " PACKAGE
+if ! [[ "$PACKAGE" =~ [a-z][\.] ]]; then
+    echo "Package is invalid" 1>&2
+    exit 1
+fi
+
+read -e -p "Path to main.swift: " IOS_PROJECT_PATH
+if [ ! -f "${IOS_PROJECT_PATH}/main.swift" ]; then
+    echo "Path to main.swift doesn't seem to be correct" 1>&2
+    exit 1
+fi
+
+
+cp ${TEMPLATE_PATH}/Package.swift Package.swift
+cp ${TEMPLATE_PATH}/DemoApp/androidMain.swift ${IOS_PROJECT_PATH}/androidMain.swift
+cp -R ${TEMPLATE_PATH}/android android
+
+PACKAGE_WITH_DASHES=${PACKAGE/.//}
+rm -rf android/app/src/main/java/
+mkdir -p "android/app/src/main/java/${PACKAGE_WITH_DASHES}"
+
+PATH_TO_MAIN_ACTIVITY="${TEMPLATE_PATH}/android/app/src/main/java/com/example/MainActivity.kt"
+cp $PATH_TO_MAIN_ACTIVITY "android/app/src/main/java/${PACKAGE_WITH_DASHES}"
+
+FILES_TO_CHANGE=(
+    "Package.swift"
+    "android/app/build.gradle"
+    "android/app/src/main/AndroidManifest.xml"
+    "android/app/CMakeLists.txt"
+    "android/app/src/main/java/${PACKAGE_WITH_DASHES}/MainActivity.kt"
+)
+
+for file in ${FILES_TO_CHANGE[@]}
+do
+    sed -i '' "s~DemoApp~${APP_NAME}~g" $file
+    sed -i '' "s~com.example~${PACKAGE}~g" $file
+    sed -i '' "s~DemoApp~${IOS_PROJECT_PATH}~g" $file
+done
+
+sed -i '' "s~../../~../UIKit~g" android/settings.gradle
+sed -i '' "s~../../../~../../UIKit~g" android/app/CMakeLists.txt
+
+echo "Finished creating ${PACKAGE}.${APP_NAME}"
