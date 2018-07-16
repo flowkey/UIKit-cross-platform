@@ -27,6 +27,7 @@ open class UIResponder {
     }
 
     /// Returns whether we handled the press or not
+    @discardableResult
     open func handleHardwareBackButtonPress() -> Bool {
         return next?.handleHardwareBackButtonPress() ?? false
     }

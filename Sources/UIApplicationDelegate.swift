@@ -17,7 +17,6 @@ public protocol UIApplicationDelegate: class {
     var window: UIWindow? { get set } // Not sure what's supposed to happen when you set this
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
-
     func applicationWillTerminate(_ application: UIApplication)
 
     // NOTE: THE FOLLOWING ARE NOT YET IMPLEMENTED!
@@ -26,14 +25,6 @@ public protocol UIApplicationDelegate: class {
 
     func applicationDidBecomeActive(_ application: UIApplication)
     func applicationWillResignActive(_ application: UIApplication)
-
-
-    var onHardwareBackButtonPress: (() -> Void)? { get set }
-
-    #if DEBUG
-    var onPressPlus: (() -> Void)? { get set }
-    var onPressMinus: (() -> Void)? { get set }
-    #endif
 }
 
 // Swift doesn't have optional protocol requirements like objc does, so provide defaults:
@@ -43,19 +34,4 @@ public extension UIApplicationDelegate {
     func applicationWillEnterForeground(_ application: UIApplication) {}
     func applicationDidBecomeActive(_ application: UIApplication) {}
     func applicationWillResignActive(_ application: UIApplication) {}
-
-    var onHardwareBackButtonPress: (() -> Void)? {
-        get { return nil }
-        set(newValue) {}
-    }
-
-    var onPressPlus: (() -> Void)? {
-        get { return nil }
-        set(newValue) {}
-    }
-
-    var onPressMinus: (() -> Void)? {
-        get { return nil }
-        set(newValue) {}
-    }
 }
