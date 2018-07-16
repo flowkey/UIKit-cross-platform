@@ -96,7 +96,9 @@ private extension TouchHandlingTests {
 
 private extension TouchHandlingTests {
     func handleTouchDown(_ point: CGPoint) {
-        let event = UIEvent(touch: UITouch(touchId: 0, at: point, in: window, timestamp: 0))
+        let touch = UITouch(touchId: 0, at: point, timestamp: 0)
+        touch.window = window
+        let event = UIEvent(touch: touch)
         window.sendEvent(event)
     }
 

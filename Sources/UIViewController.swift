@@ -5,9 +5,9 @@ open class UIViewController: UIResponder {
             loadViewIfNeeded()
             return _view
         }
-        set {
-            _view = newValue
-            newValue.next = self
+        set(view) {
+            _view = view
+            view.next = self
             viewDidLoad()
         }
     }
@@ -41,7 +41,6 @@ open class UIViewController: UIResponder {
 
     open func loadView() {
         view = UIView()
-        view.backgroundColor = .white
     }
 
     // Most of these methods are designed to be overriden in `UIViewController` subclasses
@@ -118,6 +117,12 @@ open class UIViewController: UIResponder {
 
         self.dismiss(animated: true)
         return true
+    }
+
+    /// This is just to provide compatibility with iOS for now, but we could feasibly
+    /// use this property to e.g. put an Android device in "Immersive Mode" or similar.
+    open func prefersHomeIndicatorAutoHidden() -> Bool {
+        return false
     }
 
 

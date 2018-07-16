@@ -76,7 +76,8 @@ let package = Package(
             exclude: [
                 "VideoPlayer+Mac.swift",
                 "AVPlayerItem+Mac.swift",
-                "AVPlayerLayer+Mac.swift"
+                "AVPlayerLayer+Mac.swift",
+                "UIApplicationMain+Mac.swift"
             ]
         )
     ]

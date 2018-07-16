@@ -9,22 +9,27 @@
 import SDL
 import CJNI
 
-@_silgen_name("SDL_Android_Init")
-public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
+public struct UIKitAndroid {
+    @_silgen_name("SDL_Android_Init")
+    public static func SDL_Android_Init(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
 
-@_silgen_name("Java_org_libsdl_app_SDLActivity_nativeInit")
-public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
-    SDLAndroidInit(env, view)
-    SDL_SetMainReady()
-    if !SDL.isInitialized {
-        SDL.initialize()
-    } else {
-        print("[nativeInit] SDL is already initialized, skipping SDL.initialize()")
+    public static var UIApplicationClass: UIApplication.Type?
+    public static var UIApplicationDelegateClass: UIApplicationDelegate.Type?
+
+    @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeInit")
+    public static func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
+        SDL_Android_Init(env, view)
+        SDL_SetMainReady()
+
+        if UIApplication.shared != nil {
+            return 0 // already inited
+        }
+
+        return JavaInt(UIApplicationMain(UIApplicationClass, UIApplicationDelegateClass))
     }
-    return 0
-}
 
-@_silgen_name("Java_org_libsdl_app_SDLActivity_nativeDeinit")
-public func nativeDeinit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
-    SDL.deinitialize()
+    @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeDeinit")
+    public static func nativeDeinit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
+        UIApplication.shared = nil
+    }
 }

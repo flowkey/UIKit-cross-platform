@@ -9,8 +9,8 @@
 import SDL
 import struct Foundation.TimeInterval
 
-extension SDL {
-    static func handleEventsIfNeeded() {
+extension UIApplication {
+    func handleEventsIfNeeded() {
         var e = SDL_Event()
 
         while SDL_PollEvent(&e) == 1 {
@@ -19,9 +19,9 @@ extension SDL {
                 handleSDLQuit()
                 return
             case SDL_MOUSEBUTTONDOWN:
-                let touch = UITouch(touchId: 0, at: .from(e.button), in: window, timestamp: e.timestampInSeconds)
+                let touch = UITouch(touchId: 0, at: .from(e.button), timestamp: e.timestampInSeconds)
                 let event = UIEvent(touch: touch)
-                window.sendEvent(event)
+                sendEvent(event)
             case SDL_MOUSEMOTION:
                 if
                     let event = UIEvent.activeEvents.first,
@@ -37,7 +37,7 @@ extension SDL {
                     // SDL adds timestamps on send which could be quite different to when the event actually occurred.
                     // It's common to get two events with an unrealistically small time between them; don't send those.
                     if (newTimestamp - previousTimestamp) > (5 / 1000) {
-                        window.sendEvent(event)
+                        sendEvent(event)
                     }
                 }
             case SDL_MOUSEBUTTONUP:
@@ -47,21 +47,18 @@ extension SDL {
                 {
                     touch.timestamp = e.timestampInSeconds
                     touch.phase = .ended
-                    window.sendEvent(event)
+                    sendEvent(event)
                 }
             case SDL_KEYUP:
                 #if DEBUG
                 let keyModifier = SDL_Keymod(UInt32(e.key.keysym.mod))
                 if keyModifier.contains(KMOD_LSHIFT) || keyModifier.contains(KMOD_RSHIFT) {
                     switch e.key.keysym.sym {
-                    case 43: // plus/multiply key
-                        fallthrough
-                    case 61: // plus/equals key
-                        SDL.onPressPlus?()
-                    case 45: // minus/dash key
-                        SDL.onPressMinus?()
+                    case 43, 61: // +/*, +/= keys. TODO send key events via UIEvent
+                        break
+                    case 45: break // -/_ key
                     case 118: // "V"
-                        SDL.rootView.printViewHierarchy()
+                        keyWindow?.printViewHierarchy()
                     default:
                         print(e.key.keysym.sym)
                         break
@@ -70,18 +67,14 @@ extension SDL {
 
                 if keyModifier.contains(KMOD_LGUI) || keyModifier.contains(KMOD_RGUI) {
                     if e.key.keysym.sym == 114 { // CMD-R
-                        SDL.initialize()
+                        UIApplication.restart()
                     }
                 }
                 #endif
 
                 let scancode = e.key.keysym.scancode
                 if scancode == .androidHardwareBackButton || scancode == .escapeKey {
-                    // If not handled already:
-                    if window.deepestPresentedView().handleHardwareBackButtonPress() == false {
-                        // This emulates the behaviour that UIApplication (which is what `SDL` should be) is actually the last responder in the responder chain.
-                        SDL.onHardwareBackButtonPress?()
-                    }
+                    keyWindow?.deepestPresentedView().handleHardwareBackButtonPress()
                 }
             default:
                 break
@@ -93,15 +86,6 @@ extension SDL {
 extension SDL_Scancode {
     static let escapeKey = SDL_Scancode(rawValue: 41)
     static let androidHardwareBackButton = SDL_Scancode(rawValue: 270)
-}
-
-extension SDL {
-    public static var onHardwareBackButtonPress: (() -> Void)?
-
-    #if DEBUG
-    public static var onPressPlus: (() -> Void)?
-    public static var onPressMinus: (() -> Void)?
-    #endif
 }
 
 extension SDL_Keymod: OptionSet {}

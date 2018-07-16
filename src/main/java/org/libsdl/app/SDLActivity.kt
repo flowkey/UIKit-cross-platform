@@ -33,6 +33,10 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         // and it is a major overhaul to change the native C code (there are a lot of dependencies)
         @JvmStatic
         internal var mSeparateMouseAndTouch = false
+
+        init {
+            arrayOf("JNI", "UIKit").forEach { System.loadLibrary(it) }
+        }
     }
 
     private var mSurface: SurfaceView
@@ -68,13 +72,9 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
     private var isRunning = false
 
-    open val libraries: Array<String> get() = arrayOf()
-
     init {
         Log.v(TAG, "Device: " + android.os.Build.DEVICE)
         Log.v(TAG, "Model: " + android.os.Build.MODEL)
-
-        libraries.forEach { System.loadLibrary(it) }
 
         // Set up the surface
         mSurface = SurfaceView(context)

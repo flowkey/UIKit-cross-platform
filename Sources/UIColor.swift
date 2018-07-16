@@ -130,3 +130,9 @@ extension UIColor {
         return SDLColor(r: red, g: green, b: blue, a: alpha)
     }
 }
+
+extension UIColor: CustomStringConvertible {
+    public var description: String {
+        return "rgba(\(red), \(green), \(blue), \(alpha))"
+    }
+}
