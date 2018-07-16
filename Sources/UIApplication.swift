@@ -19,7 +19,7 @@ open class UIApplication {
         keyWindow?.sendEvent(event)
     }
 
-    open var keyWindow: UIWindow? {
+    open weak var keyWindow: UIWindow? {
         didSet { keyWindow?.frame = UIScreen.main.bounds }
     }
 

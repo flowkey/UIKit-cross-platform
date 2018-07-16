@@ -54,12 +54,9 @@ extension UIApplication {
                 let keyModifier = SDL_Keymod(UInt32(e.key.keysym.mod))
                 if keyModifier.contains(KMOD_LSHIFT) || keyModifier.contains(KMOD_RSHIFT) {
                     switch e.key.keysym.sym {
-                    case 43: // plus/multiply key
-                        fallthrough
-                    case 61:
-                        delegate?.onPressPlus?()
-                    case 45:
-                        delegate?.onPressMinus?()
+                    case 43, 61: // +/*, +/= keys. TODO send key events via UIEvent
+                        break
+                    case 45: break // -/_ key
                     case 118: // "V"
                         keyWindow?.printViewHierarchy()
                     default:
@@ -77,10 +74,7 @@ extension UIApplication {
 
                 let scancode = e.key.keysym.scancode
                 if scancode == .androidHardwareBackButton || scancode == .escapeKey {
-                    // If not handled already:
-                    if keyWindow?.deepestPresentedView().handleHardwareBackButtonPress() == false {
-                        delegate?.onHardwareBackButtonPress?()
-                    }
+                    keyWindow?.deepestPresentedView().handleHardwareBackButtonPress()
                 }
             default:
                 break

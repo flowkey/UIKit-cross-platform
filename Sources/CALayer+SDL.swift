@@ -36,7 +36,7 @@ extension CALayer {
 
         // Big performance optimization. Don't render anything that's entirely offscreen:
         let absoluteFrame = renderedBoundsRelativeToAnchorPoint.applying(modelViewTransform)
-        guard absoluteFrame.intersects(UIScreen.main.bounds) else {
+        guard absoluteFrame.intersects(renderer.bounds) else {
             return
         }
 

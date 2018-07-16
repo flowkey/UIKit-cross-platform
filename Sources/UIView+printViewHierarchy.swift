@@ -10,7 +10,7 @@ extension UIView {
     func printViewHierarchy(depth: Int = 0) {
         if self.isHidden || self.alpha < 0.01 { return }
         let indentation = (0 ..< depth).reduce("") { result, _ in result + "  " }
-        print(indentation + "💩 " + self.description.replacingOccurrences(of: "\n", with: "\n" + indentation))
+        print(indentation + "✳️ " + self.description.replacingOccurrences(of: "\n", with: "\n" + indentation))
 
         let newDepth = depth + 1
         for subview in subviews {

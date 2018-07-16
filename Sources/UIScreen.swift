@@ -26,10 +26,8 @@ public extension UIScreen {
         #endif
 
         // Otherwise a fallback value e.g. in XCTests, so we don't need to initialize all of SDL:
-        let size = UIApplication.shared?.glRenderer.size ?? CGSize(width: 1024, height: 768)
-
         return UIScreen(
-            bounds: CGRect(origin: .zero, size: size),
+            bounds: UIApplication.shared?.glRenderer.bounds ?? CGRect(origin: .zero, size: CGSize(width: 1024, height: 768)),
             scale: UIApplication.shared?.glRenderer.scale ?? 2.0
         )
     }
