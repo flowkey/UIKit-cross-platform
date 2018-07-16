@@ -253,6 +253,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     // Called when the surface is resized, e.g. orientation change or activity creation
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         Log.v(TAG, "surfaceChanged()")
+        nativeDeinit()
 
         var sdlFormat = 0x15151002 // SDL_PIXELFORMAT_RGB565 by default
         when (format) {
@@ -281,8 +282,8 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
             return
         }
 
-        mWidth = Math.max(width, height).toFloat()
-        mHeight = Math.min(width, height).toFloat()
+        mWidth = width.toFloat()
+        mHeight = height.toFloat()
 
         this.onNativeResize(mWidth.toInt(), mHeight.toInt(), sdlFormat, display.refreshRate)
         Log.v(TAG, "Window size: " + mWidth + "x" + mHeight)
