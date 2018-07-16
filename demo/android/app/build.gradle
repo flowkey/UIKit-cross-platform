@@ -8,7 +8,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         ndk.abiFilters "armeabi-v7a"
-        applicationId "com.flowkey.DemoApp"
+        applicationId "com.example.DemoApp"
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
