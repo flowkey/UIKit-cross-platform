@@ -6,14 +6,17 @@ import android.view.*
 import android.widget.RelativeLayout
 import android.util.Log
 import android.graphics.*
-import android.content.pm.ActivityInfo
 import android.view.KeyEvent.*
 import android.content.Context
 import main.java.org.libsdl.app.*
 
-private val TAG = "SDLActivity"
+private const val TAG = "SDLActivity"
 
-open class SDLActivity(context: Context?) : RelativeLayout(context),
+// This is called SDLActivity (and not SDLRelativeLayout etc.) because of how the JVM expects
+// its corresponding JNI functions to be named. Since we don't want to have control over
+// the naming of most of the JNI functions (because they're in the external SDL repo), we leave this
+// as is and expose a reasonably-named subclass instead.
+open class SDLActivity internal constructor (context: Context?) : RelativeLayout(context),
                                             SDLOnKeyListener,
                                             SDLOnTouchListener,
                                             SurfaceHolder.Callback,
@@ -65,7 +68,7 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
 
     private var isRunning = false
 
-    open val libraries: Array<String> get() = arrayOf("JNI", "SDL2")
+    open val libraries: Array<String> get() = arrayOf()
 
     init {
         Log.v(TAG, "Device: " + android.os.Build.DEVICE)
@@ -311,16 +314,5 @@ open class SDLActivity(context: Context?) : RelativeLayout(context),
         mSurface.setOnTouchListener(null)
         mSurface.holder?.removeCallback(this) // should only happen on SDL_Quit
         nativeSurface.release()
-    }
-
-    override fun requestLayout() {
-        super.requestLayout()
-
-        // react native breaks layouting
-        // this is a temporary workaround for missing videos on android 6
-        post {
-            measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
-            layout(left, top, right, bottom)
-        }
     }
 }
