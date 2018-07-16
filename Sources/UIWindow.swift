@@ -20,7 +20,6 @@ public class UIWindow: UIView {
             viewController.view.frame = self.bounds
             viewController.viewWillAppear(false)
             addSubview(viewController.view)
-
             viewController.viewDidAppear(false)
         }
     }
