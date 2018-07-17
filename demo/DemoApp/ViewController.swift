@@ -14,7 +14,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .green
+        view.backgroundColor = UIColor(red: 0, green: 206, blue: 201, alpha: 1)
         
         label.text = "Hello World"
         label.sizeToFit()
