@@ -33,8 +33,8 @@ open class UIViewController: UIResponder {
         }
     }
 
-    public override init () {
-        super.init()
+    public override convenience init () {
+        self.init(nibName: nil, bundle: nil)
     }
 
     public func loadViewIfNeeded() {
