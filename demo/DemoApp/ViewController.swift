@@ -12,18 +12,15 @@ class ViewController: UIViewController {
 
     let label = UILabel()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = UIColor(red: 0, green: 206, blue: 201, alpha: 1)
-        
-        label.text = "Hello World"
-        label.sizeToFit()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
+        label.text = "Hello World"
+        label.font = .systemFont(ofSize: 30)
+        label.sizeToFit()
+        label.center = view.center
+
+        view.backgroundColor = UIColor(red: 0 / 255, green: 206 / 255, blue: 201 / 255, alpha: 1)
         view.addSubview(label)
     }
-
-    override func viewDidLayoutSubviews() {
-        label.center = view.center
-    }
 }
-
