@@ -21,6 +21,7 @@ PACKAGE=${BUNDLE_IDENTIFIER%.*}
 IOS_PROJECT_PATH=$APP_NAME
 
 cp "${TEMPLATE_PATH}/Package.swift" .
+printf "\n"
 echo "create Package.swift"
 
 cp "${TEMPLATE_PATH}/DemoApp/androidMain.swift" "$IOS_PROJECT_PATH"
@@ -59,4 +60,7 @@ sed -i '' "s~../../../~../../UIKit~g" android/app/CMakeLists.txt
 PACKAGE_WITH_UNDERSCORES=${PACKAGE/./_}
 sed -i '' "s~com_example~${PACKAGE_WITH_UNDERSCORES}~g" ${IOS_PROJECT_PATH}/androidMain.swift
 
-echo "Finished creating ${PACKAGE}.${APP_NAME}"
+printf "\nFinished creating ${PACKAGE}.${APP_NAME}\n"
+
+read -p "Open project in Android Studio? (y)/n: " OPEN_WITH_ANDROID_STUDIO
+[[ $OPEN_WITH_ANDROID_STUDIO =~ "n" ]] || open ./android -b com.google.android.studio || echo "It seems that you haven't installed android studio"
