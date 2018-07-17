@@ -12,7 +12,7 @@ import func Foundation.round
 
 internal final class GLRenderer {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
-    internal let size: CGSize
+    internal let bounds: CGRect
     internal let scale: CGFloat
 
     // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
@@ -62,11 +62,11 @@ internal final class GLRenderer {
             scale = CGFloat(rawPointer.pointee.base_h) / CGFloat(rawPointer.pointee.h)
         #endif
 
-        
-        self.size = size
         if size == .zero {
             preconditionFailure("You need window dimensions to run")
         }
+
+        self.bounds = CGRect(origin: .zero, size: size)
 
         // Fixes video surface visibility with transparent & opaque views in SDLSurface above
         // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha

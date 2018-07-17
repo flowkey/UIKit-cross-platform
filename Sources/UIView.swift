@@ -227,9 +227,15 @@ open class UIView: UIResponder, CALayerDelegate {
     /// Called when the view was added to a non-nil subview
     open func didMoveToSuperview() {}
 
+    internal var parentViewController: UIViewController? {
+        return next as? UIViewController
+    }
+
     open func layoutSubviews() {
         needsLayout = false
+        parentViewController?.viewWillLayoutSubviews()
         subviews.forEach { $0.setNeedsLayout() }
+        parentViewController?.viewDidLayoutSubviews()
     }
 
 
