@@ -64,6 +64,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5B4A506120FE2F3F004E3D77 /* androidMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = androidMain.swift; sourceTree = "<group>"; };
 		5B7506AB20FCF07400EC187D /* DemoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B7506AE20FCF07400EC187D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5B7506B020FCF07400EC187D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -120,6 +121,7 @@
 				5B7506AE20FCF07400EC187D /* AppDelegate.swift */,
 				5B7506C020FCF0CF00EC187D /* main.swift */,
 				5B7506B020FCF07400EC187D /* ViewController.swift */,
+				5B4A506120FE2F3F004E3D77 /* androidMain.swift */,
 				5B7506B720FCF07600EC187D /* LaunchScreen.storyboard */,
 				5B7506BA20FCF07600EC187D /* Info.plist */,
 			);
