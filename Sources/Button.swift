@@ -1,6 +1,6 @@
 //
 //  Button.swift
-//  NativePlayerSDL
+//  UIKit
 //
 //  Created by Geordie Jay on 16.05.17.
 //  Copyright © 2017 Geordie Jay. All rights reserved.

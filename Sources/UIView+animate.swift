@@ -33,6 +33,18 @@ extension UIView {
 
     public static func animate(
         withDuration duration: Double,
+        animations: () -> Void
+    ) {
+        UIView.animate(
+            withDuration: duration,
+            delay: 0,
+            options: [],
+            animations: animations
+        )
+    }
+
+    public static func animate(
+        withDuration duration: Double,
         delay: Double,
         usingSpringWithDamping: CGFloat,
         initialSpringVelocity: CGFloat,
