@@ -1,4 +1,4 @@
-package com.example.DemoApp
+package com.example
 
 import com.flowkey.uikit.UIKitActivity
 
