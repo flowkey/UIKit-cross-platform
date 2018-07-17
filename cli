@@ -54,4 +54,7 @@ done
 sed -i '' "s~../../~../UIKit~g" android/settings.gradle
 sed -i '' "s~../../../~../../UIKit~g" android/app/CMakeLists.txt
 
+PACKAGE_WITH_UNDERSCORES=${PACKAGE/./_}
+sed -i '' "s~com_example~${PACKAGE_WITH_UNDERSCORES}~g" ${IOS_PROJECT_PATH}/androidMain.swift
+
 echo "Finished creating ${PACKAGE}.${APP_NAME}"
