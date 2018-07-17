@@ -4,31 +4,33 @@ set -e
 SCRIPT_PATH=`dirname $0`
 TEMPLATE_PATH=${SCRIPT_PATH}/demo
 
-if ! [ -d ".git" ]; then
-    echo "The current directory needs to be a git repository"  1>&2
-    exit 1
-fi
 
 if ! [[ $1 == "create" ]]; then
     echo "usage: uikit-cross-platform create" 1>&2
     exit 1
 fi
 
-read -p "App name: " APP_NAME
+if ! [ -d ".git" ]; then
+    echo "The current directory needs to be a git repository"  1>&2
+    exit 1
+fi
+
+read -p "iOS project directory: " APP_NAME
 if ! [[ "$APP_NAME" =~ [a-z] ]]; then
     echo "APP_NAME is invalid" 1>&2
+    exit 1
+fi
+
+# we assume the iOS dir equals the project name
+IOS_PROJECT_PATH=$APP_NAME
+if [ ! -f "${IOS_PROJECT_PATH}/main.swift" ]; then
+    echo "${IOS_PROJECT_PATH}/main.swift doesn't exist" 1>&2
     exit 1
 fi
 
 read -p "Package (f.e com.example): " PACKAGE
 if ! [[ "$PACKAGE" =~ [a-z][\.] ]]; then
     echo "Package is invalid" 1>&2
-    exit 1
-fi
-
-read -e -p "Path to main.swift: " IOS_PROJECT_PATH
-if [ ! -f "${IOS_PROJECT_PATH}/main.swift" ]; then
-    echo "Path to main.swift doesn't seem to be correct" 1>&2
     exit 1
 fi
 
@@ -56,7 +58,6 @@ for file in ${FILES_TO_CHANGE[@]}
 do
     sed -i '' "s~DemoApp~${APP_NAME}~g" $file
     sed -i '' "s~com.example~${PACKAGE}~g" $file
-    sed -i '' "s~DemoApp~${IOS_PROJECT_PATH}~g" $file
 done
 
 sed -i '' "s~../../~../UIKit~g" android/settings.gradle
