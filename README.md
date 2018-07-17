@@ -71,16 +71,16 @@ This framework currently covers ~40% of the Apple UIKit API.
 
 ## How to contribute
 
-*refer to open issues*<br>
-*refer to CONTRIBUTING.md*
+Contributions are *welcome* and *very helpful* 🙌
+
+If you are looking for a feature or find a bug, please create an [issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
+
+For additional information please refer to the [contribution guidelines](docs/CONTRIBUTING.md).
 
 ## FAQs / Troubleshooting
 
-*// add Q&A here when using the tooling to setup Android Apps*
+*TBD*
 
 ## License
 
 UIKit-cross-platform is free software; you can redistribute it and/or modify it under the terms of the MIT License.
-
-
-
