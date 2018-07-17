@@ -9,10 +9,10 @@ UIKit-crossplatform is a **UI framework** for native apps, which enables **code 
 
 ## Architecture
 
-UIKit-crossplatform is based on [SDL_GPU](https://github.com/grimfang4/sdl-gpu) which uses [OpenGL](https://www.opengl.org/) underneath to render directly to the GPU.
+UIKit-crossplatform renders using [SDL_gpu](https://github.com/grimfang4/sdl-gpu) which uses [OpenGL](https://www.opengl.org/).
 On Android [Swift Package Manager](https://github.com/apple/swift-package-manager) compiles Swift Code into native binaries, which are called through the [NDK](https://developer.android.com/ndk/).
 
-![image](https://user-images.githubusercontent.com/10008938/42819122-e147ca8e-89d2-11e8-8227-454a98963953.png)
+![uikit-architecture](https://user-images.githubusercontent.com/10008938/42819122-e147ca8e-89d2-11e8-8227-454a98963953.png)
 
 [ARCHITECTURE.md](docs/ARCHITECTURE.md) provides more detailed information about the architecture.
 
