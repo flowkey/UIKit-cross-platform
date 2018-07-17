@@ -39,7 +39,7 @@ open class UINavigationBar: UIView {
 
     internal func platformSpecificSetup() {
         frame.size.height = self.barHeight // varies per platform
-        backgroundColor = UIColor(red: 0.91, green: 0.91, blue: 0.91)
+        backgroundColor = UIColor(red: 0.91, green: 0.91, blue: 0.91, alpha: 1)
 
         backButton.onPress = { [weak self] in
             self?.popItem(animated: true)
