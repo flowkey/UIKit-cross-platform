@@ -7,7 +7,16 @@
 
 UIKit-crossplatform is a **UI framework** for native apps, which enables **code targeting iOS UIKit** to run on other platforms, particularly on **Android**.<br>
 
-## Quick start overview
+## Architecture
+
+UIKit-crossplatform is based on [SDL_GPU](https://github.com/grimfang4/sdl-gpu) which uses [OpenGL](https://www.opengl.org/) underneath to render directly to the GPU.
+On Android [Swift Package Manager](https://github.com/apple/swift-package-manager) compiles Swift Code into native binaries, which are called through the [NDK](https://developer.android.com/ndk/).
+
+![image](https://user-images.githubusercontent.com/10008938/42819122-e147ca8e-89d2-11e8-8227-454a98963953.png)
+
+[ARCHITECTURE.md](docs/ARCHITECTURE.md) provides more detailed information about the architecture.
+
+## Quick start
 
 1. Setup the [UIKit-cross-platform-cli](https://github.com/flowkey/UIKit-cross-platform-cli)
 2. Prepare your iOS Project
@@ -31,7 +40,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 - Initialize `UIWindow` and `ViewController` in `application` function
 ```
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        
+
         window = UIWindow()
         window?.rootViewController = ViewController()
         window?.makeKeyAndVisible()
@@ -48,16 +57,6 @@ import Foundation
 UIApplicationMain(0, nil, nil, NSStringFromClass(AppDelegate.self))
 ```
 
-
-## Architecture
-
-UIKit-crossplatform is based on [SDL_GPU](https://github.com/grimfang4/sdl-gpu) which uses [OpenGL](https://www.opengl.org/) underneath to render directly to the GPU.
-On Android [Swift Package Manager](https://github.com/apple/swift-package-manager) compiles Swift Code into native binaries, which are called through the [NDK](https://developer.android.com/ndk/).
-
-![image](https://user-images.githubusercontent.com/10008938/42819122-e147ca8e-89d2-11e8-8227-454a98963953.png)
-
-[ARCHITECTURE.md](docs/ARCHITECTURE.md) provides more detailed information about the architecture.
-
 ## API documentation
 
 This framework uses the [Apple UIKit](https://developer.apple.com/documentation/uikit) API, therefore the official Apple Docs serve as documentation for the already implemented features.
@@ -70,11 +69,11 @@ This framework currently covers ~40% of the Apple UIKit API.
 
 ## How to contribute
 
-Contributions are *welcome* and *very helpful* 🙌
+Contributions are *very welcome* and *helpful* 🙌
 
 If you are looking for a feature or find a bug, please create an [issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
 
-For additional information please refer to the [contribution guidelines](docs/CONTRIBUTING.md).
+For additional information please refer to our [contribution guidelines](docs/CONTRIBUTING.md).
 
 ## FAQs / Troubleshooting
 
