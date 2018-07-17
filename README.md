@@ -12,8 +12,8 @@ UIKit-crossplatform is a **UI framework** for native apps, which enables **code 
 1. Setup the [UIKit-cross-platform-cli](https://github.com/flowkey/UIKit-cross-platform-cli)
 2. Prepare your iOS Project
     1. Remove storyboards
-    2. Adjust your `AppDelegate.swift`
-    3. Create a `main.swift`
+    2. Adjust your [AppDelegate.swift](#Existing-AppDelegate.swift)
+    3. Create a [main.swift](#New-main.swift)
 3. Run `uikit-cross-platform create` and follow the steps
 4. Open `android` folder in Android Studio and press "run" button
 
@@ -21,7 +21,7 @@ UIKit-crossplatform is a **UI framework** for native apps, which enables **code 
 
 ### File modifications
 
-Existing `AppDelegate.swift`:
+#### Existing `AppDelegate.swift`:
 - Remove `@UIApplicationMain` attribute and make the class `final`
 ```
 //@UIApplicationMain
@@ -43,7 +43,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 ```
 
-New `main.swift`:
+#### New `main.swift`:
 ```
 import UIKit
 import Foundation
