@@ -12,7 +12,7 @@ TEMPLATE_PATH=${SCRIPT_PATH}/demo
 [[ $1 == "create" ]] || die "usage: $0 create"
 
 
-BUNDLE_IDENTIFIER=`grep -m 1 PRODUCT_BUNDLE_IDENTIFIER *.xcodeproj/project.pbxproj | xargs | cut -d ' ' -f 3 | sed 's~;~ ~g'`
+BUNDLE_IDENTIFIER=`grep -m 1 PRODUCT_BUNDLE_IDENTIFIER *.xcodeproj/project.pbxproj | xargs | cut -d ' ' -f 3 | sed 's~;~~g'`
 echo "creating $BUNDLE_IDENTIFIER"
 
 [[ $BUNDLE_IDENTIFIER ]] || die "your current working directory doesn't seem to be an xcode project"
@@ -26,8 +26,9 @@ IOS_PROJECT_PATH=$APP_NAME
 
 cp "${TEMPLATE_PATH}/Package.swift" .
 cp "${TEMPLATE_PATH}/DemoApp/androidMain.swift" "$IOS_PROJECT_PATH"
-cp -R "${TEMPLATE_PATH}/android" .
 
+cp -R "${TEMPLATE_PATH}/android" .
+rm -rf android/build
 
 PACKAGE_WITH_DASHES=${PACKAGE/.//}
 rm -rf android/app/src/main/java/
