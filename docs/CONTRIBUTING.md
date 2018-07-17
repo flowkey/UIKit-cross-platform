@@ -8,6 +8,9 @@ Please read this guide if you're interested in contributing to UIKit-cross-platf
 
 We invite you to actively participate in discussions in our [Github Issues](https://github.com/flowkey/UIKit-cross-platform/issues) and [Slack](https://uikit-cross-platform.slack.com).
 
+### Code of Conduct
+This project and everyone participating in it is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to uikit@flowkey.com.
+
 ## Issues
 
 To report a bug, you can use [this template](https://github.com/flowkey/UIKit-cross-platform/issues/new?template=bug.md).
