@@ -1,43 +1,33 @@
 #!/bin/bash
 set -e
 
+function die() {
+    echo "$1" 1>&2
+    exit 1
+}
+
 SCRIPT_PATH=`dirname $0`
 TEMPLATE_PATH=${SCRIPT_PATH}/demo
 
+[[ $1 == "create" ]] || die "usage: $0 create"
 
-if ! [[ $1 == "create" ]]; then
-    echo "usage: uikit-cross-platform create" 1>&2
-    exit 1
-fi
 
-if ! [ -d ".git" ]; then
-    echo "The current directory needs to be a git repository"  1>&2
-    exit 1
-fi
+BUNDLE_IDENTIFIER=`grep -m 1 PRODUCT_BUNDLE_IDENTIFIER *.xcodeproj/project.pbxproj | xargs | cut -d ' ' -f 3 | sed 's~;~ ~g'`
+echo "creating $BUNDLE_IDENTIFIER"
 
-read -p "iOS project directory: " APP_NAME
-if ! [[ "$APP_NAME" =~ [a-z] ]]; then
-    echo "APP_NAME is invalid" 1>&2
-    exit 1
-fi
+[[ $BUNDLE_IDENTIFIER ]] || die "your current working directory doesn't seem to be an xcode project"
+
+
+APP_NAME=${BUNDLE_IDENTIFIER##*.}
+PACKAGE=${BUNDLE_IDENTIFIER%.*}
 
 # we assume the iOS dir equals the project name
 IOS_PROJECT_PATH=$APP_NAME
-if [ ! -f "${IOS_PROJECT_PATH}/main.swift" ]; then
-    echo "${IOS_PROJECT_PATH}/main.swift doesn't exist" 1>&2
-    exit 1
-fi
 
-read -p "Package (f.e com.example): " PACKAGE
-if ! [[ "$PACKAGE" =~ [a-z][\.] ]]; then
-    echo "Package is invalid" 1>&2
-    exit 1
-fi
+cp "${TEMPLATE_PATH}/Package.swift" .
+cp "${TEMPLATE_PATH}/DemoApp/androidMain.swift" "$IOS_PROJECT_PATH"
+cp -R "${TEMPLATE_PATH}/android" .
 
-
-cp ${TEMPLATE_PATH}/Package.swift Package.swift
-cp ${TEMPLATE_PATH}/DemoApp/androidMain.swift ${IOS_PROJECT_PATH}/androidMain.swift
-cp -R ${TEMPLATE_PATH}/android android
 
 PACKAGE_WITH_DASHES=${PACKAGE/.//}
 rm -rf android/app/src/main/java/
