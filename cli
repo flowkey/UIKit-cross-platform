@@ -28,7 +28,8 @@ cp "${TEMPLATE_PATH}/Package.swift" .
 cp "${TEMPLATE_PATH}/DemoApp/androidMain.swift" "$IOS_PROJECT_PATH"
 
 cp -R "${TEMPLATE_PATH}/android" .
-rm -rf android/build
+rm -rf android/{.gradle,build}
+rm -rf android/app/.externalNativeBuild
 
 PACKAGE_WITH_DASHES=${PACKAGE/.//}
 rm -rf android/app/src/main/java/
