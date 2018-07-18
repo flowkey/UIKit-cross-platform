@@ -32,7 +32,9 @@ echo "create ${IOS_PROJECT_PATH}/androidMain.swift"
 
 cp -R "${TEMPLATE_PATH}/android" .
 rm -rf android/{.gradle,build}
-rm -rf android/app/.externalNativeBuild
+rm -rf android/app/{.externalNativeBuild,build}
+rm -rf android/.idea
+rm -rf android/android.iml
 
 PACKAGE_WITH_DASHES=${PACKAGE/.//}
 rm -rf android/app/src/main/java/
