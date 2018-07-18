@@ -16,11 +16,23 @@ On Android [Swift Package Manager](https://github.com/apple/swift-package-manage
 
 [ARCHITECTURE.md](docs/ARCHITECTURE.md) provides more detailed information about the architecture.
 
+## Try it out yourself
+
+This project includes a DemoApp which runs on iOS, Android and Mac.
+
+To try it:
+1. Clone this project and run `git submodule update --init --recursive`
+2. Open `./demo/DemoApp.xcodeproj` in Xcode
+    1. Run `DemoApp` target for the iOS App
+    2. Run `DemoAppMac` target for the Mac App
+3. Open `./demo/android` with Android Studio ([Setup if necessary]())
+4. Connect an Android device and press "Run" in Android Studio
+
 ## How run an iOS Project on Android
 
 1. Create new iOS Project or open an existing one
 2. Prepare your iOS Project
-    1. Remove storyboards
+    1. [Remove storyboards](#Storyboards-cleanup)
     2. Adjust your [AppDelegate.swift](#Existing-AppDelegate.swift)
     3. Create a [main.swift](#New-main.swift)
 3. [Add UIKit-cross-platform to your project](#adding-UIKit-cross-platform)
@@ -28,6 +40,13 @@ On Android [Swift Package Manager](https://github.com/apple/swift-package-manage
 5. Open `android` folder in Android Studio and press "run" button
 
 ## Setup details
+
+### Storyboards cleanup
+
+1. Delete Storyboards, in a new project the following two files: `Main.storyboard`, `LaunchScreen.storyboard`
+2. Remove your deleted Storyboards from `Info.plist`
+![Info.plist - deletions](https://user-images.githubusercontent.com/10008938/42874868-85e1ed68-8a82-11e8-84f8-678fe6cbf5f4.png)
+
 
 ### File modifications for an iOS Project
 
@@ -60,7 +79,7 @@ UIApplicationMain(0, nil, nil, NSStringFromClass(AppDelegate.self))
 
 ### Adding UIKit-cross-platform
 
-Prior to usage `UIKit-cross-platform` has to be added as a dependency to your project including its subdependencies.
+`UIKit-cross-platform` has to be added as a dependency to your project including its subdependencies.
 
 The recommended way is to use `git submodules` to add it to an `UIKit` subdirectory.
 In order to do so use the following command:
