@@ -25,7 +25,7 @@ How to run it on different platforms:
 2. Open `./demo/DemoApp.xcodeproj` in Xcode
     1. Run `DemoApp` target for the **iOS App**
     2. Run `DemoAppMac` target for the **Mac App**
-3. Open `./demo/android` with Android Studio ([Setup if necessary](Android-Studio-Setup))
+3. Open `./demo/android` with Android Studio ([install SDKs if necessary](Android-Studio-Setup))
 4. Connect an Android device and press "Run" for the **Android App**
 
 ## How run an iOS Project on Android
@@ -38,8 +38,8 @@ How to run it on different platforms:
 3. [Add UIKit-cross-platform to your project](#adding-UIKit-cross-platform)
 
 
-4. Run ` ./UIKit/cli create-from-ios` to create a new android project from your existing iOS project
-5. Open `android` folder in Android Studio and press "run" button
+4. Run ` ./UIKit/createAndroidProject`
+5. Open `./android` folder in Android Studio and press "run" button
 
 ## Setup details
 
