@@ -20,13 +20,13 @@ On Android [Swift Package Manager](https://github.com/apple/swift-package-manage
 
 This project includes a DemoApp which runs on iOS, Android and Mac.
 
-To try it:
+How to run it on different platforms:
 1. Clone this project and run `git submodule update --init --recursive`
 2. Open `./demo/DemoApp.xcodeproj` in Xcode
-    1. Run `DemoApp` target for the iOS App
-    2. Run `DemoAppMac` target for the Mac App
-3. Open `./demo/android` with Android Studio ([Setup if necessary]())
-4. Connect an Android device and press "Run" in Android Studio
+    1. Run `DemoApp` target for the **iOS App**
+    2. Run `DemoAppMac` target for the **Mac App**
+3. Open `./demo/android` with Android Studio ([Setup if necessary](Android-Studio-Setup))
+4. Connect an Android device and press "Run" for the **Android App**
 
 ## How run an iOS Project on Android
 
@@ -36,6 +36,8 @@ To try it:
     2. Adjust your [AppDelegate.swift](#Existing-AppDelegate.swift)
     3. Create a [main.swift](#New-main.swift)
 3. [Add UIKit-cross-platform to your project](#adding-UIKit-cross-platform)
+
+
 4. Run ` ./UIKit/cli create-from-ios` to create a new android project from your existing iOS project
 5. Open `android` folder in Android Studio and press "run" button
 
@@ -86,6 +88,16 @@ In order to do so use the following command:
 ```
 git submodule add git@github.com:flowkey/UIKit-cross-platform.git UIKit && cd UIKit && git submodule update --init --recursive
 ```
+
+### Android Studio Setup
+
+1. Install [Android Studio](https://developer.android.com/studio/)
+2. Add SDKs in Android Studio
+    1. Open Preferences in Android Studio
+    2. Go to Appearance & Behavior -> System Settings -> Android SDK
+    3. In SDK Platforms: apply checkboxes for API Levels 26 and 27
+    4. In SDK Tools: apply checkboxes for CMake, NDK, LLDB, Android SDK Build Tools, Android SDK Platform Tools
+    5. Press Apply / OK to install SDKs
 
 
 ## API documentation
