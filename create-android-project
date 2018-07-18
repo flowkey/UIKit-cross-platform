@@ -1,0 +1,71 @@
+#!/bin/bash
+set -e
+
+function die() {
+    echo "$1" 1>&2
+    exit 1
+}
+
+IOS_PROJECT_DIR=${IOS_PROJECT_DIR:-.}
+SCRIPT_PATH=`dirname $0`
+TEMPLATE_PATH=${SCRIPT_PATH}/samples/getting-started
+
+[[ ! -d "${IOS_PROJECT_DIR}/android" ]] \
+    || die "The directory '${IOS_PROJECT_DIR}/android' already exists. Remove it and try again."
+
+
+BUNDLE_IDENTIFIER=`grep -m 1 PRODUCT_BUNDLE_IDENTIFIER ${IOS_PROJECT_DIR}/*.xcodeproj/project.pbxproj | xargs | cut -d ' ' -f 3 | sed 's~;~~g'`
+[[ $BUNDLE_IDENTIFIER ]] || die "your current working directory doesn't seem to be an xcode project"
+
+
+APP_NAME=${BUNDLE_IDENTIFIER##*.}
+PACKAGE=${BUNDLE_IDENTIFIER%.*}
+
+echo "Found iOS Target '${PACKAGE}.${APP_NAME}'"
+echo
+
+
+# We assume the iOS dir equals the project name
+TARGET_SOURCES_DIRECTORY=${IOS_PROJECT_DIR}/${APP_NAME}
+
+echo "Creating ${IOS_PROJECT_DIR}/Package.swift for Swift Package Manager with Product '${APP_NAME}'"
+cp "${TEMPLATE_PATH}/Package.swift" .
+
+
+echo "Creating ${TARGET_SOURCES_DIRECTORY}/androidMain.swift with UIApplicationDelegate class 'AppDelegate'"
+cp "${TEMPLATE_PATH}/DemoApp/androidMain.swift" "$TARGET_SOURCES_DIRECTORY"
+
+cp -R "${TEMPLATE_PATH}/android" .
+rm -rf ${IOS_PROJECT_DIR}/android/{.idea,.gradle,build,android.iml,app/{.externalNativeBuild,build}}
+
+PACKAGE_WITH_FORWARDSLASHES=${PACKAGE/.//} # e.g. com/example/DemoApp
+rm -rf ${IOS_PROJECT_DIR}/android/app/src/main/java/
+mkdir -p "${IOS_PROJECT_DIR}/android/app/src/main/java/${PACKAGE_WITH_FORWARDSLASHES}"
+
+PATH_TO_MAIN_ACTIVITY="${TEMPLATE_PATH}/android/app/src/main/java/com/example/MainActivity.kt"
+cp $PATH_TO_MAIN_ACTIVITY "${IOS_PROJECT_DIR}/android/app/src/main/java/${PACKAGE_WITH_FORWARDSLASHES}"
+
+echo "Creating Android Studio project at '${IOS_PROJECT_DIR}/android'"
+
+FILES_TO_CHANGE=(
+    "Package.swift"
+    "android/app/build.gradle"
+    "android/app/src/main/AndroidManifest.xml"
+    "android/app/CMakeLists.txt"
+    "android/app/src/main/java/${PACKAGE_WITH_FORWARDSLASHES}/MainActivity.kt"
+)
+
+for file in ${IOS_PROJECT_DIR}/${FILES_TO_CHANGE[@]}
+do
+    sed -i '' "s~DemoApp~${APP_NAME}~g" $file
+    sed -i '' "s~com.example~${PACKAGE}~g" $file
+done
+
+sed -i '' "s~../../../~../UIKit~g" ${IOS_PROJECT_DIR}/android/settings.gradle
+sed -i '' "s~../../../../~../../UIKit~g" ${IOS_PROJECT_DIR}/android/app/CMakeLists.txt
+
+PACKAGE_WITH_UNDERSCORES=${PACKAGE/./_} # e.g. com_example_DemoApp
+sed -i '' "s~com_example~${PACKAGE_WITH_UNDERSCORES}~g" ${TARGET_SOURCES_DIRECTORY}/androidMain.swift
+
+echo
+echo "Done."
