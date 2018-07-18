@@ -22,10 +22,10 @@ This project includes a DemoApp which runs on iOS, Android and Mac.
 
 How to run it on different platforms:
 1. Clone this project and run `git submodule update --init --recursive`
-2. Open `./demo/DemoApp.xcodeproj` in Xcode
+2. Open `./samples/getting-started/DemoApp.xcodeproj` in Xcode
     1. Run `DemoApp` target for the **iOS App**
     2. Run `DemoAppMac` target for the **Mac App**
-3. Open `./demo/android` with Android Studio ([install SDKs if necessary](Android-Studio-Setup))
+3. Open `./samples/getting-started/android` with Android Studio ([install SDKs if necessary](Android-Studio-Setup))
 4. Connect an Android device and press "Run" for the **Android App**
 
 ## How run an iOS Project on Android
