@@ -8,7 +8,7 @@ function die() {
 
 IOS_PROJECT_DIR=${IOS_PROJECT_DIR:-.}
 SCRIPT_PATH=`dirname $0`
-TEMPLATE_PATH=${SCRIPT_PATH}/demo
+TEMPLATE_PATH=${SCRIPT_PATH}/samples/getting-started
 
 [[ ! -d "${IOS_PROJECT_DIR}/android" ]] \
     || die "The directory '${IOS_PROJECT_DIR}/android' already exists. Remove it and try again."
