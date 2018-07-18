@@ -61,8 +61,8 @@ do
     sed -i '' "s~com.example~${PACKAGE}~g" $file
 done
 
-sed -i '' "s~../../~../UIKit~g" ${IOS_PROJECT_DIR}/android/settings.gradle
-sed -i '' "s~../../../~../../UIKit~g" ${IOS_PROJECT_DIR}/android/app/CMakeLists.txt
+sed -i '' "s~../../../~../UIKit~g" ${IOS_PROJECT_DIR}/android/settings.gradle
+sed -i '' "s~../../../../~../../UIKit~g" ${IOS_PROJECT_DIR}/android/app/CMakeLists.txt
 
 PACKAGE_WITH_UNDERSCORES=${PACKAGE/./_} # e.g. com_example_DemoApp
 sed -i '' "s~com_example~${PACKAGE_WITH_UNDERSCORES}~g" ${TARGET_SOURCES_DIRECTORY}/androidMain.swift
