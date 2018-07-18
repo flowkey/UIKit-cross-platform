@@ -14,9 +14,6 @@ if [[ -d "android" ]]; then
     exit 1
 fi
 
-
-[[ $1 == "create-from-ios" ]] || die "usage: $0 create-from-ios"
-
 BUNDLE_IDENTIFIER=`grep -m 1 PRODUCT_BUNDLE_IDENTIFIER *.xcodeproj/project.pbxproj | xargs | cut -d ' ' -f 3 | sed 's~;~~g'`
 [[ $BUNDLE_IDENTIFIER ]] || die "your current working directory doesn't seem to be an xcode project"
 
