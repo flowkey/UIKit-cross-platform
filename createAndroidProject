@@ -28,7 +28,7 @@ echo
 # We assume the iOS dir equals the project name
 TARGET_SOURCES_DIRECTORY=${IOS_PROJECT_DIR}/${APP_NAME}
 
-echo "Creating ${IOS_PROJECT_DIR}/Package.swift with Product '${APP_NAME}'"
+echo "Creating ${IOS_PROJECT_DIR}/Package.swift for Swift Package Manager with Product '${APP_NAME}'"
 cp "${TEMPLATE_PATH}/Package.swift" .
 
 
