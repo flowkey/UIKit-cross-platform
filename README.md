@@ -47,8 +47,6 @@ How to run it on different platforms:
 
 1. Delete Storyboards, in a new project the following two files: `Main.storyboard`, `LaunchScreen.storyboard`
 2. Remove your deleted Storyboards from `Info.plist`
-![Info.plist - deletions](https://user-images.githubusercontent.com/10008938/42874868-85e1ed68-8a82-11e8-84f8-678fe6cbf5f4.png)
-
 
 ### File modifications for an iOS Project
 
@@ -86,7 +84,7 @@ UIApplicationMain(0, nil, nil, NSStringFromClass(AppDelegate.self))
 The recommended way is to use `git submodules` to add it to an `UIKit` subdirectory.
 In order to do so use the following command:
 ```
-git submodule add git@github.com:flowkey/UIKit-cross-platform.git UIKit && cd UIKit && git submodule update --init --recursive
+git submodule add git@github.com:flowkey/UIKit-cross-platform.git UIKit && git submodule update --init --recursive UIKit
 ```
 
 ### Android Studio Setup
