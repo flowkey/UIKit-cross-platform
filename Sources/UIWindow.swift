@@ -12,14 +12,15 @@ public class UIWindow: UIView {
     }
 
     open func makeKeyAndVisible() {
-        SDL.window = self
+        UIApplication.shared?.keyWindow = self
 
         if let viewController = rootViewController {
             viewController.loadViewIfNeeded()
+            viewController.next = self // set responder before viewWillAppear etc.
             viewController.view.frame = self.bounds
-            viewController.view.backgroundColor = nil
+            viewController.viewWillAppear(false)
             addSubview(viewController.view)
-            viewController.next = self // set responder
+            viewController.viewDidAppear(false)
         }
     }
 

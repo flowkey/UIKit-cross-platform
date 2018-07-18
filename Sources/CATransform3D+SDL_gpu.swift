@@ -14,7 +14,7 @@ extension CATransform3D {
         let currentMatrix = UnsafeMutableBufferPointer(start: GPU_GetCurrentMatrix(), count: 16)
 
         // We could copy currentMatrix to a CATransform3D and save some code here,
-        // but we do this thousands of a time a second so it makes sense to save ourselves from making a copy:
+        // but we do this thousands of times a second so it's worth saving ourselves from making a copy:
         if
             currentMatrix[0] == m11, currentMatrix[1] == m12, currentMatrix[2] == m13, currentMatrix[3] == m14,
             currentMatrix[4] == m21, currentMatrix[5] == m22, currentMatrix[6] == m23, currentMatrix[7] == m24,

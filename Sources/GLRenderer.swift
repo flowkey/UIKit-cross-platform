@@ -12,7 +12,7 @@ import func Foundation.round
 
 internal final class GLRenderer {
     private let rawPointer: UnsafeMutablePointer<GPU_Target>
-    internal let size: CGSize
+    internal let bounds: CGRect
     internal let scale: CGFloat
 
     // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
@@ -29,7 +29,7 @@ internal final class GLRenderer {
         var size = CGSize.zero
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
     #else
-        var size: CGSize = .samsungGalaxyS7
+        var size = CGSize.samsungGalaxyS7.landscape
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
             //SDL_WINDOW_FULLSCREEN
@@ -62,11 +62,11 @@ internal final class GLRenderer {
             scale = CGFloat(rawPointer.pointee.base_h) / CGFloat(rawPointer.pointee.h)
         #endif
 
-        
-        self.size = size
         if size == .zero {
             preconditionFailure("You need window dimensions to run")
         }
+
+        self.bounds = CGRect(origin: .zero, size: size)
 
         // Fixes video surface visibility with transparent & opaque views in SDLSurface above
         // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
@@ -232,4 +232,21 @@ private extension CGSize {
     static let samsungGalaxyTab10 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
     static let samsungGalaxyTabA_T380 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
     static let samsungGalaxyTabA_T580 = CGSize(width: 1920 / 1.0, height: 1200 / 1.0)
+    
+    // change orientation if needed
+    var landscape: CGSize {
+        if self.width >= self.height {
+            return self
+        } else {
+            return CGSize(width: self.height, height: self.width)
+        }
+    }
+    
+    var portrait: CGSize {
+        if self.width <= self.height {
+            return self
+        } else {
+            return CGSize(width: self.height, height: self.width)
+        }
+    }
 }

@@ -5,9 +5,9 @@ open class UIViewController: UIResponder {
             loadViewIfNeeded()
             return _view
         }
-        set {
-            _view = newValue
-            newValue.next = self
+        set(view) {
+            _view = view
+            view.next = self
             viewDidLoad()
         }
     }
@@ -33,6 +33,10 @@ open class UIViewController: UIResponder {
         }
     }
 
+    public override convenience init () {
+        self.init(nibName: nil, bundle: nil)
+    }
+
     public func loadViewIfNeeded() {
         if !viewIsLoaded {
             loadView()
@@ -41,7 +45,6 @@ open class UIViewController: UIResponder {
 
     open func loadView() {
         view = UIView()
-        view.backgroundColor = .white
     }
 
     // Most of these methods are designed to be overriden in `UIViewController` subclasses
@@ -52,6 +55,7 @@ open class UIViewController: UIResponder {
     open func viewDidDisappear(_ animated: Bool) {}
 
     open func viewWillLayoutSubviews() {}
+    open func viewDidLayoutSubviews() {}
 
     internal var animationTime: Double { return 0.4 }
 
@@ -77,7 +81,6 @@ open class UIViewController: UIResponder {
         otherViewController.makeViewAppear(animated: animated, presentingViewController: self)
         otherViewController.viewDidAppear(animated)
 
-        otherViewController.viewWillLayoutSubviews()
         otherViewController.view.layoutSubviews()
 
         completion?()
@@ -119,6 +122,15 @@ open class UIViewController: UIResponder {
         self.dismiss(animated: true)
         return true
     }
+
+    /// This is just to provide compatibility with iOS for now, but we could feasibly
+    /// use this property to e.g. put an Android device in "Immersive Mode" or similar.
+    open func prefersHomeIndicatorAutoHidden() -> Bool {
+        return false
+    }
+
+    /// Currently not implemented
+    open func didReceiveMemoryWarning() {}
 
 
     // MARK: Mocking UIPresentationController with these two methods for now!
