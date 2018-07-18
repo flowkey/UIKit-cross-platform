@@ -31,10 +31,7 @@ extension UIView {
         currentAnimationPrototype = nil
     }
 
-    public static func animate(
-        withDuration duration: Double,
-        animations: () -> Void
-    ) {
+    public static func animate(withDuration duration: Double, _ animations: () -> Void) {
         UIView.animate(
             withDuration: duration,
             delay: 0,
