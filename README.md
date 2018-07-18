@@ -36,9 +36,7 @@ How to run it on different platforms:
     2. Adjust your [AppDelegate.swift](#Existing-AppDelegate.swift)
     3. Create a [main.swift](#New-main.swift)
 3. [Add UIKit-cross-platform to your project](#adding-UIKit-cross-platform)
-
-
-4. Run ` ./UIKit/createAndroidProject`
+4. Run ` ./UIKit/create-android-project`
 5. Open `./android` folder in Android Studio and press "run" button
 
 ## Setup details
