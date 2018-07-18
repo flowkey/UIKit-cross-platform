@@ -7,29 +7,29 @@
 
 UIKit-crossplatform is a **UI framework** for native apps, which enables **code targeting iOS UIKit** to run on other platforms, particularly on **Android**.<br>
 
-## Architecture
+## How does it work
 
-UIKit-crossplatform renders using [SDL_gpu](https://github.com/grimfang4/sdl-gpu) which uses [OpenGL](https://www.opengl.org/).
+UIKit-cross-platform renders with [SDL_gpu](https://github.com/grimfang4/sdl-gpu) which uses [OpenGL(ES)](https://www.opengl.org/).
 On Android [Swift Package Manager](https://github.com/apple/swift-package-manager) compiles Swift Code into native binaries, which are called through the [NDK](https://developer.android.com/ndk/).
 
 ![uikit-architecture](https://user-images.githubusercontent.com/10008938/42819122-e147ca8e-89d2-11e8-8227-454a98963953.png)
 
 [ARCHITECTURE.md](docs/ARCHITECTURE.md) provides more detailed information about the architecture.
 
-## Quick start
+## How run an iOS Project on Android
 
 1. Create new iOS Project or open an existing one
 2. Prepare your iOS Project
     1. Remove storyboards
     2. Adjust your [AppDelegate.swift](#Existing-AppDelegate.swift)
     3. Create a [main.swift](#New-main.swift)
-3. Get UIKit and install git submodules
-4. Assuming you have a `UIKit` directory in the root of your project run ` ./UIKit/cli create-from-ios` to create a new android project from your existing iOS project
+3. [Add UIKit-cross-platform to your project](#adding-UIKit-cross-platform)
+4. Run ` ./UIKit/cli create-from-ios` to create a new android project from your existing iOS project
 5. Open `android` folder in Android Studio and press "run" button
 
 ## Setup details
 
-### File modifications
+### File modifications for an iOS Project
 
 #### Existing `AppDelegate.swift`:
 - Remove `@UIApplicationMain` attribute and make the class `final`
@@ -57,6 +57,17 @@ import Foundation
 
 UIApplicationMain(0, nil, nil, NSStringFromClass(AppDelegate.self))
 ```
+
+### Adding UIKit-cross-platform
+
+Prior to usage `UIKit-cross-platform` has to be added as a dependency to your project including its subdependencies.
+
+The recommended way is to use `git submodules` to add it to an `UIKit` subdirectory.
+In order to do so use the following command:
+```
+git submodule add git@github.com:flowkey/UIKit-cross-platform.git UIKit && cd UIKit && git submodule update --init --recursive
+```
+
 
 ## API documentation
 
