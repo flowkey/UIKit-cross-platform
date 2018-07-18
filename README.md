@@ -18,13 +18,14 @@ On Android [Swift Package Manager](https://github.com/apple/swift-package-manage
 
 ## Quick start
 
-1. Setup the [UIKit-cross-platform-cli](https://github.com/flowkey/UIKit-cross-platform-cli)
+1. Create new iOS Project or open an existing one
 2. Prepare your iOS Project
     1. Remove storyboards
     2. Adjust your [AppDelegate.swift](#Existing-AppDelegate.swift)
     3. Create a [main.swift](#New-main.swift)
-3. Run `uikit-cross-platform create` and follow the steps
-4. Open `android` folder in Android Studio and press "run" button
+3. Get UIKit and install git submodules
+4. Assuming you have a `UIKit` directory in the root of your project run ` ./UIKit/cli create-from-ios` to create a new android project from your existing iOS project
+5. Open `android` folder in Android Studio and press "run" button
 
 ## Setup details
 
