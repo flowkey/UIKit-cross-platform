@@ -16,64 +16,25 @@ On Android [Swift Package Manager](https://github.com/apple/swift-package-manage
 
 [ARCHITECTURE.md](docs/ARCHITECTURE.md) provides more detailed information about the architecture.
 
-## Try it out yourself
+## Try out the demo app
 
 This project includes a DemoApp which runs on iOS, Android and Mac.
 
 How to run it on different platforms:
-1. Clone this project and run `git submodule update --init --recursive`
+1. Clone this project, `cd` into it and run `git submodule update --init --recursive`
 2. Open `./samples/getting-started/DemoApp.xcodeproj` in Xcode
     1. Run `DemoApp` target for the **iOS App**
     2. Run `DemoAppMac` target for the **Mac App**
-3. Open `./samples/getting-started/android` with Android Studio ([install SDKs if necessary](Android-Studio-Setup))
+3. Open `./samples/getting-started/android` with Android Studio ([install Android SDKs if necessary](#Android-Studio-Setup))
 4. Connect an Android device and press "Run" for the **Android App**
 
-## How run an iOS Project on Android
+## How run your iOS Project on Android
 
 1. Create new iOS Project or open an existing one
-2. Prepare your iOS Project
-    1. [Remove storyboards](#Storyboards-cleanup)
-    2. Adjust your [AppDelegate.swift](#Existing-AppDelegate.swift)
-    3. Create a [main.swift](#New-main.swift)
+2. [Prepare your iOS Project](docs/PREPARE_IOS_PROJECT.md)
 3. [Add UIKit-cross-platform to your project](#adding-UIKit-cross-platform)
-4. Run ` ./UIKit/create-android-project`
+4. Run ` ./UIKit/create-android-project` from the root of your iOS project
 5. Open `./android` folder in Android Studio and press "run" button
-
-## Setup details
-
-### Storyboards cleanup
-
-1. Delete Storyboards, in a new project the following two files: `Main.storyboard`, `LaunchScreen.storyboard`
-2. Remove your deleted Storyboards from `Info.plist`
-
-### File modifications for an iOS Project
-
-#### Existing `AppDelegate.swift`:
-- Remove `@UIApplicationMain` attribute and make the class `final`
-```
-//@UIApplicationMain
-final class AppDelegate: UIResponder, UIApplicationDelegate {
-    ...
-```
-- Initialize `UIWindow` and `ViewController` in `application` function
-```
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-
-        window = UIWindow()
-        window?.rootViewController = ViewController()
-        window?.makeKeyAndVisible()
-
-        return true
-    }
-```
-
-#### New `main.swift`:
-```
-import UIKit
-import Foundation
-
-UIApplicationMain(0, nil, nil, NSStringFromClass(AppDelegate.self))
-```
 
 ### Adding UIKit-cross-platform
 
@@ -94,7 +55,6 @@ git submodule add git@github.com:flowkey/UIKit-cross-platform.git UIKit && git s
     3. In SDK Platforms: apply checkboxes for API Levels 26 and 27
     4. In SDK Tools: apply checkboxes for CMake, NDK, LLDB, Android SDK Build Tools, Android SDK Platform Tools
     5. Press Apply / OK to install SDKs
-
 
 ## API documentation
 
@@ -117,6 +77,8 @@ For additional information please refer to our [contribution guidelines](docs/CO
 ## FAQs / Troubleshooting
 
 *TBD*
+
+Please contact us regarding upcoming issues on [Slack](https://uikit-cross-platform.slack.com/) or create an [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose)
 
 ## License
 
