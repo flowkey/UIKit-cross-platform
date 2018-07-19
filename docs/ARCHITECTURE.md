@@ -3,7 +3,7 @@
 *WORK IN PROGRESS*
 
 ## Overview
-![overall-architecture](https://user-images.githubusercontent.com/10008938/42819122-e147ca8e-89d2-11e8-8227-454a98963953.png)
+![overall-architecture](https://user-images.githubusercontent.com/10008938/42947401-84bbd778-8b6d-11e8-992b-d0625b1fe1e9.png)
 
 UIKit-cross-platform is based on the following APIs for rendering and accessing other device functionatlities:
 - [SDL_gpu](https://github.com/grimfang4/sdl-gpu) for graphics rendering

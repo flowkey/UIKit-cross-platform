@@ -12,20 +12,18 @@ UIKit-crossplatform is a **UI framework** for native apps, which enables **code 
 UIKit-cross-platform renders with [SDL_gpu](https://github.com/grimfang4/sdl-gpu) which uses [OpenGL(ES)](https://www.opengl.org/).
 On Android [Swift Package Manager](https://github.com/apple/swift-package-manager) compiles Swift Code into native binaries, which are called through the [NDK](https://developer.android.com/ndk/).
 
-![uikit-architecture](https://user-images.githubusercontent.com/10008938/42819122-e147ca8e-89d2-11e8-8227-454a98963953.png)
+[More detailed information about the architecture can be found here](docs/ARCHITECTURE.md)
 
-[ARCHITECTURE.md](docs/ARCHITECTURE.md) provides more detailed information about the architecture.
-
-## Try out the demo app
+## Try out the demo
 
 This project includes a DemoApp which runs on iOS, Android and Mac.
 
 How to run it on different platforms:
 1. Clone this project, `cd` into it and run `git submodule update --init --recursive`
-2. Open `./samples/getting-started/DemoApp.xcodeproj` in Xcode
+2. Open `./samples/getting-started/DemoApp.xcodeproj` in [Xcode](https://developer.apple.com/xcode/)
     1. Run `DemoApp` target for the **iOS App**
     2. Run `DemoAppMac` target for the **Mac App**
-3. Open `./samples/getting-started/android` with Android Studio ([install Android SDKs if necessary](#android-Studio-Setup))
+3. Open `./samples/getting-started/android` with [Android Studio](https://developer.android.com/studio/) ([install Android SDKs if necessary](#android-studio-setup))
 4. Connect an Android device and press "Run" for the **Android App**
 
 ## How to run your iOS Project on Android
@@ -62,12 +60,6 @@ git submodule add git@github.com:flowkey/UIKit-cross-platform.git UIKit && git s
 
 This framework uses the [Apple UIKit](https://developer.apple.com/documentation/uikit) API, therefore the official Apple Docs serve as documentation for the already implemented features.
 
-## Feature Coverage
-
-This framework currently covers ~40% of the Apple UIKit API.
-
-[Our Feature Coverage can be found here (*Work In Progress*)](docs/FEATURE_COVERAGE.md).
-
 ## How to contribute
 
 Contributions are *very welcome* and *helpful* 🙌
@@ -78,10 +70,10 @@ For additional information please refer to our [contribution guidelines](docs/CO
 
 ## FAQs / Troubleshooting
 
-[Our FAQs can be found here (*Work In Progress*)](docs/FAQs.md). 
+[Our FAQs can be found here (*Work In Progress*)](docs/FAQs.md).
 
 Please contact us regarding upcoming issues on [Slack](https://uikit-cross-platform.slack.com/) or create a new [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
 
 ## License
 
-UIKit-cross-platform is free software; you can redistribute it and/or modify it under the terms of the MIT License.
+UIKit-cross-platform is free software; you can redistribute it and/or modify it under the terms of the [MIT License](LICENSE).
