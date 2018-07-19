@@ -25,7 +25,7 @@ How to run it on different platforms:
 2. Open `./samples/getting-started/DemoApp.xcodeproj` in Xcode
     1. Run `DemoApp` target for the **iOS App**
     2. Run `DemoAppMac` target for the **Mac App**
-3. Open `./samples/getting-started/android` with Android Studio ([install Android SDKs if necessary](#Android-Studio-Setup))
+3. Open `./samples/getting-started/android` with Android Studio ([install Android SDKs if necessary](#android-Studio-Setup))
 4. Connect an Android device and press "Run" for the **Android App**
 
 ## How run your iOS Project on Android
