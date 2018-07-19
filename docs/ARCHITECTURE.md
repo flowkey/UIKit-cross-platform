@@ -1,5 +1,7 @@
 # Architecture
 
+*WORK IN PROGRESS*
+
 ## Overview
 ![overall-architecture](https://user-images.githubusercontent.com/10008938/42819122-e147ca8e-89d2-11e8-8227-454a98963953.png)
 
@@ -16,6 +18,6 @@ On Android the compiled Swift Code is called through the [JNI (Java Native Inter
 
 ## Rendering
 
-This illustration shows with the example of a `Button` how the rendering hierarchy works based on `SDL_gpu`
+This illustration shows with the example of a `Button` how the rendering hierarchy works based on `SDL_gpu`.
 
-![rendering-details](https://user-images.githubusercontent.com/10008938/27796338-f6831442-6009-11e7-8ec8-fa5e092136fe.png)
+![rendering button](https://user-images.githubusercontent.com/10008938/42941570-7bb8d65e-8b5d-11e8-84e7-65296d0c3eaf.png)
