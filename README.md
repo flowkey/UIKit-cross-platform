@@ -7,6 +7,10 @@
 
 UIKit-cross-platform is a **UI framework** for native apps, which enables **code targeting iOS UIKit** to run on other platforms, particularly on **Android**.<br>
 
+## Goal
+Currently in mobile development apps have to be written twice, for iOS and Android, or native performace has to be sacrificed with a cross-platform solution such as React Native.<br>
+This frameworks aims to combine both advantages, having **native performance** and **writing code only once** but still keeping a native look & feel.
+
 ## How to run your iOS Project on Android
 
 1. Create new iOS Project or open an existing one
