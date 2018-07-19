@@ -76,9 +76,9 @@ For additional information please refer to our [contribution guidelines](docs/CO
 
 ## FAQs / Troubleshooting
 
-*TBD*
+[Our FAQs can be found here](docs/FAQs.md). 
 
-Please contact us regarding upcoming issues on [Slack](https://uikit-cross-platform.slack.com/) or create an [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose)
+Please contact us regarding upcoming issues on [Slack](https://uikit-cross-platform.slack.com/) or create a new [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
 
 ## License
 
