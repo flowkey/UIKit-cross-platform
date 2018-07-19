@@ -1,3 +1,4 @@
 # Feature Coverage
 
-*// expand on Janek's feature coverage draft on the `doc-feature-coverage` branch*
+This is still *WORK IN PROGRESS*. Please check again at a later point in time.
+
