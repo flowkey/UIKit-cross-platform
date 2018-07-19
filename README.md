@@ -1,11 +1,11 @@
 # UIKit-cross-platform
 
-[![CircleCI](https://circleci.com/gh/flowkey/UIKit-cross-platform.svg?style=shield&circle-token=2bc60653f4bb369754b04d97d324d9ba2bee6c6b)](https://circleci.com/gh/flowkey/UIKit-SDL)
+[![CircleCI](https://circleci.com/gh/flowkey/UIKit-cross-platform.svg?style=shield&circle-token=2bc60653f4bb369754b04d97d324d9ba2bee6c6b)](https://circleci.com/gh/flowkey/UIKit-cross-platform)
 [![Swift4.1](https://img.shields.io/badge/swift-4.1-orange.svg?style=flat)](https://swift.org/)
 [![Platforms](https://img.shields.io/badge/platform-Android%20%7C%20macOS-lightgrey.svg)](https://swift.org/)
 [![License](https://img.shields.io/badge/license-MIT-71787A.svg)](https://tldrlegal.com/license/mit-license)
 
-UIKit-crossplatform is a **UI framework** for native apps, which enables **code targeting iOS UIKit** to run on other platforms, particularly on **Android**.<br>
+UIKit-cross-platform is a **UI framework** for native apps, which enables **code targeting iOS UIKit** to run on other platforms, particularly on **Android**.<br>
 
 ## How does it work
 
@@ -30,7 +30,7 @@ How to run it on different platforms:
 
 1. Create new iOS Project or open an existing one
 2. [Prepare your iOS Project](docs/PREPARE_IOS_PROJECT.md)
-3. [Add UIKit-cross-platform to your project](#adding-UIKit-cross-platform)
+3. [Add UIKit-cross-platform to your project](#adding-uikit-cross-platform)
 4. Run ` ./UIKit/create-android-project` from the root of your iOS project
 5. Open `./android` folder in Android Studio and press "run" button
 
