@@ -7,12 +7,13 @@
 
 UIKit-cross-platform is a **UI framework** for native apps, which enables **code targeting iOS UIKit** to run on other platforms, particularly on **Android**.<br>
 
-## How does it work
+## How to run your iOS Project on Android
 
-UIKit-cross-platform renders with [SDL_gpu](https://github.com/grimfang4/sdl-gpu) which uses [OpenGL(ES)](https://www.opengl.org/).
-On Android [Swift Package Manager](https://github.com/apple/swift-package-manager) compiles Swift Code into native binaries, which are called through the [NDK](https://developer.android.com/ndk/).
-
-[More detailed information about the architecture can be found here](docs/ARCHITECTURE.md)
+1. Create new iOS Project or open an existing one
+2. [Prepare your iOS Project](docs/PREPARE_IOS_PROJECT.md)
+3. [Add UIKit-cross-platform to your project](#adding-uikit-cross-platform)
+4. Run ` ./UIKit/create-android-project` from the root of your iOS project
+5. Open `./android` folder in Android Studio and press "run" button
 
 ## Try out the demo
 
@@ -25,14 +26,6 @@ How to run it on different platforms:
     2. Run `DemoAppMac` target for the **Mac App**
 3. Open `./samples/getting-started/android` with [Android Studio](https://developer.android.com/studio/) ([install Android SDKs if necessary](#android-studio-setup))
 4. Connect an Android device and press "Run" for the **Android App**
-
-## How to run your iOS Project on Android
-
-1. Create new iOS Project or open an existing one
-2. [Prepare your iOS Project](docs/PREPARE_IOS_PROJECT.md)
-3. [Add UIKit-cross-platform to your project](#adding-uikit-cross-platform)
-4. Run ` ./UIKit/create-android-project` from the root of your iOS project
-5. Open `./android` folder in Android Studio and press "run" button
 
 ## Additional setup instructions
 
@@ -55,6 +48,13 @@ git submodule add git@github.com:flowkey/UIKit-cross-platform.git UIKit && git s
     3. In SDK Platforms: apply checkboxes for API Levels 26 and 27
     4. In SDK Tools: apply checkboxes for CMake, NDK, LLDB, Android SDK Build Tools, Android SDK Platform Tools
     5. Press Apply / OK to install SDKs
+
+## Architecture
+
+UIKit-cross-platform renders with [SDL_gpu](https://github.com/grimfang4/sdl-gpu) which uses [OpenGL(ES)](https://www.opengl.org/).
+On Android [Swift Package Manager](https://github.com/apple/swift-package-manager) compiles Swift Code into native binaries, which are called through the [NDK](https://developer.android.com/ndk/).
+
+[More detailed information about the architecture can be found here](docs/ARCHITECTURE.md)
 
 ## API documentation
 
