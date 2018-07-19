@@ -28,7 +28,7 @@ How to run it on different platforms:
 3. Open `./samples/getting-started/android` with Android Studio ([install Android SDKs if necessary](#android-Studio-Setup))
 4. Connect an Android device and press "Run" for the **Android App**
 
-## How run your iOS Project on Android
+## How to run your iOS Project on Android
 
 1. Create new iOS Project or open an existing one
 2. [Prepare your iOS Project](docs/PREPARE_IOS_PROJECT.md)
