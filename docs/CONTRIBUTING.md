@@ -15,7 +15,7 @@ This project and everyone participating in it is governed by our [Code of Conduc
 
 ## Issues
 
-To report a bug, you can use [this template](https://github.com/flowkey/UIKit-cross-platform/issues/new?template=bug.md).
+To report a bug [click here](https://github.com/flowkey/UIKit-cross-platform/issues/new?template=bug.md).
 
 When you're starting to look into fixing a bug, create a WIP PR that you mention in the original issue. This way, we ensure that everyone interested can share their thoughts, and duplicate work is prevented.
 
@@ -23,7 +23,7 @@ Adding tests is a great way to help preventing future bugs.
 
 ## Features
 
-To request a new feature, you can use [this template](https://github.com/flowkey/UIKit-cross-platform/issues/new?template=feature.md).
+To request a new feature [click here](https://github.com/flowkey/UIKit-cross-platform/issues/new?template=feature.md).
 
 To contribute features or API changes, it's best to start a discussion in an issue first, ideally with a proposal. This allows everyone to participate and ensures that no potential implementation work is in vain.
 
