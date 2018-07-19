@@ -36,6 +36,8 @@ How to run it on different platforms:
 4. Run ` ./UIKit/create-android-project` from the root of your iOS project
 5. Open `./android` folder in Android Studio and press "run" button
 
+## Additional setup instructions
+
 ### Adding UIKit-cross-platform
 
 `UIKit-cross-platform` has to be added as a dependency to your project including its subdependencies.
@@ -64,19 +66,19 @@ This framework uses the [Apple UIKit](https://developer.apple.com/documentation/
 
 This framework currently covers ~40% of the Apple UIKit API.
 
-[FEATURE_COVERAGE.md](docs/FEATURE_COVERAGE.md) provides more details about which features are currently covered and how to request new features.
+[Our Feature Coverage can be found here (*Work In Progress*)](docs/FEATURE_COVERAGE.md).
 
 ## How to contribute
 
 Contributions are *very welcome* and *helpful* 🙌
 
-If you are looking for a feature or find a bug, please create an [issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
+If you are looking for a feature or find a bug, please create an [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
 
 For additional information please refer to our [contribution guidelines](docs/CONTRIBUTING.md).
 
 ## FAQs / Troubleshooting
 
-[Our FAQs can be found here](docs/FAQs.md). 
+[Our FAQs can be found here (*Work In Progress*)](docs/FAQs.md). 
 
 Please contact us regarding upcoming issues on [Slack](https://uikit-cross-platform.slack.com/) or create a new [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
 
