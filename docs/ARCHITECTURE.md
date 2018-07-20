@@ -20,4 +20,4 @@ On Android the compiled Swift Code is called through the [JNI (Java Native Inter
 
 This illustration shows with the example of a `Button` how the rendering hierarchy works based on `SDL_gpu`.
 
-![rendering button](https://user-images.githubusercontent.com/10008938/42941570-7bb8d65e-8b5d-11e8-84e7-65296d0c3eaf.png)
+![uikit_rendering_button](https://user-images.githubusercontent.com/10008938/43000101-6a3a2522-8c20-11e8-895b-89d0c0942990.png)
