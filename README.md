@@ -19,7 +19,7 @@ This framework aims to combine both advantages, having **native performance** an
 2. [Prepare your iOS Project](docs/PREPARE_IOS_PROJECT.md)
 3. [Add UIKit-cross-platform to your project](#adding-uikit-cross-platform)
 4. Run ` ./UIKit/create-android-project` from the root of your iOS project
-5. Open `./android` folder in Android Studio and press "run" button
+5. Open `./android` folder in [Android Studio](https://developer.android.com/studio/) ([install Android SDKs if necessary](#android-studio-setup)) and press "run" button
 
 ## Try out the demo
 
