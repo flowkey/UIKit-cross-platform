@@ -4,13 +4,14 @@
 [![License](https://img.shields.io/badge/license-MIT-71787A.svg)](https://tldrlegal.com/license/mit-license)
 # UIKit-cross-platform
 
-### The missing part to make your Swift UI Code work on Android
+### Your Swift UI Code on Android
 
 UIKit-cross-platform is a **UI framework** for native apps, which enables **code targeting iOS UIKit** to run on other platforms, particularly on **Android**.<br>
 
 ## Goal
-Currently in mobile development apps have to be written twice, for iOS and Android, or native performace has to be sacrificed with a cross-platform solution such as React Native.<br>
-This frameworks aims to combine both advantages, having **native performance** and **writing code only once** but still keeping a native look & feel.
+Currently in mobile development apps have to be written twice, for iOS and Android, or native performance has to be sacrificed with a cross-platform solution such as React Native.
+
+This framework aims to combine both advantages, having **native performance** and **writing code only once** but still keeping a native look & feel.
 
 ## How to run your iOS Project on Android
 
@@ -56,8 +57,9 @@ git submodule add git@github.com:flowkey/UIKit-cross-platform.git UIKit && git s
 
 ## Architecture
 
-UIKit-cross-platform renders with [SDL_gpu](https://github.com/grimfang4/sdl-gpu) which uses [OpenGL(ES)](https://www.opengl.org/).
-On Android [Swift Package Manager](https://github.com/apple/swift-package-manager) compiles Swift Code into native binaries, which are called through the [NDK](https://developer.android.com/ndk/).
+UIKit-cross-platform renders with [SDL_gpu](https://github.com/grimfang4/sdl-gpu) which translates down to lower-level [OpenGL](https://www.opengl.org/) instructions.
+
+On Android, [Swift Package Manager](https://github.com/apple/swift-package-manager) compiles Swift Code into native binaries, which are called through the [NDK](https://developer.android.com/ndk/).
 
 [More detailed information about the architecture can be found here](docs/ARCHITECTURE.md)
 
