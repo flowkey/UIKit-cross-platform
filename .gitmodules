@@ -6,4 +6,4 @@
 	url = git@github.com:SwiftAndroid/swift-jni.git
 [submodule "swift-android-toolchain"]
     path = swift-android-toolchain
-    url = https://github.com/flowkey/swift-mac-toolchain.git
+    url = git@github.com:flowkey/swift-android-toolchain.git
