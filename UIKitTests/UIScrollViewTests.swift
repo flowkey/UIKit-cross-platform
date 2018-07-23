@@ -98,10 +98,6 @@ class UIScrollViewTests: XCTestCase {
 
     // TODO: test final position. [blocked by setting contentOffset programatically - test behaviour in iOS]
 
-    func testIfScrollIndicatorsAreAccurate() {
-        // TODO: how?
-    }
-
     func testIfScrollViewBouncesBackAferPullIfNeeded() {
         // TODO: test setting inset and bouncing after it's implented in ScrollView
     }

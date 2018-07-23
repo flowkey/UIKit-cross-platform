@@ -56,12 +56,6 @@ open class UIScrollView: UIView {
         )
     }
 
-    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
-        didSet { applyScrollIndicatorsStyle() }
-    }
-
-    // TODO: var scrollIndicatorInsets
-
     var weightedAverageVelocity: CGPoint = .zero
 
     override public init(frame: CGRect) {
@@ -75,6 +69,22 @@ open class UIScrollView: UIView {
         [horizontalScrollIndicator, verticalScrollIndicator].forEach {
             $0.alpha = 0
             addSubview($0)
+        }
+    }
+    
+    open override func addSubview(_ view: UIView) {
+        if view == horizontalScrollIndicator || view == verticalScrollIndicator {
+            super.addSubview(view)
+        } else {
+            super.insertSubview(view, at: subviews.count - 2)
+        }
+    }
+    
+    open override func insertSubview(_ view: UIView, at index: Int) {
+        if index > subviews.count - 2 {
+            super.insertSubview(view, at: subviews.count - 2)
+        } else {
+            super.insertSubview(view, at: index)
         }
     }
 
@@ -120,10 +130,29 @@ open class UIScrollView: UIView {
     open var contentInset: UIEdgeInsets = .zero
     open var contentSize: CGSize = .zero
 
-
     // MARK: Scroll Indicators
 
     let indicatorThickness: CGFloat = 2.5
+    
+    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
+        didSet { applyScrollIndicatorsStyle() }
+    }
+    
+    private var customScrollIndicatorInsets = UIEdgeInsets.zero
+    private let baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
+    
+    public var scrollIndicatorInsets: UIEdgeInsets {
+        get {
+            let totalScrollIndicatorInsets = UIEdgeInsets(top: baseScrollIndicatorInsets.top + customScrollIndicatorInsets.top,
+                                                          left: baseScrollIndicatorInsets.left + customScrollIndicatorInsets.left,
+                                                          bottom: baseScrollIndicatorInsets.bottom + customScrollIndicatorInsets.bottom,
+                                                          right: baseScrollIndicatorInsets.right + customScrollIndicatorInsets.right)
+            return totalScrollIndicatorInsets
+        }
+        set (newValue) {
+            customScrollIndicatorInsets = newValue
+        }
+    }
 
     private func applyScrollIndicatorsStyle() {
         for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
