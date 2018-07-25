@@ -31,11 +31,11 @@ internal extension UIScrollView {
             vertical: (contentInset.top + contentOffset.y) / (totalContentArea.vertical - bounds.height)
         )
 
-        let bothIndicatorsShowing = shouldLayoutHorizontalScrollIndicator && shouldLayoutVerticalScrollIndicator
+        let shouldShowBothIndicators = shouldLayoutHorizontalScrollIndicator && shouldLayoutVerticalScrollIndicator
 
         let additionalSpacingToPreventOverlap = (
-            horizontal: bothIndicatorsShowing ? 2 * indicatorDistanceFromScrollViewFrame : 0,
-            vertical: bothIndicatorsShowing ? indicatorDistanceFromScrollViewFrame : 0
+            horizontal: shouldShowBothIndicators ? 2 * indicatorDistanceFromScrollViewFrame : 0,
+            vertical: shouldShowBothIndicators ? indicatorDistanceFromScrollViewFrame : 0
         )
 
         let totalSpacingFromFrameSides = (
