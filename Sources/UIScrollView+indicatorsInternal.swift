@@ -39,8 +39,8 @@ internal extension UIScrollView {
         )
 
         let totalSpacingFromFrameSides = (
-            horizontal: scrollIndicatorInsets.left + scrollIndicatorInsets.right + additionalSpacingToPreventOverlap.horizontal,
-            vertical: scrollIndicatorInsets.bottom + scrollIndicatorInsets.top + additionalSpacingToPreventOverlap.vertical
+            horizontal: totalScrollIndicatorInsets.left + totalScrollIndicatorInsets.right + additionalSpacingToPreventOverlap.horizontal,
+            vertical: totalScrollIndicatorInsets.bottom + totalScrollIndicatorInsets.top + additionalSpacingToPreventOverlap.vertical
         )
 
         let lengthOfAvailableSpaceForIndicators = (
@@ -71,13 +71,13 @@ internal extension UIScrollView {
         guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
         
         let distanceFromFrame = (
-            horizontal: indicatorThickness + scrollIndicatorInsets.bottom,
-            vertical: indicatorThickness + scrollIndicatorInsets.right
+            horizontal: indicatorThickness + totalScrollIndicatorInsets.bottom,
+            vertical: indicatorThickness + totalScrollIndicatorInsets.right
         )
 
         if shouldLayoutHorizontalScrollIndicator {
             horizontalScrollIndicator.frame = CGRect(
-                x: scrollIndicatorInsets.left + indicatorOffsetsInContentSpace.horizontal,
+                x: totalScrollIndicatorInsets.left + indicatorOffsetsInContentSpace.horizontal,
                 y: bounds.height + contentOffset.y - distanceFromFrame.horizontal,
                 width: indicatorLengths.horizontal,
                 height: indicatorThickness
@@ -87,7 +87,7 @@ internal extension UIScrollView {
         if shouldLayoutVerticalScrollIndicator {
             verticalScrollIndicator.frame = CGRect(
                 x: bounds.width + contentOffset.x - distanceFromFrame.vertical,
-                y: scrollIndicatorInsets.top + indicatorOffsetsInContentSpace.vertical,
+                y: totalScrollIndicatorInsets.top + indicatorOffsetsInContentSpace.vertical,
                 width: indicatorThickness,
                 height: indicatorLengths.vertical
             )

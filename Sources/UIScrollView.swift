@@ -135,20 +135,15 @@ open class UIScrollView: UIView {
         didSet { applyScrollIndicatorsStyle() }
     }
     
-    private var customScrollIndicatorInsets = UIEdgeInsets.zero
     private let baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
-    
-    public var scrollIndicatorInsets: UIEdgeInsets {
-        get {
-            let totalScrollIndicatorInsets = UIEdgeInsets(top: baseScrollIndicatorInsets.top + customScrollIndicatorInsets.top,
-                                                          left: baseScrollIndicatorInsets.left + customScrollIndicatorInsets.left,
-                                                          bottom: baseScrollIndicatorInsets.bottom + customScrollIndicatorInsets.bottom,
-                                                          right: baseScrollIndicatorInsets.right + customScrollIndicatorInsets.right)
-            return totalScrollIndicatorInsets
-        }
-        set (newValue) {
-            customScrollIndicatorInsets = newValue
-        }
+    public var scrollIndicatorInsets = UIEdgeInsets.zero
+
+
+    var totalScrollIndicatorInsets: UIEdgeInsets {
+        return UIEdgeInsets(top: baseScrollIndicatorInsets.top + scrollIndicatorInsets.top,
+                            left: baseScrollIndicatorInsets.left + scrollIndicatorInsets.left,
+                            bottom: baseScrollIndicatorInsets.bottom + scrollIndicatorInsets.bottom,
+                            right: baseScrollIndicatorInsets.right + scrollIndicatorInsets.right)
     }
 
     private func applyScrollIndicatorsStyle() {
