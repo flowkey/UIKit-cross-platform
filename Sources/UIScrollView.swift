@@ -72,6 +72,7 @@ open class UIScrollView: UIView {
         }
     }
     
+    // When adding subviews, make sure that the scroll indicators stay on top
     open override func addSubview(_ view: UIView) {
         if view == horizontalScrollIndicator || view == verticalScrollIndicator {
             super.addSubview(view)
@@ -81,11 +82,7 @@ open class UIScrollView: UIView {
     }
     
     open override func insertSubview(_ view: UIView, at index: Int) {
-        if index > subviews.count - 2 {
-            super.insertSubview(view, at: subviews.count - 2)
-        } else {
-            super.insertSubview(view, at: index)
-        }
+        super.insertSubview(view, at: min(index, subviews.count - 2))
     }
 
     open var isDecelerating = false {
