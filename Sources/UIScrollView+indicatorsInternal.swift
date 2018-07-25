@@ -69,7 +69,7 @@ internal extension UIScrollView {
 
     internal func layoutScrollIndicatorsIfNeeded() {
         guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
-        
+
         let distanceFromFrame = (
             horizontal: indicatorThickness + totalScrollIndicatorInsets.bottom,
             vertical: indicatorThickness + totalScrollIndicatorInsets.right
