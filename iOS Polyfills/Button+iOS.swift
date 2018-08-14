@@ -1,17 +1,9 @@
-//
-//  Button.swift
-//  FlowkeyPlayer
-//
-//  Created by Geordie Jay on 17.05.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
 import UIKit
 
 /**
  This class abstracts away the objc syntax for touch handling.
 
- The SDL Version is a direct subclass of UIView, so don't assume
+ The cross-platform version is a direct subclass of UIView, so don't assume
  that `Button` will always be a subclass of `UIButton`.
  */
 #if os(iOS)
