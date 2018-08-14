@@ -1,11 +1,3 @@
-//
-//  UIGestureRecognizer+Closures.swift
-//  FlowkeyPlayer
-//
-//  Created by Geordie Jay on 03.07.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
 import UIKit
 
 #if os(iOS)
