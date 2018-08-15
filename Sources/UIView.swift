@@ -234,7 +234,6 @@ open class UIView: UIResponder, CALayerDelegate {
     open func layoutSubviews() {
         needsLayout = false
         parentViewController?.viewWillLayoutSubviews()
-        subviews.forEach { $0.setNeedsLayout() }
         parentViewController?.viewDidLayoutSubviews()
     }
 
@@ -344,7 +343,6 @@ open class UIView: UIResponder, CALayerDelegate {
         let originalOrigin = self.frame.origin
         self.bounds.size = sizeThatFits(bounds.size)
         self.frame.origin = originalOrigin
-        setNeedsLayout()
     }
 
     // We originally had this in an extension but Swift functions in extensions cannot be overridden (as of Swift 4)
