@@ -191,6 +191,8 @@
 		83F02DE11F18F18500347AA8 /* roboto-thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F02DC51F17D84000347AA8 /* roboto-thin.ttf */; };
 		83F02DE21F18F18500347AA8 /* roboto-thinitalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F02DC61F17D84000347AA8 /* roboto-thinitalic.ttf */; };
 		83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */; };
+		9FA5B12B211DAC5E006901D9 /* UIViewTests+lifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5B12A211DAC5E006901D9 /* UIViewTests+lifecycle.swift */; };
+		9FA5B12C211DAC5E006901D9 /* UIViewTests+lifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5B12A211DAC5E006901D9 /* UIViewTests+lifecycle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -457,6 +459,7 @@
 		83F02DC91F17D84000347AA8 /* roboto-italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "roboto-italic.ttf"; sourceTree = "<group>"; };
 		83F02DCA1F17D84000347AA8 /* roboto-mediumitalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "roboto-mediumitalic.ttf"; sourceTree = "<group>"; };
 		83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+SDL.swift"; sourceTree = "<group>"; };
+		9FA5B12A211DAC5E006901D9 /* UIViewTests+lifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+lifecycle.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -775,6 +778,7 @@
 				5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */,
 				5C6AB77F1EDBDF40006F90AC /* UIViewTests+hitTest.swift */,
 				5C8475D5203DC53200CA2EBF /* UIViewTests+misc.swift */,
+				9FA5B12A211DAC5E006901D9 /* UIViewTests+lifecycle.swift */,
 				5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */,
 			);
 			path = UIView;
@@ -1237,6 +1241,7 @@
 				5BAF8E4A203DA89D00DA1EBF /* TouchHandlingTests.swift in Sources */,
 				832A7F021F1632070041916B /* ButtonSizeToFitTests.swift in Sources */,
 				5CF2BEEE1F8D1BD7009FCA1E /* UIFontTests.swift in Sources */,
+				9FA5B12B211DAC5E006901D9 /* UIViewTests+lifecycle.swift in Sources */,
 				832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */,
 				5CCF1C13202382FF00AAF598 /* CALayerTests.swift in Sources */,
 				5C8475D8203DC6EE00CA2EBF /* UIViewTests+misc.swift in Sources */,
@@ -1252,6 +1257,7 @@
 				5BEEF829202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */,
 				83F02DBA1F179AE800347AA8 /* UIImage+testImage.swift in Sources */,
 				83F02DBE1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
+				9FA5B12C211DAC5E006901D9 /* UIViewTests+lifecycle.swift in Sources */,
 				833860B41F0D55BC004DD55E /* ButtonTestsConstants.swift in Sources */,
 				8323F2821F2FA42A00C121BB /* TestSetup.swift in Sources */,
 				83F02DB71F1798F200347AA8 /* Button.swift in Sources */,
