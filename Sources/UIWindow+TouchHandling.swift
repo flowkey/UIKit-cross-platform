@@ -17,10 +17,10 @@ extension SDL_MouseMotionEvent: SDLEventWithCoordinates {}
 
 extension CGPoint {
     static func from(_ event: SDLEventWithCoordinates) -> CGPoint {
-        return UIApplication.shared.glRenderer.absolutePointInOwnCoordinates(x: CGFloat(event.x), y: CGFloat(event.y))
+        return CGPoint(x: CGFloat(event.x), y: CGFloat(event.y))
     }
 
     static func from(_ event: SDL_TouchFingerEvent) -> CGPoint {
-        return UIApplication.shared.glRenderer.absolutePointInOwnCoordinates(x: CGFloat(event.x), y: CGFloat(event.y))
+        return CGPoint(x: CGFloat(event.x), y: CGFloat(event.y))
     }
 }

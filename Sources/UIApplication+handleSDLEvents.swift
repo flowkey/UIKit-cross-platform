@@ -141,10 +141,9 @@ extension UIEvent {
                 let matchingTouch = firstExistingEvent.allTouches?.first(where: { $0.touchId == event.tfinger.fingerId} )
             {
 
-                matchingTouch.updateAbsoluteLocation(.from(event.tfinger))
                 matchingTouch.timestamp = event.timestampInSeconds
                 matchingTouch.phase = .moved
-
+                matchingTouch.updateAbsoluteLocation(.from(event.tfinger))
                 return firstExistingEvent
             }
             else {
@@ -156,8 +155,8 @@ extension UIEvent {
                 let firstExistingEvent = UIEvent.activeEvents.first,
                 let matchingTouch = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId} )
             {
-                matchingTouch.phase = .ended
                 matchingTouch.timestamp = event.timestampInSeconds
+                matchingTouch.phase = .ended
                 return firstExistingEvent
             } else {
                 return nil
@@ -194,17 +193,15 @@ import JNI
 @_silgen_name("Java_org_libsdl_app_SDLActivity_onNativeTouch")
 public func Java_org_libsdl_app_SDLActivity_onNativeTouch(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject,
                                                           touchDeviceID: JavaInt, pointerFingerID: JavaInt, action: JavaInt,
-                                                          x: JavaFloat, y: JavaFloat, pressure: JavaFloat, timestamp: JavaLong) {
+                                                          x: JavaFloat, y: JavaFloat, pressure: JavaFloat, timestamp: JavaDouble) {
 
     guard let eventType = SDL_EventType.eventFrom(androidAction: action) else {return}
 
-    let timestamp = JavaLong(littleEndian: timestamp)
-    let timestamp32B = UInt32(timestamp & Int64(UInt32.max))
 
     var event = SDL_Event(tfinger:
         SDL_TouchFingerEvent(
             type: eventType.rawValue,
-            timestamp: timestamp32B, // ensure this is in ms
+            timestamp: UInt32(timestamp), //TODO: change to timestamp // (ensure this is in ms?)
             touchId: Int64(touchDeviceID), // I think this is the "Touch Device ID" which should always be 0, but check this
             fingerId: Int64(pointerFingerID),
             x: x / Float(UIScreen.main.scale),

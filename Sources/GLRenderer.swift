@@ -76,16 +76,6 @@ internal final class GLRenderer {
         clearErrors() // by now we have handled any errors we might have wanted to
     }
 
-    func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
-//        #if os(macOS)
-            // Here SDL scales our touch events for us, which means we need a special case for it:
-            return CGPoint(x: inputX, y: inputY)
-//        #else
-//            // On all other platforms, we scale the touch events to the screen size manually:
-//            return CGPoint(x: inputX / scale, y: inputY / scale)
-//        #endif
-    }
-
     func blit(
         _ image: CGImage,
         anchorPoint: CGPoint,
