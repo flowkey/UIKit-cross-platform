@@ -40,7 +40,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     }
 
     private var mSurface: SurfaceView
-    private var mIsSurfaceReady = false
+    private var mIsSurfaceReady = false/**/
     private var mHasFocus = false
 
     private external fun nativeRender()
@@ -58,7 +58,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
     // SDLOnTouchListener conformance
     external override fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
-    external override fun onNativeTouch(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float)
+    external override fun onNativeTouch(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float, t: Long)
     override var mWidth: Float = 1.0f // Keep track of the surface size to normalize touch events
     override var mHeight: Float = 1.0f // Start with non-zero values to avoid potential division by zero
 

@@ -14,6 +14,15 @@ extension UIApplication {
         var e = SDL_Event()
 
         while SDL_PollEvent(&e) == 1 {
+
+            #if !os(macOS)
+            if let uievent = UIEvent.from(e) {
+                sendEvent(uievent)
+                break
+            }
+            #endif
+
+
             switch SDL_EventType(rawValue: e.type) {
             case SDL_QUIT:
                 handleSDLQuit()
@@ -45,6 +54,7 @@ extension UIApplication {
                     let event = UIEvent.activeEvents.first,
                     let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
                 {
+                    print("Mouseup with active events \(UIEvent.activeEvents.count)")
                     touch.timestamp = e.timestampInSeconds
                     touch.phase = .ended
                     sendEvent(event)
@@ -96,3 +106,133 @@ extension SDL_Event {
         return TimeInterval(self.common.timestamp) / 1000
     }
 }
+
+
+extension UIEvent {
+
+
+    static func from(_ event: SDL_Event) -> UIEvent? {
+        switch SDL_EventType(event.type) {
+        case SDL_FINGERDOWN:
+            let newTouch = UITouch(
+                touchId: Int(event.tfinger.fingerId),
+                at: CGPoint(
+                    x: CGFloat(event.tfinger.x),
+                    y: CGFloat(event.tfinger.y)
+                ),
+                timestamp: event.timestampInSeconds
+            )
+
+            if
+                let firstExistingEvent = UIEvent.activeEvents.first,
+                let _ = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId} )
+            {
+                //found a matching event, adding current touch to it and returning
+                firstExistingEvent.allTouches?.insert(newTouch)
+                return firstExistingEvent
+            } else {
+                //no matching event found, creating a new one
+                return UIEvent(touch: newTouch)
+            }
+
+        case SDL_FINGERMOTION:
+            if
+                let firstExistingEvent = UIEvent.activeEvents.first,
+                let matchingTouch = firstExistingEvent.allTouches?.first(where: { $0.touchId == event.tfinger.fingerId} )
+            {
+
+                matchingTouch.updateAbsoluteLocation(.from(event.tfinger))
+                matchingTouch.timestamp = event.timestampInSeconds
+                matchingTouch.phase = .moved
+
+                return firstExistingEvent
+            }
+            else {
+                return nil
+            }
+
+        case SDL_FINGERUP:
+            if
+                let firstExistingEvent = UIEvent.activeEvents.first,
+                let matchingTouch = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId} )
+            {
+                matchingTouch.phase = .ended
+                matchingTouch.timestamp = event.timestampInSeconds
+                return firstExistingEvent
+            } else {
+                return nil
+            }
+
+        default:
+            return nil
+        }
+    }
+}
+
+extension UIEvent: CustomStringConvertible {
+    public var description: String {
+        var listOfTouches = ""
+        if let touches = allTouches {
+            for touch in touches {
+                listOfTouches += "\(touch.description),\n"
+            }
+        }
+        return "Event with touches: \(listOfTouches)"
+    }
+}
+
+extension UITouch: CustomStringConvertible {
+    public var description: String {
+        return "TouchID: \(self.touchId), timestamp: \(self.timestamp)"
+    }
+}
+
+#if os(Android)
+import JNI
+
+
+@_silgen_name("Java_org_libsdl_app_SDLActivity_onNativeTouch")
+public func Java_org_libsdl_app_SDLActivity_onNativeTouch(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject,
+                                                          touchDeviceID: JavaInt, pointerFingerID: JavaInt, action: JavaInt,
+                                                          x: JavaFloat, y: JavaFloat, pressure: JavaFloat, timestamp: JavaLong) {
+
+    guard let eventType = SDL_EventType.eventFrom(androidAction: action) else {return}
+
+    let timestamp = JavaLong(littleEndian: timestamp)
+    let timestamp32B = UInt32(timestamp & Int64(UInt32.max))
+
+    var event = SDL_Event(tfinger:
+        SDL_TouchFingerEvent(
+            type: eventType.rawValue,
+            timestamp: timestamp32B, // ensure this is in ms
+            touchId: Int64(touchDeviceID), // I think this is the "Touch Device ID" which should always be 0, but check this
+            fingerId: Int64(pointerFingerID),
+            x: x / Float(UIScreen.main.scale),
+            y: y / Float(UIScreen.main.scale),
+            dx: 0,
+            dy: 0,
+            pressure: pressure
+        )
+    )
+
+    // add the event to SDL's event stack
+    // don't use SDL_PushEvent because it overrides `event.timestamp` with its own:
+    SDL_PeepEvents(&event, 1, SDL_ADDEVENT, 0, 0)
+}
+
+
+extension SDL_EventType {
+    public static func eventFrom(androidAction: JavaInt) -> SDL_EventType? {
+        switch androidAction {
+        case 0, 5: return SDL_FINGERDOWN
+        case 1, 6: return SDL_FINGERUP
+        case 2: return SDL_FINGERMOTION
+        default: return nil
+        }
+    }
+}
+
+#endif
+
+
+
