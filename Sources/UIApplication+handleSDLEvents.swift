@@ -22,7 +22,6 @@ extension UIApplication {
             }
             #endif
 
-
             switch SDL_EventType(rawValue: e.type) {
             case SDL_QUIT:
                 handleSDLQuit()
@@ -108,8 +107,6 @@ extension SDL_Event {
 
 
 extension UIEvent {
-
-
     static func from(_ event: SDL_Event) -> UIEvent? {
         switch SDL_EventType(event.type) {
         case SDL_FINGERDOWN:
@@ -188,7 +185,6 @@ extension UITouch: CustomStringConvertible {
 #if os(Android)
 import JNI
 
-
 @_silgen_name("Java_org_libsdl_app_SDLActivity_onNativeTouch")
 public func Java_org_libsdl_app_SDLActivity_onNativeTouch(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject,
                                                           touchDeviceID: JavaInt, pointerFingerID: JavaInt, action: JavaInt,
@@ -216,7 +212,6 @@ public func Java_org_libsdl_app_SDLActivity_onNativeTouch(env: UnsafeMutablePoin
     SDL_PeepEvents(&event, 1, SDL_ADDEVENT, 0, 0)
 }
 
-
 extension SDL_EventType {
     public static func eventFrom(androidAction: JavaInt) -> SDL_EventType? {
         switch androidAction {
@@ -229,6 +224,3 @@ extension SDL_EventType {
 }
 
 #endif
-
-
-
