@@ -54,7 +54,6 @@ extension UIApplication {
                     let event = UIEvent.activeEvents.first,
                     let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
                 {
-                    print("Mouseup with active events \(UIEvent.activeEvents.count)")
                     touch.timestamp = e.timestampInSeconds
                     touch.phase = .ended
                     sendEvent(event)
@@ -201,7 +200,7 @@ public func Java_org_libsdl_app_SDLActivity_onNativeTouch(env: UnsafeMutablePoin
     var event = SDL_Event(tfinger:
         SDL_TouchFingerEvent(
             type: eventType.rawValue,
-            timestamp: UInt32(timestamp), //TODO: change to timestamp // (ensure this is in ms?)
+            timestamp: UInt32(timestamp), // ensure this is in ms
             touchId: Int64(touchDeviceID), // I think this is the "Touch Device ID" which should always be 0, but check this
             fingerId: Int64(pointerFingerID),
             x: x / Float(UIScreen.main.scale),

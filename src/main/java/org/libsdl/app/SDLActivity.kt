@@ -40,7 +40,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     }
 
     private var mSurface: SurfaceView
-    private var mIsSurfaceReady = false/**/
+    private var mIsSurfaceReady = false
     private var mHasFocus = false
 
     private external fun nativeRender()

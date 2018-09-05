@@ -36,7 +36,7 @@ public class UIWindow: UIView {
             UIEvent.activeEvents.insert(event)
             currentTouch.view = hitView
             currentTouch.gestureRecognizers = hitView.getRecognizerHierachy()
-            print("recognizers: \(currentTouch.gestureRecognizers)" )
+
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
             hitView.touchesBegan(allTouches, with: event)
 
@@ -53,7 +53,6 @@ public class UIWindow: UIView {
             }
 
             UIEvent.activeEvents.remove(event)
-            print("After removing, left with \(UIEvent.activeEvents.count) active events")
         }
     }
 }
