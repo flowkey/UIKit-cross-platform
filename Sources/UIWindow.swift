@@ -25,6 +25,7 @@ public class UIWindow: UIView {
     }
 
     public func sendEvent(_ event: UIEvent) {
+        // NOTE: if it's not a touch event, we don't do anything
         guard
             let allTouches = event.allTouches,
             let currentTouch = allTouches.first,
@@ -33,6 +34,8 @@ public class UIWindow: UIView {
 
         switch currentTouch.phase {
         case .began:
+            // TODO: inserting event on every .began is conceptually wrong - we only ever have 'singleton' event
+            // perhaps we're re-inserting that existing one? does that make it right? 
             UIEvent.activeEvents.insert(event)
             currentTouch.view = hitView
             currentTouch.gestureRecognizers = hitView.getRecognizerHierachy()
@@ -51,8 +54,9 @@ public class UIWindow: UIView {
             if !currentTouch.hasBeenCancelledByAGestureRecognizer {
                 hitView.touchesEnded(allTouches, with: event)
             }
-
+            // MARK: remove event
             UIEvent.activeEvents.remove(event)
+            print("After removing, left with \(UIEvent.activeEvents.count)")
         }
     }
 }

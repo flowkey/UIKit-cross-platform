@@ -119,15 +119,13 @@ extension UIEvent {
                 timestamp: event.timestampInSeconds
             )
 
-            if
-                let firstExistingEvent = UIEvent.activeEvents.first,
-                let _ = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId} )
-            {
+            if let touchEvent = UIEvent.touchEvent {
                 //found a matching event, adding current touch to it and returning
-                firstExistingEvent.allTouches?.insert(newTouch)
-                return firstExistingEvent
+                touchEvent.allTouches?.insert(newTouch)
+                return touchEvent
             } else {
                 //no matching event found, creating a new one
+                print("No matching event found, creating a new one. Should only happen once.")
                 return UIEvent(touch: newTouch)
             }
 

@@ -9,9 +9,14 @@
 import struct Foundation.Date
 
 public class UIEvent {
-    internal static var activeEvents = Set<UIEvent>()
+    internal static var activeEvents = Set<UIEvent>() // TEMP: not used
+    internal static var touchEvent: UIEvent? // TEMP: this is used instead
 
-    public var allTouches: Set<UITouch>?
+    // TODO: think through approach to singleton touchEvent
+    // perhaps implement eventTypes?
+    // (currently, all events we get are touch events)
+
+    public var allTouches: Set<UITouch>? // NOTE: why is this optional? isn't empty set enough?
     public let timestamp = Date.timeIntervalSinceReferenceDate
 
     public init() {}
@@ -30,3 +35,5 @@ extension UIEvent: Hashable {
         return lhs === rhs
     }
 }
+
+
