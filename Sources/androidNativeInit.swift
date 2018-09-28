@@ -25,11 +25,14 @@ public struct UIKitAndroid {
             return 0 // already inited
         }
 
-        return JavaInt(UIApplicationMain(UIApplicationClass, UIApplicationDelegateClass))
+        return JavaInt(
+            UIApplicationMain(UIApplicationClass, UIApplicationDelegateClass)
+        )
     }
 
-    @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeDeinit")
-    public static func nativeDeinit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
-        UIApplication.shared = nil
+    @_silgen_name("Java_org_libsdl_app_SDLActivity_nativeDestroyScreen")
+    public static func nativeDestroyScreen(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
+        UIApplication.onWillEnterBackground()
+        UIApplication.onDidEnterBackground()
     }
 }

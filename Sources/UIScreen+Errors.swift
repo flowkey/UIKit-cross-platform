@@ -1,5 +1,5 @@
 //
-//  GLRenderer+Errors.swift
+//  UIScreen+Errors.swift
 //  UIKit
 //
 //  Created by Geordie Jay on 08.05.18.
@@ -8,7 +8,7 @@
 
 import SDL_gpu
 
-extension GLRenderer {
+extension UIScreen {
     func clearErrors() {
         let lastError = GPU_PopErrorCode()
         if lastError.error != GPU_ERROR_NONE {

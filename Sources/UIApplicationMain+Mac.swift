@@ -27,8 +27,10 @@ func setupRenderAndRunLoop() {
 
     CVDisplayLinkSetOutputCallback(displayLink, { (_, currentTime, presentationTime, _, _, userInfo) -> CVReturn in
         if presentationTime.pointee.hostTime > currentTime.pointee.hostTime {
+            let currentTime = Timer()
             DispatchQueue.main.async {
-                UIApplication.shared?.render(atTime: Timer())
+                UIApplication.shared.handleEventsIfNeeded()
+                UIApplication.shared.render(atTime: currentTime)
             }
          }
 

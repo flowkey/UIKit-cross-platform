@@ -9,7 +9,7 @@
 import Foundation
 
 open class UIApplication {
-    open static var shared: UIApplication! // set via UIApplicationMain(_:_:_:_:)
+    public static var shared: UIApplication! // set via UIApplicationMain(_:_:_:_:)
 
     open internal(set) var delegate: UIApplicationDelegate?
     open var isIdleTimerDisabled = false
@@ -33,17 +33,12 @@ open class UIApplication {
     // MARK: Internals
 
     public required init() {
-        UIFont.loadSystemFonts()
+        UIScreen.main = UIScreen()
     }
-
-    internal var glRenderer = GLRenderer()
 
     deinit {
         DisplayLink.activeDisplayLinks.removeAll()
-        UIView.layersWithAnimations.removeAll()
-        UIEvent.activeEvents.removeAll()
-        UIView.currentAnimationPrototype = nil
-        UIFont.clearCaches()
+        UIScreen.main = nil
     }
 }
 
@@ -55,7 +50,7 @@ import CoreFoundation
 extension UIApplication {
     func handleSDLQuit() {
         delegate?.applicationWillTerminate(self)
-        keyWindow = nil
+        UIApplication.shared = nil
         #if os(Android)
         try? jni.call("removeCallbacks", on: getSDLView())
         #elseif os(macOS)
@@ -64,7 +59,13 @@ extension UIApplication {
     }
 
     func render(atTime frameTimer: Timer) {
-        handleEventsIfNeeded()
+        // We don't save UIScreen to a var because that prevents deinit if
+        // we need to recreate the renderer (in case of render error below)
+        if UIScreen.main == nil {
+            print("Not rendering because `UIScreen.main` was `nil`")
+            return
+        }
+
         guard let keyWindow = keyWindow else {
             print("Not rendering because `keyWindow` was `nil`")
             return
@@ -80,19 +81,19 @@ extension UIApplication {
             return
         }
 
-        glRenderer.clear()
+        UIScreen.main.clear()
 
         GPU_MatrixMode(GPU_MODELVIEW)
         GPU_LoadIdentity()
 
-        glRenderer.clippingRect = keyWindow.bounds
+        UIScreen.main.clippingRect = keyWindow.bounds
         keyWindow.layer.sdlRender()
 
         do {
-            try glRenderer.flip()
+            try UIScreen.main.flip()
             CALayer.layerTreeIsDirty = false
         } catch {
-            print("glRenderer failed to render, reiniting")
+            print("UIScreen.main failed to render", error)
             UIApplication.restart()
         }
     }
@@ -108,10 +109,11 @@ import JNI
 
 private let maxFrameRenderTimeInSeconds = 1.0 / 60.0
 
-@_silgen_name("Java_org_libsdl_app_SDLActivity_nativeRender")
-public func renderCalledFromJava(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
+@_silgen_name("Java_org_libsdl_app_SDLActivity_nativeRenderAndProcessEvents")
+public func nativeRenderAndProcessEvents(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
     let frameTime = Timer()
-    UIApplication.shared.render(atTime: frameTime)
+    UIApplication.shared?.handleEventsIfNeeded()
+    UIApplication.shared?.render(atTime: frameTime)
     let remainingFrameTime = maxFrameRenderTimeInSeconds - frameTime.elapsedTimeInSeconds
     CFRunLoopRunInMode(kCFRunLoopDefaultMode, max(0.001, remainingFrameTime / 2), true)
 }

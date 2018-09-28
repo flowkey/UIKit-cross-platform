@@ -6,6 +6,7 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
+import Dispatch
 import SDL
 import struct Foundation.TimeInterval
 
@@ -76,9 +77,45 @@ extension UIApplication {
                 if scancode == .androidHardwareBackButton || scancode == .escapeKey {
                     keyWindow?.deepestPresentedView().handleHardwareBackButtonPress()
                 }
+            case SDL_APP_WILLENTERBACKGROUND:
+                UIApplication.onWillEnterBackground()
+            case SDL_APP_DIDENTERBACKGROUND:
+                UIApplication.onDidEnterBackground()
+            case SDL_APP_WILLENTERFOREGROUND:
+                UIApplication.onWillEnterForeground()
+            case SDL_APP_DIDENTERFOREGROUND:
+                UIApplication.onDidEnterForeground()
             default:
                 break
             }
+        }
+    }
+}
+
+extension UIApplication {
+    static func onWillEnterForeground() {
+        UIApplication.restart {
+            if let runningApplication = UIApplication.shared {
+                runningApplication.delegate?.applicationWillEnterForeground(runningApplication)
+            }
+        }
+    }
+
+    static func onDidEnterForeground() {
+        if let runningApplication = UIApplication.shared {
+            runningApplication.delegate?.applicationDidBecomeActive(runningApplication)
+        }
+    }
+
+    static func onWillEnterBackground() {
+        if let runningApplication = UIApplication.shared {
+            runningApplication.delegate?.applicationWillResignActive(runningApplication)
+        }
+    }
+
+    static func onDidEnterBackground() {
+        if let runningApplication = UIApplication.shared {
+            runningApplication.delegate?.applicationDidEnterBackground(runningApplication)
         }
     }
 }
