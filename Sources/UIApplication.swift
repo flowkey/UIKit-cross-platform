@@ -7,12 +7,32 @@
 //
 
 import Foundation
+import SDL
 
 open class UIApplication {
     open static var shared: UIApplication! // set via UIApplicationMain(_:_:_:_:)
 
     open internal(set) var delegate: UIApplicationDelegate?
+
+    #if os(Android)
+    open var isIdleTimerDisabled = false {
+        didSet {
+            guard
+                let activity = try? jni.call("getContext", on: getSDLView(), returningObjectType: "android.content.Context"),
+                let window = try? jni.call("getWindow", on: activity, returningObjectType: "android.view.Window")
+            else { return }
+
+            let FLAG_KEEP_SCREEN_ON: JavaInt = 128
+            try? jni.call(
+                isIdleTimerDisabled ? "addFlags" : "clearFlags",
+                on: window,
+                arguments: [FLAG_KEEP_SCREEN_ON]
+            )
+        }
+    }
+    #else
     open var isIdleTimerDisabled = false
+    #endif
 
     open func sendEvent(_ event: UIEvent) {
         event.allTouches?.forEach { touch in touch.window = keyWindow }
