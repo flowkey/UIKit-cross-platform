@@ -185,13 +185,20 @@ extension UITouch: CustomStringConvertible {
 #if os(Android)
 import JNI
 
-@_silgen_name("Java_org_libsdl_app_SDLActivity_onNativeTouch")
-public func Java_org_libsdl_app_SDLActivity_onNativeTouch(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject,
-                                                          touchDeviceID: JavaInt, pointerFingerID: JavaInt, action: JavaInt,
-                                                          x: JavaFloat, y: JavaFloat, pressure: JavaFloat, timestamp: JavaDouble) {
-
-    guard let eventType = SDL_EventType.eventFrom(androidAction: action) else {return}
-
+@_cdecl("Java_org_libsdl_app_SDLActivity_onNativeTouch")
+public func Java_org_libsdl_app_SDLActivity_onNativeTouch(
+    env: UnsafeMutablePointer<JNIEnv>,
+    view: JavaObject,
+    touchDeviceID: JavaInt,
+    pointerFingerID: JavaInt,
+    action: JavaInt,
+    x: JavaFloat,
+    y: JavaFloat, 
+    pressure: JavaFloat,
+    timestamp: JavaLong
+) {
+    guard let eventType = SDL_EventType.eventFrom(androidAction: action) 
+    else { return }
 
     var event = SDL_Event(tfinger:
         SDL_TouchFingerEvent(
