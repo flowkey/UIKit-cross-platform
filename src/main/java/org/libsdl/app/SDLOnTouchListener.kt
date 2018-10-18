@@ -8,6 +8,18 @@ import org.libsdl.app.SDLActivity
 import kotlin.math.min
 
 
+private data class TouchValues(val fingerId: Int, val x: Float, val y: Float, val p: Float)
+
+private fun MotionEvent.touchValues(i: Int): TouchValues {
+    return TouchValues(
+            getPointerId(i),
+            getX(i),
+            getY(i),
+            // Pressure can be > 1.0 on some devices. See getPressure(i) docs.
+            min(this.getPressure(i), 1.0f)
+    )
+}
+
 interface SDLOnTouchListener: View.OnTouchListener {
 
     var mWidth: Float
@@ -23,18 +35,6 @@ interface SDLOnTouchListener: View.OnTouchListener {
         val action = event.actionMasked
 
         val time = event.eventTime
-
-        data class TouchValues(val fingerId: Int, val x: Float, val y: Float, val p: Float)
-
-        fun MotionEvent.touchValues(i: Int): TouchValues {
-            return TouchValues(
-                    getPointerId(i),
-                    getX(i),
-                    getY(i),
-                    // Pressure can be > 1.0 on some devices. See getPressure(i) docs.
-                    min(this.getPressure(i), 1.0f)
-            )
-        }
 
         if (event.source == InputDevice.SOURCE_MOUSE && SDLActivity.mSeparateMouseAndTouch) {
             val mouseButton = try { event.buttonState } catch (e: Exception) { 1 } // 1 is left button
