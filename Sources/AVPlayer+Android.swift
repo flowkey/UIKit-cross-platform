@@ -55,18 +55,18 @@ public class AVPlayer: JNIObject {
 
 private weak var globalAVPlayer: AVPlayer?
 
-@_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoReady")
+@_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoReady")
 public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onLoaded?(nil)
     globalAVPlayer?.onLoaded = nil
 }
 
-@_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoEnded")
+@_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoEnded")
 public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onVideoEnded?()
 }
 
-@_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoSourceError")
+@_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoSourceError")
 public func nativeOnVideoSourceError(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onLoaded?(AVPlayer.DataSourceError())
     globalAVPlayer?.onLoaded = nil
