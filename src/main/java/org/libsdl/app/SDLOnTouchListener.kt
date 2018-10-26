@@ -13,7 +13,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
     var mHeight: Float
 
     fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
-    fun onNativeTouch(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float, t: Long)
+    fun onNativeTouchUIKit(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float, t: Long)
 
     // Touch events
     override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -32,7 +32,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
             MotionEvent.ACTION_MOVE -> {
                 for (i in 0 until event.pointerCount) {
                     val (fingerId, x, y, pressure) = event.touchValues(i)
-                    this.onNativeTouch(touchDevId, fingerId, action, x, y, pressure, timestamp)
+                    this.onNativeTouchUIKit(touchDevId, fingerId, action, x, y, pressure, timestamp)
                 }
             }
 
@@ -41,13 +41,13 @@ interface SDLOnTouchListener: View.OnTouchListener {
             MotionEvent.ACTION_POINTER_UP,
             MotionEvent.ACTION_POINTER_DOWN -> {
                 val (fingerId, x, y, pressure) = event.touchValues(event.actionIndex)
-                this.onNativeTouch(touchDevId, fingerId, action, x, y, pressure, timestamp)
+                this.onNativeTouchUIKit(touchDevId, fingerId, action, x, y, pressure, timestamp)
             }
 
             MotionEvent.ACTION_CANCEL -> {
                 for (i in 0 until event.pointerCount) {
                     val (fingerId, x, y, pressure) = event.touchValues(i)
-                    this.onNativeTouch(touchDevId, fingerId, MotionEvent.ACTION_UP, x, y, pressure, timestamp)
+                    this.onNativeTouchUIKit(touchDevId, fingerId, MotionEvent.ACTION_UP, x, y, pressure, timestamp)
                 }
             }
         }

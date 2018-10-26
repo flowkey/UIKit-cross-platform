@@ -185,8 +185,8 @@ extension UITouch: CustomStringConvertible {
 #if os(Android)
 import JNI
 
-@_cdecl("Java_org_libsdl_app_SDLActivity_onNativeTouch")
-public func Java_org_libsdl_app_SDLActivity_onNativeTouch(
+@_cdecl("Java_org_libsdl_app_SDLActivity_onNativeTouchUIKit")
+public func onNativeTouch(
     env: UnsafeMutablePointer<JNIEnv>,
     view: JavaObject,
     touchDeviceID: JavaInt,
