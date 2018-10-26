@@ -8,10 +8,10 @@
 
 import JNI
 
-@_silgen_name("Android_JNI_GetActivityClass")
+@_cdecl("Android_JNI_GetActivityClass")
 public func getSDLViewClass() -> JavaClass
 
-@_silgen_name("SDL_AndroidGetActivity")
+@_cdecl("SDL_AndroidGetActivity")
 public func getSDLView() -> JavaObject
 
 /// Wraps an `SDLActivity` `JavaObject` instance.

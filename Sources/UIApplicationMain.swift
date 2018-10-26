@@ -42,7 +42,7 @@ internal func UIApplicationMain(
         // What it does do is load the main storyboard if one is specified, but we can't do that (yet?)
         assertionFailure(
             "There was no AppDelegate class specified. Please provide one using the last parameter of UIApplicationMain," +
-            " e.g. `UIApplicationMain(0, nil, nil, NSStringFromClass(AppDelegate.self))`")
+            " e.g. `UIApplicationMain(argc, argv, nil, NSStringFromClass(AppDelegate.self))`")
         return 1
     }
 
