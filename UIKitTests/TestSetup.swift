@@ -39,6 +39,7 @@ typealias NSAttributedString = UIKit.NSAttributedString
         #if os(iOS)
             FontLoader.loadBundledFonts()
         #else
+            UIScreen.main = UIScreen()
             UIFont.loadSystemFonts()
         #endif
     }

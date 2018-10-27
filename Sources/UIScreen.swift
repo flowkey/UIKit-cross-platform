@@ -14,7 +14,7 @@ import func Foundation.round
 extension SDLWindowFlags: OptionSet {}
 
 public extension UIScreen {
-    // Default value for testing. Gets set on GLRenderer init:
+    // Default value for testing. Gets set in TestSetup.swift
     internal(set) public static var main: UIScreen!
 }
 
