@@ -17,7 +17,7 @@ import Darwin.C.stdio
 private let loggingTag = "Swift"
 
 @discardableResult
-@_cdecl("__android_log_write")
+@_silgen_name("__android_log_write")
 public func android_log_write(_ prio: Int32, _ tag: UnsafePointer<CChar>, _ text: UnsafePointer<CChar>) -> Int32
 
 // Replace `Swift.print` on Android (because the built-in one doesn't work there)
