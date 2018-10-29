@@ -30,8 +30,6 @@ public final class UIScreen {
         self.scale = scale
     }
 
-    // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
-    // The easiest solution is just to work in 1:1 pixels
     convenience init() {
         guard UIScreen.main == nil else {
             // This is a problem because it means something else in the logic is probably incorrect
@@ -62,6 +60,8 @@ public final class UIScreen {
 
         if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
             // Fix fullscreen resolution on Mac and make Android easier to reason about:
+            // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
+            // The easiest solution is just to work in 1:1 pixels
             GPU_SetPreInitFlags(GPU_GetPreInitFlags() | GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)
             size = CGSize(width: CGFloat(displayMode.w), height: CGFloat(displayMode.h))
         }
@@ -100,7 +100,6 @@ public final class UIScreen {
         clearErrors() // by now we have handled any errors we might have wanted to
 
         UIFont.loadSystemFonts()
-        print("Inited UIScreen")
     }
 
     func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
@@ -184,8 +183,7 @@ public final class UIScreen {
         try throwOnErrors(ofType: [GPU_ERROR_USER_ERROR, GPU_ERROR_BACKEND_ERROR])
     }
 
-
-    func destroy() {
+    deinit {
         UIView.layersWithAnimations.removeAll()
         UIEvent.activeEvents.removeAll()
         UIView.currentAnimationPrototype = nil
@@ -204,11 +202,6 @@ public final class UIScreen {
         let existingWindow = SDL_GetWindowFromID(existingWindowID)
         SDL_DestroyWindow(existingWindow)
         rawPointer = nil
-        print("Destroyed UIScreen")
-    }
-
-    deinit {
-        destroy()
     }
 }
 
