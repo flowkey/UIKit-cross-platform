@@ -9,11 +9,13 @@
 import SDL
 import CJNI
 
+public struct UIKitAndroid {
+    public static var UIApplicationClass: UIApplication.Type?
+    public static var UIApplicationDelegateClass: UIApplicationDelegate.Type?
+}
+
 @_silgen_name("SDL_Android_Init")
 public func SDL_Android_Init(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
-
-public var UIApplicationClass: UIApplication.Type?
-public var UIApplicationDelegateClass: UIApplicationDelegate.Type?
 
 @_cdecl("Java_org_libsdl_app_SDLActivity_nativeInit")
 public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
@@ -25,7 +27,7 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
     }
 
     return JavaInt(
-        UIApplicationMain(UIApplicationClass, UIApplicationDelegateClass)
+        UIApplicationMain(UIKitAndroid.UIApplicationClass, UIKitAndroid.UIApplicationDelegateClass)
     )
 }
 
@@ -34,4 +36,3 @@ public func nativeDestroyScreen(env: UnsafeMutablePointer<JNIEnv>, view: JavaObj
     UIApplication.onWillEnterBackground()
     UIApplication.onDidEnterBackground()
 }
-
