@@ -129,8 +129,8 @@ import JNI
 
 private let maxFrameRenderTimeInSeconds = 1.0 / 60.0
 
-@_cdecl("Java_org_libsdl_app_SDLActivity_nativeRenderAndProcessEvents")
-public func nativeRenderAndProcessEvents(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
+@_cdecl("Java_org_libsdl_app_SDLActivity_nativeProcessEventsAndRender")
+public func nativeProcessEventsAndRender(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
     let frameTime = Timer()
     UIApplication.shared?.handleEventsIfNeeded()
     UIApplication.shared?.render(atTime: frameTime)

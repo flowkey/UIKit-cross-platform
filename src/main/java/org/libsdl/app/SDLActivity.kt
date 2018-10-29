@@ -47,7 +47,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     private var mIsSurfaceReady = false
     private var mHasFocus = false
 
-    private external fun nativeRenderAndProcessEvents()
+    private external fun nativeProcessEventsAndRender()
     private external fun nativeInit(): Int
     private external fun nativeDestroyScreen() // from this state we can still reinit without issues
     private external fun nativeQuit()
@@ -170,7 +170,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         this.nativeQuit()
 
         // renderer should now be destroyed but we need to process events once more to clean up
-        this.nativeRenderAndProcessEvents()
+        this.nativeProcessEventsAndRender()
     }
 
     fun removeFrameCallback() {
@@ -181,7 +181,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
     override fun doFrame(frameTimeNanos: Long) {
         if (isRunning && mIsSurfaceReady) {
-            this.nativeRenderAndProcessEvents()
+            this.nativeProcessEventsAndRender()
 
             // Request the next frame only after rendering the current one.
             // This should skip next frame if the current one takes too long.
