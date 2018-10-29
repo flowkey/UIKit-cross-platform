@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL
 
 @discardableResult
 public func UIApplicationMain(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>!, _ principalClassName: String?, _ delegateClassName: String?) -> Int32 {
@@ -40,7 +41,8 @@ internal func UIApplicationMain(
         // iOS doesn't create a window by default either
         // What it does do is load the main storyboard if one is specified, but we can't do that (yet?)
         assertionFailure(
-            "There was no AppDelegate class specified. Please provide one using the last parameter of UIApplicationMain, e.g. `UIApplicationMain(0, nil, nil, NSStringFromClass(AppDelegate.self))`")
+            "There was no AppDelegate class specified. Please provide one using the last parameter of UIApplicationMain," +
+            " e.g. `UIApplicationMain(argc, argv, nil, NSStringFromClass(AppDelegate.self))`")
         return 1
     }
 
@@ -55,13 +57,20 @@ internal func UIApplicationMain(
 }
 
 extension UIApplication {
-    static func restart() {
+    static func restart(_ onRestarted: (() -> Void)? = nil) {
+        guard UIApplication.shared != nil else {
+            print("Tried to restart but no application was running")
+            return
+        }
+
         let applicationType = type(of: UIApplication.shared!)
-        let delegateType = UIApplication.shared.delegate == nil ? nil : type(of: UIApplication.shared.delegate!).self
+        let delegateType = UIApplication.shared!.delegate != nil ? type(of: UIApplication.shared!.delegate!).self : nil
 
         UIApplication.shared = nil
 
         DispatchQueue.main.async {
+            // Wrap this in another async block because UIApplicationMain is blocking on Mac:
+            DispatchQueue.main.async { onRestarted?() }
             UIApplicationMain(applicationType, delegateType)
         }
     }
