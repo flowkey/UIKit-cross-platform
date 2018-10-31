@@ -43,13 +43,13 @@ open class UIImageView: UIView {
         didSet {
             switch contentMode {
             case .scaleToFill:
-                layer.contentsGravity = "resize"
+                layer.contentsGravity = .resize
             case .scaleAspectFill:
-                layer.contentsGravity = "resizeAspectFill"
+                layer.contentsGravity = .resizeAspectFill
             case .scaleAspectFit:
-                layer.contentsGravity = "resizeAspect"
+                layer.contentsGravity = .resizeAspect
             case .center:
-                layer.contentsGravity = "center"
+                layer.contentsGravity = .center
             default:
                 assertionFailure("The contentMode you tried to set (\(contentMode)) hasn't been implemented yet!")
             }

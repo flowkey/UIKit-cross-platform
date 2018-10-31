@@ -19,11 +19,7 @@ open class CALayer {
     /// the view sets this value to match the screen.
     open var contentsScale: CGFloat = 1.0
 
-    internal var contentsGravityEnum: ContentsGravity = .resize
-    open var contentsGravity: String {
-        get { return contentsGravityEnum.rawValue }
-        set { contentsGravityEnum = ContentsGravity(rawValue: newValue) ?? .center } // matches iOS
-    }
+    open var contentsGravity: CALayerContentsGravity = .resize
 
     internal (set) public weak var superlayer: CALayer?
     internal (set) public var sublayers: [CALayer]? {
@@ -216,7 +212,7 @@ open class CALayer {
         contentsScale = layer.contentsScale
         superlayer = layer.superlayer
         sublayers = layer.sublayers
-        contentsGravityEnum = layer.contentsGravityEnum
+        contentsGravity = layer.contentsGravity
     }
 
     open func copy() -> Any {

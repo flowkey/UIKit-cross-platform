@@ -6,12 +6,19 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-
-extension CALayer {
-    internal enum ContentsGravity: String {
-        case left, center, right, top, bottom, topLeft, topRight
-        case resize, resizeAspectFill, resizeAspectFit = "resizeAspect"
-    }
+public struct CALayerContentsGravity: Equatable {
+    public static let bottom = CALayerContentsGravity()
+    public static let bottomLeft = CALayerContentsGravity()
+    public static let bottomRight = CALayerContentsGravity()
+    public static let center = CALayerContentsGravity()
+    public static let left = CALayerContentsGravity()
+    public static let resize = CALayerContentsGravity()
+    public static let resizeAspect = CALayerContentsGravity()
+    public static let resizeAspectFill = CALayerContentsGravity()
+    public static let right = CALayerContentsGravity()
+    public static let top = CALayerContentsGravity()
+    public static let topLeft = CALayerContentsGravity()
+    public static let topRight = CALayerContentsGravity()
 }
 
 struct ContentsGravityTransformation {
@@ -42,7 +49,7 @@ struct ContentsGravityTransformation {
             return (bounds.height - scaledContents.height) * (1 - layer.anchorPoint.y)
         }
 
-        switch layer.contentsGravityEnum {
+        switch layer.contentsGravity {
         case .resize:
             offset = .zero
             scale = CGSize(width: bounds.width / scaledContents.width, height: bounds.height / scaledContents.height)
@@ -50,7 +57,7 @@ struct ContentsGravityTransformation {
             offset = .zero
             let maxScale = max(bounds.width / scaledContents.width, bounds.height / scaledContents.height)
             scale = CGSize(width: maxScale, height: maxScale)
-        case .resizeAspectFit:
+        case .resizeAspect:
             offset = .zero
             let minScale = min(bounds.width / scaledContents.width, bounds.height / scaledContents.height)
             scale = CGSize(width: minScale, height: minScale)
@@ -74,6 +81,9 @@ struct ContentsGravityTransformation {
             scale = .defaultScale
         case .topRight:
             offset = CGPoint(x: distanceToMaxX, y: distanceToMinY)
+            scale = .defaultScale
+        default:
+            offset = .zero
             scale = .defaultScale
         }
     }

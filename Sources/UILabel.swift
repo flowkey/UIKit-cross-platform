@@ -11,7 +11,7 @@ public enum NSTextAlignment: Int {
     case left
     case right
 
-    internal func contentsGravity() -> CALayer.ContentsGravity {
+    internal func contentsGravity() -> CALayerContentsGravity {
         switch self {
         case .left: return .left
         case .center: return .center
@@ -45,7 +45,7 @@ open class UILabel: UIView {
     }
 
     private func updateLayerContentsGravityFromTextAlignment() {
-        layer.contentsGravityEnum = textAlignment.contentsGravity()
+        layer.contentsGravity = textAlignment.contentsGravity()
     }
 
     public var font: UIFont = .systemFont(ofSize: 16) {
