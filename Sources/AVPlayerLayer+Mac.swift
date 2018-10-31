@@ -47,7 +47,7 @@ public final class AVPlayerLayer: CALayer {
 
     private var playerOutput = AVPlayerItemVideoOutput()
 
-    open override var frame: CGRect {
+    public override var frame: CGRect {
         didSet {
             if frame.size == .zero { return }
             updatePlayerOutput(size: frame.size)
