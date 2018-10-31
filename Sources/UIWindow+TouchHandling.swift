@@ -14,7 +14,6 @@ protocol SDLEventWithCoordinates {
 extension SDL_MouseButtonEvent: SDLEventWithCoordinates {}
 extension SDL_MouseMotionEvent: SDLEventWithCoordinates {}
 
-
 extension CGPoint {
     static func from(_ event: SDLEventWithCoordinates) -> CGPoint {
         return UIScreen.main.absolutePointInOwnCoordinates(x: CGFloat(event.x), y: CGFloat(event.y))

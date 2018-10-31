@@ -33,7 +33,7 @@ extension UIApplication {
             case SDL_MOUSEMOTION:
                 if
                     let event = UIEvent.activeEvents.first,
-                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) })
                 {
                     let previousTimestamp = touch.timestamp
                     let newTimestamp = e.timestampInSeconds
@@ -51,7 +51,7 @@ extension UIApplication {
             case SDL_MOUSEBUTTONUP:
                 if
                     let event = UIEvent.activeEvents.first,
-                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) })
                 {
                     touch.timestamp = e.timestampInSeconds
                     touch.phase = .ended
@@ -69,7 +69,6 @@ extension UIApplication {
                         keyWindow?.printViewHierarchy()
                     default:
                         print(e.key.keysym.sym)
-                        break
                     }
                 }
 
@@ -141,7 +140,6 @@ extension SDL_Event {
     }
 }
 
-
 extension UIEvent {
     static func from(_ event: SDL_Event) -> UIEvent? {
         switch SDL_EventType(event.type) {
@@ -157,35 +155,34 @@ extension UIEvent {
 
             if
                 let firstExistingEvent = UIEvent.activeEvents.first,
-                let _ = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId} )
+                let _ = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId})
             {
-                //found a matching event, adding current touch to it and returning
+                // Found a matching event, adding current touch to it and returning
                 firstExistingEvent.allTouches?.insert(newTouch)
                 return firstExistingEvent
             } else {
-                //no matching event found, creating a new one
+                // No matching event found, creating a new one
                 return UIEvent(touch: newTouch)
             }
 
         case SDL_FINGERMOTION:
             if
                 let firstExistingEvent = UIEvent.activeEvents.first,
-                let matchingTouch = firstExistingEvent.allTouches?.first(where: { $0.touchId == event.tfinger.fingerId} )
+                let matchingTouch = firstExistingEvent.allTouches?.first(where: { $0.touchId == event.tfinger.fingerId})
             {
 
                 matchingTouch.timestamp = event.timestampInSeconds
                 matchingTouch.phase = .moved
                 matchingTouch.updateAbsoluteLocation(.from(event.tfinger))
                 return firstExistingEvent
-            }
-            else {
+            } else {
                 return nil
             }
 
         case SDL_FINGERUP:
             if
                 let firstExistingEvent = UIEvent.activeEvents.first,
-                let matchingTouch = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId} )
+                let matchingTouch = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId})
             {
                 matchingTouch.timestamp = event.timestampInSeconds
                 matchingTouch.phase = .ended
@@ -229,11 +226,11 @@ public func onNativeTouch(
     pointerFingerID: JavaInt,
     action: JavaInt,
     x: JavaFloat,
-    y: JavaFloat, 
+    y: JavaFloat,
     pressure: JavaFloat,
     timestamp: JavaLong
 ) {
-    guard let eventType = SDL_EventType.eventFrom(androidAction: action) 
+    guard let eventType = SDL_EventType.eventFrom(androidAction: action)
     else { return }
 
     var event = SDL_Event(tfinger:

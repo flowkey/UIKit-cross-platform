@@ -37,12 +37,17 @@ extension UIScrollView {
         // This calculation is a weird approximation but it's close enough for now...
         let animationTime = log(Double(distanceToBoundsCheckedTarget.magnitude)) * animationTimeConstant
 
-        UIView.animate(withDuration: animationTime, options: [.beginFromCurrentState, .customEaseOut, .allowUserInteraction],  animations: {
-            self.isDecelerating = true
-            self.contentOffset = targetOffset
-        }, completion: { _ in
-            self.isDecelerating = false
-        })
+        UIView.animate(
+            withDuration: animationTime,
+            options: [.beginFromCurrentState, .customEaseOut, .allowUserInteraction],
+            animations: {
+                self.isDecelerating = true
+                self.contentOffset = targetOffset
+            },
+            completion: { _ in
+                self.isDecelerating = false
+            }
+        )
     }
 
     func cancelDeceleratingIfNeccessary() {
