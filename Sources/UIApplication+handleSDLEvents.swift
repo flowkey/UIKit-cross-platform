@@ -168,7 +168,7 @@ extension UIEvent {
         case SDL_FINGERMOTION:
             if
                 let firstExistingEvent = UIEvent.activeEvents.first,
-                let matchingTouch = firstExistingEvent.allTouches?.first(where: { $0.touchId == event.tfinger.fingerId})
+                let matchingTouch = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId})
             {
 
                 matchingTouch.timestamp = event.timestampInSeconds
@@ -199,13 +199,12 @@ extension UIEvent {
 
 extension UIEvent: CustomStringConvertible {
     public var description: String {
-        var listOfTouches = ""
-        if let touches = allTouches {
-            for touch in touches {
-                listOfTouches += "\(touch.description),\n"
-            }
+        let text = "Event with touches: "
+        guard let allTouches = self.allTouches else {
+            return text + "none"
         }
-        return "Event with touches: \(listOfTouches)"
+        let descriptions = allTouches.map { $0.description }
+        return text + descriptions.joined(separator: ",\n")
     }
 }
 
