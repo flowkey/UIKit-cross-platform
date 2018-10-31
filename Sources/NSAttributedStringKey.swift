@@ -6,10 +6,11 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+#if os(Android)
 import struct Foundation.NSAttributedStringKey
 public typealias NSAttributedStringKey = Foundation.NSAttributedStringKey
 
-#if os(Android)
+
 extension NSAttributedStringKey {
     public static let kern = NSAttributedStringKey(rawValue: "NSKern")
     public static let foregroundColor = NSAttributedStringKey(rawValue: "NSColor")
