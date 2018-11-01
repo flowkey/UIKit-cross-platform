@@ -30,7 +30,7 @@ func setupRenderAndRunLoop() {
             let currentTime = Timer()
             DispatchQueue.main.async {
                 UIApplication.shared.handleEventsIfNeeded()
-                UIApplication.shared.render(atTime: currentTime)
+                UIScreen.main.render(window: UIApplication.shared.keyWindow, atTime: currentTime)
             }
          }
 

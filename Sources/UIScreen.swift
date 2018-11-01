@@ -10,16 +10,18 @@ import SDL
 import SDL_gpu
 import func Foundation.round
 
-
 extension SDLWindowFlags: OptionSet {}
 
 public extension UIScreen {
-    // Default value for testing. Gets set in TestSetup.swift
-    internal(set) public static var main: UIScreen!
+    internal(set) public static var main: UIScreen! {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
 }
 
 public final class UIScreen {
-    private var rawPointer: UnsafeMutablePointer<GPU_Target>!
+    // If we could use `private` members from an extension this would be private
+    // Keep that in mind when using it: i.e. if possible, don't ;)
+    internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
 
     public let bounds: CGRect
     public let scale: CGFloat
@@ -102,92 +104,11 @@ public final class UIScreen {
         UIFont.loadSystemFonts()
     }
 
-    func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
-        #if os(macOS)
-        // Here SDL scales our touch events for us, which means we need a special case for it:
-        return CGPoint(x: inputX, y: inputY)
-        #else
-        // On all other platforms, we scale the touch events to the screen size manually:
-        return CGPoint(x: inputX / scale, y: inputY / scale)
-        #endif
-    }
-
-    func blit(
-        _ image: CGImage,
-        anchorPoint: CGPoint,
-        contentsScale: CGFloat,
-        contentsGravity: ContentsGravityTransformation,
-        opacity: Float
-    ) {
-        GPU_SetAnchor(image.rawPointer, Float(anchorPoint.x), Float(anchorPoint.y))
-        GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8())
-
-        GPU_BlitTransform(
-            image.rawPointer,
-            nil,
-            self.rawPointer,
-            Float(contentsGravity.offset.x),
-            Float(contentsGravity.offset.y),
-            0, // rotation in degrees
-            Float(contentsGravity.scale.width / contentsScale),
-            Float(contentsGravity.scale.height / contentsScale)
-        )
-    }
-
-    func setShapeBlending(_ newValue: Bool) {
-        GPU_SetShapeBlending(newValue)
-    }
-
-    func setShapeBlendMode(_ newValue: GPU_BlendPresetEnum) {
-        GPU_SetShapeBlendMode(newValue)
-    }
-
-    func clear() {
-        GPU_Clear(rawPointer)
-    }
-
-    var clippingRect: CGRect? {
-        didSet {
-            guard let clippingRect = clippingRect else {
-                return GPU_UnsetClip(rawPointer)
-            }
-
-            GPU_SetClipRect(rawPointer, clippingRect.gpuRect(scale: scale))
-        }
-    }
-
-    func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
-        if cornerRadius >= 1 {
-            GPU_RectangleRoundFilled(rawPointer, rect.gpuRect(scale: scale), cornerRadius: Float(cornerRadius), color: color.sdlColor)
-        } else {
-            GPU_RectangleFilled(rawPointer, rect.gpuRect(scale: scale), color: color.sdlColor)
-        }
-    }
-
-    func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat) {
-        GPU_SetLineThickness(Float(lineThickness))
-        GPU_Rectangle(rawPointer, rect.gpuRect(scale: scale), color: lineColor.sdlColor)
-    }
-
-    func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat, cornerRadius: CGFloat) {
-        if cornerRadius > 1 {
-            GPU_SetLineThickness(Float(lineThickness))
-            GPU_RectangleRound(rawPointer, rect.gpuRect(scale: scale), cornerRadius: Float(cornerRadius), color: lineColor.sdlColor)
-        } else {
-            outline(rect, lineColor: lineColor, lineThickness: lineThickness)
-        }
-    }
-
-    func flip() throws {
-        GPU_Flip(rawPointer)
-        try throwOnErrors(ofType: [GPU_ERROR_USER_ERROR, GPU_ERROR_BACKEND_ERROR])
-    }
-
     deinit {
         UIView.layersWithAnimations.removeAll()
         UIEvent.activeEvents.removeAll()
         UIView.currentAnimationPrototype = nil
-        UIFont.clearCaches()
+        FontRenderer.cleanupSession()
 
         if rawPointer == nil { return } // dummy screen or already destroyed
         defer { GPU_Quit() }
@@ -202,6 +123,24 @@ public final class UIScreen {
         let existingWindow = SDL_GetWindowFromID(existingWindowID)
         SDL_DestroyWindow(existingWindow)
         rawPointer = nil
+    }
+
+    // Should be in UIScreen+render.swift but you can't store properties in an extension..
+    var clippingRect: CGRect? {
+        didSet { didSetClippingRect() }
+    }
+}
+
+// XXX: This can be removed entirely when the new touch handling for Android lands
+extension UIScreen {
+    func absolutePointInOwnCoordinates(x inputX: CGFloat, y inputY: CGFloat) -> CGPoint {
+        #if os(macOS)
+        // Here SDL scales our touch events for us, which means we need a special case for it:
+        return CGPoint(x: inputX, y: inputY)
+        #else
+        // On all other platforms, we scale the touch events to the screen size manually:
+        return CGPoint(x: inputX / scale, y: inputY / scale)
+        #endif
     }
 }
 
@@ -249,17 +188,6 @@ extension UIScreen {
             renderTarget: nil,
             bounds: bounds,
             scale: scale
-        )
-    }
-}
-
-private extension CGRect {
-    func gpuRect(scale: CGFloat) -> GPU_Rect {
-        return GPU_Rect(
-            x: Float(round(self.origin.x * scale) / scale),
-            y: Float(round(self.origin.y * scale) / scale),
-            w: Float(round(self.size.width * scale) / scale),
-            h: Float(round(self.size.height * scale) / scale)
         )
     }
 }

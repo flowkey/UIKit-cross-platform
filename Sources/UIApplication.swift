@@ -49,9 +49,6 @@ open class UIApplication {
     // Useful in future: ?
     // open var preferredContentSizeCategory: UIContentSizeCategory { get }
 
-
-    // MARK: Internals
-
     public required init() {
         UIScreen.main = UIScreen()
     }
@@ -77,46 +74,6 @@ extension UIApplication {
         exit(0)
         #endif
     }
-
-    func render(atTime frameTimer: Timer) {
-        // We don't save UIScreen to a var because that prevents deinit if
-        // we need to recreate the renderer (in case of render error below)
-        if UIScreen.main == nil {
-            print("Not rendering because `UIScreen.main` was `nil`")
-            return
-        }
-
-        guard let keyWindow = keyWindow else {
-            print("Not rendering because `keyWindow` was `nil`")
-            return
-        }
-
-        DisplayLink.activeDisplayLinks.forEach { $0.callback() }
-        UIView.animateIfNeeded(at: frameTimer)
-        // XXX: It's possible for drawing to crash if the context is invalid:
-        keyWindow.sdlDrawAndLayoutTreeIfNeeded()
-
-        guard CALayer.layerTreeIsDirty else {
-            // Nothing changed, so we can leave the existing image on the screen.
-            return
-        }
-
-        UIScreen.main.clear()
-
-        GPU_MatrixMode(GPU_MODELVIEW)
-        GPU_LoadIdentity()
-
-        UIScreen.main.clippingRect = keyWindow.bounds
-        keyWindow.layer.sdlRender()
-
-        do {
-            try UIScreen.main.flip()
-            CALayer.layerTreeIsDirty = false
-        } catch {
-            print("UIScreen.main failed to render", error)
-            UIApplication.restart()
-        }
-    }
 }
 
 public enum UIStatusBarStyle {
@@ -132,8 +89,8 @@ private let maxFrameRenderTimeInSeconds = 1.0 / 60.0
 @_cdecl("Java_org_libsdl_app_SDLActivity_nativeProcessEventsAndRender")
 public func nativeProcessEventsAndRender(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
     let frameTime = Timer()
-    UIApplication.shared?.handleEventsIfNeeded()
-    UIApplication.shared?.render(atTime: frameTime)
+    UIApplication.shared.handleEventsIfNeeded()
+    UIScreen.main?.render(window: UIApplication.shared.keyWindow, atTime: frameTime)
     let remainingFrameTime = maxFrameRenderTimeInSeconds - frameTime.elapsedTimeInSeconds
     CFRunLoopRunInMode(kCFRunLoopDefaultMode, max(0.001, remainingFrameTime / 2), true)
 }
