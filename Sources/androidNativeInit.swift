@@ -10,8 +10,8 @@ import SDL
 import CJNI
 
 public struct UIKitAndroid {
-    public static var UIApplicationClass: UIApplication.Type?
     public static var UIApplicationDelegateClass: UIApplicationDelegate.Type?
+    public static var UIApplicationClass: UIApplication.Type = UIApplication.self
 }
 
 @_silgen_name("SDL_Android_Init")
@@ -22,13 +22,17 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
     SDL_Android_Init(env, view)
     SDL_SetMainReady()
 
-    if UIApplication.shared != nil {
-        return 0 // already inited
+    if UIScreen.main == nil {
+        UIScreen.main = UIScreen()
     }
 
-    return JavaInt(
-        UIApplicationMain(UIKitAndroid.UIApplicationClass, UIKitAndroid.UIApplicationDelegateClass)
-    )
+    if UIApplication.shared == nil {
+        return JavaInt(
+            UIApplicationMain(UIKitAndroid.UIApplicationClass, UIKitAndroid.UIApplicationDelegateClass)
+        )
+    }
+
+    return 0
 }
 
 @_cdecl("Java_org_libsdl_app_SDLActivity_nativeDestroyScreen")
