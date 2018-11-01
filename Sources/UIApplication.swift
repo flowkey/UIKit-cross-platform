@@ -54,8 +54,9 @@ open class UIApplication {
     }
 
     deinit {
-        DisplayLink.activeDisplayLinks.removeAll()
         UIScreen.main = nil
+        UIFont.clearCachedFontFiles()
+        DisplayLink.activeDisplayLinks.removeAll()
     }
 }
 

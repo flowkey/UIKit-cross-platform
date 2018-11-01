@@ -20,7 +20,7 @@ extension FontRenderer {
 
         var xOffset: Int32 = 0
 
-        // Adding bound checking to avoid all kinds of memory corruption errors
+        // Bounds checking to avoid memory corruption errors
         let surfaceEndIndex = surface.pointee.pixels.assumingMemoryBound(to: UInt32.self)
             + Int(surface.pointee.pitch / 4 * surface.pointee.h)
 
