@@ -22,7 +22,7 @@ extension UIScrollView {
         let velocityIsLargeEnoughToDecelerate = (self.panGestureRecognizer.velocity(in: self).magnitude > 10)
 
         let dampingFactor: CGFloat = 0.55 // hand-tuned
-        let nonBoundsCheckedScrollAnimationDistance = self.weightedAverageVelocity * dampingFactor // hand-tuned
+        let nonBoundsCheckedScrollAnimationDistance = self.weightedAverageVelocity * dampingFactor
         let targetOffset = getBoundsCheckedContentOffset(contentOffset - nonBoundsCheckedScrollAnimationDistance)
         let distanceToBoundsCheckedTarget = contentOffset - targetOffset
 

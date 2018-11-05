@@ -53,6 +53,7 @@
 		5C418DBA20F505FF005D0E92 /* UIApplicationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C418DB920F505FF005D0E92 /* UIApplicationDelegate.swift */; };
 		5C418DC020F507DA005D0E92 /* UIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C418DBF20F507DA005D0E92 /* UIApplication.swift */; };
 		5C418DC220F5149E005D0E92 /* UIApplicationMain+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C418DC120F5149E005D0E92 /* UIApplicationMain+Mac.swift */; };
+		5C43B2DE2190C49000CA5C07 /* UIEvent+fromSDL_Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C43B2DD2190C48F00CA5C07 /* UIEvent+fromSDL_Event.swift */; };
 		5C4AD7E3204EE2B70021DD4A /* AVPlayerItem+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4AD7E1204EE2B60021DD4A /* AVPlayerItem+Mac.swift */; };
 		5C4CD51120615FCF00217B4C /* UIApplication+handleSDLEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4CD51020615FCF00217B4C /* UIApplication+handleSDLEvents.swift */; };
 		5C4CD51A206160EC00217B4C /* UIView+printViewHierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4CD519206160EC00217B4C /* UIView+printViewHierarchy.swift */; };
@@ -324,7 +325,6 @@
 		5C1F06AE1F3210F200EFF087 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewController.swift; path = Sources/UIViewController.swift; sourceTree = SOURCE_ROOT; };
 		5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SDL+JNIExtensions.swift"; sourceTree = "<group>"; };
 		5C27E7AE1ECB2F6500F5020D /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C27E7B21ECB2F6500F5020D /* Mac-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Mac-Info.plist"; path = "../Sources/Mac-Info.plist"; sourceTree = "<group>"; };
 		5C27E7B71ECB2F6500F5020D /* UIKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UIKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C27E7BE1ECB2F6500F5020D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5C27E7D21ECB2F9100F5020D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -346,6 +346,7 @@
 		5C418DB920F505FF005D0E92 /* UIApplicationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationDelegate.swift; sourceTree = "<group>"; };
 		5C418DBF20F507DA005D0E92 /* UIApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplication.swift; sourceTree = "<group>"; };
 		5C418DC120F5149E005D0E92 /* UIApplicationMain+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplicationMain+Mac.swift"; sourceTree = "<group>"; };
+		5C43B2DD2190C48F00CA5C07 /* UIEvent+fromSDL_Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIEvent+fromSDL_Event.swift"; sourceTree = "<group>"; };
 		5C4AD7E1204EE2B60021DD4A /* AVPlayerItem+Mac.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+Mac.swift"; sourceTree = "<group>"; };
 		5C4AD7E2204EE2B60021DD4A /* AVPlayerItem+Android.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+Android.swift"; sourceTree = "<group>"; };
 		5C4AD7E6204EE45F0021DD4A /* AVPlayerLayer+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayerLayer+Android.swift"; sourceTree = "<group>"; };
@@ -570,7 +571,6 @@
 				5C27E7B01ECB2F6500F5020D /* UIKit */,
 				5C27E7BB1ECB2F6500F5020D /* UIKitTests */,
 				83C18F391F0FB486008FEA07 /* Resources */,
-				5C27E7E61ECB2FE000F5020D /* zSupporting Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -695,15 +695,6 @@
 				5C27E7DB1ECB2F9100F5020D /* Foundation.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		5C27E7E61ECB2FE000F5020D /* zSupporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				5C27E7B21ECB2F6500F5020D /* Mac-Info.plist */,
-			);
-			name = "zSupporting Files";
-			path = UIKit;
 			sourceTree = "<group>";
 		};
 		5C27E7F51ECB301900F5020D /* SDL */ = {
@@ -1171,6 +1162,7 @@
 				5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */,
 				5BA87A9C2018FC990080C876 /* CATransform3D+animations.swift in Sources */,
 				5C6AB71F1ED3BECD006F90AC /* UIWindow.swift in Sources */,
+				5C43B2DE2190C49000CA5C07 /* UIEvent+fromSDL_Event.swift in Sources */,
 				5CB6E1C32033460C001FEAC9 /* CATransform3D+SDL_gpu.swift in Sources */,
 				5C8E6A21203A089A00D1DBE0 /* CALayer+ContentsGravity.swift in Sources */,
 				5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */,
