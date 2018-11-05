@@ -49,9 +49,7 @@ internal func UIApplicationMain(
 
     application.delegate = appDelegate
 
-    if
-        !appDelegate.application(application, didFinishLaunchingWithOptions: nil)
-    {
+    if appDelegate.application(application, didFinishLaunchingWithOptions: nil) == false {
         return 1
     }
 
