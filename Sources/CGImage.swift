@@ -13,7 +13,9 @@ import Foundation
 public class CGImage {
     /// Be careful using this pointer e.g. for another CGImage instance.
     /// You will have to manually adjust its pointee's reference count.
-    var rawPointer: UnsafeMutablePointer<GPU_Image>
+    var rawPointer: UnsafeMutablePointer<GPU_Image> {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
 
     /// Stores the compressed image `Data` this `CGImage` was inited with (if any).
     /// This allows us to recreate the image if our OpenGL Context gets killed (esp. relevant for Android)

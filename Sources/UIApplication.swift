@@ -51,6 +51,7 @@ open class UIApplication {
 
     public required init() {
         UIScreen.main = UIScreen()
+        UIFont.loadSystemFonts()
     }
 
     deinit {

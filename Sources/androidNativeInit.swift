@@ -22,14 +22,15 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
     SDL_Android_Init(env, view)
     SDL_SetMainReady()
 
-    if UIScreen.main == nil {
-        UIScreen.main = UIScreen()
-    }
-
     if UIApplication.shared == nil {
         return JavaInt(
             UIApplicationMain(UIKitAndroid.UIApplicationClass, UIKitAndroid.UIApplicationDelegateClass)
         )
+    }
+
+    // UIApplicationMain also inits a screen, so this is a special case.
+    if UIScreen.main == nil {
+        UIScreen.main = UIScreen()
     }
 
     return 0

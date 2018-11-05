@@ -100,8 +100,6 @@ public final class UIScreen {
         setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
 
         clearErrors() // by now we have handled any errors we might have wanted to
-
-        UIFont.loadSystemFonts()
     }
 
     deinit {
