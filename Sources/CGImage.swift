@@ -26,8 +26,9 @@ public class CGImage {
 
     /**
      Initialize a `CGImage` by passing a reference to a `GPU_Image`, which is usually the result of SDL_gpu's `GPU_*Image*` creation functions. May be null.
+     The second parameter provides the compressed image source data (in PNG, JPG etc. format). The source data will be used to recreate the `GPU_Image` if the GLContext has been invalidated (which happens quite commonly on Android). Not providing source data means you will have to recreate the `CGImage` yourself if it fails to render, usually by overriding your `CALayer`'s display() method.
      */
-    internal init?(_ pointer: UnsafeMutablePointer<GPU_Image>?, sourceData: Data? = nil) {
+    internal init?(_ pointer: UnsafeMutablePointer<GPU_Image>?, sourceData: Data?) {
         guard let pointer = pointer else {
             // We check for GPU errors on render, so clear any error that may have caused GPU_Image to be nil.
             // It's possible there are unrelated errors on the stack at this point, but we immediately catch and
@@ -61,7 +62,7 @@ public class CGImage {
 
     convenience init?(surface: UnsafeMutablePointer<SDLSurface>) {
         guard let pointer = GPU_CopyImageFromSurface(surface) else { return nil }
-        self.init(pointer)
+        self.init(pointer, sourceData: nil)
     }
 
     internal func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
