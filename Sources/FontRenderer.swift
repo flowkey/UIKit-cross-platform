@@ -8,8 +8,20 @@
 
 import SDL_ttf
 
-private func initSDL_ttf() -> Bool {
-    return (TTF_WasInit() == 1) || (TTF_Init() != -1) // TTF_Init returns -1 on failure
+
+extension FontRenderer {
+    /// Stores the renderers for a specific Name/Size UIFont configuration to avoid reiniting them all the time.
+    static var cache = [String: FontRenderer]()
+
+    /// Called whenever the UIScreen is destroyed to avoid strange font rendering bugs on reinit.
+    static func cleanupSession() {
+        cache.removeAll()
+        TTF_Quit()
+    }
+
+    private static func initialize() -> Bool {
+        return (TTF_WasInit() == 1) || (TTF_Init() != -1)
+    }
 }
 
 public class FontRenderer {
@@ -17,7 +29,7 @@ public class FontRenderer {
     deinit { TTF_CloseFont(rawPointer) }
 
     init?(_ source: CGDataProvider, size: Int32) {
-        if !initSDL_ttf() { return nil }
+        if !FontRenderer.initialize() { return nil }
 
         let rwOp = SDL_RWFromConstMem(source.data, Int32(source.data.count))
         guard let font = TTF_OpenFontRW(rwOp, 1, size) else { return nil }
