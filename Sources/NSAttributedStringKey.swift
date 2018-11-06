@@ -8,11 +8,15 @@
 
 #if os(Android)
 import struct Foundation.NSAttributedStringKey
-public typealias NSAttributedStringKey = Foundation.NSAttributedStringKey
 
 
 extension NSAttributedStringKey {
     public static let kern = NSAttributedStringKey(rawValue: "NSKern")
     public static let foregroundColor = NSAttributedStringKey(rawValue: "NSColor")
 }
+
+extension NSAttributedString {
+    public typealias Key = NSAttributedStringKey
+}
+
 #endif
