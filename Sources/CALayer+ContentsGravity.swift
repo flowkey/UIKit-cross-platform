@@ -1,24 +1,14 @@
-//
-//  CALayer+ContentsGravity.swift
-//  UIKit
-//
-//  Created by Geordie Jay on 18.02.18.
-//  Copyright © 2018 flowkey. All rights reserved.
-//
-
-public struct CALayerContentsGravity: Equatable {
-    public static let bottom = CALayerContentsGravity()
-    public static let bottomLeft = CALayerContentsGravity()
-    public static let bottomRight = CALayerContentsGravity()
-    public static let center = CALayerContentsGravity()
-    public static let left = CALayerContentsGravity()
-    public static let resize = CALayerContentsGravity()
-    public static let resizeAspect = CALayerContentsGravity()
-    public static let resizeAspectFill = CALayerContentsGravity()
-    public static let right = CALayerContentsGravity()
-    public static let top = CALayerContentsGravity()
-    public static let topLeft = CALayerContentsGravity()
-    public static let topRight = CALayerContentsGravity()
+/*
+ * Apples CALayerContentsGravity implementation is based on a struct
+ * with a raw representable because of backwards compatibility
+ * We implemented it with an enum, which can be used the
+ * same way as Apples CALayerContentsGravity
+*/
+public enum CALayerContentsGravity {
+    case bottom, bottomLeft, bottomRight
+    case center, left, right
+    case top, topLeft, topRight
+    case resize, resizeAspect, resizeAspectFill
 }
 
 struct ContentsGravityTransformation {
