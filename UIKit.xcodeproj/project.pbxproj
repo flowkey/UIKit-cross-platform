@@ -85,6 +85,8 @@
 		5C8E6A21203A089A00D1DBE0 /* CALayer+ContentsGravity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E6A20203A089A00D1DBE0 /* CALayer+ContentsGravity.swift */; };
 		5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
 		5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037241F138B8A0058E592 /* MeteringView.swift */; };
+		5C915950218B6BE300AFEB7E /* Data+fromRelativePathCrossPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C91594F218B6BE300AFEB7E /* Data+fromRelativePathCrossPlatform.swift */; };
+		5C915956218B6C9B00AFEB7E /* UIScreen+render.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C915955218B6C9B00AFEB7E /* UIScreen+render.swift */; };
 		5C93AE7C2088F7E7005BE853 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AE7B2088F7E7005BE853 /* UINavigationController.swift */; };
 		5C93AEA62088FB51005BE853 /* UINavigationBarAndroid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEA52088FB51005BE853 /* UINavigationBarAndroid.swift */; };
 		5C93AEA82088FB70005BE853 /* UINavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93AEA72088FB70005BE853 /* UINavigationBar.swift */; };
@@ -371,6 +373,8 @@
 		5C8E6A20203A089A00D1DBE0 /* CALayer+ContentsGravity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+ContentsGravity.swift"; sourceTree = "<group>"; };
 		5C9037201F137FB70058E592 /* CGRectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGRectTests.swift; sourceTree = "<group>"; };
 		5C9037241F138B8A0058E592 /* MeteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MeteringView.swift; path = Sources/MeteringView.swift; sourceTree = SOURCE_ROOT; };
+		5C91594F218B6BE300AFEB7E /* Data+fromRelativePathCrossPlatform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+fromRelativePathCrossPlatform.swift"; sourceTree = "<group>"; };
+		5C915955218B6C9B00AFEB7E /* UIScreen+render.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+render.swift"; sourceTree = "<group>"; };
 		5C93AE7B2088F7E7005BE853 /* UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
 		5C93AEA52088FB51005BE853 /* UINavigationBarAndroid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBarAndroid.swift; sourceTree = "<group>"; };
 		5C93AEA72088FB70005BE853 /* UINavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBar.swift; sourceTree = "<group>"; };
@@ -615,6 +619,7 @@
 				5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */,
 				5C6AB7701ED680BC006F90AC /* UIResponder.swift */,
 				8337A8121F39F37500475F80 /* UIScreen.swift */,
+				5C915955218B6C9B00AFEB7E /* UIScreen+render.swift */,
 				5C6AB75E1ED575CF006F90AC /* UIScrollView.swift */,
 				5CC7463D20BDB286000D21AF /* UIScrollView+indicatorsInternal.swift */,
 				0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */,
@@ -684,6 +689,7 @@
 				5CDB31B61F1CE8050081A605 /* Bundle.swift */,
 				83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */,
 				5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */,
+				5C91594F218B6BE300AFEB7E /* Data+fromRelativePathCrossPlatform.swift */,
 				5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */,
 				5B520DB4208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift */,
 				5CAF5A2F20ADD09500760FD4 /* FontRenderer+singleLineSize.swift */,
@@ -1111,6 +1117,7 @@
 				5C93AEB0208A44BC005BE853 /* UIModalPresentationStyle.swift in Sources */,
 				5C6AB71C1ED3BECD006F90AC /* UIImage.swift in Sources */,
 				5C664CD81FA0E640008F41D6 /* ShaderProgram.swift in Sources */,
+				5C915956218B6C9B00AFEB7E /* UIScreen+render.swift in Sources */,
 				5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */,
 				5C6AB7191ED3BECD006F90AC /* CALayer.swift in Sources */,
 				83E5F7F31EF8188400279C59 /* UILabel.swift in Sources */,
@@ -1149,6 +1156,7 @@
 				5CCF1C00201A292400AAF598 /* VideoTexture+Mac.swift in Sources */,
 				5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */,
 				5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */,
+				5C915950218B6BE300AFEB7E /* Data+fromRelativePathCrossPlatform.swift in Sources */,
 				5B115C5E1F61DBF800AAB895 /* UIProgressView.swift in Sources */,
 				5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */,
 				5C4CD51A206160EC00217B4C /* UIView+printViewHierarchy.swift in Sources */,

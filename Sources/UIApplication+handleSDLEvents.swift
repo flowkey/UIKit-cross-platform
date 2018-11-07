@@ -74,7 +74,8 @@ extension UIApplication {
 
                 if keyModifier.contains(KMOD_LGUI) || keyModifier.contains(KMOD_RGUI) {
                     if e.key.keysym.sym == 114 { // CMD-R
-                        UIApplication.restart()
+                        UIScreen.main = nil
+                        UIScreen.main = UIScreen()
                     }
                 }
                 #endif
@@ -100,29 +101,29 @@ extension UIApplication {
 
 extension UIApplication {
     static func onWillEnterForeground() {
-        UIApplication.restart {
-            if let runningApplication = UIApplication.shared {
-                runningApplication.delegate?.applicationWillEnterForeground(runningApplication)
-            }
+        #if os(Android)
+        if UIScreen.main == nil { // sometimes we "enter foreground" after just a loss of focus
+            UIScreen.main = UIScreen()
         }
+        #endif
+
+        UIApplication.shared?.delegate?.applicationWillEnterForeground(UIApplication.shared)
     }
 
     static func onDidEnterForeground() {
-        if let runningApplication = UIApplication.shared {
-            runningApplication.delegate?.applicationDidBecomeActive(runningApplication)
-        }
+        UIApplication.shared?.delegate?.applicationDidBecomeActive(UIApplication.shared)
     }
 
     static func onWillEnterBackground() {
-        if let runningApplication = UIApplication.shared {
-            runningApplication.delegate?.applicationWillResignActive(runningApplication)
-        }
+        UIApplication.shared?.delegate?.applicationWillResignActive(UIApplication.shared)
     }
 
     static func onDidEnterBackground() {
-        if let runningApplication = UIApplication.shared {
-            runningApplication.delegate?.applicationDidEnterBackground(runningApplication)
-        }
+        UIApplication.shared?.delegate?.applicationDidEnterBackground(UIApplication.shared)
+
+        #if os(Android)
+        UIScreen.main = nil
+        #endif
     }
 }
 

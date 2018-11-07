@@ -116,7 +116,7 @@ extension FontRenderer {
             }
 
             guard Find_Glyph(self.rawPointer, characterCode, CACHED_METRICS) == 0 else {
-                assertionFailure("Couldn't find glyph")
+                assertionFailure("Glyph \(characterCode) ('\(Character(UnicodeScalar(characterCode)!))') could not be found")
                 return nil
             }
 
@@ -124,7 +124,7 @@ extension FontRenderer {
 
             let spaceCharacterCode = 32
             if characterCode != spaceCharacterCode, glyph.maxx - glyph.minx <= 0 {
-                assertionFailure("Glyph has no width")
+                assertionFailure("Glyph \(characterCode) ('\(Character(UnicodeScalar(characterCode)!))') has no width")
                 return nil
             }
 
