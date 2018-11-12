@@ -237,9 +237,9 @@ open class CALayer {
     internal var _presentation: CALayer?
     open func presentation() -> CALayer? { return _presentation }
 
-    var disableAnimations = false
+    internal var disableAnimations = false
 
-    var animations = [String: CABasicAnimation]() {
+    internal var animations = [String: CABasicAnimation]() {
         didSet { onDidSetAnimations(wasEmpty: oldValue.isEmpty) }
     }
 
@@ -247,6 +247,13 @@ open class CALayer {
     /// This is both a performance optimization (avoids lots of animations at the start)
     /// as well as a correctness fix (matches iOS behaviour). Maybe there's a better way though?
     internal var hasBeenRenderedInThisPartOfOverallLayerHierarchy = false
+
+    internal var _needsDisplay = true
+    open func needsDisplay() -> Bool { return _needsDisplay }
+    open func setNeedsDisplay() { _needsDisplay = true }
+    open func display() {
+        delegate?.display(self)
+    }
 }
 
 private extension CGPoint {
@@ -295,4 +302,5 @@ extension CALayer: Hashable {
 
 public protocol CALayerDelegate: class {
     func action(forKey event: String) -> CABasicAnimation?
+    func display(_ layer: CALayer)
 }

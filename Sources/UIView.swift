@@ -13,7 +13,7 @@ open class UIView: UIResponder, CALayerDelegate {
         return CALayer.self
     }
 
-    open let layer: CALayer
+    public let layer: CALayer
 
     open var frame: CGRect {
         get { return layer.frame }
@@ -50,7 +50,7 @@ open class UIView: UIResponder, CALayerDelegate {
         }
     }
 
-    open let safeAreaInsets: UIEdgeInsets = .zero
+    public internal(set) var safeAreaInsets: UIEdgeInsets = .zero
 
     open var mask: UIView? {
         didSet {
@@ -78,9 +78,8 @@ open class UIView: UIResponder, CALayerDelegate {
     internal var needsDisplay = true
 
     /// Override this to draw to the layer's texture whenever `self.needsDisplay`
-    open func draw() {
-        needsDisplay = false
-    }
+    open func draw() {}
+    open func display(_ layer: CALayer) {}
 
     public func setNeedsDisplay() {
         needsDisplay = true
@@ -384,4 +383,3 @@ extension UIView: Hashable {
         return ObjectIdentifier(self).hashValue
     }
 }
-

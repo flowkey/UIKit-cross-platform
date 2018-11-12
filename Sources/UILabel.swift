@@ -67,6 +67,10 @@ open class UILabel: UIView {
         }
     }
 
+    override open func display(_ layer: CALayer) {
+        self.draw()
+    }
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
         isUserInteractionEnabled = false
