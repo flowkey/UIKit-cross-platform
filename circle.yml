@@ -1,10 +1,7 @@
-version: 2
-
 jobs:
-  build:
+  xcodebuild:
     macos:
-      xcode: "10.0.0"
-    
+      xcode: "10.1.0"
     steps:
       - checkout
       - run: git submodule update --recursive --init
@@ -33,3 +30,21 @@ jobs:
               -scheme "UIKit iOSTestTarget"
               test |
             xcpretty --color --report junit
+
+  gradlebuild:
+    docker:
+      - image: flowkey/androidswift
+    steps:
+      - checkout
+      - run: git submodule update --recursive --init
+      - run:
+        name: Build demo app
+        command: ./gradlew assembleDebug
+        path: ./samples/getting-started/android
+
+workflows:
+  version: 2
+  uikit:
+    jobs:
+      - xcodebuild
+      - gradlebuild
