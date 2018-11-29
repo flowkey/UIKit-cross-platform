@@ -38,9 +38,9 @@ jobs:
       - checkout
       - run: git submodule update --recursive --init
       - run:
-        name: Build demo app
-        command: ./gradlew assembleDebug
-        path: ./samples/getting-started/android
+          name: Build demo app
+          command: ./gradlew assembleDebug
+          path: ./samples/getting-started/android
 
 workflows:
   version: 2
