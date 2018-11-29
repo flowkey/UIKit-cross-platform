@@ -37,6 +37,7 @@ jobs:
     steps:
       - checkout
       - run: git submodule update --recursive --init
+      - run: cp -f ./swift-android-toolchain/usr/Linux/ld.gold /usr/bin/
       - run:
           name: Build demo app
           command: ./gradlew assembleDebug
