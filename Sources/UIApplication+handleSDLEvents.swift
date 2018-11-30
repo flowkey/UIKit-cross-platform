@@ -101,22 +101,32 @@ extension UIApplication {
         #endif
 
         UIApplication.shared?.delegate?.applicationWillEnterForeground(UIApplication.shared)
+        UIApplication.shared?.post(UIApplication.willEnterForegroundNotification)
     }
 
     static func onDidEnterForeground() {
         UIApplication.shared?.delegate?.applicationDidBecomeActive(UIApplication.shared)
+        UIApplication.shared?.post(UIApplication.didBecomeActiveNotification)
     }
 
     static func onWillEnterBackground() {
         UIApplication.shared?.delegate?.applicationWillResignActive(UIApplication.shared)
+        UIApplication.shared?.post(UIApplication.willResignActiveNotification)
     }
 
     static func onDidEnterBackground() {
         UIApplication.shared?.delegate?.applicationDidEnterBackground(UIApplication.shared)
+        UIApplication.shared?.post(UIApplication.didEnterBackgroundNotification)
 
         #if os(Android)
         UIScreen.main = nil
         #endif
+    }
+}
+
+private extension UIApplication {
+    func post(_ name: NSNotification.Name) {
+        NotificationCenter.default.post(name: name, object: self)
     }
 }
 
