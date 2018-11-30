@@ -101,22 +101,22 @@ extension UIApplication {
         #endif
 
         UIApplication.shared?.delegate?.applicationWillEnterForeground(UIApplication.shared)
-        UIApplication.post(UIApplication.willEnterForegroundNotification)
+        UIApplication.post(willEnterForegroundNotification)
     }
 
     static func onDidEnterForeground() {
         UIApplication.shared?.delegate?.applicationDidBecomeActive(UIApplication.shared)
-        UIApplication.post(UIApplication.didBecomeActiveNotification)
+        UIApplication.post(didBecomeActiveNotification)
     }
 
     static func onWillEnterBackground() {
         UIApplication.shared?.delegate?.applicationWillResignActive(UIApplication.shared)
-        UIApplication.post(UIApplication.willResignActiveNotification)
+        UIApplication.post(willResignActiveNotification)
     }
 
     static func onDidEnterBackground() {
         UIApplication.shared?.delegate?.applicationDidEnterBackground(UIApplication.shared)
-        UIApplication.post(UIApplication.didEnterBackgroundNotification)
+        UIApplication.post(didEnterBackgroundNotification)
 
         #if os(Android)
         UIScreen.main = nil
