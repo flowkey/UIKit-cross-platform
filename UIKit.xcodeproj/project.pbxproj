@@ -134,6 +134,7 @@
 		61C9D3B921B052750012018B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B821B052750012018B /* Notification.swift */; };
 		61C9D3BB21B052B30012018B /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3BA21B052B30012018B /* NotificationCenter.swift */; };
 		61EE7A1821B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */; };
+		61EE7A2E21B18940003A5FFD /* UIApplication+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EE7A2D21B18940003A5FFD /* UIApplication+Notifications.swift */; };
 		8318D27B1F0695080029816A /* UIControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D27A1F0695080029816A /* UIControl.swift */; };
 		8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323F27F1F2FA2EE00C121BB /* TestSetup.swift */; };
 		8323F2821F2FA42A00C121BB /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323F27F1F2FA2EE00C121BB /* TestSetup.swift */; };
@@ -422,6 +423,7 @@
 		61C9D3B821B052750012018B /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		61C9D3BA21B052B30012018B /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
 		61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+NSNotificationTests.swift"; sourceTree = "<group>"; };
+		61EE7A2D21B18940003A5FFD /* UIApplication+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Notifications.swift"; sourceTree = "<group>"; };
 		83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VideoTexture+Mac.swift"; sourceTree = "<group>"; };
 		8318D27A1F0695080029816A /* UIControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIControl.swift; path = ../Sources/UIControl.swift; sourceTree = "<group>"; };
 		8323F27F1F2FA2EE00C121BB /* TestSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSetup.swift; sourceTree = "<group>"; };
@@ -611,6 +613,7 @@
 				83AB7B4B1F2B515B00C7997D /* UIAlertAction.swift */,
 				5C3DCCED2090F04A001DEDAF /* UIAlertController */,
 				5C418DBF20F507DA005D0E92 /* UIApplication.swift */,
+				61EE7A2D21B18940003A5FFD /* UIApplication+Notifications.swift */,
 				5CBD836020F6584200AF4E8E /* UIApplicationMain.swift */,
 				5C418DC120F5149E005D0E92 /* UIApplicationMain+Mac.swift */,
 				5C4CD51020615FCF00217B4C /* UIApplication+handleSDLEvents.swift */,
@@ -1193,6 +1196,7 @@
 				5C418DC220F5149E005D0E92 /* UIApplicationMain+Mac.swift in Sources */,
 				5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */,
 				83E5F7EB1EF8156400279C59 /* CGImage.swift in Sources */,
+				61EE7A2E21B18940003A5FFD /* UIApplication+Notifications.swift in Sources */,
 				5C6AB75F1ED575CF006F90AC /* UIScrollView.swift in Sources */,
 				5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */,
 				8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */,

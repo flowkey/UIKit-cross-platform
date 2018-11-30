@@ -97,33 +97,3 @@ public func nativeProcessEventsAndRender(env: UnsafeMutablePointer<JNIEnv>, view
     CFRunLoopRunInMode(kCFRunLoopDefaultMode, max(0.001, remainingFrameTime / 2), true)
 }
 #endif
-
-extension UIApplication {
-    public static let didEnterBackgroundNotification
-        = NSNotification.Name.UIApplicationDidEnterBackground
-
-    public static let willEnterForegroundNotification
-        = NSNotification.Name.UIApplicationWillEnterForeground
-
-
-    public static let didBecomeActiveNotification
-        = NSNotification.Name.UIApplicationDidBecomeActive
-
-
-    public static let willResignActiveNotification
-        = NSNotification.Name.UIApplicationWillResignActive
-}
-
-extension NSNotification.Name {
-    public static let UIApplicationDidEnterBackground
-        = NSNotification.Name(rawValue: "UIApplicationDidEnterBackgroundNotification")
-
-    public static let UIApplicationWillEnterForeground
-        = NSNotification.Name(rawValue: "UIApplicationWillEnterForegroundNotification")
-
-    public static let UIApplicationDidBecomeActive
-        = NSNotification.Name(rawValue: "UIApplicationDidBecomeActiveNotification")
-
-    public static let UIApplicationWillResignActive
-        = NSNotification.Name(rawValue: "UIApplicationWillResignActiveNotification")
-}
