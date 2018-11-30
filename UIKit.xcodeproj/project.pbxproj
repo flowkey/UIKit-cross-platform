@@ -133,6 +133,7 @@
 		61C9D3B121B051B10012018B /* NSNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B021B051B10012018B /* NSNotification.swift */; };
 		61C9D3B921B052750012018B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B821B052750012018B /* Notification.swift */; };
 		61C9D3BB21B052B30012018B /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3BA21B052B30012018B /* NotificationCenter.swift */; };
+		61EE7A1821B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */; };
 		8318D27B1F0695080029816A /* UIControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D27A1F0695080029816A /* UIControl.swift */; };
 		8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323F27F1F2FA2EE00C121BB /* TestSetup.swift */; };
 		8323F2821F2FA42A00C121BB /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323F27F1F2FA2EE00C121BB /* TestSetup.swift */; };
@@ -420,6 +421,7 @@
 		61C9D3B021B051B10012018B /* NSNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSNotification.swift; sourceTree = "<group>"; };
 		61C9D3B821B052750012018B /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		61C9D3BA21B052B30012018B /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
+		61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+NSNotificationTests.swift"; sourceTree = "<group>"; };
 		83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VideoTexture+Mac.swift"; sourceTree = "<group>"; };
 		8318D27A1F0695080029816A /* UIControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIControl.swift; path = ../Sources/UIControl.swift; sourceTree = "<group>"; };
 		8323F27F1F2FA2EE00C121BB /* TestSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSetup.swift; sourceTree = "<group>"; };
@@ -669,6 +671,7 @@
 				03760AE51F67E73300F36283 /* UIScrollViewTests.swift */,
 				5CFFFA0E2017454300D989BC /* UIView */,
 				5C93AEB5208E09B5005BE853 /* UIViewControllerTests.swift */,
+				61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */,
 			);
 			path = UIKitTests;
 			sourceTree = "<group>";
@@ -1234,6 +1237,7 @@
 				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				03C4872A1F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift in Sources */,
 				5BD4762E1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift in Sources */,
+				61EE7A1821B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift in Sources */,
 				5CB6E1C02031ECCE001FEAC9 /* TransformTests.swift in Sources */,
 				034898331FB5C11F00E8975C /* UITouchTests.swift in Sources */,
 				5CFFFA172017457100D989BC /* UIViewTests+subviews.swift in Sources */,
