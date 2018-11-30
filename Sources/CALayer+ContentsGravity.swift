@@ -72,8 +72,11 @@ struct ContentsGravityTransformation {
         case .topRight:
             offset = CGPoint(x: distanceToMaxX, y: distanceToMinY)
             scale = .defaultScale
-        default:
-            offset = .zero
+        case .bottomLeft:
+            offset = CGPoint(x: distanceToMinX, y: distanceToMaxY)
+            scale = .defaultScale
+        case .bottomRight:
+            offset = CGPoint(x: distanceToMaxX, y: distanceToMaxY)
             scale = .defaultScale
         }
     }
