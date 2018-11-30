@@ -4,7 +4,7 @@
  * We implemented it with an enum, which can be used the
  * same way as Apples CALayerContentsGravity
 */
-public enum CALayerContentsGravity {
+public enum CALayerContentsGravity: String {
     case bottom, bottomLeft, bottomRight
     case center, left, right
     case top, topLeft, topRight
