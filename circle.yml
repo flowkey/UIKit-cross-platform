@@ -59,6 +59,7 @@ jobs:
           path: ./samples/getting-started/android
 
 workflows:
+  version: 2
   uikit:
     jobs:
       - xcodebuild
