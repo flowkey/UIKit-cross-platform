@@ -4,40 +4,11 @@
  * We implemented it with an enum, which can be used the
  * same way as Apples CALayerContentsGravity
 */
-public enum CALayerContentsGravity: String /*, CaseIterable*/ {
+public enum CALayerContentsGravity: String {
     case bottom, bottomLeft, bottomRight
     case center, left, right
     case top, topLeft, topRight
     case resize, resizeAspect, resizeAspectFill
-    
-//    public init(rawValue: String) {
-//        self = .center
-//        CALayerContentsGravity.allCases.forEach({ contentsGravityCase in
-//            if (contentsGravityCase.rawValue == rawValue) {
-//                self = contentsGravityCase
-//            }
-//        })
-//    }
-    
-    // since the above solution does not work in Swift 4.2:
-    public init(rawValue: String) {
-        self = .center
-        let allRawValues = [
-            CALayerContentsGravity.bottom.rawValue,
-            CALayerContentsGravity.bottomLeft.rawValue,
-            CALayerContentsGravity.bottomRight.rawValue,
-            CALayerContentsGravity.center.rawValue,
-            CALayerContentsGravity.left.rawValue,
-            CALayerContentsGravity.right.rawValue,
-            CALayerContentsGravity.top.rawValue,
-            CALayerContentsGravity.topLeft.rawValue,
-            CALayerContentsGravity.topRight.rawValue,
-            CALayerContentsGravity.resize.rawValue,
-            CALayerContentsGravity.resizeAspect.rawValue,
-            CALayerContentsGravity.resizeAspectFill.rawValue
-        ]
-        self = allRawValues.contains(rawValue) ? CALayerContentsGravity(rawValue: rawValue) : .center
-    }
 }
 
 struct ContentsGravityTransformation {
