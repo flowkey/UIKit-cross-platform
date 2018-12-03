@@ -69,9 +69,4 @@ class CALayerTests: XCTestCase {
         XCTAssertEqual(layer.frame.origin.x, expectedSize.width, accuracy: accuracy)
         XCTAssertEqual(layer.frame.origin.y, expectedSize.height, accuracy: accuracy)
     }
-    
-    func testContentsGravityDefaultsToCenter() {
-        let contentsGravity = CALayerContentsGravity(rawValue: "nonSense")
-        XCTAssertEqual(contentsGravity, .center)
-    }
 }
