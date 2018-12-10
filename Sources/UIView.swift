@@ -106,7 +106,7 @@ open class UIView: UIResponder, CALayerDelegate {
         set { layer.opacity = Float(newValue) }
     }
 
-    public var tintColor: UIColor! // mocked
+    open var tintColor: UIColor! // mocked
 
     public var isOpaque: Bool = false // mocked
     // TODO: implement with relation to drawing system: https://developer.apple.com/documentation/uikit/uiview/1622622-isopaque
