@@ -28,7 +28,7 @@ class CABasicAnimationPrototype {
 }
 
 extension CAMediaTimingFunction {
-    static func timingFunction(from options: UIViewAnimationOptions) -> CAMediaTimingFunction? {
+    static func timingFunction(from options: UIView.AnimationOptions) -> CAMediaTimingFunction? {
         if options.contains(.curveEaseIn) {
             return .init(name: kCAMediaTimingFunctionEaseIn)
         } else if options.contains(.curveEaseOut) {
