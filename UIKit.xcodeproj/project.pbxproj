@@ -942,7 +942,7 @@
 					5C27E7AD1ECB2F6500F5020D = {
 						CreatedOnToolsVersion = 8.3.2;
 						DevelopmentTeam = FTSYMMN5B5;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 					};
 					5C27E7B61ECB2F6500F5020D = {
@@ -1432,7 +1432,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/swift-jni/Sources/CJNI/include $(PROJECT_DIR)/SDL/SDL2/include $(PROJECT_DIR)/SDL/sdl-gpu/include $(PROJECT_DIR)/SDL/SDL_ttf/include";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -1454,7 +1454,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/swift-jni/Sources/CJNI/include $(PROJECT_DIR)/SDL/SDL2/include $(PROJECT_DIR)/SDL/sdl-gpu/include $(PROJECT_DIR)/SDL/SDL_ttf/include";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

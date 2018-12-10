@@ -6,18 +6,21 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-public struct UIApplicationLaunchOptionsKey: RawRepresentable, Hashable {
-    public var rawValue: String
-    public init(rawValue: String) {
-        self.rawValue = rawValue
+public extension UIApplication {
+    public struct LaunchOptionsKey: RawRepresentable, Hashable {
+        public var rawValue: String
+        public init(rawValue: String) {
+            self.rawValue = rawValue
+        }
     }
 }
+
 
 public protocol UIApplicationDelegate: class {
     init()
     var window: UIWindow? { get set }
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     func applicationWillTerminate(_ application: UIApplication)
 
     func applicationWillEnterForeground(_ application: UIApplication)

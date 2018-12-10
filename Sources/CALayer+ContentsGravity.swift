@@ -1,17 +1,14 @@
-//
-//  CALayer+ContentsGravity.swift
-//  UIKit
-//
-//  Created by Geordie Jay on 18.02.18.
-//  Copyright © 2018 flowkey. All rights reserved.
-//
-
-
-extension CALayer {
-    internal enum ContentsGravity: String {
-        case left, center, right, top, bottom, topLeft, topRight
-        case resize, resizeAspectFill, resizeAspectFit = "resizeAspect"
-    }
+/*
+ * Apples CALayerContentsGravity implementation is based on a struct
+ * with a raw representable because of backwards compatibility
+ * We implemented it with an enum, which can be used the
+ * same way as Apples CALayerContentsGravity
+*/
+public enum CALayerContentsGravity: String {
+    case bottom, bottomLeft, bottomRight
+    case center, left, right
+    case top, topLeft, topRight
+    case resize, resizeAspect, resizeAspectFill
 }
 
 struct ContentsGravityTransformation {
@@ -42,7 +39,7 @@ struct ContentsGravityTransformation {
             return (bounds.height - scaledContents.height) * (1 - layer.anchorPoint.y)
         }
 
-        switch layer.contentsGravityEnum {
+        switch layer.contentsGravity {
         case .resize:
             offset = .zero
             scale = CGSize(width: bounds.width / scaledContents.width, height: bounds.height / scaledContents.height)
@@ -50,7 +47,7 @@ struct ContentsGravityTransformation {
             offset = .zero
             let maxScale = max(bounds.width / scaledContents.width, bounds.height / scaledContents.height)
             scale = CGSize(width: maxScale, height: maxScale)
-        case .resizeAspectFit:
+        case .resizeAspect:
             offset = .zero
             let minScale = min(bounds.width / scaledContents.width, bounds.height / scaledContents.height)
             scale = CGSize(width: minScale, height: minScale)
@@ -74,6 +71,12 @@ struct ContentsGravityTransformation {
             scale = .defaultScale
         case .topRight:
             offset = CGPoint(x: distanceToMaxX, y: distanceToMinY)
+            scale = .defaultScale
+        case .bottomLeft:
+            offset = CGPoint(x: distanceToMinX, y: distanceToMaxY)
+            scale = .defaultScale
+        case .bottomRight:
+            offset = CGPoint(x: distanceToMaxX, y: distanceToMaxY)
             scale = .defaultScale
         }
     }
