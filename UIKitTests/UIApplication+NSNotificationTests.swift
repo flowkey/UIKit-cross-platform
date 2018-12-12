@@ -13,25 +13,25 @@ class UIApplication_NSNotificationTests: XCTestCase {
     func testApplicationPostsWillEnterForegroundNotification() {
         expectation(forNotification: .UIApplicationWillEnterForeground, object: nil, handler: nil)
         UIApplication.onWillEnterForeground()
-        waitForExpectations(timeout: 0.1)
+        waitForExpectations(timeout: 0)
     }
 
     func testApplicationPostsDidBecomeActiveNotification() {
         expectation(forNotification: .UIApplicationDidBecomeActive, object: nil, handler: nil)
         UIApplication.onDidEnterForeground()
-        waitForExpectations(timeout: 0.1)
+        waitForExpectations(timeout: 0)
     }
 
     func testApplicationPostsWillResignActiveNotification() {
         expectation(forNotification: .UIApplicationWillResignActive, object: nil, handler: nil)
         UIApplication.onWillEnterBackground()
-        waitForExpectations(timeout: 0.1)
+        waitForExpectations(timeout: 0)
     }
 
     func testApplicationPostsDidEnterBackgroundNotification() {
         expectation(forNotification: .UIApplicationDidEnterBackground, object: nil, handler: nil)
         UIApplication.onDidEnterBackground()
-        waitForExpectations(timeout: 0.1)
+        waitForExpectations(timeout: 0)
     }
 }
 
