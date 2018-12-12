@@ -130,6 +130,11 @@
 		5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */; };
 		5CFFFA172017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
 		5CFFFA182017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
+		61C9D3B121B051B10012018B /* NSNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B021B051B10012018B /* NSNotification.swift */; };
+		61C9D3B921B052750012018B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B821B052750012018B /* Notification.swift */; };
+		61C9D3BB21B052B30012018B /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3BA21B052B30012018B /* NotificationCenter.swift */; };
+		61EE7A1821B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */; };
+		61EE7A2E21B18940003A5FFD /* UIApplication+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EE7A2D21B18940003A5FFD /* UIApplication+Notifications.swift */; };
 		8318D27B1F0695080029816A /* UIControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D27A1F0695080029816A /* UIControl.swift */; };
 		8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323F27F1F2FA2EE00C121BB /* TestSetup.swift */; };
 		8323F2821F2FA42A00C121BB /* TestSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323F27F1F2FA2EE00C121BB /* TestSetup.swift */; };
@@ -414,6 +419,11 @@
 		5CFFF87F201632FC00D989BC /* SDL-gpu.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "SDL-gpu.xcodeproj"; path = "SDL/SDL-gpu.xcodeproj"; sourceTree = "<group>"; };
 		5CFFF97C20163AF900D989BC /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = SDL/SDL_ttf.xcodeproj; sourceTree = "<group>"; };
 		5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+subviews.swift"; sourceTree = "<group>"; };
+		61C9D3B021B051B10012018B /* NSNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSNotification.swift; sourceTree = "<group>"; };
+		61C9D3B821B052750012018B /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		61C9D3BA21B052B30012018B /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
+		61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+NSNotificationTests.swift"; sourceTree = "<group>"; };
+		61EE7A2D21B18940003A5FFD /* UIApplication+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Notifications.swift"; sourceTree = "<group>"; };
 		83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VideoTexture+Mac.swift"; sourceTree = "<group>"; };
 		8318D27A1F0695080029816A /* UIControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIControl.swift; path = ../Sources/UIControl.swift; sourceTree = "<group>"; };
 		8323F27F1F2FA2EE00C121BB /* TestSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSetup.swift; sourceTree = "<group>"; };
@@ -592,14 +602,18 @@
 				83E5F7FF1EF826CC00279C59 /* Geometry */,
 				5BD476341F4D94F40055EE27 /* Logging.swift */,
 				5C9037241F138B8A0058E592 /* MeteringView.swift */,
+				61C9D3B821B052750012018B /* Notification.swift */,
+				61C9D3BA21B052B30012018B /* NotificationCenter.swift */,
 				8333B2BF1F1D11B800D98662 /* NSAttributedString.swift */,
 				838545711F26536200B64986 /* NSAttributedStringKey.swift */,
 				83D961341F2635D5005176DC /* NSMutableAttributedString.swift */,
+				61C9D3B021B051B10012018B /* NSNotification.swift */,
 				83CC3CD01F275DB600144E85 /* NSRange.swift */,
 				8337A8581F3B143400475F80 /* UIActivityIndicatorView.swift */,
 				83AB7B4B1F2B515B00C7997D /* UIAlertAction.swift */,
 				5C3DCCED2090F04A001DEDAF /* UIAlertController */,
 				5C418DBF20F507DA005D0E92 /* UIApplication.swift */,
+				61EE7A2D21B18940003A5FFD /* UIApplication+Notifications.swift */,
 				5CBD836020F6584200AF4E8E /* UIApplicationMain.swift */,
 				5C418DC120F5149E005D0E92 /* UIApplicationMain+Mac.swift */,
 				5C4CD51020615FCF00217B4C /* UIApplication+handleSDLEvents.swift */,
@@ -660,6 +674,7 @@
 				03760AE51F67E73300F36283 /* UIScrollViewTests.swift */,
 				5CFFFA0E2017454300D989BC /* UIView */,
 				5C93AEB5208E09B5005BE853 /* UIViewControllerTests.swift */,
+				61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */,
 			);
 			path = UIKitTests;
 			sourceTree = "<group>";
@@ -1126,6 +1141,7 @@
 				5C6AB71C1ED3BECD006F90AC /* UIImage.swift in Sources */,
 				5C664CD81FA0E640008F41D6 /* ShaderProgram.swift in Sources */,
 				5C915956218B6C9B00AFEB7E /* UIScreen+render.swift in Sources */,
+				61C9D3B921B052750012018B /* Notification.swift in Sources */,
 				5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */,
 				5C6AB7191ED3BECD006F90AC /* CALayer.swift in Sources */,
 				83E5F7F31EF8188400279C59 /* UILabel.swift in Sources */,
@@ -1144,6 +1160,7 @@
 				5BBEECA51F39E7A6006E3416 /* CGRect+animations.swift in Sources */,
 				5CDC14CC1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift in Sources */,
 				5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */,
+				61C9D3B121B051B10012018B /* NSNotification.swift in Sources */,
 				83AB7B5C1F2B6A2000C7997D /* UIGestureRecognizerDelegate.swift in Sources */,
 				838545721F26536200B64986 /* NSAttributedStringKey.swift in Sources */,
 				5C6AB7611ED5762A006F90AC /* UIEdgeInsets.swift in Sources */,
@@ -1179,6 +1196,7 @@
 				5C418DC220F5149E005D0E92 /* UIApplicationMain+Mac.swift in Sources */,
 				5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */,
 				83E5F7EB1EF8156400279C59 /* CGImage.swift in Sources */,
+				61EE7A2E21B18940003A5FFD /* UIApplication+Notifications.swift in Sources */,
 				5C6AB75F1ED575CF006F90AC /* UIScrollView.swift in Sources */,
 				5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */,
 				8378E17E1F05503600E138BD /* UIVisualEffectView.swift in Sources */,
@@ -1203,6 +1221,7 @@
 				5C3716B61F10050600B2C366 /* Timer.swift in Sources */,
 				5CAF2D0C1EE67D69004C6380 /* CABasicAnimation.swift in Sources */,
 				5C3DCCEF2090F072001DEDAF /* UIAlertControllerView.swift in Sources */,
+				61C9D3BB21B052B30012018B /* NotificationCenter.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
 				5C32F2C420A1C69C006D64C5 /* UIScreen+Errors.swift in Sources */,
 				0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */,
@@ -1222,6 +1241,7 @@
 				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				03C4872A1F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift in Sources */,
 				5BD4762E1F4D82070055EE27 /* CAMediaTimingFunctionTests.swift in Sources */,
+				61EE7A1821B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift in Sources */,
 				5CB6E1C02031ECCE001FEAC9 /* TransformTests.swift in Sources */,
 				034898331FB5C11F00E8975C /* UITouchTests.swift in Sources */,
 				5CFFFA172017457100D989BC /* UIViewTests+subviews.swift in Sources */,
