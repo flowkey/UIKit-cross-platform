@@ -93,7 +93,7 @@ extension UIApplication {
 }
 
 extension UIApplication {
-    static func onWillEnterForeground() {
+    class func onWillEnterForeground() {
         #if os(Android)
         if UIScreen.main == nil { // sometimes we "enter foreground" after just a loss of focus
             UIScreen.main = UIScreen()
@@ -104,17 +104,17 @@ extension UIApplication {
         UIApplication.post(willEnterForegroundNotification)
     }
 
-    static func onDidEnterForeground() {
+    class func onDidEnterForeground() {
         UIApplication.shared?.delegate?.applicationDidBecomeActive(UIApplication.shared)
         UIApplication.post(didBecomeActiveNotification)
     }
 
-    static func onWillEnterBackground() {
+    class func onWillEnterBackground() {
         UIApplication.shared?.delegate?.applicationWillResignActive(UIApplication.shared)
         UIApplication.post(willResignActiveNotification)
     }
 
-    static func onDidEnterBackground() {
+    class func onDidEnterBackground() {
         UIApplication.shared?.delegate?.applicationDidEnterBackground(UIApplication.shared)
         UIApplication.post(didEnterBackgroundNotification)
 
@@ -125,7 +125,7 @@ extension UIApplication {
 }
 
 private extension UIApplication {
-    static func post(_ name: NSNotification.Name) {
+    class func post(_ name: NSNotification.Name) {
         NotificationCenter.default.post(name: name, object: UIApplication.shared)
     }
 }
