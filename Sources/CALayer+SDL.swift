@@ -113,7 +113,6 @@ extension CALayer {
                 )
             } catch {
                 if !contents.hasSourceData {
-                    self.contents = nil
                     self.setNeedsDisplay()
                 } else {
                     // Try to recreate contents from source data if it exists
