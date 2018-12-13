@@ -13,7 +13,7 @@ extension UIView {
     public static func animate(
         withDuration duration: Double,
         delay: Double = 0.0,
-        options: UIViewAnimationOptions = [],
+        options: UIView.AnimationOptions = [],
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
@@ -45,7 +45,7 @@ extension UIView {
         delay: Double,
         usingSpringWithDamping: CGFloat,
         initialSpringVelocity: CGFloat,
-        options: UIViewAnimationOptions = [],
+        options: UIView.AnimationOptions = [],
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
@@ -70,17 +70,19 @@ extension UIView {
     }
 }
 
-public struct UIViewAnimationOptions: RawRepresentable, OptionSet {
-    public let rawValue: UInt
-    public init(rawValue: UInt) {
-        self.rawValue = rawValue
-    }
+public extension UIView {
+    public struct AnimationOptions: RawRepresentable, OptionSet {
+        public let rawValue: UInt
+        public init(rawValue: UInt) {
+            self.rawValue = rawValue
+        }
 
-    public static let allowUserInteraction = UIViewAnimationOptions(rawValue: 1 << 0)
-    public static let beginFromCurrentState = UIViewAnimationOptions(rawValue: 1 << 1)
-    public static let curveEaseIn = UIViewAnimationOptions(rawValue: 1 << 2)
-    public static let curveEaseOut = UIViewAnimationOptions(rawValue: 1 << 3)
-    public static let curveEaseInOut = UIViewAnimationOptions(rawValue: 1 << 4)
-    public static let curveLinear = UIViewAnimationOptions(rawValue: 1 << 5)
-    static let customEaseOut = UIViewAnimationOptions(rawValue: 1 << 9)
+        public static let allowUserInteraction = AnimationOptions(rawValue: 1 << 0)
+        public static let beginFromCurrentState = AnimationOptions(rawValue: 1 << 1)
+        public static let curveEaseIn = AnimationOptions(rawValue: 1 << 2)
+        public static let curveEaseOut = AnimationOptions(rawValue: 1 << 3)
+        public static let curveEaseInOut = AnimationOptions(rawValue: 1 << 4)
+        public static let curveLinear = AnimationOptions(rawValue: 1 << 5)
+        static let customEaseOut = AnimationOptions(rawValue: 1 << 9)
+    }
 }
