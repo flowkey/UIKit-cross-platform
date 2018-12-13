@@ -112,15 +112,15 @@ extension UIApplication {
     class func onWillEnterBackground() {
         UIApplication.shared?.delegate?.applicationWillResignActive(UIApplication.shared)
         UIApplication.post(willResignActiveNotification)
+
+        #if os(Android)
+        UIScreen.main = nil
+        #endif
     }
 
     class func onDidEnterBackground() {
         UIApplication.shared?.delegate?.applicationDidEnterBackground(UIApplication.shared)
         UIApplication.post(didEnterBackgroundNotification)
-
-        #if os(Android)
-        UIScreen.main = nil
-        #endif
     }
 }
 
