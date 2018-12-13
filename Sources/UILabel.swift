@@ -21,26 +21,26 @@ public enum NSTextAlignment: Int {
 }
 
 open class UILabel: UIView {
-    public var numberOfLines: Int = 1 {
+    open var numberOfLines: Int = 1 {
         didSet { if numberOfLines != oldValue { setNeedsDisplay() } }
     }
     
-    public var text: String? {
+    open var text: String? {
         didSet { if text != oldValue { setNeedsDisplay() } }
     }
 
-    public var attributedText: NSAttributedString? {
+    open var attributedText: NSAttributedString? {
         didSet {
             text = attributedText?.string
             setNeedsDisplay()
         }
     }
 
-    public var textColor: UIColor = .black {
+    open var textColor: UIColor = .black {
         didSet { if textColor != oldValue { setNeedsDisplay() } }
     }
 
-    public var textAlignment: NSTextAlignment = .left {
+    open var textAlignment: NSTextAlignment = .left {
         didSet { updateLayerContentsGravityFromTextAlignment() }
     }
 
@@ -48,7 +48,7 @@ open class UILabel: UIView {
         layer.contentsGravity = textAlignment.contentsGravity()
     }
 
-    public var font: UIFont = .systemFont(ofSize: 16) {
+    open var font: UIFont = .systemFont(ofSize: 16) {
         didSet { if font != oldValue { setNeedsDisplay() } }
     }
 
