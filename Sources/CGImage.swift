@@ -70,6 +70,8 @@ public class CGImage {
         GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * Int32(bytesPerPixel))
     }
 
+    internal var hasSourceData: Bool { return sourceData != nil }
+
     /// Recreate the underlying `GPU_Image` (`self.rawPointer`) from this `CGImage`'s source data if possible.
     /// - Returns: `true`, if it was possible to recreate the image. Or `false`, if there was no underlying source data, or when SDL_gpu could not decode that data.
     internal func reloadFromSourceData() -> Bool {

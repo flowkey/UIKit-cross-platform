@@ -112,11 +112,14 @@ extension CALayer {
                     opacity: opacity
                 )
             } catch {
-                // Try to recreate contents from source data if it exists
-                if contents.reloadFromSourceData() == false {
-                    // That failed, rely on the layer to re-render itself:
+                if !contents.hasSourceData {
                     self.contents = nil
                     self.setNeedsDisplay()
+                } else {
+                    // Try to recreate contents from source data if it exists
+                    if contents.reloadFromSourceData() == false {
+                        // we don't want this to happen because it wastes CPU time, but juckt
+                    }
                 }
             }
         }
