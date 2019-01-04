@@ -12,7 +12,7 @@
 // @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         window = UIWindow()
         window?.rootViewController = ViewController()
@@ -31,6 +31,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 import UIKit
 import Foundation
 
-UIApplicationMain(0, nil, nil, NSStringFromClass(AppDelegate.self))
+var argv = [UnsafeMutablePointer<Int8>]()
+_ = UIApplicationMain(0, &argv, nil, NSStringFromClass(AppDelegate.self))
 ```
 
