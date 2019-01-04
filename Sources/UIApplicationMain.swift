@@ -10,7 +10,7 @@ import Foundation
 import SDL
 
 @discardableResult
-public func UIApplicationMain(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>!, _ principalClassName: String?, _ delegateClassName: String?) -> Int32 {
+public func UIApplicationMain(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>, _ principalClassName: String?, _ delegateClassName: String?) -> Int32 {
     let applicationClass: UIApplication.Type? = classFromString(principalClassName)
     let delegateClass: UIApplicationDelegate.Type? = classFromString(delegateClassName)
 

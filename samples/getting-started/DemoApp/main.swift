@@ -9,5 +9,4 @@
 import UIKit
 import Foundation
 
-var argv = [UnsafeMutablePointer<Int8>]()
-_ = UIApplicationMain(0, &argv, nil, NSStringFromClass(AppDelegate.self))
+_ = UIApplicationMain(CommandLine.argc, CommandLine.unsafeArgv, nil, NSStringFromClass(AppDelegate.self))
