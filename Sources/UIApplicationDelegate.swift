@@ -7,7 +7,7 @@
 //
 
 public extension UIApplication {
-    struct LaunchOptionsKey: RawRepresentable, Hashable {
+    public struct LaunchOptionsKey: RawRepresentable, Hashable {
         public var rawValue: String
         public init(rawValue: String) {
             self.rawValue = rawValue
@@ -15,16 +15,12 @@ public extension UIApplication {
     }
 }
 
+
 public protocol UIApplicationDelegate: class {
     init()
     var window: UIWindow? { get set }
 
-    func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions
-        launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-    ) -> Bool
-
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     func applicationWillTerminate(_ application: UIApplication)
 
     func applicationWillEnterForeground(_ application: UIApplication)

@@ -63,6 +63,10 @@ public class UIImage {
 
         self.init(cgImage: cgImage, scale: scale)
     }
+    
+    public func resizableImage(withCapInsets capInsets: UIEdgeInsets) -> UIImage {
+        return self
+    }
 }
 
 private extension String {

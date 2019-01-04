@@ -110,6 +110,7 @@ extension UIFont {
         public static let light = Weight(rawValue: -0.4)!
         public static let regular = Weight(rawValue: 0.0)!
         public static let medium = Weight(rawValue: 0.23)!
+        public static let semibold = Weight(rawValue: 0.3)!
         public static let bold = Weight(rawValue: 0.4)!
         public static let black = Weight(rawValue: 0.62)!
 
