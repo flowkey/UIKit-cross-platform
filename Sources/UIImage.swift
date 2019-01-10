@@ -19,8 +19,8 @@ public class UIImage {
         self.cgImage = cgImage
         self.scale = scale
         self.size = CGSize(
-            width: CGFloat(cgImage.width),
-            height: CGFloat(cgImage.height)
+            width: CGFloat(cgImage.width) / scale,
+            height: CGFloat(cgImage.height) / scale
         )
     }
 

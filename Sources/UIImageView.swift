@@ -22,7 +22,7 @@ open class UIImageView: UIView {
         layer.contents = image?.cgImage
         layer.contentsScale = image?.scale ?? UIScreen.main.scale
         if let image = image {
-            bounds.size = image.size / image.scale
+            bounds.size = image.size
         }
     }
 
@@ -35,8 +35,7 @@ open class UIImageView: UIView {
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
-        guard let image = image else { return .zero }
-        return image.size / image.scale
+        return image?.size ?? .zero
     }
 
     open var contentMode: UIContentMode = .scaleToFill {
