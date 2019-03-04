@@ -6,7 +6,6 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-#if os(Android)
 import JNI
 import SDL
 
@@ -94,7 +93,7 @@ public func onNativeTouch(
     y: JavaFloat,
     pressure: JavaFloat,
     timestamp: JavaLong
-    ) {
+) {
     guard let eventType = SDL_EventType.from(androidAction: action) else { return }
 
     var event = SDL_Event(tfinger:
@@ -126,4 +125,3 @@ extension SDL_EventType {
         }
     }
 }
-#endif
