@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import SDL
 
 @discardableResult
-public func UIApplicationMain(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>!, _ principalClassName: String?, _ delegateClassName: String?) -> Int32 {
+public func UIApplicationMain(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>, _ principalClassName: String?, _ delegateClassName: String?) -> Int32 {
     let applicationClass: UIApplication.Type? = classFromString(principalClassName)
     let delegateClass: UIApplicationDelegate.Type? = classFromString(delegateClassName)
 
@@ -34,35 +35,23 @@ internal func UIApplicationMain(
     _ applicationClass: UIApplication.Type?,
     _ applicationDelegateClass: UIApplicationDelegate.Type?) -> Int32
 {
-    UIApplication.shared = (applicationClass ?? UIApplication.self).init()
+    let application = (applicationClass ?? UIApplication.self).init()
+    UIApplication.shared = application
 
     guard let appDelegate = applicationDelegateClass?.init() else {
         // iOS doesn't create a window by default either
         // What it does do is load the main storyboard if one is specified, but we can't do that (yet?)
         assertionFailure(
-            "There was no AppDelegate class specified. Please provide one using the last parameter of UIApplicationMain, e.g. `UIApplicationMain(0, nil, nil, NSStringFromClass(AppDelegate.self))`")
+            "There was no AppDelegate class specified. Please provide one using the last parameter of UIApplicationMain," +
+            " e.g. `UIApplicationMain(argc, argv, nil, NSStringFromClass(AppDelegate.self))`")
         return 1
     }
 
-    UIApplication.shared.delegate = appDelegate
-    if !appDelegate.application(UIApplication.shared, didFinishLaunchingWithOptions: nil) {
-        // on iOS I think this prevents launching the app?
-        assertionFailure("Returned false from AppDelegate, stopping launch")
+    application.delegate = appDelegate
+
+    if appDelegate.application(application, didFinishLaunchingWithOptions: nil) == false {
         return 1
     }
 
     return 0
-}
-
-extension UIApplication {
-    static func restart() {
-        let applicationType = type(of: UIApplication.shared!)
-        let delegateType = UIApplication.shared.delegate == nil ? nil : type(of: UIApplication.shared.delegate!).self
-
-        UIApplication.shared = nil
-
-        DispatchQueue.main.async {
-            UIApplicationMain(applicationType, delegateType)
-        }
-    }
 }

@@ -125,7 +125,7 @@ open class UIViewController: UIResponder {
 
     /// This is just to provide compatibility with iOS for now, but we could feasibly
     /// use this property to e.g. put an Android device in "Immersive Mode" or similar.
-    open func prefersHomeIndicatorAutoHidden() -> Bool {
+    open var prefersHomeIndicatorAutoHidden: Bool {
         return false
     }
 

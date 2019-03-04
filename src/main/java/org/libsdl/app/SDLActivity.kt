@@ -1,5 +1,6 @@
 package org.libsdl.app
 
+import android.app.Activity
 import java.lang.reflect.Method
 
 import android.view.*
@@ -8,7 +9,10 @@ import android.util.Log
 import android.graphics.*
 import android.view.KeyEvent.*
 import android.content.Context
+import android.content.pm.ActivityInfo
 import main.java.org.libsdl.app.*
+import kotlin.math.max
+import kotlin.math.min
 
 private const val TAG = "SDLActivity"
 
@@ -43,9 +47,9 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     private var mIsSurfaceReady = false
     private var mHasFocus = false
 
-    private external fun nativeRender()
+    private external fun nativeProcessEventsAndRender()
     private external fun nativeInit(): Int
-    private external fun nativeDeinit() // from this state we can still reinit without issues
+    private external fun nativeDestroyScreen() // from this state we can still reinit without issues
     private external fun nativeQuit()
     private external fun nativeResume()
     private external fun onNativeResize(x: Int, y: Int, format: Int, rate: Float)
@@ -165,8 +169,8 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         // This eventually stops the run loop and nulls the native SDL.window
         this.nativeQuit()
 
-        // cleanup UIKit after nativeQuit
-        this.nativeRender()
+        // renderer should now be destroyed but we need to process events once more to clean up
+        this.nativeProcessEventsAndRender()
     }
 
     fun removeFrameCallback() {
@@ -177,7 +181,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
     override fun doFrame(frameTimeNanos: Long) {
         if (isRunning && mIsSurfaceReady) {
-            this.nativeRender()
+            this.nativeProcessEventsAndRender()
 
             // Request the next frame only after rendering the current one.
             // This should skip next frame if the current one takes too long.
@@ -253,7 +257,6 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     // Called when the surface is resized, e.g. orientation change or activity creation
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         Log.v(TAG, "surfaceChanged()")
-        nativeDeinit()
 
         var sdlFormat = 0x15151002 // SDL_PIXELFORMAT_RGB565 by default
         when (format) {
@@ -278,12 +281,41 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         }
 
         if (width == 0 || height == 0) {
-            Log.v(TAG, "skipping due to invalid surface dimensions: ${width} x ${height}")
+            Log.v(TAG, "skipping due to invalid surface dimensions: $width x $height")
             return
         }
 
-        mWidth = width.toFloat()
-        mHeight = height.toFloat()
+        var adjustedWidth = width
+        var adjustedHeight = height
+
+        if (context is Activity) {
+            val activity = context as Activity
+            when (activity.requestedOrientation) {
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
+                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE,
+                ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE -> {
+                    adjustedWidth = max(width, height)
+                    adjustedHeight = min(width, height)
+                }
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
+                ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT,
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT,
+                ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT -> {
+                    adjustedWidth = min(width, height)
+                    adjustedHeight = max(width, height)
+                }
+            }
+        }
+
+        if (mIsSurfaceReady && mWidth.toInt() == adjustedWidth && mHeight.toInt() == adjustedHeight) {
+            return
+        }
+
+        nativeDestroyScreen()
+
+        mWidth = adjustedWidth.toFloat()
+        mHeight = adjustedHeight.toFloat()
 
         this.onNativeResize(mWidth.toInt(), mHeight.toInt(), sdlFormat, display.refreshRate)
         Log.v(TAG, "Window size: " + mWidth + "x" + mHeight)
@@ -304,7 +336,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         Log.v(TAG, "surfaceDestroyed()")
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
-        nativeDeinit()
+        nativeDestroyScreen()
         removeFrameCallback()
     }
 

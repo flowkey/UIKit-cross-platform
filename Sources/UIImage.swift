@@ -19,8 +19,8 @@ public class UIImage {
         self.cgImage = cgImage
         self.scale = scale
         self.size = CGSize(
-            width: CGFloat(cgImage.width),
-            height: CGFloat(cgImage.height)
+            width: CGFloat(cgImage.width) / scale,
+            height: CGFloat(cgImage.height) / scale
         )
     }
 
@@ -28,42 +28,44 @@ public class UIImage {
     public convenience init?(named name: String) {
         let (pathWithoutExtension, fileExtension) = name.pathAndExtension()
 
-        // e.g. ["@3x", "@2x", "@1x", ""]
+        // e.g. ["@3x", "@2x", ""]
         let scale = Int(UIScreen.main.scale.rounded())
-        let possibleScaleStrings = stride(from: scale, through: 1, by: -1)
+        let possibleScaleStrings = stride(from: scale, to: 1, by: -1)
             .map { "@\($0)x" }
             + [""] // it's possible to have no scale string (e.g. "image.png")
 
         for scaleString in possibleScaleStrings {
             let attemptedFilePath = "\(pathWithoutExtension)\(scaleString)\(fileExtension)"
-            if let cgImage = CGImage(GPU_LoadImage(attemptedFilePath)) {
-                let scale = attemptedFilePath.extractImageScale()
-                self.init(cgImage: cgImage, scale: scale)
+            if let data = Data.fromPathCrossPlatform(attemptedFilePath) {
+                self.init(data: data, scale: attemptedFilePath.extractImageScale())
                 return
             }
         }
+
+        print("Couldn't find image named", name)
 
         return nil
     }
 
     public convenience init?(path: String) {
-        guard let cgImage = CGImage(GPU_LoadImage(path)) else { return nil }
-        self.init(cgImage: cgImage, scale: path.extractImageScale())
+        guard let data = Data.fromPathCrossPlatform(path) else { return nil }
+        self.init(data: data, scale: path.extractImageScale())
     }
 
     public convenience init?(data: Data) {
-        var data = data
-        let dataCount = Int32(data.count)
+        self.init(data: data, scale: 1.0) // matches iOS
+    }
 
-        guard let cgImage = data.withUnsafeMutableBytes({ (ptr: UnsafeMutablePointer<Int8>) -> CGImage? in
-            let rw = SDL_RWFromMem(ptr, dataCount)
-            let gpuImagePtr = GPU_LoadImage_RW(rw, true)
-            return CGImage(gpuImagePtr)
-        }) else {
+    private convenience init?(data: Data, scale: CGFloat) {
+        guard let cgImage = CGImage(data) else {
             return nil
         }
 
-        self.init(cgImage: cgImage, scale: 1.0) // matches iOS
+        self.init(cgImage: cgImage, scale: scale)
+    }
+    
+    public func resizableImage(withCapInsets capInsets: UIEdgeInsets) -> UIImage {
+        return self
     }
 }
 

@@ -33,9 +33,9 @@ public final class AVPlayerLayer: CALayer {
 
     private func updateContentsGravityFromVideoGravity() {
         switch videoGravity {
-        case .resize: contentsGravityEnum = .resize
-        case .resizeAspect: contentsGravityEnum = .resizeAspectFit
-        case .resizeAspectFill: contentsGravityEnum = .resizeAspectFill
+        case .resize: contentsGravity = .resize
+        case .resizeAspect: contentsGravity = .resizeAspect
+        case .resizeAspectFill: contentsGravity = .resizeAspectFill
         }
     }
 
@@ -47,7 +47,7 @@ public final class AVPlayerLayer: CALayer {
 
     private var playerOutput = AVPlayerItemVideoOutput()
 
-    open override var frame: CGRect {
+    public override var frame: CGRect {
         didSet {
             if frame.size == .zero { return }
             updatePlayerOutput(size: frame.size)

@@ -10,7 +10,7 @@ import SDL_gpu
 
 extension CALayer {
     final func sdlRender(parentAbsoluteOpacity: Float = 1) {
-        guard let renderer = UIApplication.shared?.glRenderer else { return }
+        guard let renderer = UIScreen.main else { return }
         let opacity = self.opacity * parentAbsoluteOpacity
         if isHidden || opacity < 0.01 { return }
 
@@ -103,13 +103,22 @@ extension CALayer {
         }
 
         if let contents = contents {
-            renderer.blit(
-                contents,
-                anchorPoint: anchorPoint,
-                contentsScale: contentsScale,
-                contentsGravity: ContentsGravityTransformation(for: self),
-                opacity: opacity
-            )
+            do {
+                try renderer.blit(
+                    contents,
+                    anchorPoint: anchorPoint,
+                    contentsScale: contentsScale,
+                    contentsGravity: ContentsGravityTransformation(for: self),
+                    opacity: opacity
+                )
+            } catch {
+                // Try to recreate contents from source data if it exists
+                if contents.reloadFromSourceData() == false {
+                    // That failed, rely on the layer to re-render itself:
+                    self.contents = nil
+                    self.setNeedsDisplay()
+                }
+            }
         }
 
         if mask != nil {
@@ -125,7 +134,7 @@ extension CALayer {
             let translationFromAnchorPointToOrigin = CATransform3DMakeTranslation(
                 deltaFromAnchorPointToOrigin.x - bounds.origin.x,
                 deltaFromAnchorPointToOrigin.y - bounds.origin.y,
-                0 // If we moved (e.g.) forward to render `self`, all sublayers should start at the same zIndex
+                0 // If we moved (e.g.) forward to render `self`, all sublayers should start at that same zIndex
             )
 
             // This transform is referred to as the `parentOriginTransform` in our sublayers (see above):

@@ -8,7 +8,7 @@
 
 import SDL
 
-public class UIColor: Equatable {
+public class UIColor: Hashable {
     let red: UInt8
     let green: UInt8
     let blue: UInt8
@@ -76,6 +76,15 @@ public class UIColor: Equatable {
     // Initialise from a color struct from e.g. renderer.getDrawColor()
     init(_ tuple: (r: UInt8, g: UInt8, b: UInt8, a: UInt8)) {
         red = tuple.r; green = tuple.g; blue = tuple.b; alpha = tuple.a
+    }
+
+    public var hashValue: Int {
+        return (
+            UInt32(red) << 24 +
+            UInt32(green) << 16 +
+            UInt32(blue) << 8 +
+            UInt32(alpha)
+        ).hashValue
     }
 }
 

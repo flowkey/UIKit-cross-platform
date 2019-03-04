@@ -13,7 +13,7 @@ open class UIView: UIResponder, CALayerDelegate {
         return CALayer.self
     }
 
-    open let layer: CALayer
+    public let layer: CALayer
 
     open var frame: CGRect {
         get { return layer.frame }
@@ -50,7 +50,7 @@ open class UIView: UIResponder, CALayerDelegate {
         }
     }
 
-    open let safeAreaInsets: UIEdgeInsets = .zero
+    public internal(set) var safeAreaInsets: UIEdgeInsets = .zero
 
     open var mask: UIView? {
         didSet {
@@ -78,9 +78,8 @@ open class UIView: UIResponder, CALayerDelegate {
     internal var needsDisplay = true
 
     /// Override this to draw to the layer's texture whenever `self.needsDisplay`
-    open func draw() {
-        needsDisplay = false
-    }
+    open func draw() {}
+    open func display(_ layer: CALayer) {}
 
     public func setNeedsDisplay() {
         needsDisplay = true
@@ -107,7 +106,7 @@ open class UIView: UIResponder, CALayerDelegate {
         set { layer.opacity = Float(newValue) }
     }
 
-    public var tintColor: UIColor! // mocked
+    open var tintColor: UIColor! // mocked
 
     public var isOpaque: Bool = false // mocked
     // TODO: implement with relation to drawing system: https://developer.apple.com/documentation/uikit/uiview/1622622-isopaque
@@ -234,7 +233,6 @@ open class UIView: UIResponder, CALayerDelegate {
     open func layoutSubviews() {
         needsLayout = false
         parentViewController?.viewWillLayoutSubviews()
-        subviews.forEach { $0.setNeedsLayout() }
         parentViewController?.viewDidLayoutSubviews()
     }
 
@@ -344,7 +342,6 @@ open class UIView: UIResponder, CALayerDelegate {
         let originalOrigin = self.frame.origin
         self.bounds.size = sizeThatFits(bounds.size)
         self.frame.origin = originalOrigin
-        setNeedsLayout()
     }
 
     // We originally had this in an extension but Swift functions in extensions cannot be overridden (as of Swift 4)
@@ -386,4 +383,3 @@ extension UIView: Hashable {
         return ObjectIdentifier(self).hashValue
     }
 }
-
