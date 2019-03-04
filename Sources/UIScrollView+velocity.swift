@@ -7,6 +7,7 @@
 //
 
 import func Foundation.sqrt
+import func Foundation.log
 
 private extension CGPoint {
     var magnitude: CGFloat {
@@ -20,7 +21,8 @@ extension UIScrollView {
         // Otherwise we could animate after scrolling quickly, pausing for a few seconds, then letting go
         let velocityIsLargeEnoughToDecelerate = (self.panGestureRecognizer.velocity(in: self).magnitude > 10)
 
-        let nonBoundsCheckedScrollAnimationDistance = self.weightedAverageVelocity * 0.4 // hand-tuned
+        let dampingFactor: CGFloat = 0.55 // hand-tuned
+        let nonBoundsCheckedScrollAnimationDistance = self.weightedAverageVelocity * dampingFactor // hand-tuned
         let targetOffset = getBoundsCheckedContentOffset(contentOffset - nonBoundsCheckedScrollAnimationDistance)
         let distanceToBoundsCheckedTarget = contentOffset - targetOffset
 
@@ -32,13 +34,13 @@ extension UIScrollView {
         // TODO: This value should be calculated from `self.decelerationRate` instead
         // But actually we want to redo this function to avoid `UIView.animate` entirely,
         // in which case we wouldn't need an animationTime at all.
-        let animationTimeConstant = 0.325 / 2
+        let animationTimeConstant = 0.325 * dampingFactor
 
         // This calculation is a weird approximation but it's close enough for now...
-        let animationTime = log(Double(distanceToBoundsCheckedTarget.magnitude)) * animationTimeConstant
+        let animationTime = log(distanceToBoundsCheckedTarget.magnitude) * animationTimeConstant
 
         UIView.animate(
-            withDuration: animationTime,
+            withDuration: Double(animationTime),
             options: [.beginFromCurrentState, .customEaseOut, .allowUserInteraction],
             animations: {
                 self.isDecelerating = true
