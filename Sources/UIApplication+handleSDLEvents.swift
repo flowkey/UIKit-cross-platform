@@ -74,7 +74,8 @@ extension UIApplication {
 
                 if keyModifier.contains(KMOD_LGUI) || keyModifier.contains(KMOD_RGUI) {
                     if e.key.keysym.sym == 114 { // CMD-R
-                        UIApplication.restart()
+                        UIScreen.main = nil
+                        UIScreen.main = UIScreen()
                     }
                 }
                 #endif
@@ -99,30 +100,40 @@ extension UIApplication {
 }
 
 extension UIApplication {
-    static func onWillEnterForeground() {
-        UIApplication.restart {
-            if let runningApplication = UIApplication.shared {
-                runningApplication.delegate?.applicationWillEnterForeground(runningApplication)
-            }
+    class func onWillEnterForeground() {
+        #if os(Android)
+        if UIScreen.main == nil { // sometimes we "enter foreground" after just a loss of focus
+            UIScreen.main = UIScreen()
         }
+        #endif
+
+        UIApplication.shared?.delegate?.applicationWillEnterForeground(UIApplication.shared)
+        UIApplication.post(willEnterForegroundNotification)
     }
 
-    static func onDidEnterForeground() {
-        if let runningApplication = UIApplication.shared {
-            runningApplication.delegate?.applicationDidBecomeActive(runningApplication)
-        }
+    class func onDidEnterForeground() {
+        UIApplication.shared?.delegate?.applicationDidBecomeActive(UIApplication.shared)
+        UIApplication.post(didBecomeActiveNotification)
     }
 
-    static func onWillEnterBackground() {
-        if let runningApplication = UIApplication.shared {
-            runningApplication.delegate?.applicationWillResignActive(runningApplication)
-        }
+    class func onWillEnterBackground() {
+        UIApplication.shared?.delegate?.applicationWillResignActive(UIApplication.shared)
+        UIApplication.post(willResignActiveNotification)
     }
 
-    static func onDidEnterBackground() {
-        if let runningApplication = UIApplication.shared {
-            runningApplication.delegate?.applicationDidEnterBackground(runningApplication)
-        }
+    class func onDidEnterBackground() {
+        UIApplication.shared?.delegate?.applicationDidEnterBackground(UIApplication.shared)
+        UIApplication.post(didEnterBackgroundNotification)
+
+        #if os(Android)
+        UIScreen.main = nil
+        #endif
+    }
+}
+
+private extension UIApplication {
+    class func post(_ name: NSNotification.Name) {
+        NotificationCenter.default.post(name: name, object: UIApplication.shared)
     }
 }
 

@@ -15,6 +15,11 @@ extension UIView {
         let alpha = CGFloat(visibleLayer.opacity) * parentAlpha
         if visibleLayer.isHidden || alpha < 0.01 { return }
 
+        if visibleLayer._needsDisplay {
+            visibleLayer.display()
+            visibleLayer._needsDisplay = false
+        }
+
         if needsDisplay {
             draw()
             needsDisplay = false

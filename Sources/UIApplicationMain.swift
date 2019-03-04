@@ -10,7 +10,7 @@ import Foundation
 import SDL
 
 @discardableResult
-public func UIApplicationMain(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>!, _ principalClassName: String?, _ delegateClassName: String?) -> Int32 {
+public func UIApplicationMain(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>, _ principalClassName: String?, _ delegateClassName: String?) -> Int32 {
     let applicationClass: UIApplication.Type? = classFromString(principalClassName)
     let delegateClass: UIApplicationDelegate.Type? = classFromString(delegateClassName)
 
@@ -35,7 +35,8 @@ internal func UIApplicationMain(
     _ applicationClass: UIApplication.Type?,
     _ applicationDelegateClass: UIApplicationDelegate.Type?) -> Int32
 {
-    UIApplication.shared = (applicationClass ?? UIApplication.self).init()
+    let application = (applicationClass ?? UIApplication.self).init()
+    UIApplication.shared = application
 
     guard let appDelegate = applicationDelegateClass?.init() else {
         // iOS doesn't create a window by default either
@@ -46,32 +47,11 @@ internal func UIApplicationMain(
         return 1
     }
 
-    UIApplication.shared.delegate = appDelegate
-    if !appDelegate.application(UIApplication.shared, didFinishLaunchingWithOptions: nil) {
-        // on iOS I think this prevents launching the app?
-        assertionFailure("Returned false from AppDelegate, stopping launch")
+    application.delegate = appDelegate
+
+    if appDelegate.application(application, didFinishLaunchingWithOptions: nil) == false {
         return 1
     }
 
     return 0
-}
-
-extension UIApplication {
-    static func restart(_ onRestarted: (() -> Void)? = nil) {
-        guard UIApplication.shared != nil else {
-            print("Tried to restart but no application was running")
-            return
-        }
-
-        let applicationType = type(of: UIApplication.shared!)
-        let delegateType = UIApplication.shared!.delegate != nil ? type(of: UIApplication.shared!.delegate!).self : nil
-
-        UIApplication.shared = nil
-
-        DispatchQueue.main.async {
-            // Wrap this in another async block because UIApplicationMain is blocking on Mac:
-            DispatchQueue.main.async { onRestarted?() }
-            UIApplicationMain(applicationType, delegateType)
-        }
-    }
 }

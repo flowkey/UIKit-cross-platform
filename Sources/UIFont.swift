@@ -8,9 +8,13 @@
 
 open class UIFont {
     public let fontName: String
-    public var familyName: String?
+    public var familyName: String? {
+        return renderer?.getFontFamilyName()
+    }
     public var pointSize: CGFloat
-    public let lineHeight: CGFloat
+    public var lineHeight: CGFloat {
+        return CGFloat(renderer?.getLineHeight() ?? 0) / UIScreen.main.scale
+    }
 
     /**
         Change this value after loading the desired system font via `UIFont.loadFont(fromPath: String)`.
@@ -32,51 +36,58 @@ open class UIFont {
         let name = name.lowercased()
         let size = Int32(size * UIScreen.main.scale)
 
-        guard let fontData = UIFont.availableFontData[name] else {
-            print("Tried to load \(name) but it wasn't in UIFont.availableFonts: \(UIFont.availableFontData)")
-            return nil
-        }
-
-        let cacheKey = name + String(describing: size)
-        guard let renderer = UIFont.fontRendererCache[cacheKey] ?? FontRenderer(fontData, size: size) else {
-            print("Couldn't load font", name)
-            return nil
-        }
-
-        UIFont.fontRendererCache[cacheKey] = renderer
-        self.renderer = renderer
         self.fontName = name
-        self.familyName = renderer.getFontFamilyName() ?? "<unknown>"
         self.pointSize = CGFloat(size)
-        self.lineHeight = CGFloat(renderer.getLineHeight()) / UIScreen.main.scale
     }
 
     // MARK: Implementation details:
 
     /// Renderer is the interface to our rendering backend (at time of writing, SDL_ttf)
     /// If we ever want to change the backend, we should only have to change the FontRenderer class:
-    fileprivate let renderer: FontRenderer
+    fileprivate var renderer: FontRenderer? {
+        // We access the renderer from the cache every time because it may have been replaced since this UIFont was inited
+        guard let fontData = UIFont.cachedFontFiles[fontName] else {
+            print("Tried to load \(fontName) but it wasn't in UIFont.__availableFonts: \(UIFont.cachedFontFiles)")
+            return nil
+        }
+
+        let cacheKey = fontName + String(describing: pointSize)
+
+        if let renderer = FontRenderer.cache[cacheKey] {
+            return renderer
+        }
+
+        guard let newlyLoadedRenderer = FontRenderer(fontData, size: Int32(pointSize)) else {
+            return nil
+        }
+
+        FontRenderer.cache[cacheKey] = newlyLoadedRenderer
+        return newlyLoadedRenderer
+    }
 
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
-        return renderer.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.main.scale))
+        return renderer?.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.main.scale))
     }
 
     internal func render(_ attributedString: NSAttributedString?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
-        return renderer.render(attributedString, color: color)
+        return renderer?.render(attributedString, color: color)
     }
 }
 
 // MARK: Caches
 extension UIFont {
-    static var fontRendererCache = [String: FontRenderer]()
-    fileprivate static var availableFontData: [String: CGDataProvider] = [:]
-    static public var availableFonts: [String] {
-        return Array(availableFontData.keys)
+    /// We store the TTF files we load into memory so we can quickly make more `FontRenderer` instances.
+    private static var cachedFontFiles: [String: CGDataProvider] = [:]
+
+    /// We call this when deinitialising the UIApplication to recover the memory they used
+    static func clearCachedFontFiles() {
+        cachedFontFiles.removeAll()
     }
 
-    public static func clearCaches() {
-        fontRendererCache.removeAll()
-        availableFontData.removeAll()
+    /// A list of Fonts loaded by and available to UIKit Cross Platform.
+    /// Note: this API is subject to change.
+    static public var __availableFonts: [String] {
+        return Array(cachedFontFiles.keys)
     }
 }
 
@@ -99,6 +110,7 @@ extension UIFont {
         public static let light = Weight(rawValue: -0.4)!
         public static let regular = Weight(rawValue: 0.0)!
         public static let medium = Weight(rawValue: 0.23)!
+        public static let semibold = Weight(rawValue: 0.3)!
         public static let bold = Weight(rawValue: 0.4)!
         public static let black = Weight(rawValue: 0.62)!
 
@@ -141,7 +153,7 @@ extension UIFont {
         let fontStyleName = fontRenderer.getFontStyleName() ?? "unknown"
         let fontName = "\(fontFamilyName)-\(fontStyleName)".lowercased()
 
-        UIFont.availableFontData[fontName] = dataProvider
+        UIFont.cachedFontFiles[fontName] = dataProvider
 
         return fontRenderer
     }
@@ -153,18 +165,21 @@ extension UIFont {
 
 extension NSAttributedString {
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
+        guard let renderer = font.renderer else { return .zero }
         return wrapLength == 0 ?
-            font.renderer.singleLineSize(of: self) / UIScreen.main.scale :
+            renderer.singleLineSize(of: self) / UIScreen.main.scale :
             string.size(with: font, wrapLength: wrapLength) // fallback to String.size for multiline text
     }
 }
 
 extension String {
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
+        guard let renderer = font.renderer else { return .zero }
+
         let retinaResolutionSize =
             (wrapLength <= 0) ? // a wrapLength of < 0 leads to a crash, so assume 0
-                font.renderer.singleLineSize(of: self) :
-                font.renderer.multilineSize(
+                renderer.singleLineSize(of: self) :
+                renderer.multilineSize(
                     of: self,
                     wrapLength: UInt(wrapLength * UIScreen.main.scale)
                 )
