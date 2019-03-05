@@ -129,15 +129,17 @@ open class UIScrollView: UIView {
 
     // MARK: Scroll Indicators
 
+    // Matching Apple's value
     let indicatorThickness: CGFloat = 2.5
-    
+
+    // Determined experimentally to be as close as possible to Apple's (likely exactly matching)
+    private let baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
+
     public var indicatorStyle: IndicatorStyle = .`default` {
         didSet { applyScrollIndicatorsStyle() }
     }
-    
-    private let baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
-    public var scrollIndicatorInsets = UIEdgeInsets.zero
 
+    public var scrollIndicatorInsets = UIEdgeInsets.zero
 
     var totalScrollIndicatorInsets: UIEdgeInsets {
         return UIEdgeInsets(top: baseScrollIndicatorInsets.top + scrollIndicatorInsets.top,
