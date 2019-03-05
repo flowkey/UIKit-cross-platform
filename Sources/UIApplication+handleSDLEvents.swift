@@ -155,8 +155,13 @@ extension UIEvent {
     static func from(_ event: SDL_Event) -> UIEvent? {
         switch SDL_EventType(event.type) {
         case SDL_FINGERDOWN:
+            // XXX: minimal implementation for single touch
+            guard UIEvent.activeEvents.isEmpty else {
+                return nil
+            }
+
             let newTouch = UITouch(
-                touchId: Int(event.tfinger.fingerId),
+                touchId: 0,
                 at: CGPoint(
                     x: CGFloat(event.tfinger.x),
                     y: CGFloat(event.tfinger.y)
@@ -164,17 +169,7 @@ extension UIEvent {
                 timestamp: event.timestampInSeconds
             )
 
-            if
-                let firstExistingEvent = UIEvent.activeEvents.first,
-                let _ = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId})
-            {
-                // Found a matching event, adding current touch to it and returning
-                firstExistingEvent.allTouches?.insert(newTouch)
-                return firstExistingEvent
-            } else {
-                // No matching event found, creating a new one
-                return UIEvent(touch: newTouch)
-            }
+            return UIEvent(touch: newTouch)
 
         case SDL_FINGERMOTION:
             if
