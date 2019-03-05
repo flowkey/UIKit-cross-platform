@@ -131,7 +131,7 @@ open class UIScrollView: UIView {
 
     let indicatorThickness: CGFloat = 2.5
     
-    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
+    public var indicatorStyle: IndicatorStyle = .`default` {
         didSet { applyScrollIndicatorsStyle() }
     }
     
@@ -168,19 +168,21 @@ public protocol UIScrollViewDelegate: class {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)
 }
 
-public enum UIScrollViewIndicatorStyle {
-    case `default`
-    case black
-    case white
+extension UIScrollView {
+    public enum IndicatorStyle {
+        case `default`
+        case black
+        case white
 
-    var backgroundColor: UIColor {
-        switch self {
-        // Default according to iOS UIKit docs is "black with a white border".
-        // But actually it's a black stretchable image with a peak opacity of 0.35.
-        // We render it differently, so we add a little opacity to get a similar effect:
-        case .`default`: return UIColor.black.withAlphaComponent(0.37)
-        case .black: return UIColor.black
-        case .white: return UIColor.white
+        var backgroundColor: UIColor {
+            switch self {
+            // Default according to iOS UIKit docs is "black with a white border".
+            // But actually it's a black stretchable image with a peak opacity of 0.35.
+            // We render it differently, so we add a little opacity to get a similar effect:
+            case .`default`: return UIColor.black.withAlphaComponent(0.37)
+            case .black: return UIColor.black
+            case .white: return UIColor.white
+            }
         }
     }
 }
