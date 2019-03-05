@@ -6,11 +6,11 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-// NOTE: Everything in this file must be private / internal-only.
+// NOTE: Everything in this file must be private or internal.
 // You can't override methods that were defined in an extension.
 
-internal extension UIScrollView {
-    internal var indicatorLengths: (horizontal: CGFloat, vertical: CGFloat) {
+extension UIScrollView {
+    private var indicatorLengths: (horizontal: CGFloat, vertical: CGFloat) {
         let minIndicatorLength: CGFloat = 30.0
         return (
             horizontal: max(minIndicatorLength, (bounds.width / contentSize.width) * bounds.width),
@@ -18,7 +18,7 @@ internal extension UIScrollView {
         )
     }
 
-    internal var indicatorOffsetsInContentSpace: (horizontal: CGFloat, vertical: CGFloat) {
+    private var indicatorOffsetsInContentSpace: (horizontal: CGFloat, vertical: CGFloat) {
         let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5
 
         let totalContentArea = (
@@ -59,15 +59,15 @@ internal extension UIScrollView {
         )
     }
 
-    internal var shouldLayoutHorizontalScrollIndicator: Bool {
+    private var shouldLayoutHorizontalScrollIndicator: Bool {
         return showsHorizontalScrollIndicator && contentSize.width > bounds.width
     }
 
-    internal var shouldLayoutVerticalScrollIndicator: Bool {
+    private var shouldLayoutVerticalScrollIndicator: Bool {
         return showsVerticalScrollIndicator && contentSize.height > bounds.height
     }
 
-    internal func layoutScrollIndicatorsIfNeeded() {
+    func layoutScrollIndicatorsIfNeeded() {
         guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
 
         let distanceFromFrame = (
@@ -95,7 +95,7 @@ internal extension UIScrollView {
     }
 
     // On iOS this seems to occur with no animation at all:
-    internal func showScrollIndicators() {
+    func showScrollIndicators() {
         if shouldLayoutHorizontalScrollIndicator {
             horizontalScrollIndicator.alpha = 1
         }
@@ -105,7 +105,7 @@ internal extension UIScrollView {
         }
     }
 
-    internal func hideScrollIndicators() {
+    func hideScrollIndicators() {
         UIView.animate(
             withDuration: 0.25,  // these values have been hand-tuned
             delay: 0.05,         // to match iOS
