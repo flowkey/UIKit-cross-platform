@@ -72,17 +72,48 @@ open class UIScrollView: UIView {
         }
     }
     
-    // When adding subviews, make sure that the scroll indicators stay on top
+    // When adding subviews, make sure that the scroll indicators stay on top.
+    // Subview list goes back-to-front, so indicators need to take the last two positions.
+    // We use the earliestIndicatorInSubviewHierarchy variable to make sure new views are always inserted below them.
+    private lazy var earliestIndicatorInSubviewHierarchy: UIView? = {
+        let indexOfHorizontal = subviews.index(of: horizontalScrollIndicator)
+        let indexOfVertical = subviews.index(of: verticalScrollIndicator)
+
+        // if both indicators are missing, return nil, if one is missing, return one that's present
+        if indexOfVertical == nil && indexOfHorizontal == nil { return nil }
+        if indexOfHorizontal == nil { return verticalScrollIndicator }
+        if indexOfVertical == nil { return horizontalScrollIndicator }
+
+        // if both indicators are in the view hierarchy, return the one that is last
+        if indexOfHorizontal! < indexOfVertical! {
+            return horizontalScrollIndicator
+        } else {
+            return verticalScrollIndicator
+        }
+    }()
+
+
     open override func addSubview(_ view: UIView) {
+        // If the view we're adding is an indicator, just add it.
+        // If not, check for indicators and insert below the last one present.
         if view == horizontalScrollIndicator || view == verticalScrollIndicator {
             super.addSubview(view)
         } else {
-            super.insertSubview(view, at: subviews.count - 2)
+            if let earliestIndicatorInSubviewHierarchy = earliestIndicatorInSubviewHierarchy {
+                super.insertSubview(view, belowSubview: earliestIndicatorInSubviewHierarchy)
+            } else {
+                super.addSubview(view)
+            }
         }
     }
-    
+
+
     open override func insertSubview(_ view: UIView, at index: Int) {
-        super.insertSubview(view, at: min(index, subviews.count - 2))
+        var indexOfLastIndicator = Int.max
+        if let earliestIndicatorInSubviewHierarchy = earliestIndicatorInSubviewHierarchy {
+            indexOfLastIndicator = subviews.index(of: earliestIndicatorInSubviewHierarchy)!
+        }
+        super.insertSubview(view, at: min(index, indexOfLastIndicator-1))
     }
 
     open var isDecelerating = false {
