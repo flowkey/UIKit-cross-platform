@@ -31,7 +31,7 @@ extension UIScrollView {
             vertical: (contentInset.top + contentOffset.y) / (totalContentArea.vertical - bounds.height)
         )
 
-        let shouldShowBothIndicators = shouldLayoutHorizontalScrollIndicator && shouldLayoutVerticalScrollIndicator
+        let shouldShowBothIndicators = shouldShowHorizontalScrollIndicator && shouldShowVerticalScrollIndicator
 
         let additionalSpacingToPreventOverlap = (
             horizontal: shouldShowBothIndicators ? 2 * indicatorDistanceFromScrollViewFrame : 0,
@@ -59,48 +59,42 @@ extension UIScrollView {
         )
     }
 
-    private var shouldLayoutHorizontalScrollIndicator: Bool {
+    private var shouldShowHorizontalScrollIndicator: Bool {
         return showsHorizontalScrollIndicator && contentSize.width > bounds.width
     }
 
-    private var shouldLayoutVerticalScrollIndicator: Bool {
+    private var shouldShowVerticalScrollIndicator: Bool {
         return showsVerticalScrollIndicator && contentSize.height > bounds.height
     }
 
     internal func layoutScrollIndicatorsIfNeeded() {
-        guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
-
         let distanceFromFrame = (
             horizontal: indicatorThickness + totalScrollIndicatorInsets.bottom,
             vertical: indicatorThickness + totalScrollIndicatorInsets.right
         )
 
-        if shouldLayoutHorizontalScrollIndicator {
-            horizontalScrollIndicator.frame = CGRect(
-                x: totalScrollIndicatorInsets.left + indicatorOffsetsInContentSpace.horizontal,
-                y: bounds.height + contentOffset.y - distanceFromFrame.horizontal,
-                width: indicatorLengths.horizontal,
-                height: indicatorThickness
-            )
-        }
+        horizontalScrollIndicator.frame = CGRect(
+            x: totalScrollIndicatorInsets.left + indicatorOffsetsInContentSpace.horizontal,
+            y: bounds.height + contentOffset.y - distanceFromFrame.horizontal,
+            width: indicatorLengths.horizontal,
+            height: indicatorThickness
+        )
 
-        if shouldLayoutVerticalScrollIndicator {
-            verticalScrollIndicator.frame = CGRect(
-                x: bounds.width + contentOffset.x - distanceFromFrame.vertical,
-                y: totalScrollIndicatorInsets.top + indicatorOffsetsInContentSpace.vertical,
-                width: indicatorThickness,
-                height: indicatorLengths.vertical
-            )
-        }
+        verticalScrollIndicator.frame = CGRect(
+            x: bounds.width + contentOffset.x - distanceFromFrame.vertical,
+            y: totalScrollIndicatorInsets.top + indicatorOffsetsInContentSpace.vertical,
+            width: indicatorThickness,
+            height: indicatorLengths.vertical
+        )
     }
 
     // On iOS this seems to occur with no animation at all:
     internal func showScrollIndicators() {
-        if shouldLayoutHorizontalScrollIndicator {
+        if shouldShowHorizontalScrollIndicator {
             horizontalScrollIndicator.alpha = 1
         }
 
-        if shouldLayoutVerticalScrollIndicator {
+        if shouldShowVerticalScrollIndicator {
             verticalScrollIndicator.alpha = 1
         }
     }
