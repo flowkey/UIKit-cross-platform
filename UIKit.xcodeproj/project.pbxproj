@@ -19,8 +19,6 @@
 		5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */; };
 		5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */; };
 		5B840BB71F42FCBD0010AC95 /* AnimatableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */; };
-		5BA01C3720E28C3C0097FDBB /* DisplayLinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA01C3620E28C3C0097FDBB /* DisplayLinkTests.swift */; };
-		5BA01C8520E292620097FDBB /* UIProgressViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA01C8420E292620097FDBB /* UIProgressViewTests.swift */; };
 		5BA1FC4E1F6694CA005843B9 /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA1FC4D1F6694CA005843B9 /* UITextView.swift */; };
 		5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */; };
 		5BA87A9C2018FC990080C876 /* CATransform3D+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA87A942018FC980080C876 /* CATransform3D+animations.swift */; };
@@ -309,8 +307,6 @@
 		5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CALayer+animations.swift"; path = "Sources/CALayer+animations.swift"; sourceTree = SOURCE_ROOT; };
 		5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewAnimationGroup.swift; path = Sources/UIViewAnimationGroup.swift; sourceTree = SOURCE_ROOT; };
 		5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimatableProperty.swift; path = Sources/AnimatableProperty.swift; sourceTree = SOURCE_ROOT; };
-		5BA01C3620E28C3C0097FDBB /* DisplayLinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLinkTests.swift; sourceTree = "<group>"; };
-		5BA01C8420E292620097FDBB /* UIProgressViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIProgressViewTests.swift; sourceTree = "<group>"; };
 		5BA1FC4D1F6694CA005843B9 /* UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UITextView.swift; path = Sources/UITextView.swift; sourceTree = SOURCE_ROOT; };
 		5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABasicAnimationTests.swift; sourceTree = "<group>"; };
 		5BA87A942018FC980080C876 /* CATransform3D+animations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CATransform3D+animations.swift"; path = "Sources/CATransform3D+animations.swift"; sourceTree = SOURCE_ROOT; };
@@ -1241,7 +1237,6 @@
 				83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */,
 				834C94971F6BDE6200F5B40F /* ButtonLayoutingTests.swift in Sources */,
 				5C93AEB6208E09B5005BE853 /* UIViewControllerTests.swift in Sources */,
-				5BA01C3720E28C3C0097FDBB /* DisplayLinkTests.swift in Sources */,
 				03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */,
 				83F02DBD1F179D1A00347AA8 /* ButtonSetTitleForStateTests.swift in Sources */,
 				03C4872A1F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift in Sources */,
@@ -1252,7 +1247,6 @@
 				5CFFFA172017457100D989BC /* UIViewTests+subviews.swift in Sources */,
 				5C6AB7801EDBDF40006F90AC /* UIViewTests+hitTest.swift in Sources */,
 				5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */,
-				5BA01C8520E292620097FDBB /* UIProgressViewTests.swift in Sources */,
 				8323F2801F2FA2EE00C121BB /* TestSetup.swift in Sources */,
 				5CB6E1B62031D801001FEAC9 /* CGRect+TransformTests.swift in Sources */,
 				5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */,

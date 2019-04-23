@@ -2,8 +2,8 @@
 [![Swift4.1](https://img.shields.io/badge/swift-4.1-orange.svg?style=flat)](https://swift.org/)
 [![Platforms](https://img.shields.io/badge/platform-Android%20%7C%20macOS-lightgrey.svg)](https://swift.org/)
 [![License](https://img.shields.io/badge/license-MIT-71787A.svg)](https://tldrlegal.com/license/mit-license)
-# UIKit-cross-platform
 [![codecov](https://codecov.io/gh/flowkey/UIKit-cross-platform/branch/master/graph/badge.svg?token=7pkfn9WaxE)](https://codecov.io/gh/flowkey/UIKit-cross-platform)
+# UIKit-cross-platform
 
 ### Your Swift UI Code on Android
 
