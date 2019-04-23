@@ -48,7 +48,7 @@ class UIAlertControllerView: UIView {
 
         header.sizeToFit()
         header.frame.height += verticalPadding
-        header.layer.contentsGravityEnum = .top
+        header.layer.contentsGravity = .top
         addSubview(header)
 
         buttons.forEach{ addSubview($0) }

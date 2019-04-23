@@ -9,7 +9,7 @@
 import JNI
 
 public class AVPlayer: JNIObject {
-    public var onReady: (() -> Void)?
+    public var onLoaded: ((Error?) -> Void)?
     public var onVideoEnded: (() -> Void)?
 
     public convenience init(playerItem: AVPlayerItem) {
@@ -49,21 +49,27 @@ public class AVPlayer: JNIObject {
     deinit {
         try? call(methodName: "cleanup")
     }
+
+    public struct DataSourceError: Error {}
 }
-
-
 
 private weak var globalAVPlayer: AVPlayer?
 
-@_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoReady")
+@_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoReady")
 public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onReady?()
-    globalAVPlayer?.onReady = nil
+    globalAVPlayer?.onLoaded?(nil)
+    globalAVPlayer?.onLoaded = nil
 }
 
-@_silgen_name("Java_org_uikit_AVPlayer_nativeOnVideoEnded")
+@_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoEnded")
 public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onVideoEnded?()
+}
+
+@_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoSourceError")
+public func nativeOnVideoSourceError(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
+    globalAVPlayer?.onLoaded?(AVPlayer.DataSourceError())
+    globalAVPlayer?.onLoaded = nil
 }
 
 extension AVPlayer: JavaParameterConvertible {

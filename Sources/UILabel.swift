@@ -11,7 +11,7 @@ public enum NSTextAlignment: Int {
     case left
     case right
 
-    internal func contentsGravity() -> CALayer.ContentsGravity {
+    internal func contentsGravity() -> CALayerContentsGravity {
         switch self {
         case .left: return .left
         case .center: return .center
@@ -21,34 +21,34 @@ public enum NSTextAlignment: Int {
 }
 
 open class UILabel: UIView {
-    public var numberOfLines: Int = 1 {
+    open var numberOfLines: Int = 1 {
         didSet { if numberOfLines != oldValue { setNeedsDisplay() } }
     }
     
-    public var text: String? {
+    open var text: String? {
         didSet { if text != oldValue { setNeedsDisplay() } }
     }
 
-    public var attributedText: NSAttributedString? {
+    open var attributedText: NSAttributedString? {
         didSet {
             text = attributedText?.string
             setNeedsDisplay()
         }
     }
 
-    public var textColor: UIColor = .black {
+    open var textColor: UIColor = .black {
         didSet { if textColor != oldValue { setNeedsDisplay() } }
     }
 
-    public var textAlignment: NSTextAlignment = .left {
+    open var textAlignment: NSTextAlignment = .left {
         didSet { updateLayerContentsGravityFromTextAlignment() }
     }
 
     private func updateLayerContentsGravityFromTextAlignment() {
-        layer.contentsGravityEnum = textAlignment.contentsGravity()
+        layer.contentsGravity = textAlignment.contentsGravity()
     }
 
-    public var font: UIFont = .systemFont(ofSize: 16) {
+    open var font: UIFont = .systemFont(ofSize: 16) {
         didSet { if font != oldValue { setNeedsDisplay() } }
     }
 
@@ -65,6 +65,10 @@ open class UILabel: UIView {
         } else {
             layer.contents = font.render(text, color: textColor, wrapLength: wrapLength)
         }
+    }
+
+    override open func display(_ layer: CALayer) {
+        self.draw()
     }
 
     override public init(frame: CGRect) {

@@ -1,6 +1,6 @@
 //
 //  Button.swift
-//  NativePlayerSDL
+//  UIKit
 //
 //  Created by Geordie Jay on 16.05.17.
 //  Copyright © 2017 Geordie Jay. All rights reserved.
@@ -33,7 +33,7 @@ open class Button: UIControl {
         didSet { self.setNeedsLayout() }
     }
 
-    public override var tintColor: UIColor! {
+    open override var tintColor: UIColor! {
         didSet {
             if tintColor != nil { setTitleColor(tintColor, for: .normal) }
         }

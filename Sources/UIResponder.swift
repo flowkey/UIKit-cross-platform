@@ -7,6 +7,7 @@
 //
 
 open class UIResponder {
+    public init() {}
     open weak var next: UIResponder?
 
     open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -26,6 +27,7 @@ open class UIResponder {
     }
 
     /// Returns whether we handled the press or not
+    @discardableResult
     open func handleHardwareBackButtonPress() -> Bool {
         return next?.handleHardwareBackButtonPress() ?? false
     }

@@ -117,7 +117,7 @@ class TransformTests: XCTestCase {
         var result = identity
         measure {
             for _ in 0 ..< 1000 {
-                GPU_Multiply4x4(&result, &matrixA, &matrixB)
+                GPU_MatrixMultiply(&result, &matrixA, &matrixB)
                 XCTAssertEqual(result, expectedResult)
             }
         }

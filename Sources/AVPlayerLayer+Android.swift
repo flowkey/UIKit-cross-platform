@@ -21,10 +21,10 @@ public class AVPlayerLayer: JNIObject {
         set {
             let scaledFrame = (newValue * UIScreen.main.scale)
             try! call(methodName: "setFrame", arguments: [
-                Int(round(scaledFrame.origin.x)),
-                Int(round(scaledFrame.origin.y)),
-                Int(round(scaledFrame.size.width)),
-                Int(round(scaledFrame.size.height))
+                JavaInt(round(scaledFrame.origin.x)),
+                JavaInt(round(scaledFrame.origin.y)),
+                JavaInt(round(scaledFrame.size.width)),
+                JavaInt(round(scaledFrame.size.height))
             ])
         }
     }

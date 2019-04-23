@@ -9,22 +9,35 @@
 import SDL
 import CJNI
 
-@_silgen_name("SDL_Android_Init")
-public func SDLAndroidInit(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
+public struct UIKitAndroid {
+    public static var UIApplicationDelegateClass: UIApplicationDelegate.Type?
+    public static var UIApplicationClass: UIApplication.Type = UIApplication.self
+}
 
-@_silgen_name("Java_org_libsdl_app_SDLActivity_nativeInit")
+@_silgen_name("SDL_Android_Init")
+public func SDL_Android_Init(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
+
+@_cdecl("Java_org_libsdl_app_SDLActivity_nativeInit")
 public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
-    SDLAndroidInit(env, view)
+    SDL_Android_Init(env, view)
     SDL_SetMainReady()
-    if !SDL.isInitialized {
-        SDL.initialize()
-    } else {
-        print("[nativeInit] SDL is already initialized, skipping SDL.initialize()")
+
+    if UIApplication.shared == nil {
+        return JavaInt(
+            UIApplicationMain(UIKitAndroid.UIApplicationClass, UIKitAndroid.UIApplicationDelegateClass)
+        )
     }
+
+    // UIApplicationMain also inits a screen, so this is a special case.
+    if UIScreen.main == nil {
+        UIScreen.main = UIScreen()
+    }
+
     return 0
 }
 
-@_silgen_name("Java_org_libsdl_app_SDLActivity_nativeDeinit")
-public func nativeDeinit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
-    SDL.deinitialize()
+@_cdecl("Java_org_libsdl_app_SDLActivity_nativeDestroyScreen")
+public func nativeDestroyScreen(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
+    UIApplication.onWillEnterBackground()
+    UIApplication.onDidEnterBackground()
 }

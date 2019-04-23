@@ -8,20 +8,20 @@
 
 import SDL
 
-public class UIColor: Equatable {
+public class UIColor: Hashable {
     let red: UInt8
     let green: UInt8
     let blue: UInt8
     let alpha: UInt8
 
-    public convenience init(hex: Int, alpha: CGFloat = 1) {
+    convenience init(hex: Int, alpha: CGFloat = 1) {
         let red = (hex & 0xFF0000) >> 16
         let green = (hex & 0x00FF00) >> 8
         let blue = (hex & 0x0000FF)
         self.init(red: CGFloat(red) / 255, green: CGFloat(green) / 255, blue: CGFloat(blue) / 255, alpha: alpha)
     }
 
-    public init(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat = 1) {
+    public init(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
         self.red = red.normalisedToUInt8()
         self.green = green.normalisedToUInt8()
         self.blue = blue.normalisedToUInt8()
@@ -77,19 +77,28 @@ public class UIColor: Equatable {
     init(_ tuple: (r: UInt8, g: UInt8, b: UInt8, a: UInt8)) {
         red = tuple.r; green = tuple.g; blue = tuple.b; alpha = tuple.a
     }
+
+    public var hashValue: Int {
+        return (
+            UInt32(red) << 24 +
+            UInt32(green) << 16 +
+            UInt32(blue) << 8 +
+            UInt32(alpha)
+        ).hashValue
+    }
 }
 
 public typealias CGColor = UIColor // They can be the same for us.
 
 extension UIColor {
-    public static let black = UIColor(red: 0, green: 0, blue: 0)
-    public static let white = UIColor(red: 1, green: 1, blue: 1)
-    public static let red = UIColor(red: 1, green: 0, blue: 0)
-    public static let green = UIColor(red: 0, green: 1, blue: 0)
-    public static let blue = UIColor(red: 0, green: 0, blue: 1)
-    public static let purple = UIColor(red: 0.5, green: 0, blue: 0.5)
-    public static let orange = UIColor(red: 1, green: 0.5, blue: 0)
-    public static let lightGray = UIColor(red: 2.0 / 3.0, green: 2.0 / 3.0, blue: 2.0 / 3.0)
+    public static let black = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+    public static let white = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+    public static let red = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
+    public static let green = UIColor(red: 0, green: 1, blue: 0, alpha: 1)
+    public static let blue = UIColor(red: 0, green: 0, blue: 1, alpha: 1)
+    public static let purple = UIColor(red: 0.5, green: 0, blue: 0.5, alpha: 1)
+    public static let orange = UIColor(red: 1, green: 0.5, blue: 0, alpha: 1)
+    public static let lightGray = UIColor(red: 2.0 / 3.0, green: 2.0 / 3.0, blue: 2.0 / 3.0, alpha: 1)
     public static let clear = UIColor(red: 0, green: 0, blue: 0, alpha: 0) // as per iOS
 
     public var cgColor: CGColor {
@@ -128,5 +137,11 @@ extension Float {
 extension UIColor {
     var sdlColor: SDLColor {
         return SDLColor(r: red, g: green, b: blue, a: alpha)
+    }
+}
+
+extension UIColor: CustomStringConvertible {
+    public var description: String {
+        return "rgba(\(red), \(green), \(blue), \(alpha))"
     }
 }

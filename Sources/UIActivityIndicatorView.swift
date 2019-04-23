@@ -15,7 +15,7 @@ public enum UIActivityIndicatorViewStyle {
 public class UIActivityIndicatorView: UIView {
     public var activityIndicatorStyle: UIActivityIndicatorViewStyle
 
-    public init(activityIndicatorStyle style: UIActivityIndicatorViewStyle) {
+    public init(style: UIActivityIndicatorViewStyle) {
         self.activityIndicatorStyle = style
         super.init(frame: .zero)
     }
@@ -24,6 +24,6 @@ public class UIActivityIndicatorView: UIView {
 
     }
     public func stopAnimating() {
-        
+
     }
 }
