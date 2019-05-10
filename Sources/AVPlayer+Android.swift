@@ -14,7 +14,7 @@ public class AVPlayer: JNIObject {
 
     public convenience init(playerItem: AVPlayerItem) {
         let parentView = JavaSDLView(getSDLView())
-        try! self.init("org.uikit.AVPlayer", arguments: [parentView, playerItem])
+        try! self.init("org.uikit.AVPlayer", arguments: [parentView, playerItem.asset])
         globalAVPlayer = self
     }
 

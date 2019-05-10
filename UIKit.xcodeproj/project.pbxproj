@@ -347,7 +347,7 @@
 		5C418DBF20F507DA005D0E92 /* UIApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplication.swift; sourceTree = "<group>"; };
 		5C418DC120F5149E005D0E92 /* UIApplicationMain+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplicationMain+Mac.swift"; sourceTree = "<group>"; };
 		5C4AD7E1204EE2B60021DD4A /* AVPlayerItem+Mac.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+Mac.swift"; sourceTree = "<group>"; };
-		5C4AD7E2204EE2B60021DD4A /* AVPlayerItem+Android.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+Android.swift"; sourceTree = "<group>"; };
+		5C4AD7E2204EE2B60021DD4A /* AVURLAsset+Android.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVURLAsset+Android.swift"; sourceTree = "<group>"; };
 		5C4AD7E6204EE45F0021DD4A /* AVPlayerLayer+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayerLayer+Android.swift"; sourceTree = "<group>"; };
 		5C4CD51020615FCF00217B4C /* UIApplication+handleSDLEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+handleSDLEvents.swift"; sourceTree = "<group>"; };
 		5C4CD519206160EC00217B4C /* UIView+printViewHierarchy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+printViewHierarchy.swift"; sourceTree = "<group>"; };
@@ -806,7 +806,7 @@
 		833075381F697613002089AC /* Video */ = {
 			isa = PBXGroup;
 			children = (
-				5C4AD7E2204EE2B60021DD4A /* AVPlayerItem+Android.swift */,
+				5C4AD7E2204EE2B60021DD4A /* AVURLAsset+Android.swift */,
 				5C4AD7E1204EE2B60021DD4A /* AVPlayerItem+Mac.swift */,
 				5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */,
 				833075391F69768E002089AC /* AVPlayer+Android.swift */,
@@ -977,6 +977,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 5C27E7A41ECB2F6500F5020D;
