@@ -8,7 +8,7 @@
 
 import SDL
 
-open class UIView: UIResponder, CALayerDelegate {
+open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     open class var layerClass: CALayer.Type {
         return CALayer.self
     }
@@ -358,6 +358,9 @@ open class UIView: UIResponder, CALayerDelegate {
 
         return nil
     }
+
+    // MARK: Accessibility
+    open var accessibilityIdentifier: String?
 }
 
 extension UIView: CustomStringConvertible {
