@@ -8,7 +8,9 @@
 
 import SDL
 
-open class UIView: UIResponder, CALayerDelegate {
+open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
+    open var accessibilityIdentifier: String?
+
     open class var layerClass: CALayer.Type {
         return CALayer.self
     }
