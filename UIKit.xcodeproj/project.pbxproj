@@ -134,6 +134,7 @@
 		61C9D3B121B051B10012018B /* NSNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B021B051B10012018B /* NSNotification.swift */; };
 		61C9D3B921B052750012018B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B821B052750012018B /* Notification.swift */; };
 		61C9D3BB21B052B30012018B /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3BA21B052B30012018B /* NotificationCenter.swift */; };
+		61D65F9B22AAAC0700F970FC /* FileManager+Android.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D65F9A22AAAC0700F970FC /* FileManager+Android.swift */; };
 		61EE7A1821B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */; };
 		61EE7A2E21B18940003A5FFD /* UIApplication+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EE7A2D21B18940003A5FFD /* UIApplication+Notifications.swift */; };
 		8318D27B1F0695080029816A /* UIControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D27A1F0695080029816A /* UIControl.swift */; };
@@ -424,6 +425,7 @@
 		61C9D3B021B051B10012018B /* NSNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSNotification.swift; sourceTree = "<group>"; };
 		61C9D3B821B052750012018B /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		61C9D3BA21B052B30012018B /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
+		61D65F9A22AAAC0700F970FC /* FileManager+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Android.swift"; sourceTree = "<group>"; };
 		61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+NSNotificationTests.swift"; sourceTree = "<group>"; };
 		61EE7A2D21B18940003A5FFD /* UIApplication+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Notifications.swift"; sourceTree = "<group>"; };
 		83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VideoTexture+Mac.swift"; sourceTree = "<group>"; };
@@ -589,6 +591,7 @@
 		5C27E7B01ECB2F6500F5020D /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				61D65FA022AAB5A700F970FC /* Android+FileManager */,
 				5BBEECA21F39E770006E3416 /* Animations */,
 				5C6AB7101ED3BECD006F90AC /* Button.swift */,
 				5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */,
@@ -804,6 +807,14 @@
 				5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */,
 			);
 			path = UIView;
+			sourceTree = "<group>";
+		};
+		61D65FA022AAB5A700F970FC /* Android+FileManager */ = {
+			isa = PBXGroup;
+			children = (
+				61D65F9A22AAAC0700F970FC /* FileManager+Android.swift */,
+			);
+			name = "Android+FileManager";
 			sourceTree = "<group>";
 		};
 		833075381F697613002089AC /* Video */ = {
@@ -1176,6 +1187,7 @@
 				5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */,
 				5BA87A9C2018FC990080C876 /* CATransform3D+animations.swift in Sources */,
 				5C6AB71F1ED3BECD006F90AC /* UIWindow.swift in Sources */,
+				61D65F9B22AAAC0700F970FC /* FileManager+Android.swift in Sources */,
 				5CB6E1C32033460C001FEAC9 /* CATransform3D+SDL_gpu.swift in Sources */,
 				5C8E6A21203A089A00D1DBE0 /* CALayer+ContentsGravity.swift in Sources */,
 				5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */,
