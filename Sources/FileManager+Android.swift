@@ -6,6 +6,8 @@
 //  Copyright © 2019 flowkey. All rights reserved.
 //
 
+#if os(Android)
+
 import Foundation
 
 public class AndroidFileManager: FileManager {
@@ -18,7 +20,30 @@ public class AndroidFileManager: FileManager {
 
     public override func urls(for directory: FileManager.SearchPathDirectory,
                               in domainMask: FileManager.SearchPathDomainMask) -> [URL] {
-        let fakePath = directory == .cachesDirectory ? "/caches" : "/docs"
-        return [URL(fileURLWithPath: fakePath)]
+        do {
+            guard let url = try getDirectory(ofType: directory) else { return [] }
+            return [url]
+        } catch {
+            return []
+        }
+    }
+
+    func getDirectory(ofType type: FileManager.SearchPathDirectory) throws -> URL? {
+        let context = try Context.getContext()
+
+        let file: File?
+
+        switch type {
+        case .cachesDirectory:
+            file = try context.getCacheDir()
+        case .documentDirectory:
+            file = try context.getFilesDir()
+        default:
+            assertionFailure("getDirectory(ofType) for \(type) is not implemented yet.")
+            return nil
+        }
+        guard let dirPath = try file?.getAbsolutePath() else { return nil }
+        return URL(fileURLWithPath: dirPath)
     }
 }
+#endif
