@@ -39,7 +39,7 @@ public class AndroidFileManager: FileManager {
         case .documentDirectory:
             file = try context.getFilesDir()
         default:
-            assertionFailure("getDirectory(ofType) for \(type) is not implemented yet.")
+            assertionFailure("Dir type: 'FileManager.SearchPathDirectory.\(type)' is not implemented yet.")
             return nil
         }
         guard let dirPath = try file?.getAbsolutePath() else { return nil }
