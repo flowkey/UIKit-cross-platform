@@ -18,6 +18,7 @@ open class FlowkeyCachedURLResponse: NSObject, NSSecureCoding {
 
     var response: URLResponse
     var data: Data
+    var storagePolicy: URLCache.StoragePolicy = .allowed
 
     public init(response: URLResponse, data: Data) {
         self.response = response.copy() as! URLResponse
