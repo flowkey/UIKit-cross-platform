@@ -132,6 +132,7 @@
 		5CFFFA172017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
 		5CFFFA182017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
 		612B1AAD22BBDFFE00857771 /* URLSession+UrlCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612B1AAC22BBDFFE00857771 /* URLSession+UrlCache.swift */; };
+		612E699122C355840057C485 /* CacheStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612E699022C355840057C485 /* CacheStoreTests.swift */; };
 		6149507F22C104FE00724BA4 /* FlowkeyURLCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6149507E22C104FE00724BA4 /* FlowkeyURLCache.swift */; };
 		6149508522C1056800724BA4 /* FlowkeyCachedURLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6149508422C1056800724BA4 /* FlowkeyCachedURLResponse.swift */; };
 		6149508722C11BDC00724BA4 /* TaskRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6149508622C11BDC00724BA4 /* TaskRegistry.swift */; };
@@ -429,6 +430,7 @@
 		5CFFF97C20163AF900D989BC /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = SDL/SDL_ttf.xcodeproj; sourceTree = "<group>"; };
 		5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+subviews.swift"; sourceTree = "<group>"; };
 		612B1AAC22BBDFFE00857771 /* URLSession+UrlCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+UrlCache.swift"; sourceTree = "<group>"; };
+		612E699022C355840057C485 /* CacheStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheStoreTests.swift; sourceTree = "<group>"; };
 		6149507E22C104FE00724BA4 /* FlowkeyURLCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowkeyURLCache.swift; sourceTree = "<group>"; };
 		6149508422C1056800724BA4 /* FlowkeyCachedURLResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowkeyCachedURLResponse.swift; sourceTree = "<group>"; };
 		6149508622C11BDC00724BA4 /* TaskRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRegistry.swift; sourceTree = "<group>"; };
@@ -677,6 +679,7 @@
 		5C27E7BB1ECB2F6500F5020D /* UIKitTests */ = {
 			isa = PBXGroup;
 			children = (
+				612E698B22C3554D0057C485 /* URLSession+URLCache */,
 				5BA7B40D1F45A6C30040CB58 /* Animations */,
 				83F02DBB1F179B0300347AA8 /* Button */,
 				5CCF1C12202382FF00AAF598 /* CALayerTests.swift */,
@@ -831,6 +834,14 @@
 				6149508622C11BDC00724BA4 /* TaskRegistry.swift */,
 			);
 			name = "URLSession+URLCache";
+			sourceTree = "<group>";
+		};
+		612E698B22C3554D0057C485 /* URLSession+URLCache */ = {
+			isa = PBXGroup;
+			children = (
+				612E699022C355840057C485 /* CacheStoreTests.swift */,
+			);
+			path = "URLSession+URLCache";
 			sourceTree = "<group>";
 		};
 		61D65FA022AAB5A700F970FC /* Android+FileManager */ = {
@@ -1307,6 +1318,7 @@
 				83B76ED31F0BCD4C0096736C /* ButtonTestsConstants.swift in Sources */,
 				837335901F2F6A4F0012F066 /* ButtonSetTitleColorForStateTests.swift in Sources */,
 				5BAF8E4A203DA89D00DA1EBF /* TouchHandlingTests.swift in Sources */,
+				612E699122C355840057C485 /* CacheStoreTests.swift in Sources */,
 				832A7F021F1632070041916B /* ButtonSizeToFitTests.swift in Sources */,
 				5CF2BEEE1F8D1BD7009FCA1E /* UIFontTests.swift in Sources */,
 				832A7F041F1632250041916B /* ButtonContentAlignmentTests.swift in Sources */,
