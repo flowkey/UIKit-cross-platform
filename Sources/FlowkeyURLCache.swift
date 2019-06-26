@@ -71,8 +71,7 @@ extension FlowkeyURLCache {
         }
 
         func storeCachedResponse(_ cachedResponse: CachedURLResponse, for request: URLRequest) {
-            guard let entry = CacheEntry(for: request) else { return }
-            entry.fill(with: cachedResponse)
+            guard let entry = CacheEntry(for: request, saving: cachedResponse) else { return }
             store.save(entry: entry, cachedResponse: cachedResponse)
         }
 
@@ -133,8 +132,9 @@ class CacheEntry: Hashable, Codable {
         self.requestKey = url.absoluteString
     }
 
-    func fill(with cachedResponse: CachedURLResponse) {
-        self.storagePolicy = cachedResponse.storagePolicy.rawValue
+    convenience init?(for request: URLRequest, saving response: CachedURLResponse) {
+        self.init(for: request)
+        self.storagePolicy = response.storagePolicy.rawValue
         self.timeStamp = Date()
     }
 
@@ -159,6 +159,11 @@ class CacheEntry: Hashable, Codable {
  This implementation uses json but can be replaced in the future to use SQLite if needed.
  **/
 class CacheStore {
+
+    enum CachesFileType {
+        case response
+        case data
+    }
 
     private var cachedEntries: Set<CacheEntry>
     private var dataFile: URL
@@ -187,8 +192,23 @@ class CacheStore {
     }
 
     func find(entry: CacheEntry) -> CachedURLResponse? {
-        return nil
+        guard let cachedEntry = findPreviouslyCachedEntry(for: entry) else { return nil }
+
+        guard
+            let response = readResponseFromFile(for: cachedEntry),
+            let data = readDataFromFile(for: cachedEntry)
+            else {
+                // TODO: remove the cache entry and any associated files
+                return nil
+        }
+        return CachedURLResponse(response: response, data: data)
     }
+
+    private func findPreviouslyCachedEntry(for entry: CacheEntry) -> CacheEntry? {
+        return cachedEntries.first { entry.hashValue == $0.hashValue }
+    }
+
+    // MARK: File operations
 
     private func hasPreviouslySavedData() -> Bool {
         return FileManager.default.isReadableFile(atPath: dataFile.path)
@@ -203,35 +223,68 @@ class CacheStore {
             print(entries.count)
             self.cachedEntries = self.cachedEntries.union(entries)
         } catch {
-            print(error)
+            // TODO: should delete the JSON and other files?
+            assertionFailure("Readimg JSON Cache data from file failed: \(error)")
         }
     }
 
-    private func saveResponseToFile(entry: CacheEntry, response: URLResponse) {
-        guard let filename = entry.uuid else { return assertionFailure("trying to save file with no uuid") }
-        let responseFile = responsesDirectory.appendingPathComponent(filename)
-        NSKeyedArchiver.archiveRootObject(response, toFile: responseFile.path)
-    }
-
-    private func saveDataToFile(entry: CacheEntry, data: Data) {
-        guard let filename = entry.uuid else { return assertionFailure("trying to save file with no uuid") }
-        let dataFile = responseDataFilesDirectory.appendingPathComponent(filename)
-        FileManager.default.createFile(atPath: dataFile.path, contents: data)
-    }
-
     private func saveUpdatedEntriesToFile() {
-        print("update the json file?")
         do {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
             let data = try encoder.encode(self.cachedEntries)
-            let jsonString = String(data: data, encoding: .utf8)
-            print(jsonString ?? "no data")
             FileManager.default.createFile(atPath: dataFile.path,
                                            contents: data,
                                            attributes: nil)
         } catch {
-            print(error)
+            assertionFailure("Writing JSON Cache data to file failed: \(error)")
+        }
+    }
+
+    private func saveResponseToFile(entry: CacheEntry, response: URLResponse) {
+        guard let file = getFile(ofType: .response, for: entry) else { return }
+        NSKeyedArchiver.archiveRootObject(response, toFile: file.path)
+    }
+
+    private func readResponseFromFile(for entry: CacheEntry) -> URLResponse? {
+        guard let file = getFile(ofType: .response, for: entry, ensureExists: true) else { return nil }
+        return NSKeyedUnarchiver.unarchiveObject(withFile: file.path) as? URLResponse
+    }
+
+    private func saveDataToFile(entry: CacheEntry, data: Data) {
+        guard let file = getFile(ofType: .data, for: entry) else { return }
+        FileManager.default.createFile(atPath: file.path, contents: data)
+    }
+
+    private func readDataFromFile(for entry: CacheEntry) -> Data?  {
+        guard let file = getFile(ofType: .data, for: entry, ensureExists: true) else { return nil }
+        return try? Data(contentsOf: file)
+    }
+
+    private func getDirectory(for type: CachesFileType) -> URL {
+        switch type {
+        case .response:
+            return responsesDirectory
+        case .data:
+            return responseDataFilesDirectory
+        }
+    }
+
+    private func getFile(ofType type: CachesFileType, for entry: CacheEntry, ensureExists: Bool = false) -> URL? {
+        guard let filename = entry.uuid else {
+            assertionFailure("trying to save file with no uuid")
+            return nil
+        }
+
+        let directory = getDirectory(for: type)
+        let file = directory.appendingPathComponent(filename)
+
+
+        if ensureExists {
+            let validFileExists = FileManager.default.isReadableFile(atPath: file.path)
+            return validFileExists ? file : nil
+        } else {
+            return file
         }
     }
 }
