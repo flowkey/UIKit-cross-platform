@@ -117,7 +117,6 @@ extension Bundle {
 #endif
 
 class CacheEntry: Hashable, Codable {
-    var hashValue: Int
     var requestKey: String
 
     var id: Int?
@@ -128,7 +127,6 @@ class CacheEntry: Hashable, Codable {
 
     init?(for request: URLRequest) {
         guard let url = request.url else { return nil }
-        self.hashValue = url.hashValue
         self.requestKey = url.absoluteString
     }
 
@@ -139,18 +137,20 @@ class CacheEntry: Hashable, Codable {
     }
 
     #if !os(Android)
+    // Hasher in not available in Foundation yet
     func hash(into hasher: inout Hasher) {
-        hasher.combine(self.hashValue)
+        hasher.combine(self.requestKey)
+    }
+    #else
+    var hashValue: Int {
+        return requestKey.hashValue
     }
     #endif
 
+
+
     static func == (lhs: CacheEntry, rhs: CacheEntry) -> Bool {
-        let isEqual = lhs.hashValue == rhs.hashValue &&
-            lhs.requestKey == rhs.requestKey &&
-            lhs.storagePolicy == rhs.storagePolicy &&
-            lhs.timeStamp == rhs.timeStamp &&
-            lhs.id == rhs.id
-        return isEqual
+        return lhs.requestKey == rhs.requestKey
     }
 }
 
@@ -165,7 +165,7 @@ class CacheStore {
         case data
     }
 
-    private var cachedEntries: Set<CacheEntry>
+    private (set) var cachedEntries: Set<CacheEntry>
     private var dataFile: URL
     private var responsesDirectory: URL
     private var responseDataFilesDirectory: URL
@@ -204,8 +204,16 @@ class CacheStore {
         return CachedURLResponse(response: response, data: data)
     }
 
+    func removeAll() throws {
+        try FileManager.default.removeItem(at: dataFile)
+        try FileManager.default.removeItem(at: responsesDirectory)
+        try FileManager.default.removeItem(at: responseDataFilesDirectory)
+        self.cachedEntries.removeAll()
+        loadSavedCachedEntriesFromFile()
+    }
+
     private func findPreviouslyCachedEntry(for entry: CacheEntry) -> CacheEntry? {
-        return cachedEntries.first { entry.hashValue == $0.hashValue }
+        return cachedEntries.first { entry.requestKey == $0.requestKey }
     }
 
     // MARK: File operations
@@ -233,9 +241,9 @@ class CacheStore {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
             let data = try encoder.encode(self.cachedEntries)
-            FileManager.default.createFile(atPath: dataFile.path,
-                                           contents: data,
-                                           attributes: nil)
+            _ = FileManager.default.createFile(atPath: dataFile.path,
+                                               contents: data,
+                                               attributes: nil)
         } catch {
             assertionFailure("Writing JSON Cache data to file failed: \(error)")
         }
@@ -243,7 +251,9 @@ class CacheStore {
 
     private func saveResponseToFile(entry: CacheEntry, response: URLResponse) {
         guard let file = getFile(ofType: .response, for: entry) else { return }
-        NSKeyedArchiver.archiveRootObject(response, toFile: file.path)
+        guard NSKeyedArchiver.archiveRootObject(response, toFile: file.path) else {
+            return assertionFailure("Could not serialize response")
+        }
     }
 
     private func readResponseFromFile(for entry: CacheEntry) -> URLResponse? {
@@ -253,7 +263,9 @@ class CacheStore {
 
     private func saveDataToFile(entry: CacheEntry, data: Data) {
         guard let file = getFile(ofType: .data, for: entry) else { return }
-        FileManager.default.createFile(atPath: file.path, contents: data)
+        guard FileManager.default.createFile(atPath: file.path, contents: data) else {
+            return assertionFailure("Could not save response data to file")
+        }
     }
 
     private func readDataFromFile(for entry: CacheEntry) -> Data?  {
