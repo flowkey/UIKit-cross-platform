@@ -1,5 +1,5 @@
 //
-//  Context+Android.swift
+//  AndroidContext.swift
 //  UIKit
 //
 //  Created by Chetan Agarwal on 07/06/2019.
@@ -14,12 +14,12 @@ import JNI
 /**
  https://developer.android.com/reference/android/content/Context
  */
-class Context: JNIObject {
+class AndroidContext: JNIObject {
 
     static let className = "android.content.Context"
 
-    static func getContext() throws -> Context {
-        return try Context(
+    static func getContext() throws -> AndroidContext {
+        return try AndroidContext(
             jni.call("getContext", on: getSDLView(), returningObjectType: className)
         )
     }

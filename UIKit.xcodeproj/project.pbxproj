@@ -136,7 +136,7 @@
 		6149507F22C104FE00724BA4 /* FlowkeyURLCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6149507E22C104FE00724BA4 /* FlowkeyURLCache.swift */; };
 		6149508522C1056800724BA4 /* FlowkeyCachedURLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6149508422C1056800724BA4 /* FlowkeyCachedURLResponse.swift */; };
 		6149508722C11BDC00724BA4 /* TaskRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6149508622C11BDC00724BA4 /* TaskRegistry.swift */; };
-		6168C1D522AAB96700D6F962 /* Context+Android.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6168C1D422AAB96700D6F962 /* Context+Android.swift */; };
+		6168C1D522AAB96700D6F962 /* AndroidContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6168C1D422AAB96700D6F962 /* AndroidContext.swift */; };
 		61C9D3B121B051B10012018B /* NSNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B021B051B10012018B /* NSNotification.swift */; };
 		61C9D3B921B052750012018B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B821B052750012018B /* Notification.swift */; };
 		61C9D3BB21B052B30012018B /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3BA21B052B30012018B /* NotificationCenter.swift */; };
@@ -434,7 +434,7 @@
 		6149507E22C104FE00724BA4 /* FlowkeyURLCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowkeyURLCache.swift; sourceTree = "<group>"; };
 		6149508422C1056800724BA4 /* FlowkeyCachedURLResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowkeyCachedURLResponse.swift; sourceTree = "<group>"; };
 		6149508622C11BDC00724BA4 /* TaskRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRegistry.swift; sourceTree = "<group>"; };
-		6168C1D422AAB96700D6F962 /* Context+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Context+Android.swift"; sourceTree = "<group>"; };
+		6168C1D422AAB96700D6F962 /* AndroidContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidContext.swift; sourceTree = "<group>"; };
 		61C9D3B021B051B10012018B /* NSNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSNotification.swift; sourceTree = "<group>"; };
 		61C9D3B821B052750012018B /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		61C9D3BA21B052B30012018B /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
@@ -849,7 +849,7 @@
 			children = (
 				61D65F9A22AAAC0700F970FC /* FileManager+Android.swift */,
 				61D65FA122AAB71100F970FC /* File+Android.swift.swift */,
-				6168C1D422AAB96700D6F962 /* Context+Android.swift */,
+				6168C1D422AAB96700D6F962 /* AndroidContext.swift */,
 			);
 			name = "Android+FileManager";
 			sourceTree = "<group>";
@@ -1249,7 +1249,7 @@
 				8318D27B1F0695080029816A /* UIControl.swift in Sources */,
 				5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */,
 				5CBD836520F6584200AF4E8E /* UIApplicationMain.swift in Sources */,
-				6168C1D522AAB96700D6F962 /* Context+Android.swift in Sources */,
+				6168C1D522AAB96700D6F962 /* AndroidContext.swift in Sources */,
 				5CAF5A3020ADD09500760FD4 /* FontRenderer+singleLineSize.swift in Sources */,
 				83AB7B481F2B504300C7997D /* UIAlertController.swift in Sources */,
 				5C418DC220F5149E005D0E92 /* UIApplicationMain+Mac.swift in Sources */,

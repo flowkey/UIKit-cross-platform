@@ -29,7 +29,7 @@ public class AndroidFileManager: FileManager {
     }
 
     func getDirectory(ofType type: FileManager.SearchPathDirectory) throws -> URL? {
-        let context = try Context.getContext()
+        let context = try AndroidContext.getContext()
 
         let file: File?
 
