@@ -28,15 +28,13 @@ public class URLSessionWrapperWithCustomURLCache: NSObject, URLSessionDataDelega
 
         self.taskRegistry = TaskRegistry()
         let queue = queue ?? OperationQueue.main
-        self.wrappedSession = URLSession(configuration: configuration,
-                                         delegate: self,
-                                         delegateQueue: queue)
+        self.wrappedSession = URLSession(configuration: configuration, delegate: self, delegateQueue: queue)
     }
 
     public func dataTask(with request: URLRequest,
                          completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
-        // URLSessionDelegate methods are not called when a `completionHandler` is provided
-        // save the `completionHandler` for later use and call the "normal" method
+        // URLSessionDelegate methods are not called when a `completionHandler` is provided when creating a data task.
+        // Save the `completionHandler` for later use and create the data task using the non-delegate method.
         let task = wrappedSession.dataTask(with: request)
         taskRegistry.register(task: task, onComplete: completionHandler)
         #if os(Android)
@@ -59,7 +57,6 @@ public class URLSessionWrapperWithCustomURLCache: NSObject, URLSessionDataDelega
     public func urlSession(_ session: URLSession,
                            dataTask: URLSessionDataTask,
                            didReceive data: Data) {
-        print("received data \(dataTask.taskIdentifier): ", data.count)
         taskRegistry.received(data: data, for: dataTask)
     }
 
@@ -97,7 +94,7 @@ public class URLSessionWrapperWithCustomURLCache: NSObject, URLSessionDataDelega
             let request = task.originalRequest,
             let response = task.response,
             let data = data
-            else {
+        else {
                 return assertionFailure("cannot save task \(task) to cache")
         }
 
@@ -117,46 +114,42 @@ class URLTaskWrapper: URLSessionDataTask {
     }
 
     override func resume() {
-        print("resume task...")
         guard let request = originalTask.originalRequest else { return }
         guard
             let url = request.url,
             let cachedResponse = self.session.urlCache.cachedResponse(for: request)
         else {
-            originalTask.resume()
-            return
+            return originalTask.resume()
         }
 
+        // There is a previously cached response, so only get headers to compare if it's still usable
+        // Currently only the ETag header is compared.
         let session = URLSession.shared
         var headRequest = URLRequest(url: url)
         headRequest.httpMethod = "HEAD"
-        print("There is a cached response, so getting headers only...")
         session.dataTask(with: headRequest) { (data, response, error) in
+
             if let error = error {
-                print("Couldn't fetch headers!")
                 if let urlError = error as? URLError,
-                    urlError.code == URLError.Code.cannotFindHost {
-                    print("Perhaps user if offline. use previously cached response")
-                    self.session.taskRegistry.received(cachedResponse: cachedResponse,
-                                                       for: self.originalTask)
+                    urlError.code == .cannotFindHost || urlError.code == .cannotConnectToHost {
+                    // Perhaps user if offline. use previously cached response as fallback?
+                    // TODO: Add check for `Cache-Control: max-age`?
+                    self.session.taskRegistry.received(cachedResponse: cachedResponse,for: self.originalTask)
                     self.originalTask.cancel()
                 } else {
                     self.originalTask.resume()
                 }
                 return
             }
+
             guard
-                let response = response else {
-                self.originalTask.resume()
-                return
+                let response = response,
+                cachedResponse.canBeReusedFor(response: response)
+            else {
+                    self.originalTask.resume()
+                    return
             }
-            guard cachedResponse.canBeReusedFor(response: response) else {
-                self.originalTask.resume()
-                return
-            }
-            print("Etags match can be used")
-            self.session.taskRegistry.received(cachedResponse: cachedResponse,
-                                               for: self.originalTask)
+            self.session.taskRegistry.received(cachedResponse: cachedResponse, for: self.originalTask)
             self.originalTask.cancel()
         }.resume()
     }
@@ -167,11 +160,9 @@ private extension CachedURLResponse {
         guard
             let cachedHTTPResponse = self.response as? HTTPURLResponse,
             let targetHTTPResponse = response as? HTTPURLResponse,
-        let cachedResponseEtag = cachedHTTPResponse.getETagFromHeaders(),
-        let targetResponseEtag = targetHTTPResponse.getETagFromHeaders()
-            else {
-                return false
-        }
+            let cachedResponseEtag = cachedHTTPResponse.getETagFromHeaders(),
+            let targetResponseEtag = targetHTTPResponse.getETagFromHeaders()
+        else { return false }
         return cachedResponseEtag == targetResponseEtag
     }
 }
