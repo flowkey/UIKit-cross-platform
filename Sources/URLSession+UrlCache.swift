@@ -160,21 +160,20 @@ private extension CachedURLResponse {
         guard
             let cachedHTTPResponse = self.response as? HTTPURLResponse,
             let targetHTTPResponse = response as? HTTPURLResponse,
-            let cachedResponseEtag = cachedHTTPResponse.getETagFromHeaders(),
-            let targetResponseEtag = targetHTTPResponse.getETagFromHeaders()
+            let cachedResponseEtag = cachedHTTPResponse.value(forHeaderField: "ETag"),
+            let targetResponseEtag = targetHTTPResponse.value(forHeaderField: "ETag")
         else { return false }
         return cachedResponseEtag == targetResponseEtag
     }
 }
 
 private extension HTTPURLResponse {
-    func getETagFromHeaders() -> String? {
-        guard let eTagKey = allHeaderFields.keys.first(where: { (key) -> Bool in
+    // HTTP Headers are case-insesitive
+    func value(forHeaderField field: String) -> String? {
+        let httpHeaderField = allHeaderFields.first { (key, value) -> Bool in
             guard let keyAsString = key as? String else { return false }
-            return keyAsString.lowercased() == "etag"
-        }) else {
-            return nil
+            return field.caseInsensitiveCompare(keyAsString) == .orderedSame
         }
-        return allHeaderFields[eTagKey] as? String
+        return httpHeaderField?.value as? String
     }
 }
