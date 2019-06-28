@@ -40,7 +40,9 @@ internal class FlowkeyURLCache: URLCachePrototype {
             return
         }
 
-        guard let rootCachesDir = FlowkeyURLCache.platformSpecificCachesDirectory else { return }
+        guard let rootCachesDir = FlowkeyURLCache.platformSpecificCachesDirectory else {
+            return assertionFailure("Could not find caches dir.")
+        }
         let cacheName = "com.flowkey.urlcache" // Avoid colision with any other file caches
         let cacheDirectory = rootCachesDir.appendingPathComponent(cacheName, isDirectory: true)
         try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
@@ -169,9 +171,8 @@ internal class URLDiskCache {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
             let data = try encoder.encode(self.cachedEntries)
-            _ = FileManager.default.createFile(atPath: dataFile.path,
-                                               contents: data,
-                                               attributes: nil)
+            let saved = FileManager.default.createFile(atPath: dataFile.path, contents: data, attributes: nil)
+            guard saved else { return assertionFailure("Couldn't write to \(dataFile.path)") }
         } catch {
             assertionFailure("Writing JSON Cache data to file failed: \(error)")
         }
@@ -218,7 +219,6 @@ internal class URLDiskCache {
 
         let directory = getDirectory(for: type)
         let file = directory.appendingPathComponent(filename)
-
 
         if ensureExists {
             let validFileExists = FileManager.default.isReadableFile(atPath: file.path)
