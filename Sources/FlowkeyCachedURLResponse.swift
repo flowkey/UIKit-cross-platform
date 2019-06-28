@@ -9,7 +9,7 @@
 import Foundation
 
 #if os(Android)
-// The `Foundation.CachedURLResponse` cannot be overridden, as the initializers throw `NSUnimplement` errors.
+// `Foundation.CachedURLResponse` cannot be overridden, as the initializers throw `NSUnimplement` errors.
 public typealias CachedURLResponse = FlowkeyCachedURLResponse
 #endif
 
