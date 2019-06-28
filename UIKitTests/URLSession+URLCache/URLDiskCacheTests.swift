@@ -1,5 +1,5 @@
 //
-//  CacheStoreTests.swift
+//  URLDiskCacheTests.swift
 //  UIKitTests
 //
 //  Created by Chetan Agarwal on 26/06/2019.
@@ -9,10 +9,10 @@
 import XCTest
 @testable import UIKit
 
-class CacheStoreTests: XCTestCase {
+class URLDiskCacheTests: XCTestCase {
 
     var directory: URL!
-    var store: CacheStore!
+    var cache: URLDiskCache!
     var fileManager: FileManager!
     var urlForTesting: URL!
 
@@ -24,20 +24,20 @@ class CacheStoreTests: XCTestCase {
             = URL(fileURLWithPath: NSTemporaryDirectory())
                 .appendingPathComponent("cache-store-tests")
         
-        store = CacheStore(at: temporaryDirctory)
+        cache = URLDiskCache(capacity: 100000, at: temporaryDirctory)
         directory = temporaryDirctory
         urlForTesting = URL(string: "http://fake.url")!
     }
 
     override func tearDown() {
-        try? store.removeAll()
-        store = nil
+        try? cache.removeAll()
+        cache = nil
         directory = nil
         fileManager = nil
         urlForTesting = nil
     }
 
-    func testStore_WhenInitialized_CreatesSubDirectories() {
+    func testCache_WhenInitialized_CreatesSubDirectories() {
         let responsesPath = directory.appendingPathComponent("fsResponses").path
         XCTAssertTrue(fileManager.fileExists(atPath: responsesPath))
 
@@ -45,46 +45,47 @@ class CacheStoreTests: XCTestCase {
         XCTAssertTrue(fileManager.fileExists(atPath: dataPath))
     }
 
-    func testStore_SavesEntry() {
-        XCTAssertEqual(store.cachedEntries.count, 0)
+    func testCache_SavesEntry() {
+        XCTAssertEqual(cache.cachedEntries.count, 0)
         let data = getTestData(url: urlForTesting)
-        store.save(entry: data.0, cachedResponse: data.1!)
-        XCTAssertEqual(store.cachedEntries.count, 1)
-        let entry = store.cachedEntries.first!
+        cache.storeCachedResponse(data.1!, for: data.0)
+        XCTAssertEqual(cache.cachedEntries.count, 1)
+        let entry = cache.cachedEntries.first!
 
         XCTAssertEqual(entry.requestKey, urlForTesting.absoluteString)
         XCTAssertNotNil(entry.uuid)
     }
 
-    func testStore_ReturnsPreviouslyCachesResponse() {
+    func testCache_ReturnsPreviouslyCachedResponse() {
         let data = getTestData(url: urlForTesting)
-        store.save(entry: data.0, cachedResponse: data.1!)
-        XCTAssertEqual(store.cachedEntries.count, 1)
+        cache.storeCachedResponse(data.1!, for: data.0)
+        XCTAssertEqual(cache.cachedEntries.count, 1)
 
         let entryThatShouldNOTBeFound = getTestData(url: URL(string: "http://notsaved.url")!).0
-        XCTAssertNil(store.find(entry: entryThatShouldNOTBeFound))
+        XCTAssertNil(cache.getCachedResponse(for: entryThatShouldNOTBeFound))
 
         let entryThatShouldBeFound = getTestData(url: urlForTesting).0
-        let cachedResponseFromStore = store.find(entry: entryThatShouldBeFound)
+        let cachedResponse = cache.getCachedResponse(for: entryThatShouldBeFound)
 
-        let expectedResponse = data.1
-        XCTAssertNotNil(cachedResponseFromStore)
-        XCTAssertEqual(cachedResponseFromStore?.response.url, expectedResponse?.response.url)
-        XCTAssertEqual(cachedResponseFromStore?.data, cachedResponseFromStore?.data)
+        XCTAssertNotNil(cachedResponse)
+
+        let saveResponse = data.1!
+        XCTAssertEqual(cachedResponse?.response.url, saveResponse.response.url)
+        XCTAssertEqual(cachedResponse?.data, saveResponse.data)
     }
 
-    func testStore_CanLoadCachedEntriesFromPreviouslySavedJsonFile() {
+    func testCache_CanLoadCachedEntriesFromPreviouslySavedJsonFile() {
         for i in 1...5 {
             let testUrl = URL(string: "http://fake\(i).url")!
             let data = getTestData(url: testUrl)
-            store.save(entry: data.0, cachedResponse: data.1!)
+            cache.storeCachedResponse(data.1!, for: data.0)
         }
-        XCTAssertEqual(store.cachedEntries.count, 5)
+        XCTAssertEqual(cache.cachedEntries.count, 5)
         // There should be a json file created now
         // Creating another store instance should read the same json file
-        let anotherStoreInstance = CacheStore(at: directory)
+        let anotherCacheInstanceAtSameLocation = URLDiskCache(capacity: 100000, at: directory)
         
-        XCTAssertEqual(anotherStoreInstance.cachedEntries.count, 5)
+        XCTAssertEqual(anotherCacheInstanceAtSameLocation.cachedEntries.count, 5)
     }
 
     // MARK: Utility

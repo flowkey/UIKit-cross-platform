@@ -22,135 +22,56 @@ internal class FlowkeyURLCache: URLCachePrototype {
     static var shared: URLCachePrototype
         = FlowkeyURLCache(memoryCapacity: 0, diskCapacity: 1024 * 1024 * 50, diskPath: nil)
 
-    private var diskCache: DiskCache?
+    private var diskCache: URLDiskCache?
 
     required init(memoryCapacity: Int, diskCapacity: Int, diskPath path: String?) {
         if memoryCapacity > 0 {
             assertionFailure("Memory cache is not supported yet. This is a disk only cache.")
         }
+        initDiskCache(capacity: diskCapacity, path: path)
+    }
 
-        if diskCapacity > 0 {
-            self.diskCache = DiskCache(capacity: diskCapacity, path: path)
+    private func initDiskCache(capacity: Int, path: String?) {
+        guard capacity > 0 else { return }
+
+        if let path = path {
+            let cacheDirectory = URL(fileURLWithPath: path)
+            self.diskCache = URLDiskCache(capacity: capacity, at: cacheDirectory)
+            return
         }
+
+        guard let rootCachesDir = FlowkeyURLCache.platformSpecificCachesDirectory else { return }
+        let cacheName = "com.flowkey.urlcache" // Avoid colision with any other file caches
+        let cacheDirectory = rootCachesDir.appendingPathComponent(cacheName, isDirectory: true)
+        try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
+        self.diskCache = URLDiskCache(capacity: capacity, at: cacheDirectory)
     }
 
     func cachedResponse(for request: URLRequest) -> CachedURLResponse? {
-        return diskCache?.cachedResponse(for: request)
+        guard let entry = CacheEntry(for: request) else { return nil }
+        return diskCache?.getCachedResponse(for: entry)
     }
 
     func storeCachedResponse(_ cachedResponse: CachedURLResponse, for request: URLRequest) {
-        diskCache?.storeCachedResponse(cachedResponse, for: request)
-    }
-}
-
-extension FlowkeyURLCache {
-
-    class DiskCache {
-
-        let capacity: Int
-        let cacheDirectory: URL
-        let store: CacheStore
-
-        init(capacity: Int, path: String?) {
-            self.capacity = capacity
-            if let path = path {
-                self.cacheDirectory = URL(fileURLWithPath: path)
-            } else {
-                let caches = DiskCache.platformSpecificCachesDirectory
-                let cacheName = "com.flowkey.urlcache" // Avoid colision with any other file caches
-                let cacheDirectory = caches.appendingPathComponent(cacheName, isDirectory: true)
-                try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
-                self.cacheDirectory = cacheDirectory
-            }
-            self.store = CacheStore(at: self.cacheDirectory)
-        }
-
-        func cachedResponse(for request: URLRequest) -> CachedURLResponse? {
-            guard let entry = CacheEntry(for: request) else { return nil }
-            return store.find(entry: entry)
-        }
-
-        func storeCachedResponse(_ cachedResponse: CachedURLResponse, for request: URLRequest) {
-            guard let entry = CacheEntry(for: request, saving: cachedResponse) else { return }
-            store.save(entry: entry, cachedResponse: cachedResponse)
-        }
-
-        private func getResponseDataFile(for url: URL) -> URL {
-            let cacheFile = cacheDirectory.appendingPathComponent(url.lastPathComponent)
-            return cacheFile.deletingPathExtension().appendingPathExtension("response")
-        }
-
-        static var platformSpecificCachesDirectory: URL {
-            #if os(Android)
-            return AndroidFileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-            #elseif os(macOS)
-            // On MacOS the caches directory is shared by all apps. Ex: `~/Library/Caches`
-            // It's recommened to create a sub-directory derived from bundle identifier
-            // Ex: `~/Library/Caches/com.flowkey.MacTestApp`
-            let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-            guard let dirForBundle = Bundle.directoryNameFromBundleIdentifier else { return caches }
-            let cachesDirForBundle = caches.appendingPathComponent(dirForBundle, isDirectory: true)
-            try? FileManager.default.createDirectory(at: cachesDirForBundle, withIntermediateDirectories: true)
-            return cachesDirForBundle
-            #else
-            return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-            #endif
-        }
-    }
-}
-
-#if !os(Android)
-extension Bundle {
-    static var directoryNameFromBundleIdentifier: String? {
-        guard
-            let identifier = Bundle.main.bundleIdentifier,
-            let regex = try? NSRegularExpression(pattern: "[^a-zA-Z0-9_.]+", options: [])
-            else {
-                return nil
-        }
-        return regex.stringByReplacingMatches(in: identifier,
-                                              options: [],
-                                              range: NSRange(location: 0, length: identifier.count),
-                                              withTemplate: "_")
-    }
-}
-#endif
-
-class CacheEntry: Hashable, Codable {
-    var requestKey: String
-
-    var id: Int?
-    var timeStamp: Date?
-    var storagePolicy: UInt?
-
-    var uuid: String?
-
-    init?(for request: URLRequest) {
-        guard let url = request.url else { return nil }
-        self.requestKey = url.absoluteString
+        guard let entry = CacheEntry(for: request, saving: cachedResponse) else { return }
+        diskCache?.storeCachedResponse(cachedResponse, for: entry)
     }
 
-    convenience init?(for request: URLRequest, saving response: CachedURLResponse) {
-        self.init(for: request)
-        self.storagePolicy = response.storagePolicy.rawValue
-        self.timeStamp = Date()
-    }
-
-    #if !os(Android)
-    // Hasher in not available in Foundation yet
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(self.requestKey)
-    }
-    #else
-    var hashValue: Int {
-        return requestKey.hashValue
-    }
-    #endif
-
-
-
-    static func == (lhs: CacheEntry, rhs: CacheEntry) -> Bool {
-        return lhs.requestKey == rhs.requestKey
+    static var platformSpecificCachesDirectory: URL? {
+        #if os(Android)
+        return AndroidFileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
+        #elseif os(macOS)
+        // On MacOS the caches directory is shared by all apps. Ex: `~/Library/Caches`
+        // It's recommened to create a sub-directory derived from bundle identifier
+        // Ex: `~/Library/Caches/com.flowkey.MacTestApp`
+        guard let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { return nil }
+        guard let dirForBundle = Bundle.directoryNameFromBundleIdentifier else { return caches }
+        let cachesDirForBundle = caches.appendingPathComponent(dirForBundle, isDirectory: true)
+        try? FileManager.default.createDirectory(at: cachesDirForBundle, withIntermediateDirectories: true)
+        return cachesDirForBundle
+        #else
+        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
+        #endif
     }
 }
 
@@ -158,19 +79,21 @@ class CacheEntry: Hashable, Codable {
  Mimics behaviour of iOS URLCache - which uses an SQLite database to save similar data.
  This implementation uses json but can be replaced in the future to use SQLite if needed.
  **/
-class CacheStore {
+internal class URLDiskCache {
 
-    enum CachesFileType {
-        case response
-        case data
-    }
+    let capacity: Int
+    let cacheDirectory: URL
 
     private (set) var cachedEntries: Set<CacheEntry>
     private var dataFile: URL
     private var responsesDirectory: URL
     private var responseDataFilesDirectory: URL
 
-    init(at url: URL) {
+    init(capacity: Int, at url: URL) {
+
+        self.capacity = capacity
+        self.cacheDirectory = url
+
         self.dataFile = url.appendingPathComponent("Cache.db.json", isDirectory: false)
         self.responsesDirectory = url.appendingPathComponent("fsResponses", isDirectory: true)
         self.responseDataFilesDirectory = url.appendingPathComponent("fsData", isDirectory: true)
@@ -182,16 +105,7 @@ class CacheStore {
         loadSavedCachedEntriesFromFile()
     }
 
-    func save(entry: CacheEntry, cachedResponse: CachedURLResponse) {
-        entry.id = cachedEntries.count + 1
-        entry.uuid = UUID().uuidString
-        cachedEntries.insert(entry)
-        saveResponseToFile(entry: entry, response: cachedResponse.response)
-        saveDataToFile(entry: entry, data: cachedResponse.data)
-        saveUpdatedEntriesToFile()
-    }
-
-    func find(entry: CacheEntry) -> CachedURLResponse? {
+    func getCachedResponse(for entry: CacheEntry) -> CachedURLResponse? {
         guard let cachedEntry = findPreviouslyCachedEntry(for: entry) else { return nil }
 
         guard
@@ -202,6 +116,15 @@ class CacheStore {
                 return nil
         }
         return CachedURLResponse(response: response, data: data)
+    }
+
+    func storeCachedResponse(_ cachedResponse: CachedURLResponse, for entry: CacheEntry) {
+        entry.id = cachedEntries.count + 1
+        entry.uuid = UUID().uuidString
+        cachedEntries.insert(entry)
+        saveResponseToFile(entry: entry, response: cachedResponse.response)
+        saveDataToFile(entry: entry, data: cachedResponse.data)
+        saveUpdatedEntriesToFile()
     }
 
     func removeAll() throws {
@@ -217,6 +140,11 @@ class CacheStore {
     }
 
     // MARK: File operations
+
+    private enum CachesFileType {
+        case response
+        case data
+    }
 
     private func hasPreviouslySavedData() -> Bool {
         return FileManager.default.isReadableFile(atPath: dataFile.path)
@@ -298,5 +226,58 @@ class CacheStore {
         } else {
             return file
         }
+    }
+}
+
+#if !os(Android)
+extension Bundle {
+    static var directoryNameFromBundleIdentifier: String? {
+        guard
+            let identifier = Bundle.main.bundleIdentifier,
+            let regex = try? NSRegularExpression(pattern: "[^a-zA-Z0-9_.]+", options: [])
+            else {
+                return nil
+        }
+        return regex.stringByReplacingMatches(in: identifier,
+                                              options: [],
+                                              range: NSRange(location: 0, length: identifier.count),
+                                              withTemplate: "_")
+    }
+}
+#endif
+
+class CacheEntry: Hashable, Codable {
+    var requestKey: String
+
+    var id: Int?
+    var timeStamp: Date?
+    var storagePolicy: UInt?
+
+    var uuid: String?
+
+    init?(for request: URLRequest) {
+        guard let url = request.url else { return nil }
+        self.requestKey = url.absoluteString
+    }
+
+    convenience init?(for request: URLRequest, saving response: CachedURLResponse) {
+        self.init(for: request)
+        self.storagePolicy = response.storagePolicy.rawValue
+        self.timeStamp = Date()
+    }
+
+    #if !os(Android)
+    // Hasher in not available in Foundation yet
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.requestKey)
+    }
+    #else
+    var hashValue: Int {
+        return requestKey.hashValue
+    }
+    #endif
+
+    static func == (lhs: CacheEntry, rhs: CacheEntry) -> Bool {
+        return lhs.requestKey == rhs.requestKey
     }
 }
