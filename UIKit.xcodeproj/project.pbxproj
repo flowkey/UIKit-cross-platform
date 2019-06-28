@@ -141,7 +141,7 @@
 		61C9D3B921B052750012018B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B821B052750012018B /* Notification.swift */; };
 		61C9D3BB21B052B30012018B /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3BA21B052B30012018B /* NotificationCenter.swift */; };
 		61D65F9B22AAAC0700F970FC /* FileManager+Android.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D65F9A22AAAC0700F970FC /* FileManager+Android.swift */; };
-		61D65FA222AAB71100F970FC /* File+Android.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D65FA122AAB71100F970FC /* File+Android.swift.swift */; };
+		61D65FA222AAB71100F970FC /* JavaFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D65FA122AAB71100F970FC /* JavaFile.swift */; };
 		61EE7A1821B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */; };
 		61EE7A2E21B18940003A5FFD /* UIApplication+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EE7A2D21B18940003A5FFD /* UIApplication+Notifications.swift */; };
 		8318D27B1F0695080029816A /* UIControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D27A1F0695080029816A /* UIControl.swift */; };
@@ -439,7 +439,7 @@
 		61C9D3B821B052750012018B /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		61C9D3BA21B052B30012018B /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
 		61D65F9A22AAAC0700F970FC /* FileManager+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Android.swift"; sourceTree = "<group>"; };
-		61D65FA122AAB71100F970FC /* File+Android.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "File+Android.swift.swift"; sourceTree = "<group>"; };
+		61D65FA122AAB71100F970FC /* JavaFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JavaFile.swift; sourceTree = "<group>"; };
 		61EE7A1721B15BC9003A5FFD /* UIApplication+NSNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+NSNotificationTests.swift"; sourceTree = "<group>"; };
 		61EE7A2D21B18940003A5FFD /* UIApplication+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Notifications.swift"; sourceTree = "<group>"; };
 		83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VideoTexture+Mac.swift"; sourceTree = "<group>"; };
@@ -848,7 +848,7 @@
 			isa = PBXGroup;
 			children = (
 				61D65F9A22AAAC0700F970FC /* FileManager+Android.swift */,
-				61D65FA122AAB71100F970FC /* File+Android.swift.swift */,
+				61D65FA122AAB71100F970FC /* JavaFile.swift */,
 				6168C1D422AAB96700D6F962 /* AndroidContext.swift */,
 			);
 			name = "Android+FileManager";
@@ -1193,7 +1193,7 @@
 				5C6AB71C1ED3BECD006F90AC /* UIImage.swift in Sources */,
 				5C664CD81FA0E640008F41D6 /* ShaderProgram.swift in Sources */,
 				5C915956218B6C9B00AFEB7E /* UIScreen+render.swift in Sources */,
-				61D65FA222AAB71100F970FC /* File+Android.swift.swift in Sources */,
+				61D65FA222AAB71100F970FC /* JavaFile.swift in Sources */,
 				61C9D3B921B052750012018B /* Notification.swift in Sources */,
 				5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */,
 				5C6AB7191ED3BECD006F90AC /* CALayer.swift in Sources */,

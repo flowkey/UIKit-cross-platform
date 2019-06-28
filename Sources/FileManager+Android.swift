@@ -31,7 +31,7 @@ public class AndroidFileManager: FileManager {
     func getDirectory(ofType type: FileManager.SearchPathDirectory) throws -> URL? {
         let context = try AndroidContext.getContext()
 
-        let file: File?
+        let file: JavaFile?
 
         switch type {
         case .cachesDirectory:

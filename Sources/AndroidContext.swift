@@ -24,15 +24,15 @@ class AndroidContext: JNIObject {
         )
     }
 
-    func getCacheDir() throws ->  File {
-        return try File(
-            jni.call("getCacheDir", on: self.instance, returningObjectType: File.className)
+    func getCacheDir() throws ->  JavaFile {
+        return try JavaFile(
+            jni.call("getCacheDir", on: self.instance, returningObjectType: JavaFile.className)
         )
     }
 
-    func getFilesDir() throws ->  File {
-        return try File(
-            jni.call("getFilesDir", on: self.instance, returningObjectType: File.className)
+    func getFilesDir() throws ->  JavaFile {
+        return try JavaFile(
+            jni.call("getFilesDir", on: self.instance, returningObjectType: JavaFile.className)
         )
     }
 }

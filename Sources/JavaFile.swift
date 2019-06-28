@@ -1,5 +1,5 @@
 //
-//  File+Android.swift.swift
+//  JavaFile.swift
 //  UIKit
 //
 //  Created by Chetan Agarwal on 07/06/2019.
@@ -14,12 +14,12 @@ import JNI
 /**
  https://developer.android.com/reference/java/io/File
  */
-class File: JNIObject {
+class JavaFile: JNIObject {
 
     static let className = "java.io.File"
 
     convenience init(path: String) throws {
-        try self.init(File.className, arguments: [path])
+        try self.init(JavaFile.className, arguments: [path])
     }
 
     func getAbsolutePath() throws ->  String {
