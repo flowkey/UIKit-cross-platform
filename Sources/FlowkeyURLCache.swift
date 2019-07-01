@@ -88,23 +88,25 @@ internal class URLDiskCache {
 
     private (set) var cachedEntries: Set<CacheEntry>
     private var dataFile: URL
-    private var responsesDirectory: URL
-    private var responseDataFilesDirectory: URL
+    private var responsesDirectory: URL!
+    private var responseDataFilesDirectory: URL!
 
     init(capacity: Int, at url: URL) {
 
         self.capacity = capacity
         self.cacheDirectory = url
-
         self.dataFile = url.appendingPathComponent("Cache.db.json", isDirectory: false)
-        self.responsesDirectory = url.appendingPathComponent("fsResponses", isDirectory: true)
-        self.responseDataFilesDirectory = url.appendingPathComponent("fsData", isDirectory: true)
+        self.cachedEntries = Set<CacheEntry>()
+        self.createRequiredSubDirectories()
+        loadSavedCachedEntriesFromFile()
+    }
+
+    fileprivate func createRequiredSubDirectories() {
+        self.responsesDirectory = cacheDirectory.appendingPathComponent("fsResponses", isDirectory: true)
+        self.responseDataFilesDirectory = cacheDirectory.appendingPathComponent("fsData", isDirectory: true)
 
         try? FileManager.default.createDirectory(at: self.responsesDirectory, withIntermediateDirectories: true)
         try? FileManager.default.createDirectory(at: self.responseDataFilesDirectory, withIntermediateDirectories: true)
-
-        self.cachedEntries = Set<CacheEntry>()
-        loadSavedCachedEntriesFromFile()
     }
 
     func getCachedResponse(for entry: CacheEntry) -> CachedURLResponse? {
@@ -126,6 +128,7 @@ internal class URLDiskCache {
         cachedEntries.insert(entry)
         saveResponseToFile(entry: entry, response: cachedResponse.response)
         saveDataToFile(entry: entry, data: cachedResponse.data)
+        createRequiredSubDirectories()
         saveUpdatedEntriesToFile()
     }
 
@@ -134,6 +137,7 @@ internal class URLDiskCache {
         try FileManager.default.removeItem(at: responsesDirectory)
         try FileManager.default.removeItem(at: responseDataFilesDirectory)
         self.cachedEntries.removeAll()
+        createRequiredSubDirectories()
         loadSavedCachedEntriesFromFile()
     }
 
