@@ -18,20 +18,17 @@ extension URLSessionWrapperWithCustomURLCache {
                       onComplete completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
             let taskToRegister = RegisteredTask(task: task, completionHandler: completionHandler)
             registeredTasks[task.taskIdentifier] = taskToRegister
-            print("added task \(task.taskIdentifier)")
         }
 
         func received(data: Data, for task: URLSessionTask) {
             guard let pendingTask = find(task: task) else  { return }
             if pendingTask.data == nil { pendingTask.data = Data() }
             pendingTask.data.append(data)
-            print("received data for task \(task.taskIdentifier), \(data.count), total: \(pendingTask.data.count)")
         }
 
         func received(cachedResponse: CachedURLResponse, for task: URLSessionTask) {
             guard let pendingTask = find(task: task) else  { return }
             pendingTask.cachedResponse = cachedResponse
-            print("received cached response for task \(task.taskIdentifier)")
         }
 
         func completeAndRemove(task: URLSessionTask, with response: URLResponse?, or error: Error?, saveToCache: (URLSessionTask, Data?) -> Void) {
@@ -62,7 +59,6 @@ extension URLSessionWrapperWithCustomURLCache {
 
         private func remove(task: URLSessionTask) {
             registeredTasks[task.taskIdentifier] = nil
-            print("removed task \(task.taskIdentifier), remaining \(registeredTasks.count)")
         }
 
         class RegisteredTask {

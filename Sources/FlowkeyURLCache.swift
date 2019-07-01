@@ -158,7 +158,6 @@ internal class URLDiskCache {
             let data = try Data(contentsOf: dataFile)
             let decoder = JSONDecoder()
             let entries = try decoder.decode(Set<CacheEntry>.self, from: data)
-            print(entries.count)
             self.cachedEntries = self.cachedEntries.union(entries)
         } catch {
             // TODO: should delete the JSON and other files?
