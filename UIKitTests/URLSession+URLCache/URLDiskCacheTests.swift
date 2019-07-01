@@ -85,6 +85,19 @@ class URLDiskCacheTests: XCTestCase {
         XCTAssertEqual(anotherCacheInstanceAtSameLocation.cachedEntries.count, 5)
     }
 
+    func testCache_RenovesAllEntries() {
+        for i in 1...5 {
+            let testUrl = URL(string: "http://fake\(i).url")!
+            let testData = createTestEntryAndResponse(for: testUrl)
+            cache.storeCachedResponse(testData.response, for: testData.entry)
+        }
+        XCTAssertEqual(cache.cachedEntries.count, 5)
+
+        try? cache.removeAll()
+
+        XCTAssertEqual(cache.cachedEntries.count, 0)
+    }
+
     // MARK: Utility
 
     func createTestEntry(for url: URL) -> CacheEntry {
