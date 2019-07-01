@@ -16,7 +16,6 @@ class URLDiskCacheTests: XCTestCase {
     var fileManager: FileManager!
     var urlForTesting: URL!
 
-
     override func setUp() {
         fileManager = FileManager.default
 
@@ -47,8 +46,8 @@ class URLDiskCacheTests: XCTestCase {
 
     func testCache_SavesEntry() {
         XCTAssertEqual(cache.cachedEntries.count, 0)
-        let data = getTestData(url: urlForTesting)
-        cache.storeCachedResponse(data.1!, for: data.0)
+        let testData = createTestEntryAndResponse(for: urlForTesting)
+        cache.storeCachedResponse(testData.response, for: testData.entry)
         XCTAssertEqual(cache.cachedEntries.count, 1)
         let entry = cache.cachedEntries.first!
 
@@ -57,30 +56,28 @@ class URLDiskCacheTests: XCTestCase {
     }
 
     func testCache_ReturnsPreviouslyCachedResponse() {
-        let data = getTestData(url: urlForTesting)
-        cache.storeCachedResponse(data.1!, for: data.0)
+        let testData = createTestEntryAndResponse(for: urlForTesting)
+        cache.storeCachedResponse(testData.response, for: testData.entry)
         XCTAssertEqual(cache.cachedEntries.count, 1)
 
-        let entryThatShouldNOTBeFound = getTestData(url: URL(string: "http://notsaved.url")!).0
-        XCTAssertNil(cache.getCachedResponse(for: entryThatShouldNOTBeFound))
-
-        let entryThatShouldBeFound = getTestData(url: urlForTesting).0
+        let entryThatShouldBeFound = createTestEntry(for: urlForTesting)
         let cachedResponse = cache.getCachedResponse(for: entryThatShouldBeFound)
+        let cachedResponseToBeSaved = testData.response
 
         XCTAssertNotNil(cachedResponse)
-
-        let saveResponse = data.1!
-        XCTAssertEqual(cachedResponse?.response.url, saveResponse.response.url)
-        XCTAssertEqual(cachedResponse?.data, saveResponse.data)
+        
+        XCTAssertEqual(cachedResponse?.response.url,cachedResponseToBeSaved.response.url)
+        XCTAssertEqual(cachedResponse?.data, cachedResponseToBeSaved.data)
     }
 
     func testCache_CanLoadCachedEntriesFromPreviouslySavedJsonFile() {
         for i in 1...5 {
             let testUrl = URL(string: "http://fake\(i).url")!
-            let data = getTestData(url: testUrl)
-            cache.storeCachedResponse(data.1!, for: data.0)
+            let testData = createTestEntryAndResponse(for: testUrl)
+            cache.storeCachedResponse(testData.response, for: testData.entry)
         }
         XCTAssertEqual(cache.cachedEntries.count, 5)
+
         // There should be a json file created now
         // Creating another store instance should read the same json file
         let anotherCacheInstanceAtSameLocation = URLDiskCache(capacity: 100000, at: directory)
@@ -90,21 +87,21 @@ class URLDiskCacheTests: XCTestCase {
 
     // MARK: Utility
 
-    func getTestData(url: URL, withResponse: Bool = true) -> (CacheEntry, CachedURLResponse?) {
+    func createTestEntry(for url: URL) -> CacheEntry {
         let request = URLRequest(url: url)
-        let cacheEntry = CacheEntry(for: request)!
-        guard withResponse else {
-            return (cacheEntry, nil)
-        }
+        return CacheEntry(for: request)!
+    }
 
+    func createTestEntryAndResponse(for url: URL) -> (entry: CacheEntry, response: CachedURLResponse) {
         let data = "this is a test".data(using: .utf8)!
         let response = URLResponse(url: url,
                                    mimeType: "text/plain",
                                    expectedContentLength: data.count,
                                    textEncodingName: String.Encoding.utf8.description)
 
-        let fakeCachedURLResponse = CachedURLResponse(response: response, data: data)
-        return (cacheEntry, fakeCachedURLResponse)
+        let cachedResponse = CachedURLResponse(response: response, data: data)
+        let request = URLRequest(url: url)
+        let cacheEntry = CacheEntry(for: request, saving: cachedResponse)!
+        return (cacheEntry, cachedResponse)
     }
-
 }
