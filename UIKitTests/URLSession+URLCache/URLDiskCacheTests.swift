@@ -45,12 +45,13 @@ class URLDiskCacheTests: XCTestCase {
     }
 
     func testCache_SavesEntry() {
-        XCTAssertEqual(cache.cachedEntries.count, 0)
+        assertCacheIsEmptyAndHasNoFiles()
         let testData = createTestEntryAndResponse(for: urlForTesting)
-        cache.storeCachedResponse(testData.response, for: testData.entry)
-        XCTAssertEqual(cache.cachedEntries.count, 1)
-        let entry = cache.cachedEntries.first!
 
+        cache.storeCachedResponse(testData.response, for: testData.entry)
+
+        assertCountOfEntriesAndFilesIs(1)
+        let entry = cache.cachedEntries.first!
         XCTAssertEqual(entry.requestKey, urlForTesting.absoluteString)
         XCTAssertNotNil(entry.uuid)
     }
@@ -58,14 +59,13 @@ class URLDiskCacheTests: XCTestCase {
     func testCache_ReturnsPreviouslyCachedResponse() {
         let testData = createTestEntryAndResponse(for: urlForTesting)
         cache.storeCachedResponse(testData.response, for: testData.entry)
-        XCTAssertEqual(cache.cachedEntries.count, 1)
+        assertCountOfEntriesAndFilesIs(1)
 
         let entryThatShouldBeFound = createTestEntry(for: urlForTesting)
         let cachedResponse = cache.getCachedResponse(for: entryThatShouldBeFound)
-        let cachedResponseToBeSaved = testData.response
 
+        let cachedResponseToBeSaved = testData.response
         XCTAssertNotNil(cachedResponse)
-        
         XCTAssertEqual(cachedResponse?.response.url,cachedResponseToBeSaved.response.url)
         XCTAssertEqual(cachedResponse?.data, cachedResponseToBeSaved.data)
     }
@@ -76,7 +76,7 @@ class URLDiskCacheTests: XCTestCase {
             let testData = createTestEntryAndResponse(for: testUrl)
             cache.storeCachedResponse(testData.response, for: testData.entry)
         }
-        XCTAssertEqual(cache.cachedEntries.count, 5)
+        assertCountOfEntriesAndFilesIs(5)
 
         // There should be a json file created now
         // Creating another store instance should read the same json file
@@ -91,25 +91,16 @@ class URLDiskCacheTests: XCTestCase {
             let testData = createTestEntryAndResponse(for: testUrl)
             cache.storeCachedResponse(testData.response, for: testData.entry)
         }
+        assertCountOfEntriesAndFilesIs(5)
         let urlToDelete = URL(string: "http://fake3.url")!
         let entryToDelete = createTestEntry(for: urlToDelete)
-
-        XCTAssertEqual(cache.cachedEntries.count, 5)
         XCTAssertTrue(cache.cachedEntries.contains(entryToDelete))
-
 
         cache.removeCachedResponse(for: entryToDelete)
 
-        XCTAssertEqual(cache.cachedEntries.count, 4)
         XCTAssertFalse(cache.cachedEntries.contains(entryToDelete))
+        assertCountOfEntriesAndFilesIs(4)
 
-        let responsesPath = directory.appendingPathComponent("fsResponses").path
-        let dataPath = directory.appendingPathComponent("fsData").path
-
-        let contentOfResponsesDir = try! fileManager.contentsOfDirectory(atPath: responsesPath)
-        let contentOfDataDir = try! fileManager.contentsOfDirectory(atPath: dataPath)
-        XCTAssertEqual(contentOfResponsesDir.count, 4)
-        XCTAssertEqual(contentOfDataDir.count, 4)
     }
 
     func testCache_RemovesAllEntriesAndFiles() {
@@ -118,17 +109,17 @@ class URLDiskCacheTests: XCTestCase {
             let testData = createTestEntryAndResponse(for: testUrl)
             cache.storeCachedResponse(testData.response, for: testData.entry)
         }
-        XCTAssertEqual(cache.cachedEntries.count, 5)
+        assertCountOfEntriesAndFilesIs(5)
 
         try? cache.removeAll()
 
-        verifyCacheAndDirectoriesAreEmpty()
+        assertCacheIsEmptyAndHasNoFiles()
     }
 
     func testCache_RemovesEntryWhenResourceFilesAreDeleted() {
         let testData = createTestEntryAndResponse(for: urlForTesting)
         cache.storeCachedResponse(testData.response, for: testData.entry)
-        XCTAssertEqual(cache.cachedEntries.count, 1)
+        assertCountOfEntriesAndFilesIs(1)
 
         // delete a resource file
         let entry = cache.cachedEntries.first!
@@ -138,21 +129,25 @@ class URLDiskCacheTests: XCTestCase {
         let cachedResponse = cache.getCachedResponse(for: testData.entry)
         XCTAssertNil(cachedResponse)
 
-        verifyCacheAndDirectoriesAreEmpty()
+        assertCacheIsEmptyAndHasNoFiles()
     }
 
     // MARK: Utility
 
-    func verifyCacheAndDirectoriesAreEmpty() {
-        XCTAssertEqual(cache.cachedEntries.count, 0)
+    func assertCacheIsEmptyAndHasNoFiles() {
+        assertCountOfEntriesAndFilesIs(0)
+    }
+
+    func assertCountOfEntriesAndFilesIs(_ expectedCount: Int) {
+        XCTAssertEqual(cache.cachedEntries.count, expectedCount)
 
         let responsesPath = directory.appendingPathComponent("fsResponses").path
         let dataPath = directory.appendingPathComponent("fsData").path
 
         let contentOfResponsesDir = try! fileManager.contentsOfDirectory(atPath: responsesPath)
         let contentOfDataDir = try! fileManager.contentsOfDirectory(atPath: dataPath)
-        XCTAssertTrue(contentOfResponsesDir.isEmpty)
-        XCTAssertTrue(contentOfDataDir.isEmpty)
+        XCTAssertEqual(contentOfResponsesDir.count, expectedCount)
+        XCTAssertEqual(contentOfDataDir.count, expectedCount)
     }
 
     func createTestEntry(for url: URL) -> CacheEntry {
