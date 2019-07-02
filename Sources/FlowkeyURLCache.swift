@@ -123,7 +123,7 @@ internal class URLDiskCache {
             let response = readResponseFromFile(for: cachedEntry),
             let data = readDataFromFile(for: cachedEntry)
             else {
-                // TODO: remove the cache entry and any associated files
+                removeCachedResponse(for: cachedEntry)
                 return nil
         }
         return CachedURLResponse(response: response, data: data)

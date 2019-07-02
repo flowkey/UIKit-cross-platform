@@ -122,6 +122,28 @@ class URLDiskCacheTests: XCTestCase {
 
         try? cache.removeAll()
 
+        verifyCacheAndDirectoriesAreEmpty()
+    }
+
+    func testCache_RemovesEntryWhenResourceFilesAreDeleted() {
+        let testData = createTestEntryAndResponse(for: urlForTesting)
+        cache.storeCachedResponse(testData.response, for: testData.entry)
+        XCTAssertEqual(cache.cachedEntries.count, 1)
+
+        // delete a resource file
+        let entry = cache.cachedEntries.first!
+        let pathToResponseFile = directory.appendingPathComponent("fsResponses").appendingPathComponent(entry.uuid!)
+        try! FileManager.default.removeItem(atPath: pathToResponseFile.path)
+
+        let cachedResponse = cache.getCachedResponse(for: testData.entry)
+        XCTAssertNil(cachedResponse)
+
+        verifyCacheAndDirectoriesAreEmpty()
+    }
+
+    // MARK: Utility
+
+    func verifyCacheAndDirectoriesAreEmpty() {
         XCTAssertEqual(cache.cachedEntries.count, 0)
 
         let responsesPath = directory.appendingPathComponent("fsResponses").path
@@ -132,8 +154,6 @@ class URLDiskCacheTests: XCTestCase {
         XCTAssertTrue(contentOfResponsesDir.isEmpty)
         XCTAssertTrue(contentOfDataDir.isEmpty)
     }
-
-    // MARK: Utility
 
     func createTestEntry(for url: URL) -> CacheEntry {
         let request = URLRequest(url: url)
