@@ -85,6 +85,33 @@ class URLDiskCacheTests: XCTestCase {
         XCTAssertEqual(anotherCacheInstanceAtSameLocation.cachedEntries.count, 5)
     }
 
+    func testCache_RemovesSpecifiedEntryAndRelatedFiles() {
+        for i in 1...5 {
+            let testUrl = URL(string: "http://fake\(i).url")!
+            let testData = createTestEntryAndResponse(for: testUrl)
+            cache.storeCachedResponse(testData.response, for: testData.entry)
+        }
+        let urlToDelete = URL(string: "http://fake3.url")!
+        let entryToDelete = createTestEntry(for: urlToDelete)
+
+        XCTAssertEqual(cache.cachedEntries.count, 5)
+        XCTAssertTrue(cache.cachedEntries.contains(entryToDelete))
+
+
+        cache.removeCachedResponse(for: entryToDelete)
+
+        XCTAssertEqual(cache.cachedEntries.count, 4)
+        XCTAssertFalse(cache.cachedEntries.contains(entryToDelete))
+
+        let responsesPath = directory.appendingPathComponent("fsResponses").path
+        let dataPath = directory.appendingPathComponent("fsData").path
+
+        let contentOfResponsesDir = try! fileManager.contentsOfDirectory(atPath: responsesPath)
+        let contentOfDataDir = try! fileManager.contentsOfDirectory(atPath: dataPath)
+        XCTAssertEqual(contentOfResponsesDir.count, 4)
+        XCTAssertEqual(contentOfDataDir.count, 4)
+    }
+
     func testCache_RemovesAllEntriesAndFiles() {
         for i in 1...5 {
             let testUrl = URL(string: "http://fake\(i).url")!

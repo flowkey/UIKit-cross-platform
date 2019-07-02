@@ -11,6 +11,7 @@ import Foundation
 public protocol URLCachePrototype {
     func cachedResponse(for request: URLRequest) -> CachedURLResponse?
     func storeCachedResponse(_ cachedResponse: CachedURLResponse, for request: URLRequest)
+    func removeCachedResponse(for request: URLRequest)
 }
 
 #if !os(Android)
@@ -58,6 +59,12 @@ internal class FlowkeyURLCache: URLCachePrototype {
         guard let entry = CacheEntry(for: request, saving: cachedResponse) else { return }
         diskCache?.storeCachedResponse(cachedResponse, for: entry)
     }
+
+    func removeCachedResponse(for request: URLRequest) {
+        guard let entry = CacheEntry(for: request) else { return }
+        diskCache?.removeCachedResponse(for: entry)
+    }
+
 
     static var platformSpecificCachesDirectory: URL? {
         #if os(Android)
@@ -128,8 +135,18 @@ internal class URLDiskCache {
         cachedEntries.insert(entry)
         saveResponseToFile(entry: entry, response: cachedResponse.response)
         saveDataToFile(entry: entry, data: cachedResponse.data)
-        createRequiredSubDirectories()
         saveUpdatedEntriesToFile()
+    }
+
+    func removeCachedResponse(for entry: CacheEntry) {
+        guard let cachedEntry = findPreviouslyCachedEntry(for: entry) else { return }
+        if let responseFile = getFile(ofType: .response, for: cachedEntry) {
+            try? FileManager.default.removeItem(at: responseFile)
+        }
+        if let dataFile = getFile(ofType: .data, for: cachedEntry) {
+            try? FileManager.default.removeItem(at: dataFile)
+        }
+        self.cachedEntries.remove(cachedEntry)
     }
 
     func removeAll() throws {
