@@ -130,6 +130,9 @@ internal class URLDiskCache {
     }
 
     func storeCachedResponse(_ cachedResponse: CachedURLResponse, for entry: CacheEntry) {
+        if let previousEntry = findPreviouslyCachedEntry(for: entry) {
+            removeCachedResponse(for: previousEntry)
+        }
         entry.id = cachedEntries.count + 1
         entry.uuid = UUID().uuidString
         cachedEntries.insert(entry)

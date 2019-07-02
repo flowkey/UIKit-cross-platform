@@ -114,6 +114,26 @@ class URLDiskCacheTests: XCTestCase {
         assertCacheIsEmptyAndHasNoFiles()
     }
 
+    func testCache_WhenSavingResponseForSameRequest_ReplacesEntryAndFiles() {
+        let firstTestData = createTestEntryAndResponse(for: urlForTesting)
+        cache.storeCachedResponse(firstTestData.response, for: firstTestData.entry)
+        assertCountOfEntriesAndFilesIs(1)
+        let cacheEntryBefore = cache.cachedEntries.first!
+
+        let dataToReplace = "This is a different response".data(using: .utf8)!
+        let secondTestDataForSameURL = createTestEntryAndResponse(for: urlForTesting, with: dataToReplace)
+        cache.storeCachedResponse(secondTestDataForSameURL.response, for: secondTestDataForSameURL.entry)
+
+        assertCountOfEntriesAndFilesIs(1)
+        let cacheEntryAfter = cache.cachedEntries.first!
+
+        XCTAssertEqual(cacheEntryBefore.requestKey, cacheEntryAfter.requestKey)
+        XCTAssertNotEqual(cacheEntryBefore.uuid, cacheEntryAfter.uuid)
+
+        let cachedResponse = cache.getCachedResponse(for: cacheEntryAfter)
+        XCTAssertEqual(cachedResponse?.data, dataToReplace)
+    }
+
     // MARK: Utility
 
     func assertCacheIsEmptyAndHasNoFiles() {
@@ -146,8 +166,8 @@ class URLDiskCacheTests: XCTestCase {
         return CacheEntry(for: request)!
     }
 
-    func createTestEntryAndResponse(for url: URL) -> (entry: CacheEntry, response: CachedURLResponse) {
-        let data = "this is a test".data(using: .utf8)!
+    func createTestEntryAndResponse(for url: URL, with data: Data? = nil) -> (entry: CacheEntry, response: CachedURLResponse) {
+        let data = data ?? "this is a test".data(using: .utf8)!
         let response = URLResponse(url: url,
                                    mimeType: "text/plain",
                                    expectedContentLength: data.count,
