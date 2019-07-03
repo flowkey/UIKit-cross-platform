@@ -12,6 +12,7 @@ public protocol URLCachePrototype {
     func cachedResponse(for request: URLRequest) -> CachedURLResponse?
     func storeCachedResponse(_ cachedResponse: CachedURLResponse, for request: URLRequest)
     func removeCachedResponse(for request: URLRequest)
+    func removeAllCachedResponses()
 }
 
 #if !os(Android)
@@ -65,6 +66,9 @@ internal class FlowkeyURLCache: URLCachePrototype {
         diskCache?.removeCachedResponse(for: entry)
     }
 
+    func removeAllCachedResponses() {
+        try? diskCache?.removeAll()
+    }
 
     static var platformSpecificCachesDirectory: URL? {
         #if os(Android)
