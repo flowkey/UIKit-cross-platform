@@ -99,8 +99,6 @@ internal class URLDiskCache {
 
     private (set) var cachedEntries: Set<CacheEntry>
     private var dataFile: URL
-    private var responsesDirectory: URL!
-    private var responseDataFilesDirectory: URL!
 
     init(capacity: Int, at url: URL) {
 
@@ -113,11 +111,10 @@ internal class URLDiskCache {
     }
 
     fileprivate func createRequiredSubDirectories() {
-        self.responsesDirectory = cacheDirectory.appendingPathComponent("fsResponses", isDirectory: true)
-        self.responseDataFilesDirectory = cacheDirectory.appendingPathComponent("fsData", isDirectory: true)
-
-        try? FileManager.default.createDirectory(at: self.responsesDirectory, withIntermediateDirectories: true)
-        try? FileManager.default.createDirectory(at: self.responseDataFilesDirectory, withIntermediateDirectories: true)
+        CachesFileType.allCases.forEach {
+            let targetDir = $0.getResourceLocation(base: cacheDirectory)
+            try? FileManager.default.createDirectory(at: targetDir, withIntermediateDirectories: true)
+        }
     }
 
     func getCachedResponse(for entry: CacheEntry) -> CachedURLResponse? {
@@ -158,8 +155,10 @@ internal class URLDiskCache {
 
     func removeAll() throws {
         try FileManager.default.removeItem(at: dataFile)
-        try FileManager.default.removeItem(at: responsesDirectory)
-        try FileManager.default.removeItem(at: responseDataFilesDirectory)
+        CachesFileType.allCases.forEach {
+            let targetDir = $0.getResourceLocation(base: cacheDirectory)
+            try? FileManager.default.removeItem(at: targetDir)
+        }
         self.cachedEntries.removeAll()
         createRequiredSubDirectories()
         loadSavedCachedEntriesFromFile()
@@ -170,11 +169,6 @@ internal class URLDiskCache {
     }
 
     // MARK: File operations
-
-    private enum CachesFileType {
-        case urlResponse
-        case data
-    }
 
     private func hasPreviouslySavedData() -> Bool {
         return FileManager.default.isReadableFile(atPath: dataFile.path)
@@ -229,22 +223,13 @@ internal class URLDiskCache {
         return try? Data(contentsOf: file)
     }
 
-    private func getDirectory(for type: CachesFileType) -> URL {
-        switch type {
-        case .urlResponse:
-            return responsesDirectory
-        case .data:
-            return responseDataFilesDirectory
-        }
-    }
-
     private func getFile(ofType type: CachesFileType, for entry: CacheEntry, ensureExists: Bool = false) -> URL? {
         guard let filename = entry.uuid else {
             assertionFailure("trying to save file with no uuid")
             return nil
         }
 
-        let directory = getDirectory(for: type)
+        let directory = type.getResourceLocation(base: cacheDirectory)
         let file = directory.appendingPathComponent(filename)
 
         if ensureExists {
@@ -308,3 +293,34 @@ class CacheEntry: Hashable, Codable {
         return lhs.requestKey == rhs.requestKey
     }
 }
+
+
+extension URLDiskCache {
+    enum CachesFileType {
+        case urlResponse
+        case data
+
+        var directoryName: String {
+            switch self {
+            case .urlResponse:
+                return "fsResponses"
+            case .data:
+                return "fsData"
+            }
+        }
+
+        func getResourceLocation(base: URL) -> URL {
+            return base.appendingPathComponent(directoryName, isDirectory: true)
+        }
+    }
+}
+
+// the `CaseIterable` protocol automatically provides the `allCases` property.
+// However it is not available on the Android version of Foudation yet.
+#if os(Android)
+extension URLDiskCache.CachesFileType {
+    static let allCases: [URLDiskCache.CachesFileType] = [.urlResponse, .data]
+}
+#else
+extension URLDiskCache.CachesFileType: CaseIterable {}
+#endif

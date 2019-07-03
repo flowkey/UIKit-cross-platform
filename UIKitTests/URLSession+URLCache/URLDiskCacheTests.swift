@@ -37,11 +37,10 @@ class URLDiskCacheTests: XCTestCase {
     }
 
     func testCache_WhenInitialized_CreatesSubDirectories() {
-        let responsesPath = directory.appendingPathComponent("fsResponses").path
-        XCTAssertTrue(fileManager.fileExists(atPath: responsesPath))
-
-        let dataPath = directory.appendingPathComponent("fsData").path
-        XCTAssertTrue(fileManager.fileExists(atPath: dataPath))
+        URLDiskCache.CachesFileType.allCases.forEach {
+            let targetDir = $0.getResourceLocation(base: directory)
+            XCTAssertTrue(fileManager.fileExists(atPath: targetDir.path))
+        }
     }
 
     func testCache_SavesEntry() {
@@ -105,7 +104,8 @@ class URLDiskCacheTests: XCTestCase {
 
         // delete a resource file
         let entry = cache.cachedEntries.first!
-        let pathToResponseFile = directory.appendingPathComponent("fsResponses").appendingPathComponent(entry.uuid!)
+        let directoryForResponses = URLDiskCache.CachesFileType.urlResponse.getResourceLocation(base: directory)
+        let pathToResponseFile = directoryForResponses.appendingPathComponent(entry.uuid!)
         try! FileManager.default.removeItem(atPath: pathToResponseFile.path)
 
         let cachedResponse = cache.getCachedResponse(for: entry)
@@ -143,13 +143,11 @@ class URLDiskCacheTests: XCTestCase {
     func assertCountOfEntriesAndFilesIs(_ expectedCount: Int) {
         XCTAssertEqual(cache.cachedEntries.count, expectedCount)
 
-        let responsesPath = directory.appendingPathComponent("fsResponses").path
-        let dataPath = directory.appendingPathComponent("fsData").path
-
-        let contentOfResponsesDir = try! fileManager.contentsOfDirectory(atPath: responsesPath)
-        let contentOfDataDir = try! fileManager.contentsOfDirectory(atPath: dataPath)
-        XCTAssertEqual(contentOfResponsesDir.count, expectedCount)
-        XCTAssertEqual(contentOfDataDir.count, expectedCount)
+        URLDiskCache.CachesFileType.allCases.forEach {
+            let targetDir = $0.getResourceLocation(base: directory)
+            let contentsOfDir = try! fileManager.contentsOfDirectory(atPath: targetDir.path)
+            XCTAssertEqual(contentsOfDir.count, expectedCount)
+        }
     }
 
     func addTestDataToCacheAndAssertCount(numOfItems count: Int) {
