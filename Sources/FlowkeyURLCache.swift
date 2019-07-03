@@ -185,16 +185,12 @@ internal class URLDiskCache {
                     $0.uuid == identifier
                 })
 
-                let indexOfExistingDiskCacheEntry = diskCacheEntries.firstIndex(where: {
+                let existingEntry = diskCacheEntries.first(where: {
                     $0.identifier == identifier
                 })
 
-                if let index = indexOfExistingDiskCacheEntry {
-                    var itemThatWasFound = diskCacheEntries[index]
-                    itemThatWasFound.files.append(url)
-                    itemThatWasFound.cost = itemThatWasFound.cost + fileSize
-                    itemThatWasFound.date = min(date, itemThatWasFound.date)
-                    diskCacheEntries[index] = itemThatWasFound
+                if var existingEntry = existingEntry {
+                    existingEntry.append(url: url, cost: fileSize, date: date)
                 } else {
                     let item = DiskCacheEntry(identifier: identifier, files: [url], date: date, cost: fileSize, cacheEntry: cacheEntry)
                     diskCacheEntries.append(item)
@@ -427,11 +423,25 @@ extension URLDiskCache.CachesFileType: CaseIterable {}
 #endif
 
 extension URLDiskCache {
-    private struct DiskCacheEntry {
+    private class DiskCacheEntry {
         var identifier: String
         var files: [URL]
         var date: Date
         var cost: Int
         var cacheEntry: CacheEntry?
+
+        init(identifier: String, files: [URL], date: Date, cost: Int, cacheEntry: CacheEntry?) {
+            self.identifier = identifier
+            self.files = files
+            self.date = date
+            self.cost = cost
+            self.cacheEntry = cacheEntry
+        }
+
+        func append(url: URL, cost: Int, date: Date) {
+            self.files.append(url)
+            self.date = min(self.date, date)
+            self.cost += cost
+        }
     }
 }
