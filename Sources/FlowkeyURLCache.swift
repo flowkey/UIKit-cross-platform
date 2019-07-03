@@ -259,8 +259,7 @@ internal class URLDiskCache {
             return nil
         }
 
-        let directory = type.getResourceDirectory(baseDirectory: cacheDirectory)
-        let file = directory.appendingPathComponent(filename)
+        let file = type.getResourceFile(baseDirectory: cacheDirectory, filename: filename)
 
         if ensureExists {
             let validFileExists = FileManager.default.isReadableFile(atPath: file.path)
@@ -339,8 +338,13 @@ extension URLDiskCache {
             }
         }
 
-        func getResourceDirectory(baseDirectory: URL) -> URL {
-            return baseDirectory.appendingPathComponent(directoryName, isDirectory: true)
+        func getResourceDirectory(baseDirectory url: URL) -> URL {
+            return url.appendingPathComponent(directoryName, isDirectory: true)
+        }
+
+        func getResourceFile(baseDirectory url: URL, filename: String) -> URL {
+            let targetDirectory = getResourceDirectory(baseDirectory: url)
+            return targetDirectory.appendingPathComponent(filename)
         }
     }
 }
