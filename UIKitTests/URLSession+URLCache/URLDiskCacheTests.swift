@@ -11,6 +11,10 @@ import XCTest
 
 class URLDiskCacheTests: XCTestCase {
 
+    // Approximate cost of one Test Cache resource = 525
+    let normalCapacity = 525 * 100
+    let lowCapacity = 525 * 10
+
     var directory: URL!
     var cache: URLDiskCache!
     var fileManager: FileManager!
@@ -23,7 +27,7 @@ class URLDiskCacheTests: XCTestCase {
             = URL(fileURLWithPath: NSTemporaryDirectory())
                 .appendingPathComponent("cache-store-tests")
         
-        cache = URLDiskCache(capacity: 100000, at: temporaryDirctory)
+        cache = URLDiskCache(capacity: normalCapacity, at: temporaryDirctory)
         directory = temporaryDirctory
         urlForTesting = URL(string: "http://fake.url")!
     }
@@ -74,7 +78,7 @@ class URLDiskCacheTests: XCTestCase {
 
         // There should be a json file created now
         // Creating another store instance should read the same json file
-        let anotherCacheInstanceAtSameLocation = URLDiskCache(capacity: 100000, at: directory)
+        let anotherCacheInstanceAtSameLocation = URLDiskCache(capacity: normalCapacity, at: directory)
         
         XCTAssertEqual(anotherCacheInstanceAtSameLocation.cachedEntries.count, 5)
     }
@@ -152,6 +156,29 @@ class URLDiskCacheTests: XCTestCase {
         }
 
         XCTAssertEqual(cache.getCurrentDiskUsage(), 0) // empty again
+    }
+
+    func testCache_WhenAddingLotOfEntries_DoesNotExceedCapacity() {
+        cache.capacity = lowCapacity // stores approximately 10 items
+        addTestDataToCache(numOfItems: 10)
+        XCTAssertLessThanOrEqual(cache.getCurrentDiskUsage(), cache.capacity)
+
+        addTestDataToCache(numOfItems: 20) // way more than capapacity
+        XCTAssertLessThanOrEqual(cache.getCurrentDiskUsage(), cache.capacity)
+    }
+
+    func testCache_WhenTrimmingToSize_RemovesOrphanedFiles() {
+        cache.capacity = lowCapacity // stores approximately 10 items
+
+        // Add a random file to the data directory
+        let orphanFile = URLDiskCache.CachesFileType.data.getResourceFile(baseDirectory: directory, filename: "ORPHAN")
+        let dummyData = "Not from cache entries".data(using: .utf8)
+        FileManager.default.createFile(atPath: orphanFile.path, contents: dummyData)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: orphanFile.path))
+
+        addTestDataToCache(numOfItems: 20) // Ensure to trim the cache
+
+        XCTAssertFalse(FileManager.default.fileExists(atPath: orphanFile.path))
     }
 
     // MARK: Utility

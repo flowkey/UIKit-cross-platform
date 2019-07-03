@@ -148,15 +148,90 @@ internal class URLDiskCache {
     }
 
     func storeCachedResponse(_ cachedResponse: CachedURLResponse, for entry: CacheEntry) {
+        // check the disk cost of serialized version
+        let costOfItem = NSKeyedArchiver.archivedData(withRootObject: cachedResponse).count
+        trimCache(to: capacity - costOfItem)
+
         if let previousEntry = findPreviouslyCachedEntry(for: entry) {
             removeCachedResponse(for: previousEntry)
         }
-        entry.id = cachedEntries.count + 1
+
+        entry.id = getNextCacheId()
         entry.uuid = UUID().uuidString
         cachedEntries.insert(entry)
         saveResponseToFile(entry: entry, response: cachedResponse.response)
         saveDataToFile(entry: entry, data: cachedResponse.data)
         saveUpdatedEntriesToFile()
+    }
+
+    private func getNextCacheId() -> Int {
+        let lastAssignedCacheEntry = self.cachedEntries.reduce(0) { (result, entry) -> Int in
+            return max(result, entry.id ?? 0)
+        }
+        return lastAssignedCacheEntry + 1
+    }
+
+    private func getDiskCacheEntries(with keys: [URLResourceKey] = [.fileSizeKey, .contentModificationDateKey]) -> [DiskCacheEntry] {
+        let fileManager = FileManager.default
+        var diskCacheEntries = [DiskCacheEntry]()
+
+        CachesFileType.allCases.forEach {
+            let dir = $0.getResourceDirectory(baseDirectory: cacheDirectory)
+            guard let contentURLs = try? fileManager.contentsOfDirectory(at: dir, includingPropertiesForKeys: keys) else { return }
+            for url in contentURLs where url.isFileURL {
+                let resourceValues = try! url.resourceValues(forKeys: Set<URLResourceKey>(keys))
+                let identifier = url.lastPathComponent
+                let date = resourceValues.contentModificationDate ?? Date(timeIntervalSince1970: 0)
+                let fileSize = resourceValues.fileSize ?? 0
+
+                let found = diskCacheEntries.first(where: {
+                    $0.identifier == identifier
+                })
+
+                let cacheEntry = self.cachedEntries.first(where: {
+                    $0.uuid == identifier
+                })
+
+                if var found = found {
+                    found.files.append(url)
+                    found.cost += fileSize
+                    found.date = min(date, found.date)
+                } else {
+                    let item = DiskCacheEntry(identifier: identifier, files: [url], date: date, cost: fileSize, cacheEntry: cacheEntry)
+                    diskCacheEntries.append(item)
+                }
+            }
+        }
+        return diskCacheEntries
+    }
+
+    private func trimCache(to targetCapacity: Int) {
+        let diskCacheItems = getDiskCacheEntries()
+        var totalSize: Int = diskCacheItems.reduce(0) { $0 + $1.cost }
+
+        guard totalSize > targetCapacity else { return }
+
+        let diskCachedItemsOrderedByAge = diskCacheItems.sorted { $0.date < $1.date }
+
+        var cacheEntriesToRemove = [CacheEntry]()
+        var orphanFilesToRemove = [URL]()
+
+        for diskItem in diskCachedItemsOrderedByAge {
+
+            if let cacheEntry = diskItem.cacheEntry {
+                cacheEntriesToRemove.append(cacheEntry)
+            } else {
+                orphanFilesToRemove.append(contentsOf: diskItem.files)
+            }
+
+            totalSize -= diskItem.cost
+            if totalSize < targetCapacity {
+                break
+            }
+        }
+
+        cacheEntriesToRemove.forEach { removeCachedResponse(for: $0) }
+        orphanFilesToRemove.forEach { try? FileManager.default.removeItem(at: $0) }
     }
 
     func removeCachedResponse(for entry: CacheEntry) {
@@ -182,16 +257,8 @@ internal class URLDiskCache {
     }
 
     func getCurrentDiskUsage() -> Int {
-        let sizes: [Int] = CachesFileType.allCases.map {
-            let dir = $0.getResourceDirectory(baseDirectory: cacheDirectory)
-            guard let contents = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: [.fileSizeKey]) else { return 0 }
-            let fileSizes: [Int] = contents.map { file in
-                let values = try? file.resourceValues(forKeys: [.fileSizeKey])
-                return values?.fileSize ?? 0
-            }
-            return fileSizes.reduce(0, +)
-        }
-        return sizes.reduce(0, +)
+        let diskCacheItems = getDiskCacheEntries(with: [.fileSizeKey])
+        return diskCacheItems.reduce(0) { $0 + $1.cost }
     }
 
     private func findPreviouslyCachedEntry(for entry: CacheEntry) -> CacheEntry? {
@@ -288,6 +355,7 @@ extension Bundle {
 #endif
 
 class CacheEntry: Hashable, Codable {
+
     var requestKey: String
 
     var id: Int?
@@ -358,3 +426,13 @@ extension URLDiskCache.CachesFileType {
 #else
 extension URLDiskCache.CachesFileType: CaseIterable {}
 #endif
+
+extension URLDiskCache {
+    private struct DiskCacheEntry {
+        var identifier: String
+        var files: [URL]
+        var date: Date
+        var cost: Int
+        var cacheEntry: CacheEntry?
+    }
+}
