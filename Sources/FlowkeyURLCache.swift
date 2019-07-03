@@ -129,7 +129,7 @@ internal class URLDiskCache {
 
     fileprivate func createRequiredSubDirectories() {
         CachesFileType.allCases.forEach {
-            let targetDir = $0.getResourceLocation(base: cacheDirectory)
+            let targetDir = $0.getResourceDirectory(baseDirectory: cacheDirectory)
             try? FileManager.default.createDirectory(at: targetDir, withIntermediateDirectories: true)
         }
     }
@@ -173,7 +173,7 @@ internal class URLDiskCache {
     func removeAll() throws {
         try FileManager.default.removeItem(at: dataFile)
         CachesFileType.allCases.forEach {
-            let targetDir = $0.getResourceLocation(base: cacheDirectory)
+            let targetDir = $0.getResourceDirectory(baseDirectory: cacheDirectory)
             try? FileManager.default.removeItem(at: targetDir)
         }
         self.cachedEntries.removeAll()
@@ -183,7 +183,7 @@ internal class URLDiskCache {
 
     func getCurrentDiskUsage() -> Int {
         let sizes: [Int] = CachesFileType.allCases.map {
-            let dir = $0.getResourceLocation(base: cacheDirectory)
+            let dir = $0.getResourceDirectory(baseDirectory: cacheDirectory)
             guard let contents = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: [.fileSizeKey]) else { return 0 }
             let fileSizes: [Int] = contents.map { file in
                 let values = try? file.resourceValues(forKeys: [.fileSizeKey])
@@ -259,7 +259,7 @@ internal class URLDiskCache {
             return nil
         }
 
-        let directory = type.getResourceLocation(base: cacheDirectory)
+        let directory = type.getResourceDirectory(baseDirectory: cacheDirectory)
         let file = directory.appendingPathComponent(filename)
 
         if ensureExists {
@@ -339,8 +339,8 @@ extension URLDiskCache {
             }
         }
 
-        func getResourceLocation(base: URL) -> URL {
-            return base.appendingPathComponent(directoryName, isDirectory: true)
+        func getResourceDirectory(baseDirectory: URL) -> URL {
+            return baseDirectory.appendingPathComponent(directoryName, isDirectory: true)
         }
     }
 }

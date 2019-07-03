@@ -38,7 +38,7 @@ class URLDiskCacheTests: XCTestCase {
 
     func testCache_WhenInitialized_CreatesSubDirectories() {
         URLDiskCache.CachesFileType.allCases.forEach {
-            let targetDir = $0.getResourceLocation(base: directory)
+            let targetDir = $0.getResourceDirectory(baseDirectory: directory)
             XCTAssertTrue(fileManager.fileExists(atPath: targetDir.path))
         }
     }
@@ -104,7 +104,7 @@ class URLDiskCacheTests: XCTestCase {
 
         // delete a resource file
         let entry = cache.cachedEntries.first!
-        let directoryForResponses = URLDiskCache.CachesFileType.urlResponse.getResourceLocation(base: directory)
+        let directoryForResponses = URLDiskCache.CachesFileType.urlResponse.getResourceDirectory(baseDirectory: directory)
         let pathToResponseFile = directoryForResponses.appendingPathComponent(entry.uuid!)
         try! FileManager.default.removeItem(atPath: pathToResponseFile.path)
 
@@ -164,7 +164,7 @@ class URLDiskCacheTests: XCTestCase {
         XCTAssertEqual(cache.cachedEntries.count, expectedCount)
 
         URLDiskCache.CachesFileType.allCases.forEach {
-            let targetDir = $0.getResourceLocation(base: directory)
+            let targetDir = $0.getResourceDirectory(baseDirectory: directory)
             let contentsOfDir = try! fileManager.contentsOfDirectory(atPath: targetDir.path)
             XCTAssertEqual(contentsOfDir.count, expectedCount)
         }
