@@ -134,6 +134,26 @@ class URLDiskCacheTests: XCTestCase {
         XCTAssertEqual(cachedResponse?.data, dataToReplace)
     }
 
+    func testCache_ReportsCorrectDiskUsage() {
+        XCTAssertEqual(cache.getCurrentDiskUsage(), 0) // initially empty
+
+        // adding entries should incrementally increase the cache size
+        for i in 1...10 {
+            let diskUsageBeforeAddingEntries = cache.getCurrentDiskUsage()
+            addTestDataToCache(numOfItems: i)
+            XCTAssertTrue(cache.getCurrentDiskUsage() > diskUsageBeforeAddingEntries)
+        }
+
+        // removing entries one by one should decrease the cache size
+        for cacheEntry in cache.cachedEntries {
+            let diskUsageBeforeRemoving = cache.getCurrentDiskUsage()
+            cache.removeCachedResponse(for: cacheEntry)
+            XCTAssertTrue(cache.getCurrentDiskUsage() < diskUsageBeforeRemoving)
+        }
+
+        XCTAssertEqual(cache.getCurrentDiskUsage(), 0) // empty again
+    }
+
     // MARK: Utility
 
     func assertCacheIsEmptyAndHasNoFiles() {
@@ -151,12 +171,16 @@ class URLDiskCacheTests: XCTestCase {
     }
 
     func addTestDataToCacheAndAssertCount(numOfItems count: Int) {
+        addTestDataToCache(numOfItems: count)
+        assertCountOfEntriesAndFilesIs(count)
+    }
+
+    func addTestDataToCache(numOfItems count: Int) {
         for i in 1...count {
             let testUrl = URL(string: "http://fake\(i).url")!
             let testData = createTestEntryAndResponse(for: testUrl)
             cache.storeCachedResponse(testData.response, for: testData.entry)
         }
-        assertCountOfEntriesAndFilesIs(count)
     }
 
     func createTestEntry(for url: URL) -> CacheEntry {

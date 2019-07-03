@@ -13,6 +13,9 @@ public protocol URLCachePrototype {
     func storeCachedResponse(_ cachedResponse: CachedURLResponse, for request: URLRequest)
     func removeCachedResponse(for request: URLRequest)
     func removeAllCachedResponses()
+
+    var diskCapacity: Int { get set }
+    var currentDiskUsage: Int { get }
 }
 
 #if !os(Android)
@@ -20,6 +23,19 @@ extension URLCache: URLCachePrototype {}
 #endif
 
 internal class FlowkeyURLCache: URLCachePrototype {
+
+    var diskCapacity: Int {
+        get {
+            return diskCache?.capacity ?? 0
+        }
+        set {
+            diskCache?.capacity = newValue
+        }
+    }
+
+    var currentDiskUsage: Int {
+        return diskCache?.getCurrentDiskUsage() ?? 0
+    }
 
     static var shared: URLCachePrototype
         = FlowkeyURLCache(memoryCapacity: 0, diskCapacity: 1024 * 1024 * 50, diskPath: nil)
@@ -30,6 +46,7 @@ internal class FlowkeyURLCache: URLCachePrototype {
         if memoryCapacity > 0 {
             assertionFailure("Memory cache is not supported yet. This is a disk only cache.")
         }
+        self.diskCapacity = diskCapacity
         initDiskCache(capacity: diskCapacity, path: path)
     }
 
@@ -94,7 +111,7 @@ internal class FlowkeyURLCache: URLCachePrototype {
  **/
 internal class URLDiskCache {
 
-    let capacity: Int
+    var capacity: Int
     let cacheDirectory: URL
 
     private (set) var cachedEntries: Set<CacheEntry>
@@ -162,6 +179,19 @@ internal class URLDiskCache {
         self.cachedEntries.removeAll()
         createRequiredSubDirectories()
         loadSavedCachedEntriesFromFile()
+    }
+
+    func getCurrentDiskUsage() -> Int {
+        let sizes: [Int] = CachesFileType.allCases.map {
+            let dir = $0.getResourceLocation(base: cacheDirectory)
+            guard let contents = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: [.fileSizeKey]) else { return 0 }
+            let fileSizes: [Int] = contents.map { file in
+                let values = try? file.resourceValues(forKeys: [.fileSizeKey])
+                return values?.fileSize ?? 0
+            }
+            return fileSizes.reduce(0, +)
+        }
+        return sizes.reduce(0, +)
     }
 
     private func findPreviouslyCachedEntry(for entry: CacheEntry) -> CacheEntry? {
