@@ -111,14 +111,19 @@ internal class FlowkeyURLCache: URLCachePrototype {
  **/
 internal class URLDiskCache {
 
-    var capacity: Int
+    var capacity: Int {
+        didSet {
+            guard cachedEntries.count > 0 else { return }
+            trimCache(to: capacity)
+        }
+    }
+
     let cacheDirectory: URL
 
     private (set) var cachedEntries: Set<CacheEntry>
     private var dataFile: URL
 
     init(capacity: Int, at url: URL) {
-
         self.capacity = capacity
         self.cacheDirectory = url
         self.dataFile = url.appendingPathComponent("Cache.db.json", isDirectory: false)
@@ -176,18 +181,20 @@ internal class URLDiskCache {
                 let date = resourceValues.contentModificationDate ?? Date(timeIntervalSince1970: 0)
                 let fileSize = resourceValues.fileSize ?? 0
 
-                let found = diskCacheEntries.first(where: {
-                    $0.identifier == identifier
-                })
-
                 let cacheEntry = self.cachedEntries.first(where: {
                     $0.uuid == identifier
                 })
 
-                if var found = found {
-                    found.files.append(url)
-                    found.cost += fileSize
-                    found.date = min(date, found.date)
+                let indexOfExistingDiskCacheEntry = diskCacheEntries.firstIndex(where: {
+                    $0.identifier == identifier
+                })
+
+                if let index = indexOfExistingDiskCacheEntry {
+                    var itemThatWasFound = diskCacheEntries[index]
+                    itemThatWasFound.files.append(url)
+                    itemThatWasFound.cost = itemThatWasFound.cost + fileSize
+                    itemThatWasFound.date = min(date, itemThatWasFound.date)
+                    diskCacheEntries[index] = itemThatWasFound
                 } else {
                     let item = DiskCacheEntry(identifier: identifier, files: [url], date: date, cost: fileSize, cacheEntry: cacheEntry)
                     diskCacheEntries.append(item)
@@ -199,7 +206,7 @@ internal class URLDiskCache {
 
     private func trimCache(to targetCapacity: Int) {
         let diskCacheItems = getDiskCacheEntries()
-        var totalSize: Int = diskCacheItems.reduce(0) { $0 + $1.cost }
+        var totalSize: Int = diskCacheItems.reduce(0) { return $0 + $1.cost }
 
         guard totalSize > targetCapacity else { return }
 
@@ -270,6 +277,7 @@ internal class URLDiskCache {
             let decoder = JSONDecoder()
             let entries = try decoder.decode(Set<CacheEntry>.self, from: data)
             self.cachedEntries = self.cachedEntries.union(entries)
+            trimCache(to: capacity)
         } catch {
             // TODO: should delete the JSON and other files?
             assertionFailure("Readimg JSON Cache data from file failed: \(error)")

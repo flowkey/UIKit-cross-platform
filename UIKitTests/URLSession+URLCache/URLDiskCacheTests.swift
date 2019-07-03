@@ -181,6 +181,15 @@ class URLDiskCacheTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: orphanFile.path))
     }
 
+    func testCache_WhenSettingALowerCapacity_TrimsCache() {
+        addTestDataToCacheAndAssertCount(numOfItems: 50)
+        XCTAssertLessThanOrEqual(cache.getCurrentDiskUsage(), cache.capacity)
+
+        cache.capacity = lowCapacity // about 10 entries
+        XCTAssertLessThanOrEqual(cache.getCurrentDiskUsage(), cache.capacity)
+        XCTAssertLessThanOrEqual(cache.cachedEntries.count, 10)
+    }
+
     // MARK: Utility
 
     func assertCacheIsEmptyAndHasNoFiles() {
