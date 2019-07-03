@@ -156,19 +156,11 @@ internal class URLDiskCache {
             removeCachedResponse(for: previousEntry)
         }
 
-        entry.id = getNextCacheId()
         entry.uuid = UUID().uuidString
         cachedEntries.insert(entry)
         saveResponseToFile(entry: entry, response: cachedResponse.response)
         saveDataToFile(entry: entry, data: cachedResponse.data)
         saveUpdatedEntriesToFile()
-    }
-
-    private func getNextCacheId() -> Int {
-        let lastAssignedCacheEntry = self.cachedEntries.reduce(0) { (result, entry) -> Int in
-            return max(result, entry.id ?? 0)
-        }
-        return lastAssignedCacheEntry + 1
     }
 
     private func getDiskCacheEntries(with keys: [URLResourceKey] = [.fileSizeKey, .contentModificationDateKey]) -> [DiskCacheEntry] {
@@ -358,7 +350,6 @@ class CacheEntry: Hashable, Codable {
 
     var requestKey: String
 
-    var id: Int?
     var timeStamp: Date?
     var storagePolicy: UInt?
 
