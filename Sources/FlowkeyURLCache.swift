@@ -147,7 +147,7 @@ internal class URLDiskCache {
 
     func removeCachedResponse(for entry: CacheEntry) {
         guard let cachedEntry = findPreviouslyCachedEntry(for: entry) else { return }
-        if let responseFile = getFile(ofType: .response, for: cachedEntry) {
+        if let responseFile = getFile(ofType: .urlResponse, for: cachedEntry) {
             try? FileManager.default.removeItem(at: responseFile)
         }
         if let dataFile = getFile(ofType: .data, for: cachedEntry) {
@@ -172,7 +172,7 @@ internal class URLDiskCache {
     // MARK: File operations
 
     private enum CachesFileType {
-        case response
+        case urlResponse
         case data
     }
 
@@ -206,14 +206,14 @@ internal class URLDiskCache {
     }
 
     private func saveResponseToFile(entry: CacheEntry, response: URLResponse) {
-        guard let file = getFile(ofType: .response, for: entry) else { return }
+        guard let file = getFile(ofType: .urlResponse, for: entry) else { return }
         guard NSKeyedArchiver.archiveRootObject(response, toFile: file.path) else {
             return assertionFailure("Could not serialize response")
         }
     }
 
     private func readResponseFromFile(for entry: CacheEntry) -> URLResponse? {
-        guard let file = getFile(ofType: .response, for: entry, ensureExists: true) else { return nil }
+        guard let file = getFile(ofType: .urlResponse, for: entry, ensureExists: true) else { return nil }
         return NSKeyedUnarchiver.unarchiveObject(withFile: file.path) as? URLResponse
     }
 
@@ -231,7 +231,7 @@ internal class URLDiskCache {
 
     private func getDirectory(for type: CachesFileType) -> URL {
         switch type {
-        case .response:
+        case .urlResponse:
             return responsesDirectory
         case .data:
             return responseDataFilesDirectory
