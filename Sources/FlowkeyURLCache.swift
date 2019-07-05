@@ -181,15 +181,9 @@ internal class URLDiskCache {
                 let date = resourceValues.contentModificationDate ?? Date(timeIntervalSince1970: 0)
                 let fileSize = resourceValues.fileSize ?? 0
 
-                let cacheEntry = self.cachedEntries.first(where: {
-                    $0.uuid == identifier
-                })
+                let cacheEntry = self.cachedEntries.first(where: { $0.uuid == identifier })
 
-                let existingEntry = diskCacheEntries.first(where: {
-                    $0.identifier == identifier
-                })
-
-                if var existingEntry = existingEntry {
+                if let existingEntry = diskCacheEntries.first(where: { $0.identifier == identifier }) {
                     existingEntry.append(url: url, cost: fileSize, date: date)
                 } else {
                     let item = DiskCacheEntry(identifier: identifier, files: [url], date: date, cost: fileSize, cacheEntry: cacheEntry)
