@@ -167,7 +167,7 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
         exoPlayerLayout.player = player.exoPlayer
         exoPlayerLayout.useController = false
         exoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
-
+        exoPlayerLayout.tag = "ExoPlayer"
         parent.addView(exoPlayerLayout, 0)
     }
 
