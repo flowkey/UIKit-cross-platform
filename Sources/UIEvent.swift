@@ -22,8 +22,8 @@ public class UIEvent {
 }
 
 extension UIEvent: Hashable {
-    public var hashValue: Int {
-        return ObjectIdentifier(self).hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self).hashValue)
     }
 
     public static func == (lhs: UIEvent, rhs: UIEvent) -> Bool {

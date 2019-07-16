@@ -34,8 +34,8 @@ open class DisplayLink {
 }
 
 extension DisplayLink: Hashable {
-    public var hashValue: Int {
-        return ObjectIdentifier(self).hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self).hashValue)
     }
 
     public static func == (lhs: DisplayLink, rhs: DisplayLink) -> Bool {

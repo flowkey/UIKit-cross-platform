@@ -78,13 +78,11 @@ public class UIColor: Hashable {
         red = tuple.r; green = tuple.g; blue = tuple.b; alpha = tuple.a
     }
 
-    public var hashValue: Int {
-        return (
-            UInt32(red) << 24 +
-            UInt32(green) << 16 +
-            UInt32(blue) << 8 +
-            UInt32(alpha)
-        ).hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(red)
+        hasher.combine(green)
+        hasher.combine(blue)
+        hasher.combine(alpha)
     }
 }
 

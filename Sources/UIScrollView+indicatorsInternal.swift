@@ -10,9 +10,9 @@
 // You can't override methods that were defined in an extension.
 
 internal extension UIScrollView {
-    internal static let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5
+    static let indicatorDistanceFromScrollViewFrame: CGFloat = 2.5
 
-    internal func indicatorOffsetsInContentSpace() -> (horizontal: CGFloat, vertical: CGFloat) {
+    func indicatorOffsetsInContentSpace() -> (horizontal: CGFloat, vertical: CGFloat) {
         let totalContentArea = (
             horizontal: contentInset.left + contentSize.width + contentInset.right,
             vertical: contentInset.top + contentSize.height + contentInset.bottom
@@ -34,16 +34,16 @@ internal extension UIScrollView {
         )
     }
 
-    internal var shouldLayoutHorizontalScrollIndicator: Bool {
+    var shouldLayoutHorizontalScrollIndicator: Bool {
         return showsHorizontalScrollIndicator && contentSize.width > bounds.width
     }
 
-    internal var shouldLayoutVerticalScrollIndicator: Bool {
+    var shouldLayoutVerticalScrollIndicator: Bool {
         return showsVerticalScrollIndicator && contentSize.height > bounds.height
     }
 
 
-    internal func layoutScrollIndicatorsIfNeeded() {
+    func layoutScrollIndicatorsIfNeeded() {
         guard shouldLayoutHorizontalScrollIndicator || shouldLayoutVerticalScrollIndicator else { return }
 
         let indicatorDistanceFromScrollViewFrame = UIScrollView.indicatorDistanceFromScrollViewFrame
@@ -71,7 +71,7 @@ internal extension UIScrollView {
     }
 
     // On iOS this seems to occur with no animation at all:
-    internal func showScrollIndicators() {
+    func showScrollIndicators() {
         if shouldLayoutHorizontalScrollIndicator {
             horizontalScrollIndicator.alpha = 1
         }
@@ -81,7 +81,7 @@ internal extension UIScrollView {
         }
     }
 
-    internal func hideScrollIndicators() {
+    func hideScrollIndicators() {
         UIView.animate(
             withDuration: 0.25,  // these values have been hand-tuned
             delay: 0.05,         // to match iOS

@@ -45,7 +45,7 @@
 		5C27E7E31ECB2F9100F5020D /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D91ECB2F9100F5020D /* CoreAudio.framework */; };
 		5C27E7E41ECB2F9100F5020D /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7DA1ECB2F9100F5020D /* ApplicationServices.framework */; };
 		5C27E7E51ECB2F9100F5020D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7DB1ECB2F9100F5020D /* Foundation.framework */; };
-		5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */; };
+		5C27E80F1ECB301900F5020D /* SDL2-Shims.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27E7FC1ECB301900F5020D /* SDL2-Shims.swift */; };
 		5C32F2C420A1C69C006D64C5 /* UIScreen+Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C32F2C320A1C69C006D64C5 /* UIScreen+Errors.swift */; };
 		5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C361E221ECC348700B3F561 /* UIView+SDL.swift */; };
 		5C3716B61F10050600B2C366 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3716B51F10050600B2C366 /* Timer.swift */; };
@@ -339,7 +339,7 @@
 		5C27E7D91ECB2F9100F5020D /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		5C27E7DA1ECB2F9100F5020D /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		5C27E7DB1ECB2F9100F5020D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL2 Shims.swift"; sourceTree = "<group>"; };
+		5C27E7FC1ECB301900F5020D /* SDL2-Shims.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL2-Shims.swift"; sourceTree = "<group>"; };
 		5C32F2C320A1C69C006D64C5 /* UIScreen+Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+Errors.swift"; sourceTree = "<group>"; };
 		5C361E221ECC348700B3F561 /* UIView+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SDL.swift"; sourceTree = "<group>"; };
 		5C3716B51F10050600B2C366 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
@@ -722,7 +722,7 @@
 				5CAF5A2F20ADD09500760FD4 /* FontRenderer+singleLineSize.swift */,
 				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
 				5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */,
-				5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */,
+				5C27E7FC1ECB301900F5020D /* SDL2-Shims.swift */,
 				5C3716B51F10050600B2C366 /* Timer.swift */,
 				5C32F2C320A1C69C006D64C5 /* UIScreen+Errors.swift */,
 				5C361E221ECC348700B3F561 /* UIView+SDL.swift */,
@@ -1210,7 +1210,7 @@
 				8337A8131F39F37500475F80 /* UIScreen.swift in Sources */,
 				83E5F8151EF8322800279C59 /* CGSize.swift in Sources */,
 				5C4CD51120615FCF00217B4C /* UIApplication+handleSDLEvents.swift in Sources */,
-				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
+				5C27E80F1ECB301900F5020D /* SDL2-Shims.swift in Sources */,
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
 				5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */,
 				5C93AE7C2088F7E7005BE853 /* UINavigationController.swift in Sources */,

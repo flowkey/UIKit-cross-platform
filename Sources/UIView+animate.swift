@@ -71,7 +71,7 @@ extension UIView {
 }
 
 public extension UIView {
-    public struct AnimationOptions: RawRepresentable, OptionSet {
+    struct AnimationOptions: RawRepresentable, OptionSet {
         public let rawValue: UInt
         public init(rawValue: UInt) {
             self.rawValue = rawValue
