@@ -16,30 +16,6 @@ android {
             minifyEnabled false
         }
     }
-
-    defaultConfig {
-        externalNativeBuild {
-            cmake {
-                arguments "-DCMAKE_Swift_COMPILER=/Users/geordiejay/dev/flowkey/smartphone/RNPlayerComponent/NativePlayer/UIKit/swift-android-toolchain/Android.sdk/usr/bin/swiftc",
-                        "-DCMAKE_Swift_COMPILER_FORCED=TRUE",
-                        "-DCMAKE_Swift_COMPILER_TARGET=armv7-none-linux-androideabi",
-                        "-DCMAKE_Swift_FLAGS=-sdk /Users/geordiejay/dev/flowkey/smartphone/RNPlayerComponent/NativePlayer/UIKit/swift-android-toolchain/Android.sdk -tools-directory /Users/geordiejay/dev/flowkey/smartphone/RNPlayerComponent/NativePlayer/UIKit/swift-android-toolchain/Android.sdk/usr/bin " +
-                                "-Xcc --sysroot=/Users/geordiejay/Downloads/android-ndk-16b/sysroot -Xlinker -L/Users/geordiejay/Downloads/android-ndk-16b/platforms/android-21/arch-arm/usr/lib -Xlinker -L/Users/geordiejay/Downloads/android-ndk-16b/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/armv7-a/thumb/ -Xlinker -L/Users/geordiejay/Downloads/android-ndk-16b/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/arm-linux-androideabi/lib/armv7-a/thumb/ -Xclang-linker --sysroot=/Users/geordiejay/Downloads/android-ndk-16b/platforms/android-21/arch-arm -Xclang-linker -nostdlib++ -Xlinker -L/Users/geordiejay/dev/flowkey/smartphone/RNPlayerComponent/NativePlayer/UIKit/swift-android-toolchain/Android.sdk/usr/lib/swift/android/"
-            }
-        }
-    }
-
-    externalNativeBuild {
-        cmake {
-            version "3.15.0-rc4"
-        }
-    }
-
-
-
-    if (!System.getenv('DISABLE_PLAYER_CMAKE_BUILD')) {
-        externalNativeBuild.cmake.path 'CMakeLists.txt'
-    }
 }
 
 dependencies {

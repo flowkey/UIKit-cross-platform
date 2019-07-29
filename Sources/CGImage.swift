@@ -97,19 +97,15 @@ public class CGImage {
         guard let surface = GPU_CopySurfaceFromImage(rawPointer) else { return nil }
         defer { SDL_FreeSurface(surface) }
 
-        #warning("re-enable this!")
-        return nil
-        // let pngWritingFunc: @convention(c) (UnsafeMutableRawPointer?, UnsafeMutableRawPointer?, Int32) -> Void = { (outData, pngData, dataSize) in
-        //     guard let pngData = pngData, dataSize > 0 else { return }
-        //     outData?.assumingMemoryBound(to: Data.self)
-        //         .pointee
-        //         .append(pngData.assumingMemoryBound(to: UInt8.self), count: Int(dataSize))
-        // }
+        let pngWritingFunc: @convention(c) (UnsafeMutableRawPointer?, UnsafeMutableRawPointer?, Int32) -> Void = { (outData, pngData, dataSize) in
+            guard let pngData = pngData, dataSize > 0 else { return }
+            outData?.assumingMemoryBound(to: Data.self)
+                .pointee
+                .append(pngData.assumingMemoryBound(to: UInt8.self), count: Int(dataSize))
+        }
 
-        // return withoutActuallyEscaping(pngWritingFunc) { (closure) -> Data? in
-        //     var data = Data()
-        //     stbi_write_png_to_func(closure, &data, surface.pointee.w, surface.pointee.h, Int32(surface.pointee.format.pointee.BytesPerPixel), surface.pointee.pixels, surface.pointee.pitch)
-        //     return data.count > 0 ? data : nil
-        // }
+        var data = Data()
+        stbi_write_png_to_func(pngWritingFunc, &data, surface.pointee.w, surface.pointee.h, Int32(surface.pointee.format.pointee.BytesPerPixel), surface.pointee.pixels, surface.pointee.pitch)
+        return data.count > 0 ? data : nil
     }
 }
