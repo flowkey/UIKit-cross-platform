@@ -119,7 +119,4 @@ target_compile_options(UIKit PRIVATE
 #        INTERFACE_LINK_DIRECTORIES ${CMAKE_BINARY_DIR}
 #        INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_Swift_MODULE_DIRECTORY})
 
-target_link_options(UIKit PRIVATE
-       -Xlinker -soname=libUIKit.so)
-
 install(TARGETS UIKit LIBRARY DESTINATION lib)

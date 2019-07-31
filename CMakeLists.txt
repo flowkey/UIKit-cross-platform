@@ -131,7 +131,4 @@ target_link_libraries(UIKit PUBLIC SDL)
 # target_compile_options(UIKit PRIVATE
 #        $<$<BOOL:ENABLE_TESTING>:-enable-testing>)
 
-target_link_options(UIKit PRIVATE
-    SHELL: -Xlinker -soname=libUIKit.so)
-
 # install(TARGETS UIKit LIBRARY DESTINATION lib)
