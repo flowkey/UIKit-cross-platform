@@ -1,13 +1,10 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
     defaultConfig {
-        ndk.abiFilters "armeabi-v7a"
         applicationId "com.example"
         minSdkVersion 21
         targetSdkVersion 28
@@ -19,7 +16,6 @@ android {
             minifyEnabled false
         }
     }
-    externalNativeBuild.cmake.path "CMakeLists.txt"
 
     compileOptions {
         sourceCompatibility 1.8
