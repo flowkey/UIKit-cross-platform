@@ -13,10 +13,11 @@ fi
 
 # Add `ld.gold` to PATH
 # This is weird because it looks like it's the armv7a ld.gold but it seems to support all archs
-PATH="${ANDROID_NDK_PATH}/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/arm-linux-androideabi/bin:$PATH"
+LOWERCASE_UNAME=`uname | tr '[:upper:]' '[:lower:]'`
+PATH="${ANDROID_NDK_PATH}/toolchains/arm-linux-androideabi-4.9/prebuilt/${LOWERCASE_UNAME}-x86_64/arm-linux-androideabi/bin:$PATH"
 
 build() {
-    echo "compiling for ${ANDROID_ABI}"
+    echo "Compiling for ${ANDROID_ABI}"
 
     rm -rf build${ANDROID_ABI}
     mkdir -p build/${ANDROID_ABI}
@@ -47,10 +48,10 @@ build() {
 
     # Install stdlib etc. into output directory
     cp "${ANDROID_SDK}/usr/lib/swift/android"/*.so "${LIBRARY_OUTPUT_DIRECTORY}"
-    cp "${SCRIPT_ROOT}/UIKit/swift-android-toolchain/libs/${ANDROID_ABI}"/*.so "${LIBRARY_OUTPUT_DIRECTORY}"
+    cp "${SCRIPT_ROOT}/../../swift-android-toolchain/libs/${ANDROID_ABI}"/*.so "${LIBRARY_OUTPUT_DIRECTORY}"
     cp "${ANDROID_NDK_PATH}/sources/cxx-stl/llvm-libc++/libs/${ANDROID_ABI}/libc++_shared.so" "${LIBRARY_OUTPUT_DIRECTORY}"
 
-    echo "finished"
+    echo "Finished compiling for ${ANDROID_ABI}"
 }
 
 ARGS="$@"
