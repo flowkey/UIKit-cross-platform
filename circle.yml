@@ -59,13 +59,13 @@ jobs:
       - checkout
       - run: git submodule update --recursive --init
       - restore_cache:
-          key: gradle_v1-{{ checksum "~/project/android/build.gradle" }}
+          key: gradle_v1-{{ checksum "./samples/getting-started/android/build.gradle" }}
       - run:
           name: Build demo app for android
           command: ./gradlew assembleDebug
           path: ./samples/getting-started/android
       - save_cache:
-          key: gradle_v1-{{ checksum "~/project/android/build.gradle" }}
+          key: gradle_v1-{{ checksum "./samples/getting-started/android/build.gradle" }}
           paths:
               - /root/.gradle/
 
