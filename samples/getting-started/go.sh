@@ -11,6 +11,8 @@ then
     exit 1
 fi
 
+echo "lel"
+echo $SCRIPT_ROOT
 SWIFT_ANDROID_TOOLCHAIN_PATH="${SWIFT_ANDROID_TOOLCHAIN_PATH:-${SCRIPT_ROOT}/../../swift-android-toolchain}"
 
 # Add `ld.gold` to PATH
@@ -21,9 +23,10 @@ PATH="${ANDROID_NDK_PATH}/toolchains/arm-linux-androideabi-4.9/prebuilt/${LOWERC
 build() {
     echo "Compiling for ${ANDROID_ABI}"
 
-    rm -rf build${ANDROID_ABI}
-    mkdir -p build/${ANDROID_ABI}
-    cd build/${ANDROID_ABI}
+    BUILD_DIR="${SCRIPT_ROOT}/build/${ANDROID_ABI}"
+    rm -rf $BUILD_DIR
+    mkdir -p $BUILD_DIR
+    cd $BUILD_DIR
 
     # You need a different SDK per arch, e.g. swift-android-toolchain/Android.sdk-armeabi-v7a/
     export ANDROID_SDK="$SWIFT_ANDROID_TOOLCHAIN_PATH/Android.sdk-${ANDROID_ABI}"
@@ -44,7 +47,7 @@ build() {
         -DCMAKE_Swift_COMPILER="${ANDROID_SDK}/usr/bin/swiftc" \
         -DCMAKE_Swift_COMPILER_FORCED=TRUE \
         -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=${LIBRARY_OUTPUT_DIRECTORY} \
-        ${ORIGINAL_PWD}
+        ${SCRIPT_ROOT}
 
     cmake --build . # --verbose
 
