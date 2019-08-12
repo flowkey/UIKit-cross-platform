@@ -11,6 +11,8 @@ then
     exit 1
 fi
 
+SWIFT_ANDROID_TOOLCHAIN_PATH="${SWIFT_ANDROID_TOOLCHAIN_PATH:-${SCRIPT_ROOT}/../../swift-android-toolchain}"
+
 # Add `ld.gold` to PATH
 # This is weird because it looks like it's the armv7a ld.gold but it seems to support all archs
 PATH="${ANDROID_NDK_PATH}/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/arm-linux-androideabi/bin:$PATH"
@@ -23,9 +25,9 @@ build() {
     cd build/${ANDROID_ABI}
 
     # You need a different SDK per arch, e.g. swift-android-toolchain/Android.sdk-armeabi-v7a/
-    export ANDROID_SDK="${SCRIPT_ROOT}/../../swift-android-toolchain/Android.sdk-${ANDROID_ABI}"
+    export ANDROID_SDK="$SWIFT_ANDROID_TOOLCHAIN_PATH/Android.sdk-${ANDROID_ABI}"
 
-    ${SCRIPT_ROOT}/../../swift-android-toolchain/setup.sh
+    $SWIFT_ANDROID_TOOLCHAIN_PATH/setup.sh
 
     local LIBRARY_OUTPUT_DIRECTORY="${SCRIPT_ROOT}/android/app/src/main/jniLibs/${ANDROID_ABI}"
 
@@ -37,20 +39,20 @@ build() {
         -DANDROID_NDK="${ANDROID_NDK_PATH}" \
         -DSWIFT_SDK="${ANDROID_SDK}" \
         -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK_PATH}/build/cmake/android.toolchain.cmake" \
-        -C "${SCRIPT_ROOT}/cmake_caches.cmake" \
+        -C "${SWIFT_ANDROID_TOOLCHAIN_PATH}/cmake_caches.cmake" \
         -DCMAKE_Swift_COMPILER="${ANDROID_SDK}/usr/bin/swiftc" \
         -DCMAKE_Swift_COMPILER_FORCED=TRUE \
         -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=${LIBRARY_OUTPUT_DIRECTORY} \
         ${ORIGINAL_PWD}
 
-    cmake --build . #--verbose
+    cmake --build . # --verbose
 
     # Install stdlib etc. into output directory
     cp "${ANDROID_SDK}/usr/lib/swift/android"/*.so "${LIBRARY_OUTPUT_DIRECTORY}"
-    cp "${SCRIPT_ROOT}/UIKit/swift-android-toolchain/libs/${ANDROID_ABI}"/*.so "${LIBRARY_OUTPUT_DIRECTORY}"
+    cp "$SWIFT_ANDROID_TOOLCHAIN_PATH/libs/${ANDROID_ABI}"/*.so "${LIBRARY_OUTPUT_DIRECTORY}"
     cp "${ANDROID_NDK_PATH}/sources/cxx-stl/llvm-libc++/libs/${ANDROID_ABI}/libc++_shared.so" "${LIBRARY_OUTPUT_DIRECTORY}"
 
-    echo "finished"
+    echo "Finished"
 }
 
 ARGS="$@"
