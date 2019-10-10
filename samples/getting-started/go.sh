@@ -24,7 +24,7 @@ build() {
     echo "Compiling for ${ANDROID_ABI}"
 
     BUILD_DIR="${SCRIPT_ROOT}/build/${ANDROID_ABI}"
-    rm -rf $BUILD_DIR
+    # rm -rf $BUILD_DIR
     mkdir -p $BUILD_DIR
     cd $BUILD_DIR
 
