@@ -80,7 +80,7 @@ For additional information please refer to our [contribution guidelines](docs/CO
 
 [Our FAQs can be found here (*Work In Progress*)](docs/FAQs.md).
 
-Please contact us regarding upcoming issues on [Slack](http://bit.ly/uikit-cross-platform) or create a new [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
+Please contact us regarding upcoming issues on [Spectrum](https://spectrum.chat/uikit-cross-platform) or create a new [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
 
 ## License
 
