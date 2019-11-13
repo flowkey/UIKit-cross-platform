@@ -116,17 +116,15 @@ add_library(UIKit SHARED
     Sources/UIWindow+TouchHandling.swift
     Sources/UIWindow+hardwareBackButton.swift
     Sources/UIWindow.swift
-    )
+)
 
 set_target_properties(UIKit PROPERTIES
   INTERFACE_LINK_DIRECTORIES $<TARGET_LINKER_FILE_DIR:UIKit>
   INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_Swift_MODULE_DIRECTORY})
 
 add_subdirectory(swift-jni)
-target_link_libraries(UIKit PUBLIC JNI)
-
 add_subdirectory(SDL)
-target_link_libraries(UIKit PUBLIC SDL)
+target_link_libraries(UIKit JNI SDL SDL_gpu SDL_ttf)
 
 # target_compile_options(UIKit PRIVATE
 #        $<$<BOOL:ENABLE_TESTING>:-enable-testing>)

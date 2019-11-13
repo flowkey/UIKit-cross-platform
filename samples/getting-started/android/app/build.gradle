@@ -23,12 +23,6 @@ android {
     }
 }
 
-task buildSwift(type:Exec) {
-    commandLine '../../go.sh'
-}
-
-preBuild.dependsOn buildSwift
-
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api project(":uikit")

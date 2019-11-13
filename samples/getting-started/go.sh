@@ -11,8 +11,6 @@ then
     exit 1
 fi
 
-echo "lel"
-echo $SCRIPT_ROOT
 SWIFT_ANDROID_TOOLCHAIN_PATH="${SWIFT_ANDROID_TOOLCHAIN_PATH:-${SCRIPT_ROOT}/../../swift-android-toolchain}"
 
 # Add `ld.gold` to PATH

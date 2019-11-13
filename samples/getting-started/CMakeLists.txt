@@ -5,9 +5,10 @@ set(CMAKE_Swift_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/swift)
 
 add_subdirectory("../../" UIKit)
 
-add_library(DemoApp SHARED 
+add_library(DemoApp SHARED
     ./DemoApp/ViewController.swift
     ./DemoApp/androidMain.swift
-    ./DemoApp/AppDelegate.swift)
+    ./DemoApp/AppDelegate.swift
+)
 
 target_link_libraries(DemoApp PRIVATE UIKit)
