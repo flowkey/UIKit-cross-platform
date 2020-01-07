@@ -8,6 +8,7 @@ add_subdirectory("../../" UIKit)
 add_library(DemoApp SHARED 
     ./DemoApp/ViewController.swift
     ./DemoApp/androidMain.swift
-    ./DemoApp/AppDelegate.swift)
+    ./DemoApp/AppDelegate.swift
+)
 
-target_link_libraries(DemoApp PRIVATE UIKit)
+target_link_libraries(DemoApp PRIVATE UIKit JNI SDL)

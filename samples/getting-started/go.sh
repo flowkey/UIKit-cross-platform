@@ -49,7 +49,7 @@ build() {
         -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=${LIBRARY_OUTPUT_DIRECTORY} \
         ${SCRIPT_ROOT}
 
-    cmake --build . # --verbose
+    cmake --build . --verbose
 
     # Install stdlib etc. into output directory
     cp "${ANDROID_SDK}/usr/lib/swift/android"/*.so "${LIBRARY_OUTPUT_DIRECTORY}"

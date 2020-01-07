@@ -16,18 +16,25 @@ android {
             minifyEnabled false
         }
     }
-
+    splits {
+        abi {
+            reset()
+            enable true
+            universalApk false
+            include "armeabi-v7a"
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            version "3.16.2"
+            path "CMakeLists.txt"
+        }
+    }
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
 }
-
-task buildSwift(type:Exec) {
-    commandLine '../../go.sh'
-}
-
-preBuild.dependsOn buildSwift
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
