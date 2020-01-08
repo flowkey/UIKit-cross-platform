@@ -1,2 +1,0 @@
-/Users/michaelknoch/dev/flow/smartphone-app/RNPlayerComponent/NativePlayer/UIKit/samples/getting-started/android/app/CMakeFiles/rebuild_cache.dir
-/Users/michaelknoch/dev/flow/smartphone-app/RNPlayerComponent/NativePlayer/UIKit/samples/getting-started/android/app/CMakeFiles/edit_cache.dir
