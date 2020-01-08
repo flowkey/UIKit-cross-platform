@@ -21,7 +21,8 @@ LOWERCASE_UNAME=`uname | tr '[:upper:]' '[:lower:]'`
 PATH="${ANDROID_NDK_PATH}/toolchains/arm-linux-androideabi-4.9/prebuilt/${LOWERCASE_UNAME}-x86_64/arm-linux-androideabi/bin:$PATH"
 
 build() {
-    echo "Compiling for ${ANDROID_ABI}"
+    CMAKE_BUILD_TYPE=${2:-"Debug"}
+    echo "Compiling ${CMAKE_BUILD_TYPE} for ${ANDROID_ABI}"
 
     BUILD_DIR="${SCRIPT_ROOT}/build/${ANDROID_ABI}"
     # rm -rf $BUILD_DIR
@@ -30,14 +31,13 @@ build() {
 
     # You need a different SDK per arch, e.g. swift-android-toolchain/Android.sdk-armeabi-v7a/
     export ANDROID_SDK="$SWIFT_ANDROID_TOOLCHAIN_PATH/Android.sdk-${ANDROID_ABI}"
+    local LIBRARY_OUTPUT_DIRECTORY="${SCRIPT_ROOT}/android/app/src/main/jniLibs/${ANDROID_ABI}"
 
     $SWIFT_ANDROID_TOOLCHAIN_PATH/setup.sh
 
-    local LIBRARY_OUTPUT_DIRECTORY="${SCRIPT_ROOT}/android/app/src/main/jniLibs/${ANDROID_ABI}"
-
     cmake \
         -G Ninja \
-        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+        -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE \
         -DANDROID_ABI=${ANDROID_ABI} \
         -DANDROID_PLATFORM=android-21 \
         -DANDROID_NDK="${ANDROID_NDK_PATH}" \
@@ -49,19 +49,18 @@ build() {
         -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=${LIBRARY_OUTPUT_DIRECTORY} \
         ${SCRIPT_ROOT}
 
-    cmake --build . --verbose
+    cmake --build . #--verbose
 
     # Install stdlib etc. into output directory
     cp "${ANDROID_SDK}/usr/lib/swift/android"/*.so "${LIBRARY_OUTPUT_DIRECTORY}"
     cp "$SWIFT_ANDROID_TOOLCHAIN_PATH/libs/${ANDROID_ABI}"/*.so "${LIBRARY_OUTPUT_DIRECTORY}"
     cp "${ANDROID_NDK_PATH}/sources/cxx-stl/llvm-libc++/libs/${ANDROID_ABI}/libc++_shared.so" "${LIBRARY_OUTPUT_DIRECTORY}"
 
-    echo "Finished compiling for ${ANDROID_ABI}"
+    echo "Finished compiling ${CMAKE_BUILD_TYPE} for ${ANDROID_ABI}"
 }
 
-ARGS="$@"
 SUPPORTED_ABIS="armeabi-v7a arm64-v8a x86_64"
-ABIS_TO_BUILD=${ARGS:-$SUPPORTED_ABIS}
+ABIS_TO_BUILD=${1:-$SUPPORTED_ABIS}
 
 for SUPPORTED_ABI in $SUPPORTED_ABIS
 do

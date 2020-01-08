@@ -1,23 +1,29 @@
-cmake_minimum_required(VERSION 3.16.2)
+cmake_minimum_required(VERSION 3.16)
 project(DemoApp)
 
-message(STATUS "BUILDING ${ANDROID_ABI} ${CMAKE_BUILD_TYPE}")
+message(STATUS "CMakeLists.txt ${ANDROID_ABI} ${CMAKE_BUILD_TYPE}")
 
 set(PROJECT_DIRECTORY "/Users/michaelknoch/dev/flow/smartphone-app/RNPlayerComponent/NativePlayer/UIKit/samples/getting-started/DemoApp")
-set(PRODUCT_NAME "lol")
 
 file(GLOB_RECURSE SOURCE_FILES "${PROJECT_DIRECTORY}/*.swift" "${PROJECT_DIRECTORY}/*.c" "${PROJECT_DIRECTORY}/*.cpp")
-
-message("YOLLO")
-message(STATUS "${SOURCE_FILES}")
+set(OUTPUT_LIBS "/Users/michaelknoch/dev/flow/smartphone-app/RNPlayerComponent/NativePlayer/UIKit/samples/getting-started/android/app/src/main/jniLibs/${ANDROID_ABI}/libDemoApp.so")
 
 add_custom_command(
-    OUTPUT ./android/app/src/main/jniLibs/x86_64/libDemoApp.so
-    COMMAND "../../go.sh" "${ANDROID_ABI}"
+    OUTPUT ${OUTPUT_LIBS}
+    COMMAND "/Users/michaelknoch/dev/flow/smartphone-app/RNPlayerComponent/NativePlayer/UIKit/samples/getting-started/go.sh" "${ANDROID_ABI}"
     DEPENDS ${SOURCE_FILES}
-    WORKING_DIRECTORY ${PROJECT_DIRECTORY}
-    COMMENT "Compiling ${PRODUCT_NAME}. If this worked before and you now get an error saying 'xyz.swift was not found', run 'Build->Refresh Linked C++ Projects' in Android Studio." # or run CMake again
     VERBATIM
 )
 
-message(STATUS "DONE")
+add_custom_target(unusedRandomTarget ALL
+    DEPENDS ${OUTPUT_LIBS}
+    VERBATIM
+)
+
+# Android Studio annoyingly only builds targets created by "add_library".
+# As a workaround we create an empty library target and link it to every SwiftPM
+# target we define, causing the linked targets to be be built and packaged in the APK.
+# As a downside we end up with a libswiftPMBuildDummy.so, but it only adds ~1kb to the APK.
+file(WRITE .empty.c "") # we need to build *something*, even if it's an empty file
+add_library(swiftPMBuildDummy SHARED .empty.c)
+add_dependencies(swiftPMBuildDummy unusedRandomTarget)
