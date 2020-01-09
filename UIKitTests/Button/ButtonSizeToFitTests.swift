@@ -49,7 +49,7 @@ class ButtonSizeToFitTests: XCTestCase {
         button.sizeToFit()
 
         XCTAssertEqual(button.frame.width, frameSizeWithLongLabelText.width, accuracy: 1.5)
-        XCTAssertEqual(button.frame.height, frameSizeWithLongLabelText.height, accuracy: 0.1)
+        XCTAssertEqual(button.frame.height, frameSizeWithLongLabelText.height, accuracy: 0.5)
     }
 
     func testSizeToFitWithMediumImage() {
