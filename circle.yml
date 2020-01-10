@@ -54,7 +54,7 @@ jobs:
 
   gradlebuild:
     docker:
-      - image: flowkey/androidswift5
+      - image: flowkey/androidswift5:latest
     steps:
       - checkout
       - run: git submodule update --recursive --init

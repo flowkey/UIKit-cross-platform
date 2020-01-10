@@ -123,10 +123,10 @@ set_target_properties(UIKit PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_Swift_MODULE_DIRECTORY})
 
 add_subdirectory(swift-jni)
-target_link_libraries(UIKit PRIVATE JNI)
+target_link_libraries(UIKit PUBLIC JNI)
 
 add_subdirectory(SDL)
-target_link_libraries(UIKit PRIVATE SDL)
+target_link_libraries(UIKit PUBLIC SDL)
 
 # target_compile_options(UIKit PRIVATE
 #        $<$<BOOL:ENABLE_TESTING>:-enable-testing>)
