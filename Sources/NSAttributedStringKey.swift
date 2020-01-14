@@ -7,16 +7,11 @@
 //
 
 #if os(Android)
-import struct Foundation.NSAttributedStringKey
+import Foundation
 
-
-extension NSAttributedStringKey {
-    public static let kern = NSAttributedStringKey(rawValue: "NSKern")
-    public static let foregroundColor = NSAttributedStringKey(rawValue: "NSColor")
-}
-
-extension NSAttributedString {
-    public typealias Key = NSAttributedStringKey
+extension NSAttributedString.Key {
+    public static let kern = NSAttributedString.Key(rawValue: "NSKern")
+    public static let foregroundColor = NSAttributedString.Key(rawValue: "NSColor")
 }
 
 #endif

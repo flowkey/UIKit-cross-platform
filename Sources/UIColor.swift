@@ -8,7 +8,12 @@
 
 import SDL
 
-public class UIColor: Hashable {
+// XXX: We don't actually *want* UIColor to be an NSObject but we 
+// can't avoid it for now either because of a crash in Foundation
+// https://bugs.swift.org/browse/SR-11233
+import class Foundation.NSObject
+//
+public class UIColor: NSObject/*, Hashable*/ {
     let red: UInt8
     let green: UInt8
     let blue: UInt8
@@ -77,16 +82,14 @@ public class UIColor: Hashable {
     init(_ tuple: (r: UInt8, g: UInt8, b: UInt8, a: UInt8)) {
         red = tuple.r; green = tuple.g; blue = tuple.b; alpha = tuple.a
     }
-
-    public var hashValue: Int {
-        return (
-            UInt32(red) << 24 +
-            UInt32(green) << 16 +
-            UInt32(blue) << 8 +
-            UInt32(alpha)
-        ).hashValue
-    }
 }
+
+// XXX: Can't override NSObject's description
+// extension UIColor: CustomStringConvertible {
+//     public var description: String {
+//         return "rgba(\(red), \(green), \(blue), \(alpha))"
+//     }
+// }
 
 public typealias CGColor = UIColor // They can be the same for us.
 
@@ -137,11 +140,5 @@ extension Float {
 extension UIColor {
     var sdlColor: SDLColor {
         return SDLColor(r: red, g: green, b: blue, a: alpha)
-    }
-}
-
-extension UIColor: CustomStringConvertible {
-    public var description: String {
-        return "rgba(\(red), \(green), \(blue), \(alpha))"
     }
 }

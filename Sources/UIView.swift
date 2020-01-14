@@ -158,20 +158,20 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
 
     open func insertSubview(_ view: UIView, aboveSubview siblingSubview: UIView) {
         // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
-        if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
+        if let layerIndex = layer.sublayers?.firstIndex(of: siblingSubview.layer) {
             layer.insertSublayer(view.layer, at: UInt32(layerIndex + 1))
         } else {
             layer.addSublayer(view.layer)
         }
 
         // If sibling is not found, just add to end of array
-        let index = subviews.index(of: siblingSubview)?.advanced(by: 1) ?? subviews.endIndex
+        let index = subviews.firstIndex(of: siblingSubview)?.advanced(by: 1) ?? subviews.endIndex
         insertSubviewWithoutTouchingLayer(view, at: index)
     }
 
     open func insertSubview(_ view: UIView, belowSubview siblingSubview: UIView) {
         // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
-        if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
+        if let layerIndex = layer.sublayers?.firstIndex(of: siblingSubview.layer) {
             layer.insertSublayer(view.layer, at: UInt32(layerIndex))
         } else {
             layer.addSublayer(view.layer)
@@ -179,7 +179,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
 
         // Inserting an object at index 0 pushes the existing object at index 0 to index 1
         // If sibling is not found, just add to end of array
-        let index = subviews.index(of: siblingSubview) ?? subviews.endIndex
+        let index = subviews.firstIndex(of: siblingSubview) ?? subviews.endIndex
         insertSubviewWithoutTouchingLayer(view, at: index)
     }
 
@@ -382,7 +382,7 @@ extension UIView: Equatable {
 }
 
 extension UIView: Hashable {
-    public var hashValue: Int {
-        return ObjectIdentifier(self).hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self).hashValue)
     }
 }

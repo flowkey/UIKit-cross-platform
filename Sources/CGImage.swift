@@ -104,10 +104,8 @@ public class CGImage {
                 .append(pngData.assumingMemoryBound(to: UInt8.self), count: Int(dataSize))
         }
 
-        return withoutActuallyEscaping(pngWritingFunc) { (closure) -> Data? in
-            var data = Data()
-            stbi_write_png_to_func(closure, &data, surface.pointee.w, surface.pointee.h, Int32(surface.pointee.format.pointee.BytesPerPixel), surface.pointee.pixels, surface.pointee.pitch)
-            return data.count > 0 ? data : nil
-        }
+        var data = Data()
+        stbi_write_png_to_func(pngWritingFunc, &data, surface.pointee.w, surface.pointee.h, Int32(surface.pointee.format.pointee.BytesPerPixel), surface.pointee.pixels, surface.pointee.pitch)
+        return data.count > 0 ? data : nil
     }
 }

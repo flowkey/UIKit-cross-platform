@@ -41,7 +41,7 @@ extension FontRenderer {
             let glyph = rawPointer.pointee.current.pointee
             let width = rawPointer.pointee.outline > 0 ?
                 glyph.pixmap.width :
-                min(glyph.pixmap.width, glyph.maxx - glyph.minx)
+                min(glyph.pixmap.width, UInt32(glyph.maxx - glyph.minx))
 
             xOffset += getFontKerningOffset(between: previousGlyphIndex, and: glyph.index)
             previousGlyphIndex = glyph.index
@@ -55,7 +55,7 @@ extension FontRenderer {
                     | UInt32(colorForCharacter.g) << 8
                     | UInt32(colorForCharacter.b)
 
-            for row in 0 ..< glyph.pixmap.rows {
+            for row in 0 ..< Int32(glyph.pixmap.rows) {
                 if (xOffset + glyph.minx) < 0 {
                     xOffset = -glyph.minx
                 }
@@ -66,8 +66,10 @@ extension FontRenderer {
                     else { continue }
 
                 let pixels = surface.pointee.pixels.assumingMemoryBound(to: UInt32.self)
-                var currentPixel = pixels.advanced(by: Int((row + glyph.yoffset)
-                    * surface.pointee.pitch / 4 + xOffset + glyph.minx))
+                let pixelsPerRow: Int32 = surface.pointee.pitch / 4
+                var currentPixel = pixels.advanced(
+                    by: Int((row + glyph.yoffset) * pixelsPerRow + xOffset + glyph.minx)
+                )
 
                 var source = UnsafeMutablePointer<UInt8>(glyph.pixmap.buffer!)
                     .advanced(by: Int(row * glyph.pixmap.pitch))

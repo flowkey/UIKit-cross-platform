@@ -1,13 +1,11 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.16)
+project(DemoApp)
 
-set(UIKit_DIR ../../../../)
+get_filename_component(PROJECT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../../ ABSOLUTE)
 
-# builds UIKit and bundles the Swift core libraries into the APK
-# transitively imports the add_swiftpm_library command
-find_package(UIKit REQUIRED)
+set(BuildSwiftProject_DIR ../../../../swift-android-toolchain)
+find_package(BuildSwiftProject REQUIRED)
 
-# DemoApp is the name of the SwiftPM Product as listed in Package.swift
-add_swiftpm_library(DemoApp
-    PROJECT_DIRECTORY ../..
-    PROJECT_DEPENDENCIES UIKit
+build_swift_project(
+    PROJECT_DIRECTORY ${PROJECT_DIRECTORY}
 )
