@@ -33,7 +33,7 @@ cp "${TEMPLATE_PATH}/CMakeLists.txt" .
 
 
 echo "Creating ${TARGET_SOURCES_DIRECTORY}/androidMain.swift with UIApplicationDelegate class 'AppDelegate'"
-cp "${TEMPLATE_PATH}/DemoApp/androidMain.swift" "$TARGET_SOURCES_DIRECTORY"
+cp "${TEMPLATE_PATH}/DemoApp/androidMain.swift" "$TARGET_SOURCES_DIRECTORY"/
 
 cp -R "${TEMPLATE_PATH}/android" .
 rm -rf ${IOS_PROJECT_DIR}/android/{.idea,.gradle,build,android.iml,app/{.externalNativeBuild,build}}
@@ -62,9 +62,9 @@ do
 done
 
 # adjust path to UIKit
-sed -i '' "s~../../../~../UIKit~g" ${IOS_PROJECT_DIR}/android/settings.gradle
-sed -i '' "s~../../~./UIKit~g" ${IOS_PROJECT_DIR}/CMakeLists.txt
-sed -i '' "s~../../../../~../../UIKit~g" ${IOS_PROJECT_DIR}/android/app/CMakeLists.txt
+sed -i '' "s~../../../~../UIKit/~g" ${IOS_PROJECT_DIR}/android/settings.gradle
+sed -i '' "s~../../~./UIKit/~g" ${IOS_PROJECT_DIR}/CMakeLists.txt
+sed -i '' "s~../../../../~../../UIKit/~g" ${IOS_PROJECT_DIR}/android/app/CMakeLists.txt
 
 PACKAGE_WITH_UNDERSCORES=${PACKAGE/./_} # e.g. com_example_DemoApp
 sed -i '' "s~com_example~${PACKAGE_WITH_UNDERSCORES}~g" ${TARGET_SOURCES_DIRECTORY}/androidMain.swift
