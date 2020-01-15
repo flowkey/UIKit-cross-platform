@@ -1,7 +1,7 @@
 ## Prepare your iOS Project
 
 1. Delete `Main.storyboard` and remove its reference from `Info.plist`
-2. Remove the entire block `Application Scene Manifest` from `Info.plist` and delete `SceneDelegate.swift` because UIScene is not supported yet.
+2. Remove the entire block `Application Scene Manifest` from `Info.plist` and delete the file `SceneDelegate.swift`.
 3. Modify `AppDelegate.swift`:
 
 -   Remove the `@UIApplicationMain` attribute and make the `AppDelegate` class `final`
