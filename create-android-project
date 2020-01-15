@@ -28,8 +28,8 @@ echo
 # We assume the iOS dir equals the project name
 TARGET_SOURCES_DIRECTORY=${IOS_PROJECT_DIR}/${APP_NAME}
 
-echo "Creating ${IOS_PROJECT_DIR}/Package.swift for Swift Package Manager with Product '${APP_NAME}'"
-cp "${TEMPLATE_PATH}/Package.swift" .
+echo "Creating ${IOS_PROJECT_DIR}/CMakeLists.txt"
+cp "${TEMPLATE_PATH}/CMakeLists.txt" .
 
 
 echo "Creating ${TARGET_SOURCES_DIRECTORY}/androidMain.swift with UIApplicationDelegate class 'AppDelegate'"
@@ -45,10 +45,10 @@ mkdir -p "${IOS_PROJECT_DIR}/android/app/src/main/java/${PACKAGE_WITH_FORWARDSLA
 PATH_TO_MAIN_ACTIVITY="${TEMPLATE_PATH}/android/app/src/main/java/com/example/MainActivity.kt"
 cp $PATH_TO_MAIN_ACTIVITY "${IOS_PROJECT_DIR}/android/app/src/main/java/${PACKAGE_WITH_FORWARDSLASHES}"
 
-echo "Creating Android Studio project at '${IOS_PROJECT_DIR}/android'"
+echo "Creating Android project at '${IOS_PROJECT_DIR}/android'"
 
 FILES_TO_CHANGE=(
-    "Package.swift"
+    "CMakeLists.txt"
     "android/app/build.gradle"
     "android/app/src/main/AndroidManifest.xml"
     "android/app/CMakeLists.txt"
@@ -61,7 +61,9 @@ do
     sed -i '' "s~com.example~${PACKAGE}~g" $file
 done
 
+# adjust path to UIKit
 sed -i '' "s~../../../~../UIKit~g" ${IOS_PROJECT_DIR}/android/settings.gradle
+sed -i '' "s~../../~./UIKit~g" ${IOS_PROJECT_DIR}/CMakeLists.txt
 sed -i '' "s~../../../../~../../UIKit~g" ${IOS_PROJECT_DIR}/android/app/CMakeLists.txt
 
 PACKAGE_WITH_UNDERSCORES=${PACKAGE/./_} # e.g. com_example_DemoApp
