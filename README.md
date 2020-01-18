@@ -46,14 +46,15 @@ In order to do so use the following command:
 git submodule add git@github.com:flowkey/UIKit-cross-platform.git UIKit && git submodule update --init --recursive UIKit
 ```
 
-### Android Studio Setup
+### Setup build environment
 
-1. Install [Android Studio](https://developer.android.com/studio/)
-2. Add SDKs in Android Studio
+1. Install [Cmake > 3.16](https://cmake.org/download/) and [Ninja](https://github.com/ninja-build/ninja/wiki/Pre-built-Ninja-packages)
+2. Install [Android Studio](https://developer.android.com/studio/)
+3. Add SDKs in Android Studio
     1. Open Preferences in Android Studio
     2. Go to Appearance & Behavior -> System Settings -> Android SDK
-    3. In SDK Platforms: apply checkboxes for API Levels 26 and 27
-    4. In SDK Tools: apply checkboxes for CMake, NDK, LLDB, Android SDK Build Tools, Android SDK Platform Tools
+    3. In SDK Platforms: apply checkboxes for API Levels 29 (latest should always work)
+    4. In SDK Tools: apply checkboxes for Android SDK Tools
     5. Press Apply / OK to install SDKs
 
 ## Architecture
