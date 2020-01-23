@@ -73,7 +73,7 @@ extension CALayer {
         }
 
         if let backgroundColor = backgroundColor {
-            let backgroundColorOpacity = opacity * backgroundColor.alpha.toNormalisedFloat()
+            let backgroundColorOpacity = opacity * backgroundColor.alphaValue.toNormalisedFloat()
             renderer.fill(
                 renderedBoundsRelativeToAnchorPoint,
                 with: backgroundColor.withAlphaComponent(CGFloat(backgroundColorOpacity)),
