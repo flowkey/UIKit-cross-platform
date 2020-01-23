@@ -33,6 +33,21 @@ public class UIColor: NSObject/*, Hashable*/ {
         self.alphaValue = alpha.normalisedToUInt8()
     }
 
+    // Without this we'd break Hashable / Equatable contracts for collections.
+    // We MUST guarantee that two _equal_ values also have the same `hashValue`.
+    // It is necessary because UIColor is currently an NSObject due to bugs in Foundation (see above).
+    // Otherwise we could just use the automatic Hashable conformance
+    override public var hash: Int {
+        // On Android Int/UInt are 32bit
+        // `255 << 24` (the "actual" number) does not fit into Int32.
+        // It _does_ fit into a UInt32 though, so here we add up the binary values
+        // as UInts, and then use that binary value (bit pattern) to construct
+        // an Int whose "actual" value we don't care about (it just has to be
+        // unique for each combination of the component colour values)...
+        let result = UInt(redValue) << 24 + UInt(greenValue) << 16 + UInt(blueValue) << 8 + UInt(alphaValue)
+        return Int(bitPattern: UInt(result))
+    }
+
     // from wikipedia: https://en.wikipedia.org/wiki/HSL_and_HSV
     // XXX: This is not currently working as it should but it is better than nothing
     // We currently only use this in testing, but whoever needs it for real should have a look at fixing it..
