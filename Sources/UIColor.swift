@@ -14,10 +14,10 @@ import SDL
 import class Foundation.NSObject
 //
 public class UIColor: NSObject/*, Hashable*/ {
-    let red: UInt8
-    let green: UInt8
-    let blue: UInt8
-    let alpha: UInt8
+    let redValue: UInt8
+    let greenValue: UInt8
+    let blueValue: UInt8
+    let alphaValue: UInt8
 
     convenience init(hex: Int, alpha: CGFloat = 1) {
         let red = (hex & 0xFF0000) >> 16
@@ -27,10 +27,25 @@ public class UIColor: NSObject/*, Hashable*/ {
     }
 
     public init(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
-        self.red = red.normalisedToUInt8()
-        self.green = green.normalisedToUInt8()
-        self.blue = blue.normalisedToUInt8()
-        self.alpha = alpha.normalisedToUInt8()
+        self.redValue = red.normalisedToUInt8()
+        self.greenValue = green.normalisedToUInt8()
+        self.blueValue = blue.normalisedToUInt8()
+        self.alphaValue = alpha.normalisedToUInt8()
+    }
+
+    // Without this we'd break Hashable / Equatable contracts for collections.
+    // We MUST guarantee that two _equal_ values also have the same `hashValue`.
+    // It is necessary because UIColor is currently an NSObject due to bugs in Foundation (see above).
+    // Otherwise we could just use the automatic Hashable conformance
+    override public var hash: Int {
+        // On Android Int/UInt are 32bit
+        // `255 << 24` (the "actual" number) does not fit into Int32.
+        // It _does_ fit into a UInt32 though, so here we add up the binary values
+        // as UInts, and then use that binary value (bit pattern) to construct
+        // an Int whose "actual" value we don't care about (it just has to be
+        // unique for each combination of the component colour values)...
+        let result = UInt(redValue) << 24 + UInt(greenValue) << 16 + UInt(blueValue) << 8 + UInt(alphaValue)
+        return Int(bitPattern: UInt(result))
     }
 
     // from wikipedia: https://en.wikipedia.org/wiki/HSL_and_HSV
@@ -68,19 +83,19 @@ public class UIColor: NSObject/*, Hashable*/ {
     // FIXME: mocked!
     public init(patternImage: UIImage?) {
         // TODO: define a color object for specified Quartz color reference https://developer.apple.com/documentation/uikit/uicolor/1621933-init
-        self.red = 255
-        self.green = 255
-        self.blue = 255
-        self.alpha = 255
+        self.redValue = 255
+        self.greenValue = 255
+        self.blueValue = 255
+        self.alphaValue = 255
     }
     
     public static func == (lhs: UIColor, rhs: UIColor) -> Bool {
-        return (lhs.red == rhs.red) && (lhs.green == rhs.green) && (lhs.blue == rhs.blue) && (lhs.alpha == rhs.alpha)
+        return (lhs.redValue == rhs.redValue) && (lhs.greenValue == rhs.greenValue) && (lhs.blueValue == rhs.blueValue) && (lhs.alphaValue == rhs.alphaValue)
     }
 
     // Initialise from a color struct from e.g. renderer.getDrawColor()
     init(_ tuple: (r: UInt8, g: UInt8, b: UInt8, a: UInt8)) {
-        red = tuple.r; green = tuple.g; blue = tuple.b; alpha = tuple.a
+        redValue = tuple.r; greenValue = tuple.g; blueValue = tuple.b; alphaValue = tuple.a
     }
 }
 
@@ -109,7 +124,7 @@ extension UIColor {
     }
 
     public func withAlphaComponent(_ alpha: CGFloat) -> UIColor {
-        return UIColor((self.red, self.green, self.blue, alpha.normalisedToUInt8()))
+        return UIColor((self.redValue, self.greenValue, self.blueValue, alpha.normalisedToUInt8()))
     }
 }
 
@@ -139,6 +154,6 @@ extension Float {
 
 extension UIColor {
     var sdlColor: SDLColor {
-        return SDLColor(r: red, g: green, b: blue, a: alpha)
+        return SDLColor(r: redValue, g: greenValue, b: blueValue, a: alphaValue)
     }
 }
