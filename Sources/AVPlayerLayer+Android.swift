@@ -11,9 +11,13 @@ import func Foundation.round // For rounding CGFloats in .frame
 
 public class AVPlayerLayer: JNIObject {
 
+    override public class var className: String {
+        return "org.uikit.AVPlayer"
+    }
+
     public convenience init(player: AVPlayer) {
         let parentView = JavaSDLView(getSDLView())
-        try! self.init("org.uikit.AVPlayerLayer", arguments: [parentView, player])
+        try! self.init(arguments: parentView, player)
     }
 
     public var frame: CGRect {

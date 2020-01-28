@@ -12,9 +12,13 @@ public class AVPlayer: JNIObject {
     public var onLoaded: ((Error?) -> Void)?
     public var onVideoEnded: (() -> Void)?
 
+    override public class var className: String {
+        return "org.uikit.AVPlayer"
+    }
+
     public convenience init(playerItem: AVPlayerItem) {
         let parentView = JavaSDLView(getSDLView())
-        try! self.init("org.uikit.AVPlayer", arguments: [parentView, playerItem.asset])
+        try! self.init(arguments: parentView, playerItem.asset)
         globalAVPlayer = self
     }
 

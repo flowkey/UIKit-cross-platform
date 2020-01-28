@@ -18,8 +18,13 @@ public class AVPlayerItem {
 
 public class AVURLAsset: JNIObject {
     public var url: URL?
+
+    override public class var className: String {
+        return "org.uikit.AVURLAsset"
+    }
+
     convenience public init(url: URL) {
-        try! self.init("org.uikit.AVURLAsset", arguments: [JavaSDLView(getSDLView()), url.absoluteString])
+        try! self.init(arguments: JavaSDLView(getSDLView()), url.absoluteString)
         self.url = url
     }
 }
