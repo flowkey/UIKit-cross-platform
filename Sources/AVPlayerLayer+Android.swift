@@ -12,7 +12,7 @@ import func Foundation.round // For rounding CGFloats in .frame
 public class AVPlayerLayer: JNIObject {
 
     override public class var className: String {
-        return "org.uikit.AVPlayer"
+        return "org.uikit.AVPlayerLayer"
     }
 
     public convenience init(player: AVPlayer) {
