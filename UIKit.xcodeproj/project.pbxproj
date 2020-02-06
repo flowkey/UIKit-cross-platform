@@ -1379,6 +1379,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1433,6 +1434,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1455,7 +1457,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/swift-jni/Sources/CJNI/include $(PROJECT_DIR)/SDL/SDL2/include $(PROJECT_DIR)/SDL/sdl-gpu/include $(PROJECT_DIR)/SDL/SDL_ttf/include";
 				SWIFT_VERSION = 4.2;
 			};
@@ -1477,7 +1481,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/swift-jni/Sources/CJNI/include $(PROJECT_DIR)/SDL/SDL2/include $(PROJECT_DIR)/SDL/sdl-gpu/include $(PROJECT_DIR)/SDL/SDL_ttf/include";
 				SWIFT_VERSION = 4.2;
 			};
@@ -1538,6 +1544,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.christianhaug.iOSTestTarget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1558,6 +1565,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.christianhaug.iOSTestTarget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
