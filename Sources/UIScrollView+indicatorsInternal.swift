@@ -33,6 +33,7 @@ extension UIScrollView {
 
         let shouldShowBothIndicators = shouldShowHorizontalScrollIndicator && shouldShowVerticalScrollIndicator
 
+        // These values are based on iOS
         let additionalSpacingToPreventOverlap = (
             horizontal: shouldShowBothIndicators ? 2 * indicatorDistanceFromScrollViewFrame : 0,
             vertical: shouldShowBothIndicators ? indicatorDistanceFromScrollViewFrame : 0
