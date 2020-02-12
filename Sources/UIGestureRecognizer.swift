@@ -39,6 +39,7 @@ open class UIGestureRecognizer {
                 state = .possible
             case .changed:
                 cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
+                cancelTouchesInViewIfApplicable()
             default: break
             }
         }
@@ -87,6 +88,12 @@ private extension UIGestureRecognizer {
             }
 
             $0.touchesCancelled([touch], with: UIEvent())
+        }
+    }
+
+    private func cancelTouchesInViewIfApplicable() {
+        if self.cancelsTouchesInView {
+            trackedTouch?.hasBeenCancelledByAGestureRecognizer = true
         }
     }
 }

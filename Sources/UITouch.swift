@@ -53,6 +53,8 @@ public class UITouch {
             action(recognizer)
         }
     }
+
+    var hasBeenCancelledByAGestureRecognizer = false
 }
 
 extension UITouch: Hashable {
