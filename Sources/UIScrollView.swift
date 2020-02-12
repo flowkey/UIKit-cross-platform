@@ -113,7 +113,7 @@ open class UIScrollView: UIView {
         if let earliestIndicatorInSubviewHierarchy = earliestIndicatorInSubviewHierarchy {
             indexOfLastIndicator = subviews.index(of: earliestIndicatorInSubviewHierarchy)!
         }
-        super.insertSubview(view, at: min(index, indexOfLastIndicator-1))
+        super.insertSubview(view, at: min(index, indexOfLastIndicator - 1))
     }
 
     open var isDecelerating = false {
