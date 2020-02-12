@@ -10,15 +10,15 @@ public protocol AnimatableProperty {}
 
 extension CGColor: AnimatableProperty {
     func interpolation(to endResult: CGColor, progress: CGFloat) -> UIColor {
-        let startR = Int(red)
-        let startG = Int(green)
-        let startB = Int(blue)
-        let startA = Int(alpha)
+        let startR = Int(redValue)
+        let startG = Int(greenValue)
+        let startB = Int(blueValue)
+        let startA = Int(alphaValue)
 
-        let endR = Int(endResult.red)
-        let endG = Int(endResult.green)
-        let endB = Int(endResult.blue)
-        let endA = Int(endResult.alpha)
+        let endR = Int(endResult.redValue)
+        let endG = Int(endResult.greenValue)
+        let endB = Int(endResult.blueValue)
+        let endA = Int(endResult.alphaValue)
 
         let currentProgress = Int(progress.normalisedToUInt8())
         let maxProgress = Int(UInt8.max)

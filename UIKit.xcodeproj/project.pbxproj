@@ -17,6 +17,7 @@
 		5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */; };
 		5B520DB5208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B520DB4208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift */; };
 		5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */; };
+		5B71D7472292B68E008CEC66 /* UIAccessibilityIdentification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B71D7462292B68E008CEC66 /* UIAccessibilityIdentification.swift */; };
 		5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */; };
 		5B840BB71F42FCBD0010AC95 /* AnimatableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */; };
 		5BA1FC4E1F6694CA005843B9 /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA1FC4D1F6694CA005843B9 /* UITextView.swift */; };
@@ -44,7 +45,7 @@
 		5C27E7E31ECB2F9100F5020D /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D91ECB2F9100F5020D /* CoreAudio.framework */; };
 		5C27E7E41ECB2F9100F5020D /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7DA1ECB2F9100F5020D /* ApplicationServices.framework */; };
 		5C27E7E51ECB2F9100F5020D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7DB1ECB2F9100F5020D /* Foundation.framework */; };
-		5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */; };
+		5C27E80F1ECB301900F5020D /* SDL2-Shims.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27E7FC1ECB301900F5020D /* SDL2-Shims.swift */; };
 		5C32F2C420A1C69C006D64C5 /* UIScreen+Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C32F2C320A1C69C006D64C5 /* UIScreen+Errors.swift */; };
 		5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C361E221ECC348700B3F561 /* UIView+SDL.swift */; };
 		5C3716B61F10050600B2C366 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3716B51F10050600B2C366 /* Timer.swift */; };
@@ -305,6 +306,7 @@
 		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = Sources/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5B520DB4208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontRenderer+renderAttributedString.swift"; sourceTree = "<group>"; };
 		5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CALayer+animations.swift"; path = "Sources/CALayer+animations.swift"; sourceTree = SOURCE_ROOT; };
+		5B71D7462292B68E008CEC66 /* UIAccessibilityIdentification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAccessibilityIdentification.swift; sourceTree = "<group>"; };
 		5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewAnimationGroup.swift; path = Sources/UIViewAnimationGroup.swift; sourceTree = SOURCE_ROOT; };
 		5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimatableProperty.swift; path = Sources/AnimatableProperty.swift; sourceTree = SOURCE_ROOT; };
 		5BA1FC4D1F6694CA005843B9 /* UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UITextView.swift; path = Sources/UITextView.swift; sourceTree = SOURCE_ROOT; };
@@ -337,7 +339,7 @@
 		5C27E7D91ECB2F9100F5020D /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		5C27E7DA1ECB2F9100F5020D /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		5C27E7DB1ECB2F9100F5020D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL2 Shims.swift"; sourceTree = "<group>"; };
+		5C27E7FC1ECB301900F5020D /* SDL2-Shims.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL2-Shims.swift"; sourceTree = "<group>"; };
 		5C32F2C320A1C69C006D64C5 /* UIScreen+Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+Errors.swift"; sourceTree = "<group>"; };
 		5C361E221ECC348700B3F561 /* UIView+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SDL.swift"; sourceTree = "<group>"; };
 		5C3716B51F10050600B2C366 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
@@ -347,7 +349,7 @@
 		5C418DBF20F507DA005D0E92 /* UIApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplication.swift; sourceTree = "<group>"; };
 		5C418DC120F5149E005D0E92 /* UIApplicationMain+Mac.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplicationMain+Mac.swift"; sourceTree = "<group>"; };
 		5C4AD7E1204EE2B60021DD4A /* AVPlayerItem+Mac.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+Mac.swift"; sourceTree = "<group>"; };
-		5C4AD7E2204EE2B60021DD4A /* AVPlayerItem+Android.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+Android.swift"; sourceTree = "<group>"; };
+		5C4AD7E2204EE2B60021DD4A /* AVURLAsset+Android.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVURLAsset+Android.swift"; sourceTree = "<group>"; };
 		5C4AD7E6204EE45F0021DD4A /* AVPlayerLayer+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayerLayer+Android.swift"; sourceTree = "<group>"; };
 		5C4CD51020615FCF00217B4C /* UIApplication+handleSDLEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+handleSDLEvents.swift"; sourceTree = "<group>"; };
 		5C4CD519206160EC00217B4C /* UIView+printViewHierarchy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+printViewHierarchy.swift"; sourceTree = "<group>"; };
@@ -643,6 +645,7 @@
 				5C6AB7161ED3BECD006F90AC /* UIView.swift */,
 				5C6AB76A1ED5A648006F90AC /* UIView+animate.swift */,
 				5C4CD519206160EC00217B4C /* UIView+printViewHierarchy.swift */,
+				5B71D7462292B68E008CEC66 /* UIAccessibilityIdentification.swift */,
 				5C93AE842088F7FA005BE853 /* UIViewController */,
 				838545621F26458100B64986 /* UIVisualEffect.swift */,
 				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
@@ -719,7 +722,7 @@
 				5CAF5A2F20ADD09500760FD4 /* FontRenderer+singleLineSize.swift */,
 				5CAF2D1D1EE6FD29004C6380 /* Logging.swift */,
 				5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */,
-				5C27E7FC1ECB301900F5020D /* SDL2 Shims.swift */,
+				5C27E7FC1ECB301900F5020D /* SDL2-Shims.swift */,
 				5C3716B51F10050600B2C366 /* Timer.swift */,
 				5C32F2C320A1C69C006D64C5 /* UIScreen+Errors.swift */,
 				5C361E221ECC348700B3F561 /* UIView+SDL.swift */,
@@ -806,7 +809,7 @@
 		833075381F697613002089AC /* Video */ = {
 			isa = PBXGroup;
 			children = (
-				5C4AD7E2204EE2B60021DD4A /* AVPlayerItem+Android.swift */,
+				5C4AD7E2204EE2B60021DD4A /* AVURLAsset+Android.swift */,
 				5C4AD7E1204EE2B60021DD4A /* AVPlayerItem+Mac.swift */,
 				5CADAF7A1F1D147600897FC1 /* AVPlayerLayer+Mac.swift */,
 				833075391F69768E002089AC /* AVPlayer+Android.swift */,
@@ -977,6 +980,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 5C27E7A41ECB2F6500F5020D;
@@ -1158,6 +1162,7 @@
 				83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */,
 				5C6AB71D1ED3BECD006F90AC /* UIImageView.swift in Sources */,
 				5BBEECA51F39E7A6006E3416 /* CGRect+animations.swift in Sources */,
+				5B71D7472292B68E008CEC66 /* UIAccessibilityIdentification.swift in Sources */,
 				5CDC14CC1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift in Sources */,
 				5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */,
 				61C9D3B121B051B10012018B /* NSNotification.swift in Sources */,
@@ -1205,7 +1210,7 @@
 				8337A8131F39F37500475F80 /* UIScreen.swift in Sources */,
 				83E5F8151EF8322800279C59 /* CGSize.swift in Sources */,
 				5C4CD51120615FCF00217B4C /* UIApplication+handleSDLEvents.swift in Sources */,
-				5C27E80F1ECB301900F5020D /* SDL2 Shims.swift in Sources */,
+				5C27E80F1ECB301900F5020D /* SDL2-Shims.swift in Sources */,
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
 				5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */,
 				5C93AE7C2088F7E7005BE853 /* UINavigationController.swift in Sources */,
@@ -1374,6 +1379,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1428,6 +1434,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1450,7 +1457,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/swift-jni/Sources/CJNI/include $(PROJECT_DIR)/SDL/SDL2/include $(PROJECT_DIR)/SDL/sdl-gpu/include $(PROJECT_DIR)/SDL/SDL_ttf/include";
 				SWIFT_VERSION = 4.2;
 			};
@@ -1472,7 +1481,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/swift-jni/Sources/CJNI/include $(PROJECT_DIR)/SDL/SDL2/include $(PROJECT_DIR)/SDL/sdl-gpu/include $(PROJECT_DIR)/SDL/SDL_ttf/include";
 				SWIFT_VERSION = 4.2;
 			};
@@ -1533,6 +1544,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.christianhaug.iOSTestTarget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1553,6 +1565,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.christianhaug.iOSTestTarget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

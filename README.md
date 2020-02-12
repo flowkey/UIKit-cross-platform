@@ -2,6 +2,8 @@
 [![Swift4.1](https://img.shields.io/badge/swift-4.1-orange.svg?style=flat)](https://swift.org/)
 [![Platforms](https://img.shields.io/badge/platform-Android%20%7C%20macOS-lightgrey.svg)](https://swift.org/)
 [![License](https://img.shields.io/badge/license-MIT-71787A.svg)](https://tldrlegal.com/license/mit-license)
+[![codecov](https://codecov.io/gh/flowkey/UIKit-cross-platform/branch/master/graph/badge.svg?token=7pkfn9WaxE)](https://codecov.io/gh/flowkey/UIKit-cross-platform)
+
 # UIKit-cross-platform
 
 ### Your Swift UI Code on Android
@@ -9,6 +11,7 @@
 UIKit-cross-platform is a **UI framework** for native apps, which enables **code targeting iOS UIKit** to run on other platforms, particularly on **Android**.<br>
 
 ## Goal
+
 Currently in mobile development apps have to be written twice, for iOS and Android, or native performance has to be sacrificed with a cross-platform solution such as React Native.
 
 This framework aims to combine both advantages, having **native performance** and **writing code only once** but still keeping a native look & feel.
@@ -18,7 +21,7 @@ This framework aims to combine both advantages, having **native performance** an
 1. Create new iOS Project or open an existing one
 2. [Prepare your iOS Project](docs/PREPARE_IOS_PROJECT.md)
 3. [Add UIKit-cross-platform to your project](#adding-uikit-cross-platform)
-4. Run ` ./UIKit/create-android-project` from the root of your iOS project
+4. Run `./UIKit/create-android-project` from the root of your iOS project
 5. Open `./android` folder in [Android Studio](https://developer.android.com/studio/) ([install Android SDKs if necessary](#android-studio-setup)) and press "run" button
 
 ## Try out the demo
@@ -26,6 +29,7 @@ This framework aims to combine both advantages, having **native performance** an
 This project includes a DemoApp which runs on iOS, Android and Mac.
 
 How to run it on different platforms:
+
 1. Clone this project, `cd` into it and run `git submodule update --init --recursive`
 2. Open `./samples/getting-started/DemoApp.xcodeproj` in [Xcode](https://developer.apple.com/xcode/)
     1. Run `DemoApp` target for the **iOS App**
@@ -41,18 +45,25 @@ How to run it on different platforms:
 
 The recommended way is to use `git submodules` to add it to an `UIKit` subdirectory.
 In order to do so use the following command:
+
 ```
 git submodule add git@github.com:flowkey/UIKit-cross-platform.git UIKit && git submodule update --init --recursive UIKit
 ```
 
-### Android Studio Setup
+### Setup build environment
 
-1. Install [Android Studio](https://developer.android.com/studio/)
-2. Add SDKs in Android Studio
+1. Install [Cmake > 3.16](https://cmake.org/download/) and [Ninja](https://github.com/ninja-build/ninja/wiki/Pre-built-Ninja-packages)
+
+```bash
+brew install cmake && brew install ninja
+```
+
+2. Install [Android Studio](https://developer.android.com/studio/)
+3. Add SDKs in Android Studio
     1. Open Preferences in Android Studio
     2. Go to Appearance & Behavior -> System Settings -> Android SDK
-    3. In SDK Platforms: apply checkboxes for API Levels 26 and 27
-    4. In SDK Tools: apply checkboxes for CMake, NDK, LLDB, Android SDK Build Tools, Android SDK Platform Tools
+    3. under SDK Platforms: tick checkbox for API Level 29 (latest should always work)
+    4. under SDK Tools, tick the box for `Android SDK Tools`
     5. Press Apply / OK to install SDKs
 
 ## Architecture
@@ -69,7 +80,7 @@ This framework uses the [Apple UIKit](https://developer.apple.com/documentation/
 
 ## How to contribute
 
-Contributions are *very welcome* and *helpful* 🙌
+Contributions are _very welcome_ and _helpful_ 🙌
 
 If you are looking for a feature or find a bug, please create an [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
 
@@ -77,9 +88,9 @@ For additional information please refer to our [contribution guidelines](docs/CO
 
 ## FAQs / Troubleshooting
 
-[Our FAQs can be found here (*Work In Progress*)](docs/FAQs.md).
+[Our FAQs can be found here (_Work In Progress_)](docs/FAQs.md).
 
-Please contact us regarding upcoming issues on [Slack](http://bit.ly/uikit-cross-platform) or create a new [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
+Please contact us regarding upcoming issues on [Spectrum](https://spectrum.chat/uikit-cross-platform) or create a new [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
 
 ## License
 

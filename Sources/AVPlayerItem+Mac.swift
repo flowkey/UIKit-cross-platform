@@ -7,6 +7,7 @@
 //
 
 @_exported import class AVFoundation.AVPlayerItem
+@_exported import class AVFoundation.AVURLAsset
 import struct AVFoundation.CMTime
 
 public typealias CMTime = AVFoundation.CMTime

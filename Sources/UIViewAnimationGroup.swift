@@ -26,8 +26,8 @@ class UIViewAnimationGroup {
 }
 
 extension UIViewAnimationGroup: Hashable {
-    var hashValue: Int {
-        return ObjectIdentifier(self).hashValue
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self).hashValue)
     }
 
     static func ==(lhs: UIViewAnimationGroup, rhs: UIViewAnimationGroup) -> Bool {
