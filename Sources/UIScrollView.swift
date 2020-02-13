@@ -103,8 +103,12 @@ open class UIScrollView: UIView {
         case .began:
             showScrollIndicators()
             delegate?.scrollViewWillBeginDragging(self)
-            cancelDeceleratingIfNeccessary()
+            if isDecelerating {
+                setContentOffset(visibleContentOffset, animated: false)
+                cancelDecelerationAnimations()
+            }
         case .ended:
+            self.isDecelerating = false
             startDeceleratingIfNecessary()
             weightedAverageVelocity = .zero
 

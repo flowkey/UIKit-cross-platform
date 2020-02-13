@@ -45,15 +45,6 @@ extension UIScrollView {
         })
     }
 
-    func cancelDeceleratingIfNeccessary() {
-        if !isDecelerating { return }
-
-        // Get the presentation value from the current animation
-        setContentOffset(visibleContentOffset, animated: false)
-        cancelDecelerationAnimations()
-        isDecelerating = false
-    }
-
     func cancelDecelerationAnimations() {
         layer.removeAnimation(forKey: "bounds")
         horizontalScrollIndicator.layer.removeAnimation(forKey: "position")
