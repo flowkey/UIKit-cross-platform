@@ -111,25 +111,39 @@ class UIScrollViewTests: XCTestCase {
     }
 
     func testIsDecelerating() {
+        // XXX: We are duplicating code with the `mockTouch` function
+        // because we have to put XCTAssertions inbetween
+
         XCTAssertEqual(scrollView.isDecelerating, false)
 
-        let mockTouch = UITouch(touchId: 0, at: CGPoint(x: 0, y: 0), timestamp: 0)
-        scrollView.panGestureRecognizer.trackedTouch = mockTouch
-        scrollView.panGestureRecognizer.touchesBegan([mockTouch], with: UIEvent())
-        mockTouch.updateAbsoluteLocation(CGPoint(x: 100, y: 100))
-        scrollView.panGestureRecognizer.touchesMoved([mockTouch], with: UIEvent())
+        let mockedTouch = UITouch(touchId: 0, at: CGPoint(x: 0, y: 0), timestamp: 0)
+        scrollView.panGestureRecognizer.trackedTouch = mockedTouch
+        scrollView.panGestureRecognizer.touchesBegan([mockedTouch], with: UIEvent())
+        mockedTouch.updateAbsoluteLocation(CGPoint(x: 100, y: 100))
+        scrollView.panGestureRecognizer.touchesMoved([mockedTouch], with: UIEvent())
 
-        // Necessary to mock velocity scroll
+        // Mock a velocity scroll
         scrollView.contentOffset = CGPoint(x: -30, y: -40)
         scrollView.panGestureRecognizer.previousTouchesMovedTimestamp = 3.141
         scrollView.panGestureRecognizer.touchesMovedTimestamp = 3.140
 
         XCTAssertEqual(scrollView.isDecelerating, false)
-        scrollView.panGestureRecognizer.touchesEnded([mockTouch], with: UIEvent())
+
+        scrollView.panGestureRecognizer.touchesEnded([mockedTouch], with: UIEvent())
         XCTAssertEqual(scrollView.isDecelerating, true)
 
-        // XXX: optional and problematic: add another touch that "stops" the velocity scroll
-        // First investigate if it's necessary - maybe this test already covers the problem
+
+        let mockTouch = UITouch(touchId: 0, at: CGPoint(x: 0, y: 0), timestamp: 0)
+        let point = CGPoint(x: 0, y: 0)
+        scrollView.panGestureRecognizer.touchesBegan([mockTouch], with: UIEvent())
+
+        XCTAssertEqual(scrollView.isDecelerating, true)
+
+        mockTouch.updateAbsoluteLocation(point)
+        scrollView.panGestureRecognizer.touchesMoved([mockTouch], with: UIEvent())
+        scrollView.panGestureRecognizer.touchesEnded([mockTouch], with: UIEvent())
+
+        XCTAssertEqual(scrollView.isDecelerating, false)
     }
 
     func testDelegateMethods() {
