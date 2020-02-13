@@ -110,6 +110,28 @@ class UIScrollViewTests: XCTestCase {
         // XXX: set style, test bgr -> does this need to be tested?
     }
 
+    func testIsDecelerating() {
+        XCTAssertEqual(scrollView.isDecelerating, false)
+
+        let mockTouch = UITouch(touchId: 0, at: CGPoint(x: 0, y: 0), timestamp: 0)
+        scrollView.panGestureRecognizer.trackedTouch = mockTouch
+        scrollView.panGestureRecognizer.touchesBegan([mockTouch], with: UIEvent())
+        mockTouch.updateAbsoluteLocation(CGPoint(x: 100, y: 100))
+        scrollView.panGestureRecognizer.touchesMoved([mockTouch], with: UIEvent())
+
+        // Necessary to mock velocity scroll
+        scrollView.contentOffset = CGPoint(x: -30, y: -40)
+        scrollView.panGestureRecognizer.previousTouchesMovedTimestamp = 3.141
+        scrollView.panGestureRecognizer.touchesMovedTimestamp = 3.140
+
+        XCTAssertEqual(scrollView.isDecelerating, false)
+        scrollView.panGestureRecognizer.touchesEnded([mockTouch], with: UIEvent())
+        XCTAssertEqual(scrollView.isDecelerating, true)
+
+        // XXX: optional and problematic: add another touch that "stops" the velocity scroll
+        // First investigate if it's necessary - maybe this test already covers the problem
+    }
+
     func testDelegateMethods() {
         class DelegationTestScrollView: UIScrollView, UIScrollViewDelegate {
 
@@ -158,11 +180,11 @@ class UIScrollViewTests: XCTestCase {
         wait(for: [beginDraggingExpectation, didScrollExpectation, didEndDraggingExpectation], timeout: 1.0)
     }
 
-    func mockTouch(toPoint: CGPoint, inScrollView scrollView: UIScrollView) {
+    func mockTouch(toPoint point: CGPoint, inScrollView scrollView: UIScrollView) {
         let mockTouch = UITouch(touchId: 0, at: CGPoint(x: 0, y: 0), timestamp: 0)
 
         scrollView.panGestureRecognizer.touchesBegan([mockTouch], with: UIEvent())
-        mockTouch.updateAbsoluteLocation(CGPoint(x: 100, y: 100))
+        mockTouch.updateAbsoluteLocation(point)
         scrollView.panGestureRecognizer.touchesMoved([mockTouch], with: UIEvent())
         scrollView.panGestureRecognizer.touchesEnded([mockTouch], with: UIEvent())
     }
