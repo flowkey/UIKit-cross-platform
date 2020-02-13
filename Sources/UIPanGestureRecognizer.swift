@@ -11,7 +11,6 @@ import Foundation
 open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var initialTouchPoint: CGPoint?
 
-    // TODO: make an extension in tests instead of changing this to internal from private
     internal var previousTouchesMovedTimestamp: TimeInterval?
     internal var touchesMovedTimestamp: TimeInterval?
 
