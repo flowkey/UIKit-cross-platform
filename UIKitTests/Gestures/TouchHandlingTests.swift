@@ -48,6 +48,7 @@ class TouchHandlingTests: XCTestCase {
         handleTouchUp(CGPoint(x: 15, y: 10))
 
         XCTAssertFalse(view.touchesMovedWasCalled)
+        XCTAssertFalse(view.touchesEndedWasCalled)
     }
 
     func testDoesNotCancelTouchesInView() {
@@ -58,6 +59,7 @@ class TouchHandlingTests: XCTestCase {
         handleTouchUp(CGPoint(x: 15, y: 10))
 
         XCTAssertTrue(view.touchesMovedWasCalled)
+        XCTAssertTrue(view.touchesEndedWasCalled)
     }
 
     func testShouldNotRecognizeSimultaneously() {
@@ -80,8 +82,14 @@ class TouchHandlingTests: XCTestCase {
 private extension TouchHandlingTests {
     class ResponderView: UIView {
         var touchesMovedWasCalled = false
+        var touchesEndedWasCalled = false
+
         override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
             touchesMovedWasCalled = true
+        }
+
+        override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+            touchesEndedWasCalled = true
         }
     }
 
