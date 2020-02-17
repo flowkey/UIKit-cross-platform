@@ -63,7 +63,7 @@ class UIScrollViewTests: XCTestCase {
         let label2Index = scrollView.subviews.index(of: label2)!
 
         XCTAssert(horizontalIndicatorIndex > label1Index)
-        XCTAssert(verticalIndicatorIndex > label1Index)
+        XCTAssert(verticalIndicatorIndex > label1Index) 
 
         XCTAssert(label2Index > label1Index)
         // XCTAssertEqual(scrollView.subviews.count, 2) // currently fails with "4 != 2", as indicators are visible in `subviews`
