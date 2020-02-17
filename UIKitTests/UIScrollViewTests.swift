@@ -47,6 +47,28 @@ class UIScrollViewTests: XCTestCase {
         XCTAssertEqual(scrollView.contentInset, arbitraryContentInset)
     }
 
+    func testScrollIndicatorsViewHierarchyPositions() {
+        // subviews[0] is the back-most view, higher indexes are higher in layer hierarchy
+        // we want scroll indicators to always remain on top of 'normal' subviews
+        // and we want newer 'normal' subviews to be above older ones
+
+        let label1 = UILabel()
+        let label2 = UILabel()
+        scrollView.addSubview(label1)
+        scrollView.addSubview(label2)
+
+        let horizontalIndicatorIndex = scrollView.subviews.index(of: scrollView.horizontalScrollIndicator)!
+        let verticalIndicatorIndex = scrollView.subviews.index(of: scrollView.verticalScrollIndicator)!
+        let label1Index = scrollView.subviews.index(of: label1)!
+        let label2Index = scrollView.subviews.index(of: label2)!
+
+        XCTAssert(horizontalIndicatorIndex > label1Index)
+        XCTAssert(verticalIndicatorIndex > label1Index)
+
+        XCTAssert(label2Index > label1Index)
+        XCTAssertEqual(scrollView.subviews.count, 2)
+    }
+
     func testScrollIndicatorsVisibility() {
         //TODO: update to match iOS behaviour:
         //1. frame is always there, alpha changes from 0 to 1
