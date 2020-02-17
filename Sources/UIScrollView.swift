@@ -71,17 +71,6 @@ open class UIScrollView: UIView {
             addSubview($0)
         }
     }
-    
-//    public override var subviews: [UIView] {
-//        get {
-//            var subviews = super.subviews
-//            subviews = subviews.filter() {$0 != verticalScrollIndicator && $0 != horizontalScrollIndicator}
-//            return subviews
-//        }
-//        set (newSubviews) {
-//            super.subviews = newSubviews
-//        }
-//    }
 
     // When adding subviews, make sure that the scroll indicators stay on top.
     // Subview list goes back-to-front, so indicators need to take the last two positions.
