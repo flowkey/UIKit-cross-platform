@@ -87,20 +87,7 @@ open class UIScrollView: UIView {
     // Subview list goes back-to-front, so indicators need to take the last two positions.
     // We use the earliestIndicatorInSubviewHierarchy variable to make sure new views are always inserted below them.
     private lazy var earliestIndicatorInSubviewHierarchy: UIView? = {
-        let indexOfHorizontal = subviews.index(of: horizontalScrollIndicator)
-        let indexOfVertical = subviews.index(of: verticalScrollIndicator)
-
-        // if both indicators are missing, return nil, if one is missing, return one that's present
-        if indexOfVertical == nil && indexOfHorizontal == nil { return nil }
-        if indexOfHorizontal == nil { return verticalScrollIndicator }
-        if indexOfVertical == nil { return horizontalScrollIndicator }
-
-        // if both indicators are in the view hierarchy, return the one that is last
-        if indexOfHorizontal! < indexOfVertical! {
-            return horizontalScrollIndicator
-        } else {
-            return verticalScrollIndicator
-        }
+        return subviews.first(where: { $0 === horizontalScrollIndicator || $0 === verticalScrollIndicator })
     }()
 
 
