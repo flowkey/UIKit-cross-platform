@@ -156,7 +156,7 @@ open class UIScrollView: UIView {
     private let baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
 
     public var indicatorStyle: IndicatorStyle = .`default` {
-        didSet { applyScrollIndicatorsStyle() }
+        didSet { applyScrollIndicatorsStyle() } // also called on `init` separately
     }
 
     public var scrollIndicatorInsets = UIEdgeInsets.zero
