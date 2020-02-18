@@ -82,7 +82,7 @@ open class UIScrollView: UIView {
 
     open override func addSubview(_ view: UIView) {
         // Indicators should always stay on top of the view hierarchy (so the end of the subviews list, at two highest indexes)
-        // we insert new views "below them" (so one position before the scroll indicator with the lower of two highest indexes)
+        // we add new views "below them" (so one position before the scroll indicator with the lower of two highest indexes)
         if
             view !== horizontalScrollIndicator,
             view !== verticalScrollIndicator,
@@ -94,13 +94,15 @@ open class UIScrollView: UIView {
         }
     }
 
-
     open override func insertSubview(_ view: UIView, at index: Int) {
-        var indexOfLastIndicator = Int.max
-        if let earliestIndicatorInSubviewHierarchy = earliestIndicatorInSubviewHierarchy {
-            indexOfLastIndicator = subviews.index(of: earliestIndicatorInSubviewHierarchy)!
+        // Indicators should always stay on top of the view hierarchy (so the end of the subviews list, at two highest indexes)
+        // if we are asked to insert at their positions, we insert at the first non-indicator index instead
+        if let firstIndicatorInSubviews = firstIndicatorInSubviews {
+            let indexOfFirstIndicator = subviews.index(of: firstIndicatorInSubviews)!
+            super.insertSubview(view, at: min(index, indexOfFirstIndicator - 1))
+        } else {
+            super.insertSubview(view, at: index)
         }
-        super.insertSubview(view, at: min(index, indexOfLastIndicator - 1))
     }
 
     open var isDecelerating = false {
