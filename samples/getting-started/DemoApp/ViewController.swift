@@ -18,14 +18,6 @@ class ViewController: UIViewController {
         let scrollView = UIScrollView(frame: CGRect(x: 200, y: 100, width: 300, height: 150))
         scrollView.contentSize = CGSize(width: 600, height: 300)
         scrollView.backgroundColor = .white
-//        scrollView.showsVerticalScrollIndicator = false
-//        scrollView.showsHorizontalScrollIndicator = false
-
-//        label.text = "Hello World"
-//        label.font = .systemFont(ofSize: 30)
-//        label.sizeToFit()
-//        label.center = view.center
-//        scrollView.addSubview(label)
 
         let colors: [UIColor] = [.green, .orange, .red]
         var views = [UIView]()
@@ -38,19 +30,15 @@ class ViewController: UIViewController {
         }
 
 
-        let blackView = UIView(frame: CGRect(origin: CGPoint(x: 225+20*2 - 50, y: 15+20*2), size: CGSize(width: 150, height: 10)))
-        blackView.backgroundColor = .blue
+        let blueView = UIView(frame: CGRect(origin: CGPoint(x: 225+20*2 - 50, y: 15+20*2), size: CGSize(width: 150, height: 10)))
+        blueView.backgroundColor = .blue
 
-        scrollView.insertSubview(blackView, at: 6)
-        print(scrollView.subviews.index(of: blackView) ?? -1)
+        scrollView.insertSubview(blueView, at: 6)
+        print(scrollView.subviews.index(of: blueView) ?? -1)
 
 
         view.backgroundColor = UIColor(red: 0 / 255, green: 206 / 255, blue: 201 / 255, alpha: 1)
-
-
         view.addSubview(scrollView)
-
-        print(scrollView.subviews.count, " count")
     }
 
 }
