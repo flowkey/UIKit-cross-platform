@@ -52,21 +52,61 @@ class UIScrollViewTests: XCTestCase {
         // we want scroll indicators to always remain on top of 'normal' subviews
         // and we want newer 'normal' subviews to be above older ones
 
-        let label1 = UILabel()
-        let label2 = UILabel()
-        scrollView.addSubview(label1)
-        scrollView.addSubview(label2)
+        let view1 = UIView()
+        let view2 = UIView()
+        let view3 = UIView()
+
+        scrollView.addSubview(view1)
+        scrollView.addSubview(view2)
+        scrollView.addSubview(view3)
 
         let horizontalIndicatorIndex = scrollView.subviews.index(of: scrollView.horizontalScrollIndicator)!
         let verticalIndicatorIndex = scrollView.subviews.index(of: scrollView.verticalScrollIndicator)!
-        let label1Index = scrollView.subviews.index(of: label1)!
-        let label2Index = scrollView.subviews.index(of: label2)!
+        let label1Index = scrollView.subviews.index(of: view1)!
+        let label2Index = scrollView.subviews.index(of: view2)!
+        let label3Index = scrollView.subviews.index(of: view3)!
 
         XCTAssert(horizontalIndicatorIndex > label1Index)
         XCTAssert(verticalIndicatorIndex > label1Index)
 
         XCTAssert(label2Index > label1Index)
-        XCTAssertEqual(scrollView.subviews.count, 4)
+
+        XCTAssertEqual(label1Index, 0)
+        XCTAssertEqual(label2Index, 1)
+        XCTAssertEqual(label3Index, 2)
+        XCTAssertEqual(horizontalIndicatorIndex, 3)
+        XCTAssertEqual(verticalIndicatorIndex, 4)
+        XCTAssertEqual(scrollView.subviews.count, 5)
+
+        let viewToBeInserted1 = UIView()
+        scrollView.insertSubview(viewToBeInserted1, at: 1)
+        let indexOfInsertedView1 = scrollView.subviews.index(of: viewToBeInserted1)!
+
+        // This might seem weird, but that's what happens in iOS:
+        // the inserted view and the one that was in its place before will have the same index
+        XCTAssertEqual(label1Index, 0)
+        XCTAssertEqual(indexOfInsertedView1, 1)
+        XCTAssertEqual(label2Index, 1)
+        XCTAssertEqual(label3Index, 2)
+        XCTAssertEqual(horizontalIndicatorIndex, 3)
+        XCTAssertEqual(verticalIndicatorIndex, 4)
+        XCTAssertEqual(scrollView.subviews.count, 6)
+
+
+        let viewToBeInserted2 = UIView()
+        scrollView.insertSubview(viewToBeInserted2, at: 4) // position currently occupied by scroll indicator
+        let indexOfInsertedView2 = scrollView.subviews.index(of: viewToBeInserted1)!
+
+        // If we try to insert at a position occupied by or above indicators,
+        // the inserted view should 'slide down' and assume the highest position below indicators
+        XCTAssertEqual(label1Index, 0)
+        XCTAssertEqual(indexOfInsertedView1, 1)
+        XCTAssertEqual(label2Index, 1)
+        XCTAssertEqual(label3Index, 2)
+        XCTAssertEqual(indexOfInsertedView2, 1)
+        XCTAssertEqual(horizontalIndicatorIndex, 3)
+        XCTAssertEqual(verticalIndicatorIndex, 4)
+        XCTAssertEqual(scrollView.subviews.count, 7)
     }
 
     func testScrollIndicatorsVisibility() {
