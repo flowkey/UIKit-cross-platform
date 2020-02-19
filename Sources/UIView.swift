@@ -185,6 +185,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
 
     open func insertSubview(_ view: UIView, at index: Int) {
         // XXX: This might not cover all cases yet. Managing these two hierarchies is complex...
+        insertSubviewWithoutTouchingLayer(view, at: index)
         let indexOfViewWeJustPushedForwardInArray = index + 1
         if index == 0 {
             layer.insertSublayer(view.layer, at: 0)
@@ -195,8 +196,6 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
             // We didn't replace any view. Just push the new layer to the end of the sublayers array.
             layer.addSublayer(view.layer)
         }
-
-        insertSubviewWithoutTouchingLayer(view, at: index)
     }
 
     private func safeGetSubview(index: Int) -> UIView? {
