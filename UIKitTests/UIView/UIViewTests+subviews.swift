@@ -69,7 +69,6 @@ class UIViewSubviewTests: XCTestCase {
 
         view.addSubview(subview1)
         view.addSubview(subview2)
-
         view.insertSubview(subview3, at: 1)
 
         XCTAssertEqual(view.subviews, [subview1, subview3, subview2])
