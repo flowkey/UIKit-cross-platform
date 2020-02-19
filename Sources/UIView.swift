@@ -194,7 +194,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
             // We didn't replace any view. Just push the new layer to the end of the sublayers array.
             layer.addSublayer(view.layer)
         }
-        
+
         insertSubviewWithoutTouchingLayer(view, at: index)
     }
 
