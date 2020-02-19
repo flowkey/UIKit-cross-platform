@@ -1,0 +1,11 @@
+# Lines starting with '#' are comments.
+# Each line is a file pattern followed by one or more owners.
+
+# We use codeowners to protect critical code. In order to change those parts of the code
+# a review from at least one "owner" is required.
+
+Sources/CALayer+SDL.swift @ephemer
+Sources/UIView+SDL.swift @ephemer
+Sources/FontRender*.swift @ephemer
+Sources/Shader*.swift @ephemer
+
