@@ -185,10 +185,9 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
 
     open func insertSubview(_ view: UIView, at index: Int) {
         // XXX: This might not cover all cases yet. Managing these two hierarchies is complex...
-        let indexOfViewWeJustPushedForwardInArray = index + 1
         if index == 0 {
             layer.insertSublayer(view.layer, at: 0)
-        } else if let currentSubview = safeGetSubview(index: indexOfViewWeJustPushedForwardInArray) {
+        } else if let currentSubview = safeGetSubview(index: index) {
             layer.insertSublayer(view.layer, below: currentSubview.layer)
         } else {
             // The given index was greater than that of any existing subview, meaning:
