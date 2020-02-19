@@ -61,6 +61,21 @@ class UIViewSubviewTests: XCTestCase {
         XCTAssertEqual(view.layer.sublayers!, [subview1.layer, subview2.layer])
     }
 
+    func testInsertSubviewAtIndex() {
+        let view = UIView()
+        let subview1 = UIView()
+        let subview2 = UIView()
+        let subview3 = UIView()
+
+        view.addSubview(subview1)
+        view.addSubview(subview2)
+
+        view.insertSubview(subview3, at: 1)
+
+        XCTAssertEqual(view.subviews, [subview1, subview3, subview2])
+        XCTAssertEqual(view.layer.sublayers!, [subview1.layer, subview3.layer, subview2.layer])
+    }
+
     func testInsertSubviewAboveNonExistentSibling() {
         let view = UIView()
         let subview1 = UIView()
