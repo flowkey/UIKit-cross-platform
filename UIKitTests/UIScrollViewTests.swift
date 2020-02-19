@@ -69,7 +69,7 @@ class UIScrollViewTests: XCTestCase {
         )
     }
 
-    func testIndicatorsPositionInHierarchyWhenInsertingSubviews() {
+    func testIndicatorsPositionInHierarchyWhenInsertingSubviewsAtAHighPosition() {
         // If we try to insert at a position occupied by or above indicators,
         // the inserted view should 'slide down' and assume the highest position below indicators
 
@@ -77,23 +77,9 @@ class UIScrollViewTests: XCTestCase {
         for view in mockViews { scrollView.addSubview(view) }
 
         let insertedMockView = UIView()
-        scrollView.insertSubview(insertedMockView, at: mockViews.count + 2) // scroll indicator is at this index
+        scrollView.insertSubview(insertedMockView, at: mockViews.count + 2)
 
-        // The following two tests are 'weaker' tests and represent the current state
-        // There is a commented-out 'stronger' test below them that represents the desired state (fully consistent with iOS)
-        // We need to fix https://github.com/flowkey/UIKit-cross-platform/issues/308 and replace these two with the third one
-        XCTAssertGreaterThan(
-            scrollView.subviews.index(of: scrollView.horizontalScrollIndicator)!,
-            scrollView.subviews.index(of: insertedMockView)!
-        )
-
-        XCTAssertGreaterThan(
-            scrollView.subviews.index(of: scrollView.verticalScrollIndicator)!,
-            scrollView.subviews.index(of: insertedMockView)!
-        )
-
-        // Currently broken
-        // XCTAssertEqual(indexOfInsertedView, mockViews.count)
+        XCTAssertEqual(scrollView.subviews.index(of: insertedMockView), mockViews.count)
     }
 
 

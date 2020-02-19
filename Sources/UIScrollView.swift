@@ -99,7 +99,7 @@ open class UIScrollView: UIView {
         // if we are asked to insert at their positions, we insert at the first non-indicator index instead
         if let firstIndicatorInSubviews = firstIndicatorInSubviews {
             let indexOfFirstIndicator = subviews.index(of: firstIndicatorInSubviews)!
-            super.insertSubview(view, at: min(index, indexOfFirstIndicator - 1))
+            super.insertSubview(view, at: min(index, indexOfFirstIndicator))
         } else {
             super.insertSubview(view, at: index)
         }
