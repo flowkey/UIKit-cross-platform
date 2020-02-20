@@ -33,7 +33,7 @@ extension UIApplication {
             case SDL_MOUSEMOTION:
                 if
                     let event = UIEvent.activeEvents.first,
-                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) })
+                    let touch = event.allTouches?.first(where: { $0.touchId == 0 })
                 {
                     let previousTimestamp = touch.timestamp
                     let newTimestamp = e.timestampInSeconds
@@ -51,7 +51,7 @@ extension UIApplication {
             case SDL_MOUSEBUTTONUP:
                 if
                     let event = UIEvent.activeEvents.first,
-                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) })
+                    let touch = event.allTouches?.first(where: { $0.touchId == 0 })
                 {
                     touch.timestamp = e.timestampInSeconds
                     touch.phase = .ended
@@ -175,7 +175,7 @@ extension UIEvent {
         case SDL_FINGERMOTION:
             if
                 let firstExistingEvent = UIEvent.activeEvents.first,
-                let matchingTouch = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId})
+                let matchingTouch = firstExistingEvent.allTouches?.first(where: { $0.touchId == event.tfinger.fingerId })
             {
 
                 matchingTouch.timestamp = event.timestampInSeconds
@@ -189,7 +189,7 @@ extension UIEvent {
         case SDL_FINGERUP:
             if
                 let firstExistingEvent = UIEvent.activeEvents.first,
-                let matchingTouch = firstExistingEvent.allTouches?.first(where: {$0.touchId == event.tfinger.fingerId})
+                let matchingTouch = firstExistingEvent.allTouches?.first(where: { $0.touchId == event.tfinger.fingerId })
             {
                 matchingTouch.timestamp = event.timestampInSeconds
                 matchingTouch.phase = .ended
@@ -234,7 +234,7 @@ public func onNativeTouch(
     x: JavaFloat,
     y: JavaFloat,
     pressure: JavaFloat,
-    timestamp: JavaLong
+    timestampMs: JavaLong
 ) {
     guard let eventType = SDL_EventType.eventFrom(androidAction: action)
     else { return }
@@ -242,8 +242,8 @@ public func onNativeTouch(
     var event = SDL_Event(tfinger:
         SDL_TouchFingerEvent(
             type: eventType.rawValue,
-            timestamp: UInt32(timestamp), // ensure this is in ms
-            touchId: Int64(touchDeviceID), // I think this is the "Touch Device ID" which should always be 0, but check this
+            timestamp: UInt32(timestampMs),
+            touchId: Int64(touchDeviceID), // some arbitrary number, stays the same per device
             fingerId: Int64(pointerFingerID),
             x: x / Float(UIScreen.main.scale),
             y: y / Float(UIScreen.main.scale),
