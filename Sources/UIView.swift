@@ -8,7 +8,7 @@
 
 import SDL
 
-open class UIView: UIResponder, CALayerDelegate {
+open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     open class var layerClass: CALayer.Type {
         return CALayer.self
     }
@@ -158,20 +158,20 @@ open class UIView: UIResponder, CALayerDelegate {
 
     open func insertSubview(_ view: UIView, aboveSubview siblingSubview: UIView) {
         // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
-        if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
+        if let layerIndex = layer.sublayers?.firstIndex(of: siblingSubview.layer) {
             layer.insertSublayer(view.layer, at: UInt32(layerIndex + 1))
         } else {
             layer.addSublayer(view.layer)
         }
 
         // If sibling is not found, just add to end of array
-        let index = subviews.index(of: siblingSubview)?.advanced(by: 1) ?? subviews.endIndex
+        let index = subviews.firstIndex(of: siblingSubview)?.advanced(by: 1) ?? subviews.endIndex
         insertSubviewWithoutTouchingLayer(view, at: index)
     }
 
     open func insertSubview(_ view: UIView, belowSubview siblingSubview: UIView) {
         // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
-        if let layerIndex = layer.sublayers?.index(of: siblingSubview.layer) {
+        if let layerIndex = layer.sublayers?.firstIndex(of: siblingSubview.layer) {
             layer.insertSublayer(view.layer, at: UInt32(layerIndex))
         } else {
             layer.addSublayer(view.layer)
@@ -179,16 +179,15 @@ open class UIView: UIResponder, CALayerDelegate {
 
         // Inserting an object at index 0 pushes the existing object at index 0 to index 1
         // If sibling is not found, just add to end of array
-        let index = subviews.index(of: siblingSubview) ?? subviews.endIndex
+        let index = subviews.firstIndex(of: siblingSubview) ?? subviews.endIndex
         insertSubviewWithoutTouchingLayer(view, at: index)
     }
 
     open func insertSubview(_ view: UIView, at index: Int) {
         // XXX: This might not cover all cases yet. Managing these two hierarchies is complex...
-        let indexOfViewWeJustPushedForwardInArray = index + 1
         if index == 0 {
             layer.insertSublayer(view.layer, at: 0)
-        } else if let currentSubview = safeGetSubview(index: indexOfViewWeJustPushedForwardInArray) {
+        } else if let currentSubview = safeGetSubview(index: index) {
             layer.insertSublayer(view.layer, below: currentSubview.layer)
         } else {
             // The given index was greater than that of any existing subview, meaning:
@@ -358,6 +357,9 @@ open class UIView: UIResponder, CALayerDelegate {
 
         return nil
     }
+
+    // MARK: Accessibility
+    open var accessibilityIdentifier: String?
 }
 
 extension UIView: CustomStringConvertible {
@@ -379,7 +381,7 @@ extension UIView: Equatable {
 }
 
 extension UIView: Hashable {
-    public var hashValue: Int {
-        return ObjectIdentifier(self).hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self).hashValue)
     }
 }

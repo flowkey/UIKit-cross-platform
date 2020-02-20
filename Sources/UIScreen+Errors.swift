@@ -36,8 +36,14 @@ extension UIScreen {
     }
 }
 
-extension GPU_ErrorEnum: Hashable {
-    public var hashValue: Int { return Int(self.rawValue) }
+extension GPU_ErrorEnum: Equatable, Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.rawValue)
+    }
+
+    public static func == (lhs: GPU_ErrorEnum, rhs: GPU_ErrorEnum) -> Bool {
+        return lhs.rawValue == rhs.rawValue
+    }
 }
 
 extension GPU_ErrorEnum: Error, CustomStringConvertible {

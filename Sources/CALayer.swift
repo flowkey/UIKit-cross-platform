@@ -36,7 +36,7 @@ open class CALayer {
     }
 
     open func insertSublayer(_ layer: CALayer, above sibling: CALayer) {
-        guard let sublayers = sublayers, let insertIndex = sublayers.index(of: sibling) else {
+        guard let sublayers = sublayers, let insertIndex = sublayers.firstIndex(of: sibling) else {
             preconditionFailure("self.sublayers must exist and contain sibling CALayer '\(sibling)'")
         }
 
@@ -44,7 +44,7 @@ open class CALayer {
     }
 
     open func insertSublayer(_ layer: CALayer, below sibling: CALayer) {
-        guard let sublayers = sublayers, let insertIndex = sublayers.index(of: sibling) else {
+        guard let sublayers = sublayers, let insertIndex = sublayers.firstIndex(of: sibling) else {
             preconditionFailure("self.sublayers must exist and contain sibling CALayer '\(sibling)'")
         }
 
@@ -291,8 +291,8 @@ extension CALayer {
 }
 
 extension CALayer: Hashable {
-    public var hashValue: Int {
-        return ObjectIdentifier(self).hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self).hashValue)
     }
 
     public static func == (lhs: CALayer, rhs: CALayer) -> Bool {

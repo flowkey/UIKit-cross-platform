@@ -15,8 +15,14 @@ jobs:
               PROVISIONING_PROFILE=""
               -sdk "macosx"
               -scheme "UIKit"
-              test |
+              build test |
             xcpretty --color --report junit
+
+      - run:
+          name: "send coverage report to codecov"
+          command: bash <(curl -s https://codecov.io/bash) -J 'UIKit'
+          environment:
+            - CODECOV_TOKEN: "4b6cd237-4637-42d6-ad29-0d1a6ee59761"
 
       - run:
           name: Test iOSTestTarget
@@ -48,17 +54,20 @@ jobs:
 
   gradlebuild:
     docker:
-      - image: flowkey/androidswift
+      - image: flowkey/androidswift5:latest
     steps:
       - checkout
       - run: git submodule update --recursive --init
-      - run: |
-          cp -f ./swift-android-toolchain/usr/Linux/ld.gold /usr/bin/
-          ./swift-android-toolchain/setup.sh
+      - restore_cache:
+          key: gradle_v1-{{ checksum "./samples/getting-started/android/build.gradle" }}
       - run:
           name: Build demo app for android
           command: ./gradlew assembleDebug
           path: ./samples/getting-started/android
+      - save_cache:
+          key: gradle_v1-{{ checksum "./samples/getting-started/android/build.gradle" }}
+          paths:
+              - /root/.gradle/
 
 workflows:
   version: 2

@@ -10,11 +10,11 @@ import struct Foundation.AffineTransform
 public typealias CGAffineTransform = AffineTransform
 
 public extension CGAffineTransform {
-    public init(scaleX: CGFloat, y: CGFloat) {
+    init(scaleX: CGFloat, y: CGFloat) {
         self.init(scaleByX: scaleX, byY: y)
     }
 
-    public var isIdentity: Bool {
+    var isIdentity: Bool {
         return self == .identity
     }
 

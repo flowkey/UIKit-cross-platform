@@ -24,7 +24,7 @@ import java.io.File
 
 
 @Suppress("unused")
-class AVPlayerItem(parent: SDLActivity, url: String) {
+class AVURLAsset(parent: SDLActivity, url: String) {
     internal val videoSource: ExtractorMediaSource
 
     init {
@@ -33,8 +33,8 @@ class AVPlayerItem(parent: SDLActivity, url: String) {
         // ExtractorMediaSource works for regular media files such as mp4, webm, mkv
         val cacheDataSourceFactory = CacheDataSourceFactory(
                 parent.context,
-                256 * 1024 * 1024,
-                32 * 1024 * 1024
+                512 * 1024 * 1024,
+                64 * 1024 * 1024
         )
 
         videoSource = ExtractorMediaSource
@@ -44,7 +44,7 @@ class AVPlayerItem(parent: SDLActivity, url: String) {
 }
 
 @Suppress("unused")
-class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
+class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     internal val exoPlayer: SimpleExoPlayer
     private var listener: Player.EventListener
 
@@ -58,7 +58,7 @@ class AVPlayer(parent: SDLActivity, playerItem: AVPlayerItem) {
         val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
 
         exoPlayer = ExoPlayerFactory.newSimpleInstance(parent.context, trackSelector)
-        exoPlayer.prepare(playerItem.videoSource)
+        exoPlayer.prepare(asset.videoSource)
 
         listener = object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -167,7 +167,7 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
         exoPlayerLayout.player = player.exoPlayer
         exoPlayerLayout.useController = false
         exoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
-
+        exoPlayerLayout.tag = "ExoPlayer"
         parent.addView(exoPlayerLayout, 0)
     }
 

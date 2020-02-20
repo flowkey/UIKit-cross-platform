@@ -42,7 +42,7 @@ private func log(_ items: [Any], priority: LogPriority) {
 
 public func fatalError(_ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line, _ flag: Bool = false) -> Never {
     log(["\(file): \(line)\n" + message()], priority: .error)
-    Swift.fatalError(message, file: file, line: line)
+    Swift.fatalError(message(), file: file, line: line)
 }
 
 public enum LogPriority: Int32 {

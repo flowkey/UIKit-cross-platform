@@ -7,7 +7,7 @@
 //
 
 public extension UIApplication {
-    public struct LaunchOptionsKey: RawRepresentable, Hashable {
+    struct LaunchOptionsKey: RawRepresentable, Hashable {
         public var rawValue: String
         public init(rawValue: String) {
             self.rawValue = rawValue

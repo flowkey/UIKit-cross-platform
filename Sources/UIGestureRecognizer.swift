@@ -39,6 +39,7 @@ open class UIGestureRecognizer {
                 state = .possible
             case .changed:
                 cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
+                cancelTouchesInViewIfApplicable()
             default: break
             }
         }
@@ -89,12 +90,18 @@ private extension UIGestureRecognizer {
             $0.touchesCancelled([touch], with: UIEvent())
         }
     }
+
+    private func cancelTouchesInViewIfApplicable() {
+        if self.cancelsTouchesInView {
+            trackedTouch?.hasBeenCancelledByAGestureRecognizer = true
+        }
+    }
 }
 
 // Allow UIGestureRecognizers to be added to a `Set` etc.
 extension UIGestureRecognizer: Hashable {
-    public var hashValue: Int {
-        return ObjectIdentifier(self).hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self).hashValue)
     }
 
     public static func == (lhs: UIGestureRecognizer, rhs: UIGestureRecognizer) -> Bool {

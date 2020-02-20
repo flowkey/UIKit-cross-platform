@@ -9,21 +9,23 @@
 import JNI
 import struct Foundation.URL
 
-public class AVPlayerItem: JNIObject {
-    public var url: URL?
-    convenience public init(url: URL) {
-        try! self.init("org.uikit.AVPlayerItem", arguments: [JavaSDLView(getSDLView()), url.absoluteString])
-        self.url = url
-    }
-
-    public var durationInMs: Double {
-        let durationInMs: Int64 = try! jni.GetField("durationInMs", from: self.instance)
-        return Double(durationInMs)
+public class AVPlayerItem {
+    public var asset: AVURLAsset
+    public init(asset: AVURLAsset) {
+        self.asset = asset
     }
 }
 
-extension AVPlayerItem: JavaParameterConvertible, JavaInitializableFromMethod {
-    private static let javaClassname = "org/uikit/AVPlayerItem"
+public class AVURLAsset: JNIObject {
+    public var url: URL?
+    convenience public init(url: URL) {
+        try! self.init("org.uikit.AVURLAsset", arguments: [JavaSDLView(getSDLView()), url.absoluteString])
+        self.url = url
+    }
+}
+
+extension AVURLAsset: JavaParameterConvertible, JavaInitializableFromMethod {
+    private static let javaClassname = "org/uikit/AVURLAsset"
     public static let asJNIParameterString = "L\(javaClassname);"
 
     public func toJavaParameter() -> JavaParameter {

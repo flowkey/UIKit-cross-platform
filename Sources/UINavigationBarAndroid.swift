@@ -78,7 +78,7 @@ private class UINavigationButtonAndroid: Button {
 extension UIColor {
     func isDarkEnoughToWarrantWhiteText() -> Bool {
         let thresholdLevel = Int(UInt8.max) / 2
-        let totalColourIntensity = Int(red) + Int(green) + Int(blue)
+        let totalColourIntensity = Int(redValue) + Int(greenValue) + Int(blueValue)
         return (totalColourIntensity / 3) < thresholdLevel
     }
 }
