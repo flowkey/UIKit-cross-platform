@@ -18,4 +18,8 @@ extension CGPoint {
     static func from(_ event: SDLEventWithCoordinates) -> CGPoint {
         return UIScreen.main.absolutePointInOwnCoordinates(x: CGFloat(event.x), y: CGFloat(event.y))
     }
+
+    static func from(_ event: SDL_TouchFingerEvent) -> CGPoint {
+        return CGPoint(x: CGFloat(event.x), y: CGFloat(event.y))
+    }
 }

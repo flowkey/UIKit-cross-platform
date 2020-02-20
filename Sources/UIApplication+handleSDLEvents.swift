@@ -14,6 +14,14 @@ extension UIApplication {
         var e = SDL_Event()
 
         while SDL_PollEvent(&e) == 1 {
+
+            #if os(Android)
+            if let uievent = UIEvent.from(e) {
+                sendEvent(uievent)
+                break
+            }
+            #endif
+
             switch SDL_EventType(rawValue: e.type) {
             case SDL_QUIT:
                 handleSDLQuit()
@@ -25,7 +33,7 @@ extension UIApplication {
             case SDL_MOUSEMOTION:
                 if
                     let event = UIEvent.activeEvents.first,
-                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+                    let touch = event.allTouches?.first(where: { $0.touchId == 0 })
                 {
                     let previousTimestamp = touch.timestamp
                     let newTimestamp = e.timestampInSeconds
@@ -43,7 +51,7 @@ extension UIApplication {
             case SDL_MOUSEBUTTONUP:
                 if
                     let event = UIEvent.activeEvents.first,
-                    let touch = event.allTouches?.first(where: { $0.touchId == Int(0) } )
+                    let touch = event.allTouches?.first(where: { $0.touchId == 0 })
                 {
                     touch.timestamp = e.timestampInSeconds
                     touch.phase = .ended
@@ -61,7 +69,6 @@ extension UIApplication {
                         keyWindow?.printViewHierarchy()
                     default:
                         print(e.key.keysym.sym)
-                        break
                     }
                 }
 
@@ -144,3 +151,122 @@ extension SDL_Event {
         return TimeInterval(self.common.timestamp) / 1000
     }
 }
+
+extension UIEvent {
+    static func from(_ event: SDL_Event) -> UIEvent? {
+        switch SDL_EventType(event.type) {
+        case SDL_FINGERDOWN:
+            // XXX: minimal implementation for single touch
+            guard UIEvent.activeEvents.isEmpty else {
+                return nil
+            }
+
+            let newTouch = UITouch(
+                touchId: 0,
+                at: CGPoint(
+                    x: CGFloat(event.tfinger.x),
+                    y: CGFloat(event.tfinger.y)
+                ),
+                timestamp: event.timestampInSeconds
+            )
+
+            return UIEvent(touch: newTouch)
+
+        case SDL_FINGERMOTION:
+            if
+                let firstExistingEvent = UIEvent.activeEvents.first,
+                let matchingTouch = firstExistingEvent.allTouches?.first(where: { $0.touchId == event.tfinger.fingerId })
+            {
+
+                matchingTouch.timestamp = event.timestampInSeconds
+                matchingTouch.phase = .moved
+                matchingTouch.updateAbsoluteLocation(.from(event.tfinger))
+                return firstExistingEvent
+            } else {
+                return nil
+            }
+
+        case SDL_FINGERUP:
+            if
+                let firstExistingEvent = UIEvent.activeEvents.first,
+                let matchingTouch = firstExistingEvent.allTouches?.first(where: { $0.touchId == event.tfinger.fingerId })
+            {
+                matchingTouch.timestamp = event.timestampInSeconds
+                matchingTouch.phase = .ended
+                return firstExistingEvent
+            } else {
+                return nil
+            }
+
+        default:
+            return nil
+        }
+    }
+}
+
+extension UIEvent: CustomStringConvertible {
+    public var description: String {
+        let text = "Event with touches: "
+        guard let allTouches = self.allTouches else {
+            return text + "none"
+        }
+        let descriptions = allTouches.map { $0.description }
+        return text + descriptions.joined(separator: ",\n")
+    }
+}
+
+extension UITouch: CustomStringConvertible {
+    public var description: String {
+        return "TouchID: \(self.touchId), timestamp: \(self.timestamp)"
+    }
+}
+
+#if os(Android)
+import JNI
+
+@_cdecl("Java_org_libsdl_app_SDLActivity_onNativeTouchUIKit")
+public func onNativeTouch(
+    env: UnsafeMutablePointer<JNIEnv>,
+    view: JavaObject,
+    touchDeviceID: JavaInt,
+    pointerFingerID: JavaInt,
+    action: JavaInt,
+    x: JavaFloat,
+    y: JavaFloat,
+    pressure: JavaFloat,
+    timestampMs: JavaLong
+) {
+    guard let eventType = SDL_EventType.eventFrom(androidAction: action)
+    else { return }
+
+    var event = SDL_Event(tfinger:
+        SDL_TouchFingerEvent(
+            type: eventType.rawValue,
+            timestamp: UInt32(timestampMs),
+            touchId: Int64(touchDeviceID), // some arbitrary number, stays the same per device
+            fingerId: Int64(pointerFingerID),
+            x: x / Float(UIScreen.main.scale),
+            y: y / Float(UIScreen.main.scale),
+            dx: 0,
+            dy: 0,
+            pressure: pressure
+        )
+    )
+
+    // add the event to SDL's event stack
+    // don't use SDL_PushEvent because it overrides `event.timestamp` with its own:
+    SDL_PeepEvents(&event, 1, SDL_ADDEVENT, 0, 0)
+}
+
+extension SDL_EventType {
+    public static func eventFrom(androidAction: JavaInt) -> SDL_EventType? {
+        switch androidAction {
+        case 0, 5: return SDL_FINGERDOWN
+        case 1, 6: return SDL_FINGERUP
+        case 2: return SDL_FINGERMOTION
+        default: return nil
+        }
+    }
+}
+
+#endif
