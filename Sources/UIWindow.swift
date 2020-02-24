@@ -60,12 +60,6 @@ public class UIWindow: UIView {
     }
 }
 
-private extension UITouch {
-    var hasBeenCancelledByAGestureRecognizer: Bool {
-        return gestureRecognizers.contains(where: { ($0.state == .changed) && $0.cancelsTouchesInView })
-    }
-}
-
 private extension UIView {
     func getRecognizerHierachy() -> [UIGestureRecognizer] {
         var recognizerHierachy: [UIGestureRecognizer] = []

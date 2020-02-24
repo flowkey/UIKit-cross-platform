@@ -7,7 +7,7 @@
 //
 
 import SDL
-import CJNI
+import JNI
 
 public struct UIKitAndroid {
     public static var UIApplicationDelegateClass: UIApplicationDelegate.Type?

@@ -13,7 +13,7 @@ import func Foundation.round
 extension SDLWindowFlags: OptionSet {}
 
 public extension UIScreen {
-    internal(set) public static var main: UIScreen! {
+    internal(set) static var main: UIScreen! {
         didSet { CALayer.layerTreeIsDirty = true }
     }
 }

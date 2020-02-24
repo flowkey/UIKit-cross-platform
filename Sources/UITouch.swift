@@ -53,14 +53,16 @@ public class UITouch {
             action(recognizer)
         }
     }
+
+    internal var hasBeenCancelledByAGestureRecognizer = false
 }
 
 extension UITouch: Hashable {
-    public var hashValue: Int {
-        return touchId
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(touchId)
     }
 
-    static public func == (lhs: UITouch, rhs: UITouch) -> Bool {
+    public static func == (lhs: UITouch, rhs: UITouch) -> Bool {
         return lhs.touchId == rhs.touchId
     }
 }
