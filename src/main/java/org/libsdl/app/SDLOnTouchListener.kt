@@ -56,11 +56,18 @@ interface SDLOnTouchListener: View.OnTouchListener {
         return true
     }
 
-    fun callOnNativeTouchIfHasFocus(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float, t: Long) {
+    fun callOnNativeTouchIfHasFocus(
+            touchDevId: Int,
+            pointerFingerId: Int,
+            action: Int,
+            x: Float,
+            y: Float,
+            p: Float,
+            t: Long
+    ) {
         if (this.mHasFocus) {
             this.onNativeTouchUIKit(touchDevId, pointerFingerId, action, x, y, p, t)
         }
-
     }
 }
 
