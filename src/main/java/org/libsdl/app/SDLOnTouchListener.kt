@@ -11,6 +11,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
 
     var mWidth: Float
     var mHeight: Float
+    var mHasFocus: Boolean
 
     fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
     fun onNativeTouchUIKit(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float, t: Long)
@@ -32,7 +33,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
             MotionEvent.ACTION_MOVE -> {
                 for (i in 0 until event.pointerCount) {
                     val (fingerId, x, y, pressure) = event.touchValues(i)
-                    this.onNativeTouchUIKit(touchDevId, fingerId, action, x, y, pressure, timestamp)
+                    this.callOnNativeTouchIfHasFocus(touchDevId, fingerId, action, x, y, pressure, timestamp)
                 }
             }
 
@@ -41,18 +42,34 @@ interface SDLOnTouchListener: View.OnTouchListener {
             MotionEvent.ACTION_POINTER_UP,
             MotionEvent.ACTION_POINTER_DOWN -> {
                 val (fingerId, x, y, pressure) = event.touchValues(event.actionIndex)
-                this.onNativeTouchUIKit(touchDevId, fingerId, action, x, y, pressure, timestamp)
+                this.callOnNativeTouchIfHasFocus(touchDevId, fingerId, action, x, y, pressure, timestamp)
             }
 
             MotionEvent.ACTION_CANCEL -> {
                 for (i in 0 until event.pointerCount) {
                     val (fingerId, x, y, pressure) = event.touchValues(i)
-                    this.onNativeTouchUIKit(touchDevId, fingerId, MotionEvent.ACTION_UP, x, y, pressure, timestamp)
+                    this.callOnNativeTouchIfHasFocus(touchDevId, fingerId, MotionEvent.ACTION_UP, x, y, pressure, timestamp)
                 }
             }
         }
 
         return true
+    }
+
+    fun callOnNativeTouchIfHasFocus(
+            touchDevId: Int,
+            pointerFingerId: Int,
+            action: Int,
+            x: Float,
+            y: Float,
+            p: Float,
+            t: Long
+    ) {
+        // check if we have focus because of a crash when re-entering the player 
+        // from a background state while touching (JNIEnv dead)
+        if (this.mHasFocus) {
+            this.onNativeTouchUIKit(touchDevId, pointerFingerId, action, x, y, p, t)
+        }
     }
 }
 

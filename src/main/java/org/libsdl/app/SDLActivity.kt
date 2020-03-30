@@ -45,7 +45,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
     private var mSurface: SurfaceView
     private var mIsSurfaceReady = false
-    private var mHasFocus = false
+    override var mHasFocus = false
 
     private external fun nativeProcessEventsAndRender()
     private external fun nativeInit(): Int
