@@ -11,7 +11,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
 
     var mWidth: Float
     var mHeight: Float
-    var canSavelyCallOnNativeTouch: Boolean
+    var mHasFocus: Boolean
 
     fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
     fun onNativeTouchUIKit(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float, t: Long)
@@ -33,7 +33,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
             MotionEvent.ACTION_MOVE -> {
                 for (i in 0 until event.pointerCount) {
                     val (fingerId, x, y, pressure) = event.touchValues(i)
-                    this.callOnNativeTouchIfSave(touchDevId, fingerId, action, x, y, pressure, timestamp)
+                    this.callOnNativeTouchIfHasFocus(touchDevId, fingerId, action, x, y, pressure, timestamp)
                 }
             }
 
@@ -42,13 +42,13 @@ interface SDLOnTouchListener: View.OnTouchListener {
             MotionEvent.ACTION_POINTER_UP,
             MotionEvent.ACTION_POINTER_DOWN -> {
                 val (fingerId, x, y, pressure) = event.touchValues(event.actionIndex)
-                this.callOnNativeTouchIfSave(touchDevId, fingerId, action, x, y, pressure, timestamp)
+                this.callOnNativeTouchIfHasFocus(touchDevId, fingerId, action, x, y, pressure, timestamp)
             }
 
             MotionEvent.ACTION_CANCEL -> {
                 for (i in 0 until event.pointerCount) {
                     val (fingerId, x, y, pressure) = event.touchValues(i)
-                    this.callOnNativeTouchIfSave(touchDevId, fingerId, MotionEvent.ACTION_UP, x, y, pressure, timestamp)
+                    this.callOnNativeTouchIfHasFocus(touchDevId, fingerId, MotionEvent.ACTION_UP, x, y, pressure, timestamp)
                 }
             }
         }
@@ -56,8 +56,8 @@ interface SDLOnTouchListener: View.OnTouchListener {
         return true
     }
 
-    fun callOnNativeTouchIfSave(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float, t: Long) {
-        if (this.canSavelyCallOnNativeTouch) {
+    fun callOnNativeTouchIfHasFocus(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float, t: Long) {
+        if (this.mHasFocus) {
             this.onNativeTouchUIKit(touchDevId, pointerFingerId, action, x, y, p, t)
         }
 

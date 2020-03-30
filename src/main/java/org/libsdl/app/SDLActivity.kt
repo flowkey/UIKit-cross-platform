@@ -45,7 +45,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
     private var mSurface: SurfaceView
     private var mIsSurfaceReady = false
-    private var mHasFocus = false
+    override var mHasFocus = false
 
     private external fun nativeProcessEventsAndRender()
     private external fun nativeInit(): Int
@@ -65,7 +65,6 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     external override fun onNativeTouchUIKit(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float, t: Long)
     override var mWidth: Float = 1.0f // Keep track of the surface size to normalize touch events
     override var mHeight: Float = 1.0f // Start with non-zero values to avoid potential division by zero
-    override var canSavelyCallOnNativeTouch = false
 
     // APKExtensionStreamOpener conformance
     external override fun nativeGetHint(name: String): String?
@@ -109,9 +108,6 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
         if (hasFocus) {
             handleResume()
-            this.canSavelyCallOnNativeTouch = true
-        } else {
-            this.canSavelyCallOnNativeTouch = false
         }
     }
 
