@@ -65,6 +65,8 @@ interface SDLOnTouchListener: View.OnTouchListener {
             p: Float,
             t: Long
     ) {
+        // check if we have focus because of a crash when re-entering the player 
+        // from a background state while touching (JNIEnv dead)
         if (this.mHasFocus) {
             this.onNativeTouchUIKit(touchDevId, pointerFingerId, action, x, y, p, t)
         }
