@@ -30,6 +30,10 @@ public final class UIScreen {
         self.rawPointer = renderTarget
         self.bounds = bounds
         self.scale = scale
+
+        if let window = UIApplication.shared?.keyWindow {
+            window.frame = bounds
+        }
     }
 
     convenience init() {
