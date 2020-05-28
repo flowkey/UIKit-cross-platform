@@ -37,6 +37,7 @@ public final class UIScreen {
     }
 
     convenience init() {
+        print("[SDLActivity] UIScreen.init")
         guard UIScreen.main == nil else {
             // This is a problem because it means something else in the logic is probably incorrect
             // For example, if you are restarting the app, you should ensure the previous app is fully deinited first
@@ -70,6 +71,8 @@ public final class UIScreen {
             // The easiest solution is just to work in 1:1 pixels
             GPU_SetPreInitFlags(GPU_GetPreInitFlags() | GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)
             size = CGSize(width: CGFloat(displayMode.w), height: CGFloat(displayMode.h))
+            print("[SDLActivity] SDLDisplayMode.current.w:", size.width)
+            print("[SDLActivity] SDLDisplayMode.current.h:", size.height)
         }
 
         guard let gpuTarget = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue) else {

@@ -256,6 +256,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
     // Called when the surface is resized, e.g. orientation change or activity creation
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+        // MARK
         Log.v(TAG, "surfaceChanged()")
 
         var sdlFormat = 0x15151002 // SDL_PIXELFORMAT_RGB565 by default
@@ -309,23 +310,24 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         }
 
         if (mIsSurfaceReady && mWidth.toInt() == adjustedWidth && mHeight.toInt() == adjustedHeight) {
+            Log.v(TAG, "skipping resize because width and height did not change")
             return
         }
-
-        nativeDestroyScreen()
 
         mWidth = adjustedWidth.toFloat()
         mHeight = adjustedHeight.toFloat()
 
-        this.onNativeResize(mWidth.toInt(), mHeight.toInt(), sdlFormat, display.refreshRate)
+        this.onNativeResize(mWidth.toInt(), mHeight.toInt(), sdlFormat, display.refreshRate) // calls Android_SetScreenResolution
         Log.v(TAG, "Window size: " + mWidth + "x" + mHeight)
+
+        nativeDestroyScreen() // SDL_DestroyWindow
 
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
 
-        doNativeInitAndPostFrameCallbackIfNotRunning()
-
+        doNativeInitAndPostFrameCallbackIfNotRunning() // UIScreen()
+        
         if (mHasFocus) {
             handleSurfaceResume()
         }
