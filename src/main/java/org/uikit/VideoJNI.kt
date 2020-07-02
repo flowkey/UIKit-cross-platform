@@ -78,21 +78,12 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
                 }
             }
 
-            override fun onPlayerError(error: ExoPlaybackException?) {
-                if (error?.type == ExoPlaybackException.TYPE_SOURCE) {
+            override fun onPlayerError(error: ExoPlaybackException) {
+                if (error.type == ExoPlaybackException.TYPE_SOURCE) {
                     nativeOnVideoSourceError()
                     Log.e("SDL", "ExoPlaybackException occurred")
                 }
             }
-
-            // not used but necessary to implement EventListener interface:
-            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
-            override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {}
-            override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {}
-            override fun onLoadingChanged(isLoading: Boolean) {}
-            override fun onPositionDiscontinuity(reason: Int) {}
-            override fun onRepeatModeChanged(repeatMode: Int) {}
-            override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {}
         }
 
         exoPlayer.addListener(listener)
@@ -147,7 +138,7 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     }
 
     fun setPlaybackRate(rate: Float) {
-        exoPlayer.playbackParameters = PlaybackParameters(rate, 1.0F)
+        exoPlayer.setPlaybackParameters(PlaybackParameters(rate, 1.0F))
     }
 
     fun cleanup() {
