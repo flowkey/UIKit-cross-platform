@@ -36,7 +36,7 @@ public class UIImage {
 
         for scaleString in possibleScaleStrings {
             let attemptedFilePath = "\(pathWithoutExtension)\(scaleString)\(fileExtension)"
-            if let data = Data.fromPathCrossPlatform(attemptedFilePath) {
+            if let data = Data._fromPathCrossPlatform(attemptedFilePath) {
                 self.init(data: data, scale: attemptedFilePath.extractImageScale())
                 return
             }
@@ -48,7 +48,7 @@ public class UIImage {
     }
 
     public convenience init?(path: String) {
-        guard let data = Data.fromPathCrossPlatform(path) else { return nil }
+        guard let data = Data._fromPathCrossPlatform(path) else { return nil }
         self.init(data: data, scale: path.extractImageScale())
     }
 

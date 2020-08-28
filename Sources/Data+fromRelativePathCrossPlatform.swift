@@ -9,7 +9,7 @@
 import Foundation
 
 extension Data {
-    static func fromPathCrossPlatform(_ path: String) -> Data? {
+    public static func _fromPathCrossPlatform(_ path: String) -> Data? {
         #if !os(Android)
         // At time of writing the SDL code below worked on all supported SDL platforms.
         // But, because of some crashes in `Data` we're doing an unneccessary copy there
