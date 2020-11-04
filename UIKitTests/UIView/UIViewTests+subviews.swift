@@ -94,11 +94,11 @@ class UIViewSubviewTests: XCTestCase {
         let prevSuperview = UIView()
         let subview = UIView()
         prevSuperview.addSubview(subview)
-        let curtSuperview = UIView()
-        curtSuperview.addSubview(subview)
+        let newSuperview = UIView()
+        newSuperview.addSubview(subview)
         
         XCTAssertEqual(prevSuperview.subviews, [])
-        XCTAssertEqual(curtSuperview.subviews, [subview])
+        XCTAssertEqual(newSuperview.subviews, [subview])
     }
 
     func testAddTwoSubviewsWithLayerInBetween() {
