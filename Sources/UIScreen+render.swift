@@ -91,14 +91,34 @@ extension UIScreen {
     }
 
     func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat) {
+        // we want to render the outline 'inside' the rect rather
+        // than exceeding the bounds when lineThickness is bigger than 1
+        let offset = lineThickness / 2
+        let scaledGpuRect = CGRect(
+            x: rect.origin.x + offset,
+            y: rect.origin.y + offset,
+            width: rect.size.width - offset,
+            height: rect.size.height - offset
+        ).gpuRect(scale: scale)
+
         GPU_SetLineThickness(Float(lineThickness))
-        GPU_Rectangle(rawPointer, rect.gpuRect(scale: scale), color: lineColor.sdlColor)
+        GPU_Rectangle(rawPointer, scaledGpuRect, color: lineColor.sdlColor)
     }
 
     func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat, cornerRadius: CGFloat) {
         if cornerRadius > 1 {
+            // we want to render the outline 'inside' the rect rather
+            // than exceeding the bounds when lineThickness is bigger than 1
+            let offset = lineThickness / 2
+            let scaledGpuRect = CGRect(
+                x: rect.origin.x + offset,
+                y: rect.origin.y + offset,
+                width: rect.size.width - offset,
+                height: rect.size.height - offset
+            ).gpuRect(scale: scale)
+
             GPU_SetLineThickness(Float(lineThickness))
-            GPU_RectangleRound(rawPointer, rect.gpuRect(scale: scale), cornerRadius: Float(cornerRadius), color: lineColor.sdlColor)
+            GPU_RectangleRound(rawPointer, scaledGpuRect, cornerRadius: Float(cornerRadius), color: lineColor.sdlColor)
         } else {
             outline(rect, lineColor: lineColor, lineThickness: lineThickness)
         }
