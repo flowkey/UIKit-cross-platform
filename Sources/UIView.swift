@@ -208,7 +208,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     private func insertSubviewWithoutTouchingLayer(_ view: UIView, at index: Int) {
         // ensure index is always in bounds:
         let index = max(subviews.startIndex, min(index, subviews.endIndex))
-        if view.superview != nil { removeFromSuperview() }
+        if view.superview != nil { view.removeFromSuperview() }
         subviews.insert(view, at: index)
         view.superview = self
     }
