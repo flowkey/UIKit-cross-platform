@@ -11,7 +11,7 @@ public struct CATransaction {
     private var disableActions_ = false
     private var animationDuration_: CGFloat = CALayer.defaultAnimationDuration
 
-    private static var transactionStack = [CATransaction]()
+    internal static var transactionStack = [CATransaction]()
 
     public static func begin() {
         transactionStack.append(CATransaction())
