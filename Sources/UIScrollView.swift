@@ -26,7 +26,7 @@ open class UIScrollView: UIView {
 
             // Cancel deceleration animations only when contentOffset gets set without animations.
             // Otherwise we might cancel any "bounds" animations which are not iniated from velocity scrolling.
-            if isDecelerating && CATransaction.transactionStack.isEmpty {
+            if isDecelerating && UIView.currentAnimationPrototype == nil {
                 cancelDecelerationAnimations()
             }
 
