@@ -23,7 +23,13 @@ open class UIScrollView: UIView {
         get { return bounds.origin }
         set {
             guard newValue != contentOffset else { return }
-            cancelDecelerationAnimations()
+
+            // Cancel deceleration animations only when contentOffset gets set without animations.
+            // Otherwise we might cancel any "bounds" animations which are not iniated from velocity scrolling.
+            if isDecelerating && CATransaction.transactionStack.isEmpty {
+                cancelDecelerationAnimations()
+            }
+
             bounds.origin = newValue
             layoutScrollIndicatorsIfNeeded()
         }

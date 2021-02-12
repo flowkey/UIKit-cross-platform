@@ -62,8 +62,10 @@ extension UIScrollView {
     }
 
     func cancelDecelerationAnimations() {
-        layer.removeAnimation(forKey: "bounds")
-        horizontalScrollIndicator.layer.removeAnimation(forKey: "position")
-        verticalScrollIndicator.layer.removeAnimation(forKey: "position")
+        if !layer.animations.isEmpty {
+            layer.removeAnimation(forKey: "bounds")
+            horizontalScrollIndicator.layer.removeAnimation(forKey: "position")
+            verticalScrollIndicator.layer.removeAnimation(forKey: "position")
+        }
     }
 }
