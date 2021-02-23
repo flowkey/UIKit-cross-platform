@@ -55,6 +55,7 @@ open class UIApplication {
     }
 
     deinit {
+        print("UIApplication.deinit(): setting UIScreen.main to nil")
         UIScreen.main = nil
         UIFont.clearCachedFontFiles()
         DisplayLink.activeDisplayLinks.removeAll()
@@ -97,3 +98,4 @@ public func nativeProcessEventsAndRender(env: UnsafeMutablePointer<JNIEnv>, view
     CFRunLoopRunInMode(kCFRunLoopDefaultMode, max(0.001, remainingFrameTime / 2), true)
 }
 #endif
+

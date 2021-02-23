@@ -23,9 +23,11 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
     SDL_SetMainReady()
 
     if UIApplication.shared == nil {
-        return JavaInt(
-            UIApplicationMain(UIKitAndroid.UIApplicationClass, UIKitAndroid.UIApplicationDelegateClass)
+        let errorCode = UIApplicationMain(
+            UIKitAndroid.UIApplicationClass,
+            UIKitAndroid.UIApplicationDelegateClass
         )
+        return JavaInt(errorCode)
     }
 
     // UIApplicationMain also inits a screen, so this is a special case.
@@ -39,5 +41,6 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
 @_cdecl("Java_org_libsdl_app_SDLActivity_nativeDestroyScreen")
 public func nativeDestroyScreen(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
     UIApplication.onWillEnterBackground()
+    print("SDLActivity_nativeDestroyScreen: UIApplication.onDidEnterBackground()")
     UIApplication.onDidEnterBackground()
 }

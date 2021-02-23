@@ -102,7 +102,9 @@ extension UIApplication {
 extension UIApplication {
     class func onWillEnterForeground() {
         #if os(Android)
+        print("UIApplication.onWillEnterForeground()")
         if UIScreen.main == nil { // sometimes we "enter foreground" after just a loss of focus
+            print("UIApplication.onWillEnterForeground(): create UIScreen")
             UIScreen.main = UIScreen()
         }
         #endif
@@ -126,6 +128,7 @@ extension UIApplication {
         UIApplication.post(didEnterBackgroundNotification)
 
         #if os(Android)
+        print("UIApplication.onDidEnterBackground(): setting UIScreen.main to nil")
         UIScreen.main = nil
         #endif
     }

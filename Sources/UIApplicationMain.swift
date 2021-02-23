@@ -33,8 +33,9 @@ private func classFromString<T>(_ string: String?) -> T? {
 @discardableResult
 internal func UIApplicationMain(
     _ applicationClass: UIApplication.Type?,
-    _ applicationDelegateClass: UIApplicationDelegate.Type?) -> Int32
-{
+    _ applicationDelegateClass: UIApplicationDelegate.Type?
+) -> Int32 {
+    print("creating UIApplicationMain")
     let application = (applicationClass ?? UIApplication.self).init()
     UIApplication.shared = application
 

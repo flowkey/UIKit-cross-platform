@@ -27,6 +27,7 @@ public final class UIScreen {
     public let scale: CGFloat
 
     private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
+        print("creating UIScreen")
         self.rawPointer = renderTarget
         self.bounds = bounds
         self.scale = scale
