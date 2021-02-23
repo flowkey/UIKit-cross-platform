@@ -61,12 +61,15 @@ public final class UIScreen {
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
         GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC)
 
-        if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
+        if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.desktop {
             // Fix fullscreen resolution on Mac and make Android easier to reason about:
             // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
             // The easiest solution is just to work in 1:1 pixels
             GPU_SetPreInitFlags(GPU_GetPreInitFlags() | GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)
+
             size = CGSize(width: CGFloat(displayMode.w), height: CGFloat(displayMode.h))
+            
+            print("size from SDLDisplayMode:", size)
         }
 
         guard let gpuTarget = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue) else {

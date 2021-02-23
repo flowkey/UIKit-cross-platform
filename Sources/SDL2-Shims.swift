@@ -19,6 +19,15 @@ struct SDLError: Error {
 extension SDLDisplayMode {
     static var current: SDLDisplayMode? {
         var displayMode = SDLDisplayMode()
+        guard __SDL_GetDesktopDisplayMode(0, &displayMode) == 0 else {
+            return nil
+        }
+        
+        return displayMode
+    }
+
+    static var desktop: SDLDisplayMode? {
+        var displayMode = SDLDisplayMode()
         guard __SDL_GetCurrentDisplayMode(0, &displayMode) == 0 else {
             return nil
         }
