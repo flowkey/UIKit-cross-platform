@@ -285,9 +285,6 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
             return
         }
 
-        var adjustedWidth = width
-        var adjustedHeight = height
-
         if (context is Activity) {
             val activity = context as Activity
             when (activity.requestedOrientation) {
@@ -295,27 +292,31 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
                 ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE,
                 ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE -> {
-                    adjustedWidth = max(width, height)
-                    adjustedHeight = min(width, height)
+                    if (width < height) {
+                        Log.v(TAG, "skipping: orientation is landscape, but width < height")
+                        return
+                    }
                 }
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
                 ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT,
                 ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT,
                 ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT -> {
-                    adjustedWidth = min(width, height)
-                    adjustedHeight = max(width, height)
+                    if (height < width) {
+                        Log.v(TAG, "skipping: orientation is portrait, but height < width")
+                        return
+                    }
                 }
             }
         }
 
-        if (mIsSurfaceReady && mWidth.toInt() == adjustedWidth && mHeight.toInt() == adjustedHeight) {
+        if (mIsSurfaceReady && mWidth.toInt() == width && mHeight.toInt() == height) {
             return
         }
 
         nativeDestroyScreen()
 
-        mWidth = adjustedWidth.toFloat()
-        mHeight = adjustedHeight.toFloat()
+        mWidth = width.toFloat()
+        mHeight = height.toFloat()
 
         this.onNativeResize(mWidth.toInt(), mHeight.toInt(), sdlFormat, display.refreshRate)
         Log.v(TAG, "Window size: " + mWidth + "x" + mHeight)
