@@ -206,9 +206,9 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     /// Adds a subview without touching the view's layer or any of its sublayers.
     /// We need to be able to add layers at an index that isn't directly related to its subview index.
     private func insertSubviewWithoutTouchingLayer(_ view: UIView, at index: Int) {
+        if view.superview != nil { view.removeFromSuperview() }
         // ensure index is always in bounds:
         let index = max(subviews.startIndex, min(index, subviews.endIndex))
-        if view.superview != nil { view.removeFromSuperview() }
         subviews.insert(view, at: index)
         view.superview = self
     }
