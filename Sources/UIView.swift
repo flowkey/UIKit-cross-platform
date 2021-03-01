@@ -208,7 +208,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     private func insertSubviewWithoutTouchingLayer(_ view: UIView, at index: Int) {
         // remove from superview without removing from superlayer
         if let oldSuperview = view.superview {
-            oldSuperview.subviews = oldSuperview.subviews.filter { $0 != view }
+            oldSuperview.subviews.removeAll(where: { $0 == view })
             view.superview = nil
             oldSuperview.setNeedsLayout()
         }
@@ -223,7 +223,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         guard let superview = superview else { return }
         self.layer.removeFromSuperlayer()
 
-        superview.subviews = superview.subviews.filter { $0 != self }
+        superview.subviews.removeAll(where: { $0 == self })
         self.superview = nil
         superview.setNeedsLayout()
     }
