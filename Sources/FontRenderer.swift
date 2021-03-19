@@ -161,11 +161,7 @@ extension FontRenderer {
             tok = firstCharOfNextLine
         } while (tok < end)
 
-        // The sizing using linesCount is actually correct, but it gives a different result compared to
-        // what actually gets rendered. So for now, use this updated figure to have correct sizeThatFits etc:
-        let numberOfRandomExtraLinesRenderedBySDLTTF = 1
-        let linesCount = lines.count + numberOfRandomExtraLinesRenderedBySDLTTF
-
+        let linesCount = lines.count
         let combinedTextHeight = Int(textLineHeight) * linesCount
         let combinedLineSpacing = lineSpace * (linesCount - 1)
 
