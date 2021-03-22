@@ -130,16 +130,16 @@ open class CALayer {
 
     open var bounds: CGRect = .zero {
         willSet(newBounds) {
-            guard newBounds != bounds else { return }
-            onWillSet(keyPath: .bounds)
-
-            if bounds.size != newBounds.size {
-                // It seems weird to access the superview here but it matches the iOS behaviour
-                (self.superlayer?.delegate as? UIView)?.setNeedsLayout()
+            if previousBounds == nil {
+                previousBounds = bounds
             }
 
+            guard newBounds != bounds else { return }
+            onWillSet(keyPath: .bounds)
         }
     }
+
+    internal var previousBounds: CGRect?
 
     public var opacity: Float = 1 {
         willSet(newOpacity) {

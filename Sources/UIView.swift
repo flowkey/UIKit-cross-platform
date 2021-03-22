@@ -237,8 +237,15 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
 
     open func layoutSubviews() {
         needsLayout = false
+        
+        if layer.previousBounds != nil && layer.previousBounds != layer.bounds {
+            (layer.superlayer?.delegate as? UIView)?.setNeedsDisplay()
+        }
+        layer.previousBounds = nil
+
         parentViewController?.viewWillLayoutSubviews()
         parentViewController?.viewDidLayoutSubviews()
+
     }
 
 
