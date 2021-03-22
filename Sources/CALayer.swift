@@ -130,12 +130,12 @@ open class CALayer {
 
     open var bounds: CGRect = .zero {
         willSet(newBounds) {
+            guard newBounds != bounds else { return }
+            onWillSet(keyPath: .bounds)
+
             if previousBounds == nil {
                 previousBounds = bounds
             }
-
-            guard newBounds != bounds else { return }
-            onWillSet(keyPath: .bounds)
         }
     }
 

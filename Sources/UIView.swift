@@ -245,7 +245,6 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
 
         parentViewController?.viewWillLayoutSubviews()
         parentViewController?.viewDidLayoutSubviews()
-
     }
 
 
