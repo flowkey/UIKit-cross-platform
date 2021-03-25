@@ -36,7 +36,7 @@ extension CALayer {
         if let animation = action(forKey: animationKey) as? CABasicAnimation,
             self.hasBeenRenderedInThisPartOfOverallLayerHierarchy
                 || animation.wasCreatedInUIAnimateBlock,
-            !self.disableAnimations,
+            !self.isPresentationForAnotherLayer,
             !CATransaction.disableActions()
         {
             add(animation, forKey: animationKey)
@@ -57,7 +57,7 @@ extension CALayer {
 
 extension CALayer {
     func animate(at currentTime: Timer) {
-        let presentation = createPresentation()
+        let presentation = _presentation ?? createPresentation()
 
         animations.forEach { (key, animation) in
             let animationProgress = animation.progress(for: currentTime)
