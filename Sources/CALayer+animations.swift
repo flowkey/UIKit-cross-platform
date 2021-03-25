@@ -57,7 +57,7 @@ extension CALayer {
 
 extension CALayer {
     func animate(at currentTime: Timer) {
-        let presentation = _presentation ?? createPresentation()
+        let presentation = createPresentation()
 
         animations.forEach { (key, animation) in
             let animationProgress = animation.progress(for: currentTime)
