@@ -69,4 +69,88 @@ class CALayerTests: XCTestCase {
         XCTAssertEqual(layer.frame.origin.x, expectedSize.width, accuracy: accuracy)
         XCTAssertEqual(layer.frame.origin.y, expectedSize.height, accuracy: accuracy)
     }
+
+    func testLayoutSuperlayerDelegateWhenChangingBoundsSize() {
+        class TestView: UIView {
+            var onLayoutSubviews: (() -> ())?
+            override func layoutSubviews() {
+                super.layoutSubviews()
+                onLayoutSubviews?()
+            }
+        }
+
+        let superView = TestView()
+        let view = TestView()
+        superView.addSubview(view)
+        view.layer.bounds.size = CGSize(width: 10, height: 10)
+
+        superView.layoutIfNeeded()
+        view.layoutIfNeeded()
+
+        view.layer.bounds.size = CGSize(width: 15, height: 15)
+
+        var didLayoutSubviews = false
+        superView.onLayoutSubviews = {
+            didLayoutSubviews = true
+        }
+
+        superView.layoutIfNeeded()
+        XCTAssertEqual(didLayoutSubviews, true)
+    }
+
+    func testDoesNotLayoutSuperlayerDelegateWhenChangingBoundsSizeOfPresentation() {
+        class TestView: UIView {
+            var onLayoutSubviews: (() -> ())?
+            override func layoutSubviews() {
+                super.layoutSubviews()
+                onLayoutSubviews?()
+            }
+        }
+
+        let superView = TestView()
+        let view = TestView()
+        superView.addSubview(view)
+        view.layer.bounds.size = CGSize(width: 10, height: 10)
+
+        superView.layoutIfNeeded()
+        view.layoutIfNeeded()
+
+        view.layer.presentation()?.bounds.size = CGSize(width: 15, height: 15)
+
+        var didLayoutSubviews = false
+        superView.onLayoutSubviews = {
+            didLayoutSubviews = true
+        }
+
+        superView.layoutIfNeeded()
+        XCTAssertEqual(didLayoutSubviews, false)
+    }
+
+    func testDoesNotLayoutSuperlayerDelegateWhenChangingContentOffsetOfSCrollView() {
+        class TestView: UIView {
+            var onLayoutSubviews: (() -> ())?
+            override func layoutSubviews() {
+                super.layoutSubviews()
+                onLayoutSubviews?()
+            }
+        }
+
+        let superView = TestView()
+        let view = UIScrollView()
+        superView.addSubview(view)
+        view.contentOffset = CGPoint(x: 100, y: 100)
+
+        superView.layoutIfNeeded()
+        view.layoutIfNeeded()
+
+        view.contentOffset = CGPoint(x: 200, y: 200)
+
+        var didLayoutSubviews = false
+        superView.onLayoutSubviews = {
+            didLayoutSubviews = true
+        }
+
+        superView.layoutIfNeeded()
+        XCTAssertEqual(didLayoutSubviews, false)
+    }
 }
