@@ -87,17 +87,15 @@ extension CALayerTests {
         let view = UIView()
         superView.addSubview(view)
         view.layer.bounds.size = CGSize(width: 10, height: 10)
-
         superView.layoutIfNeeded()
         view.layoutIfNeeded()
-
-        view.layer.bounds.size = CGSize(width: 15, height: 15)
 
         var didLayoutSubviews = false
         superView.onLayoutSubviews = {
             didLayoutSubviews = true
         }
 
+        view.layer.bounds.size = CGSize(width: 15, height: 15)
         superView.layoutIfNeeded()
         XCTAssertEqual(didLayoutSubviews, true)
     }
@@ -107,17 +105,15 @@ extension CALayerTests {
         let view = UIView()
         superView.addSubview(view)
         view.layer.bounds.size = CGSize(width: 10, height: 10)
-
         superView.layoutIfNeeded()
         view.layoutIfNeeded()
-
-        view.layer.presentation()?.bounds.size = CGSize(width: 15, height: 15)
 
         var didLayoutSubviews = false
         superView.onLayoutSubviews = {
             didLayoutSubviews = true
         }
 
+        view.layer.presentation()?.bounds.size = CGSize(width: 15, height: 15)
         superView.layoutIfNeeded()
         XCTAssertEqual(didLayoutSubviews, false)
     }
@@ -127,17 +123,15 @@ extension CALayerTests {
         let view = UIScrollView()
         superView.addSubview(view)
         view.contentOffset = CGPoint(x: 100, y: 100)
-
         superView.layoutIfNeeded()
         view.layoutIfNeeded()
-
-        view.contentOffset = CGPoint(x: 200, y: 200)
 
         var didLayoutSubviews = false
         superView.onLayoutSubviews = {
             didLayoutSubviews = true
         }
 
+        view.contentOffset = CGPoint(x: 200, y: 200)
         superView.layoutIfNeeded()
         XCTAssertEqual(didLayoutSubviews, false)
     }
