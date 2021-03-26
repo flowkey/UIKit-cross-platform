@@ -69,18 +69,22 @@ class CALayerTests: XCTestCase {
         XCTAssertEqual(layer.frame.origin.x, expectedSize.width, accuracy: accuracy)
         XCTAssertEqual(layer.frame.origin.y, expectedSize.height, accuracy: accuracy)
     }
+}
+
+extension CALayerTests {
+    class ViewWithLayoutCallback: UIView {
+        var onLayoutSubviews: (() -> ())?
+
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            onLayoutSubviews?()
+        }
+    }
+
 
     func testLayoutSuperlayerDelegateWhenChangingBoundsSize() {
-        class TestView: UIView {
-            var onLayoutSubviews: (() -> ())?
-            override func layoutSubviews() {
-                super.layoutSubviews()
-                onLayoutSubviews?()
-            }
-        }
-
-        let superView = TestView()
-        let view = TestView()
+        let superView = ViewWithLayoutCallback()
+        let view = UIView()
         superView.addSubview(view)
         view.layer.bounds.size = CGSize(width: 10, height: 10)
 
@@ -99,16 +103,8 @@ class CALayerTests: XCTestCase {
     }
 
     func testDoesNotLayoutSuperlayerDelegateWhenChangingBoundsSizeOfPresentation() {
-        class TestView: UIView {
-            var onLayoutSubviews: (() -> ())?
-            override func layoutSubviews() {
-                super.layoutSubviews()
-                onLayoutSubviews?()
-            }
-        }
-
-        let superView = TestView()
-        let view = TestView()
+        let superView = ViewWithLayoutCallback()
+        let view = UIView()
         superView.addSubview(view)
         view.layer.bounds.size = CGSize(width: 10, height: 10)
 
@@ -127,15 +123,7 @@ class CALayerTests: XCTestCase {
     }
 
     func testDoesNotLayoutSuperlayerDelegateWhenChangingContentOffsetOfSCrollView() {
-        class TestView: UIView {
-            var onLayoutSubviews: (() -> ())?
-            override func layoutSubviews() {
-                super.layoutSubviews()
-                onLayoutSubviews?()
-            }
-        }
-
-        let superView = TestView()
+        let superView = ViewWithLayoutCallback()
         let view = UIScrollView()
         superView.addSubview(view)
         view.contentOffset = CGPoint(x: 100, y: 100)
