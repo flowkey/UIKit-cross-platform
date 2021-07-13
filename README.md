@@ -72,7 +72,7 @@ brew install cmake && brew install ninja
 
 UIKit-cross-platform renders with [SDL_gpu](https://github.com/grimfang4/sdl-gpu) which translates down to lower-level [OpenGL](https://www.opengl.org/) instructions.
 
-On Android, [Swift Package Manager](https://github.com/apple/swift-package-manager) compiles Swift Code into native binaries, which are called through the [NDK](https://developer.android.com/ndk/).
+On Android, [CMake](https://cmake.org/) compiles Swift Code into native binaries via [Ninja](https://ninja-build.org/), which are called through the [NDK](https://developer.android.com/ndk/).
 
 [More detailed information about the architecture can be found here](docs/ARCHITECTURE.md)
 
