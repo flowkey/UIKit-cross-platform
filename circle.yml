@@ -1,77 +1,58 @@
 jobs:
-  xcodebuild:
-    macos:
-      xcode: "10.1.0"
-    steps:
-      - checkout
-      - run: git submodule update --recursive --init
-    
-      - run:
-          name: Test UIKit for macOS
-          command: set -o pipefail &&
-            xcodebuild
-              CODE_SIGNING_REQUIRED=NO
-              CODE_SIGN_IDENTITY=""
-              PROVISIONING_PROFILE=""
-              -sdk "macosx"
-              -scheme "UIKit"
-              build test |
-            xcpretty --color --report junit
+    xcodebuild:
+        macos:
+            xcode: "10.1.0"
+        steps:
+            - checkout
+            - run: git submodule update --recursive --init
 
-      - run:
-          name: "send coverage report to codecov"
-          command: bash <(curl -s https://codecov.io/bash) -J 'UIKit'
-          environment:
-            - CODECOV_TOKEN: "4b6cd237-4637-42d6-ad29-0d1a6ee59761"
+            - run:
+                  name: Test UIKit for macOS
+                  command: set -o pipefail &&
+                      xcodebuild
+                      CODE_SIGNING_REQUIRED=NO
+                      CODE_SIGN_IDENTITY=""
+                      PROVISIONING_PROFILE=""
+                      -sdk "macosx"
+                      -scheme "UIKit"
+                      build test |
+                      xcpretty --color --report junit
 
-      - run:
-          name: Test iOSTestTarget
-          command: set -o pipefail &&
-            xcodebuild
-              CODE_SIGNING_REQUIRED=NO
-              CODE_SIGN_IDENTITY=""
-              PROVISIONING_PROFILE=""
-              -sdk "iphonesimulator"
-              -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
-              -scheme "UIKit iOSTestTarget"
-              test |
-            xcpretty --color --report junit
+            - run:
+                  name: "send coverage report to codecov"
+                  command: bash <(curl -s https://codecov.io/bash) -J 'UIKit'
+                  environment:
+                      - CODECOV_TOKEN: "4b6cd237-4637-42d6-ad29-0d1a6ee59761"
 
-      - run:
-          name: Build demo app for iOS
-          command: set -o pipefail &&
-            xcodebuild
-              CODE_SIGNING_REQUIRED=NO
-              CODE_SIGN_IDENTITY=""
-              PROVISIONING_PROFILE=""
-              -sdk "iphonesimulator"
-              -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
-              -scheme "DemoApp"
-              build |
-            xcpretty --color --report junit
-          path: ./samples/getting-started
+            - run:
+                  name: Test iOSTestTarget
+                  command: set -o pipefail &&
+                      xcodebuild
+                      CODE_SIGNING_REQUIRED=NO
+                      CODE_SIGN_IDENTITY=""
+                      PROVISIONING_PROFILE=""
+                      -sdk "iphonesimulator"
+                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
+                      -scheme "UIKit iOSTestTarget"
+                      test |
+                      xcpretty --color --report junit
 
-
-  gradlebuild:
-    docker:
-      - image: flowkey/androidswift5:latest
-    steps:
-      - checkout
-      - run: git submodule update --recursive --init
-      - restore_cache:
-          key: gradle_v1-{{ checksum "./samples/getting-started/android/build.gradle" }}
-      - run:
-          name: Build demo app for android
-          command: ./gradlew assembleDebug
-          path: ./samples/getting-started/android
-      - save_cache:
-          key: gradle_v1-{{ checksum "./samples/getting-started/android/build.gradle" }}
-          paths:
-              - /root/.gradle/
+            - run:
+                  name: Build demo app for iOS
+                  command: set -o pipefail &&
+                      xcodebuild
+                      CODE_SIGNING_REQUIRED=NO
+                      CODE_SIGN_IDENTITY=""
+                      PROVISIONING_PROFILE=""
+                      -sdk "iphonesimulator"
+                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
+                      -scheme "DemoApp"
+                      build |
+                      xcpretty --color --report junit
+                  path: ./samples/getting-started
 
 workflows:
-  version: 2
-  uikit:
-    jobs:
-      - xcodebuild
-      - gradlebuild
+    version: 2
+    uikit:
+        jobs:
+            - xcodebuild
