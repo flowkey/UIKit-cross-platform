@@ -112,6 +112,5 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         previousTouchesMovedTimestamp = nil
         touchesMovedTimestamp = nil
         initialTouchPoint = .zero
-        state = .possible
     }
 }

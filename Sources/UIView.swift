@@ -122,10 +122,8 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         // }
         didSet {
             didMoveToSuperview()
-            if !(self.next is UIViewController) {
-                if gestureRecognizers.isEmpty {
-                    self.next = superview
-                }
+            if !(self.next is UIViewController) && gestureRecognizers.isEmpty {
+                self.next = superview
             }
         }
     }
