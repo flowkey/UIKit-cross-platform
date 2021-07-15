@@ -63,10 +63,10 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
         guard let trackedTouch = touches.first else { return }
-        state = .began
         self.trackedTouch = trackedTouch
         initialTouchPoint = trackedTouch.location(in: nil)
         touchesMovedTimestamp = trackedTouch.timestamp
+        state = .began
     }
 
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -104,11 +104,6 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         self.previousTouchesMovedTimestamp = touchesMovedTimestamp ?? 0
         self.touchesMovedTimestamp = trackedTouch.timestamp
         state = .ended
-        reset()
-    }
-
-    open override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
-        super.touchesCancelled(touches, with: event)
         reset()
     }
 

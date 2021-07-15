@@ -30,14 +30,16 @@ open class UIGestureRecognizer {
     public var state: UIGestureRecognizerState = .possible {
         didSet {
             if state == oldValue { return }
+            if oldValue == .cancelled && state != .possible { return }
+
             onStateChanged?()
+
             switch state {
             case .failed, .cancelled:
-                // touchesCancelled(touches: Set<UITouch>, with: UIEvent)
-                state = .possible
+                state = .cancelled
             case .recognized, .ended:
                 state = .possible
-            case .changed:
+            case .changed, .began:
                 cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
             default: break
             }
@@ -78,7 +80,10 @@ private extension UIGestureRecognizer {
         guard let touch = self.trackedTouch else { return }
 
         let otherRecognizersThatHaveBeganToRecogize = touch.gestureRecognizers.filter {
-            $0 != self && $0.state == .began
+            if $0 == self { return false }
+            if self is UITapGestureRecognizer && $0 is UIPanGestureRecognizer { return false }
+
+            return ($0.state == .began || $0.state == .possible)
         }
 
         otherRecognizersThatHaveBeganToRecogize.forEach {
