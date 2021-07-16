@@ -37,8 +37,8 @@ public class UIWindow: UIView {
             currentTouch.view = hitView
             currentTouch.gestureRecognizers = hitView.getRecognizerHierachy()
 
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
             hitView.touchesBegan(allTouches, with: event)
+            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
 
         case .moved:
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(allTouches, with: event) }
@@ -47,10 +47,11 @@ public class UIWindow: UIView {
             }
 
         case .ended:
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(allTouches, with: event) }
             if !currentTouch.hasBeenCancelledByAGestureRecognizer {
                 hitView.touchesEnded(allTouches, with: event)
             }
+
+            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(allTouches, with: event) }
 
             UIEvent.activeEvents.remove(event)
         }
