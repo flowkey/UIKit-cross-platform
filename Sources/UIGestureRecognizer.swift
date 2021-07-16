@@ -41,9 +41,9 @@ open class UIGestureRecognizer {
             onStateChanged?()
 
             switch state {
-            case .failed, .cancelled:
+            case .cancelled:
                 state = .cancelled
-            case .recognized, .ended:
+            case .recognized, .ended, .failed:
                 state = .possible
             case .began, .changed:
                 cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
