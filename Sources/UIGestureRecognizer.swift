@@ -85,11 +85,11 @@ private extension UIGestureRecognizer {
     private func cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously() {
         guard let touch = self.trackedTouch else { return }
 
-        let otherRecognizers = touch.gestureRecognizers.filter {
+        let otherRecognizersWhichMayRecognize = touch.gestureRecognizers.filter {
             $0 != self && ($0.state == .began || $0.state == .possible)
         }
 
-        otherRecognizers.forEach {
+        otherRecognizersWhichMayRecognize.forEach {
             if $0.delegate?.gestureRecognizer($0, shouldRecognizeSimultaneouslyWith: self) == true {
                 return
             }
