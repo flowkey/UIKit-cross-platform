@@ -17,13 +17,6 @@ class ButtonSetTitleColorForStateTests: XCTestCase {
         button = Button(frame: .zero)
     }
 
-    func testNoTitleColorWithoutTitleForNormalState() {
-        button.setTitleColor(.blue, for: .normal)
-        button.layoutSubviews()
-
-        XCTAssertNotEqual(button.titleLabel?.textColor, .blue)
-    }
-
     func testExistingTitleColorWithTitleForNormalState() {
         button.setTitleColor(.blue, for: .normal)
         button.setTitle(shortButtonText, for: .normal)
