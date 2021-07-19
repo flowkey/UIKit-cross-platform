@@ -25,34 +25,37 @@ public class UIWindow: UIView {
     }
 
     public func sendEvent(_ event: UIEvent) {
-        guard
-            let allTouches = event.allTouches,
-            let currentTouch = allTouches.first,
-            let hitView = currentTouch.view ?? hitTest(currentTouch.location(in: nil), with: nil)
-        else { return }
+        guard let allTouches = event.allTouches else { return }
+        UIEvent.activeEvents.insert(event)
 
-        switch currentTouch.phase {
-        case .began:
-            UIEvent.activeEvents.insert(event)
-            currentTouch.view = hitView
-            currentTouch.gestureRecognizers = hitView.getRecognizerHierachy()
+        for touch in allTouches {
+            guard let hitView = touch.view ?? hitTest(touch.location(in: nil), with: nil) else { return }
 
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
-            hitView.touchesBegan(allTouches, with: event)
+            switch touch.phase {
+            case .began:
+                touch.view = hitView
+                touch.gestureRecognizers = hitView.getRecognizerHierachy()
 
-        case .moved:
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(allTouches, with: event) }
-            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
-                hitView.touchesMoved(allTouches, with: event)
+                touch.runTouchActionOnRecognizerHierachy { $0.touchesBegan([touch], with: event) }
+                hitView.touchesBegan([touch], with: event)
+
+            case .moved:
+                touch.runTouchActionOnRecognizerHierachy { $0.touchesMoved([touch], with: event) }
+                if !touch.hasBeenCancelledByAGestureRecognizer {
+                    hitView.touchesMoved([touch], with: event)
+                }
+
+            case .ended:
+                touch.runTouchActionOnRecognizerHierachy { $0.touchesEnded([touch], with: event) }
+                if !touch.hasBeenCancelledByAGestureRecognizer {
+                    hitView.touchesEnded([touch], with: event)
+                }
+
+                event.allTouches?.remove(touch)
+                if event.allTouches?.isEmpty == true {
+                    UIEvent.activeEvents.remove(event)
+                }
             }
-
-        case .ended:
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(allTouches, with: event) }
-            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
-                hitView.touchesEnded(allTouches, with: event)
-            }
-
-            UIEvent.activeEvents.remove(event)
         }
     }
 }

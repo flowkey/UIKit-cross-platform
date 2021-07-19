@@ -16,8 +16,8 @@ extension UIApplication {
         while SDL_PollEvent(&e) == 1 {
 
             #if os(Android)
-            if let uievent = UIEvent.from(e) {
-                sendEvent(uievent)
+            if let uiEvent = UIEvent.from(e) {
+                sendEvent(uiEvent)
                 break
             }
             #endif
