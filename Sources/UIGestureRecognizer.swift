@@ -29,17 +29,24 @@ open class UIGestureRecognizer {
 
     public var state: UIGestureRecognizerState = .possible {
         didSet {
-            if state == oldValue { return }
+            if
+                state == oldValue ||
+                // do not mutate state when recognizer was cancelled already.
+                // only allow resetting the state when on `ended`.
+                oldValue == .cancelled && state != .ended
+            {
+                return
+            }
+
             onStateChanged?()
+
             switch state {
-            case .failed, .cancelled:
-                // touchesCancelled(touches: Set<UITouch>, with: UIEvent)
+            case .cancelled:
+                state = .cancelled
+            case .recognized, .ended, .failed:
                 state = .possible
-            case .recognized, .ended:
-                state = .possible
-            case .changed:
+            case .began, .changed:
                 cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
-                cancelTouchesInViewIfApplicable()
             default: break
             }
         }
@@ -78,22 +85,16 @@ private extension UIGestureRecognizer {
     private func cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously() {
         guard let touch = self.trackedTouch else { return }
 
-        let otherRecognizersThatHaveBeganToRecogize = touch.gestureRecognizers.filter {
-            $0 != self && $0.state == .began
+        let otherRecognizersWhichMayRecognize = touch.gestureRecognizers.filter {
+            $0 != self && ($0.state == .began || $0.state == .possible)
         }
 
-        otherRecognizersThatHaveBeganToRecogize.forEach {
+        otherRecognizersWhichMayRecognize.forEach {
             if $0.delegate?.gestureRecognizer($0, shouldRecognizeSimultaneouslyWith: self) == true {
                 return
             }
 
             $0.touchesCancelled([touch], with: UIEvent())
-        }
-    }
-
-    private func cancelTouchesInViewIfApplicable() {
-        if self.cancelsTouchesInView {
-            trackedTouch?.hasBeenCancelledByAGestureRecognizer = true
         }
     }
 }

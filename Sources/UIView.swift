@@ -122,7 +122,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         // }
         didSet {
             didMoveToSuperview()
-            if !(self.next is UIViewController) {
+            if !(self.next is UIViewController) && gestureRecognizers.isEmpty {
                 self.next = superview
             }
         }
@@ -312,6 +312,10 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     open func addGestureRecognizer(_ recognizer: UIGestureRecognizer) {
         recognizer.view = self
         gestureRecognizers.insert(recognizer)
+
+        if gestureRecognizers.isEmpty {
+            self.next = nil
+        }
     }
 
     open func removeGestureRecognizer(_ recognizer: UIGestureRecognizer) {
