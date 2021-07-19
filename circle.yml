@@ -1,7 +1,7 @@
 jobs:
     xcodebuild:
         macos:
-            xcode: "10.1.0"
+            xcode: "12.5.0"
         steps:
             - checkout
             - run: git submodule update --recursive --init
@@ -17,12 +17,6 @@ jobs:
                       -scheme "UIKit"
                       build test |
                       xcpretty --color --report junit
-
-            - run:
-                  name: "send coverage report to codecov"
-                  command: bash <(curl -s https://codecov.io/bash) -J 'UIKit'
-                  environment:
-                      - CODECOV_TOKEN: "4b6cd237-4637-42d6-ad29-0d1a6ee59761"
 
             - run:
                   name: Test iOSTestTarget
