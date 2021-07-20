@@ -32,7 +32,7 @@ open class UIGestureRecognizer {
             if
                 state == oldValue ||
                 // do not mutate state when recognizer was cancelled already.
-                // only allow resetting the state when on `ended`.
+                // only allow resetting the state on `ended`.
                 oldValue == .cancelled && state != .ended
             {
                 return
