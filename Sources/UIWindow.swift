@@ -42,7 +42,6 @@ public class UIWindow: UIView {
 
         case .moved:
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(allTouches, with: event) }
-
             if !currentTouch.hasBeenCancelledByAGestureRecognizer {
                 hitView.touchesMoved(allTouches, with: event)
             }
@@ -57,7 +56,6 @@ public class UIWindow: UIView {
             if !hasBeenCancelledByAGestureRecognizer {
                 hitView.touchesEnded(allTouches, with: event)
             }
-
 
             UIEvent.activeEvents.remove(event)
         }
