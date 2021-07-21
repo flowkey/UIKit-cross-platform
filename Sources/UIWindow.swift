@@ -37,21 +37,27 @@ public class UIWindow: UIView {
             currentTouch.view = hitView
             currentTouch.gestureRecognizers = hitView.getRecognizerHierachy()
 
-            hitView.touchesBegan(allTouches, with: event)
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
+            hitView.touchesBegan(allTouches, with: event)
 
         case .moved:
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(allTouches, with: event) }
+
             if !currentTouch.hasBeenCancelledByAGestureRecognizer {
                 hitView.touchesMoved(allTouches, with: event)
             }
 
         case .ended:
-            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
+            // compute the value before ending the touch on the recognizer hierachy
+            // otherwise `hasBeenCancelledByAGestureRecognizer` will always be false because the state was reset
+            let hasBeenCancelledByAGestureRecognizer = currentTouch.hasBeenCancelledByAGestureRecognizer
+
+            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(allTouches, with: event) }
+
+            if !hasBeenCancelledByAGestureRecognizer {
                 hitView.touchesEnded(allTouches, with: event)
             }
 
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(allTouches, with: event) }
 
             UIEvent.activeEvents.remove(event)
         }
@@ -60,7 +66,7 @@ public class UIWindow: UIView {
 
 private extension UITouch {
     var hasBeenCancelledByAGestureRecognizer: Bool {
-        return gestureRecognizers.contains(where: { ($0.state == .changed) && $0.cancelsTouchesInView })
+        return gestureRecognizers.contains(where: { $0.state == .changed && $0.cancelsTouchesInView })
     }
 }
 
