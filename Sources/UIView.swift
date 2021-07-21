@@ -308,14 +308,14 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     // MARK: Event handling
     // Reference: http://smnh.me/hit-testing-in-ios/
 
-    internal var gestureRecognizers: Set<UIGestureRecognizer> = []
+    internal var gestureRecognizers: Set<UIGestureRecognizer> = [] {
+        didSet {
+            self.next = gestureRecognizers.isEmpty ? superview : nil
+        }
+    }
     open func addGestureRecognizer(_ recognizer: UIGestureRecognizer) {
         recognizer.view = self
         gestureRecognizers.insert(recognizer)
-
-        if gestureRecognizers.isEmpty {
-            self.next = nil
-        }
     }
 
     open func removeGestureRecognizer(_ recognizer: UIGestureRecognizer) {
