@@ -38,22 +38,25 @@ public class UIWindow: UIView {
             currentTouch.gestureRecognizers = hitView.getRecognizerHierachy()
 
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
-            hitView.touchesBegan(allTouches, with: event)
+
+            if !currentTouch.containsTapRecognizersWhichCancelsTouchesInHitview {
+                hitView.touchesBegan(allTouches, with: event)
+            }
 
         case .moved:
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(allTouches, with: event) }
-            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
+            if !currentTouch.containsRecognizersWhichCancelsTouchesInHitview {
                 hitView.touchesMoved(allTouches, with: event)
             }
 
         case .ended:
             // compute the value before ending the touch on the recognizer hierachy
             // otherwise `hasBeenCancelledByAGestureRecognizer` will always be false because the state was reset
-            let hasBeenCancelledByAGestureRecognizer = currentTouch.hasBeenCancelledByAGestureRecognizer
+            let containsRecognizersWhichCancelTouchesInHitview = currentTouch.containsRecognizersWhichCancelsTouchesInHitview
 
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(allTouches, with: event) }
 
-            if !hasBeenCancelledByAGestureRecognizer {
+            if !containsRecognizersWhichCancelTouchesInHitview {
                 hitView.touchesEnded(allTouches, with: event)
             }
 
@@ -63,8 +66,12 @@ public class UIWindow: UIView {
 }
 
 private extension UITouch {
-    var hasBeenCancelledByAGestureRecognizer: Bool {
-        return gestureRecognizers.contains(where: { $0.state == .changed && $0.cancelsTouchesInView })
+    var containsTapRecognizersWhichCancelsTouchesInHitview: Bool {
+        return gestureRecognizers.contains(where: { $0 is UITapGestureRecognizer && $0.state == .began && $0.cancelsTouchesInView })
+    }
+
+    var containsRecognizersWhichCancelsTouchesInHitview: Bool {
+        return gestureRecognizers.contains(where: { ($0.state == .began || $0.state == .changed) && $0.cancelsTouchesInView })
     }
 }
 

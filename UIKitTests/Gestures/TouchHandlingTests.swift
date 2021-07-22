@@ -40,12 +40,28 @@ class TouchHandlingTests: XCTestCase {
         XCTAssertTrue(recognizer.onActionWasCalled)
     }
 
-    func testCancelsTouchesInView() {
+    func testCancelsTouchesInViewWithTapGestureRecognizer() {
+        let tapRecognizer = UITapGestureRecognizer()
+        tapRecognizer.cancelsTouchesInView = true
+        view.addGestureRecognizer(tapRecognizer)
+
+        recognizer.cancelsTouchesInView = true
+
+        handleTouchDown(CGPoint(x: 10, y: 10))
+        handleTouchUp(CGPoint(x: 10, y: 10))
+
+        XCTAssertFalse(view.touchesBeganWasCalled)
+        XCTAssertFalse(view.touchesEndedWasCalled)
+    }
+
+    func testCancelsTouchesInViewWithPanGestureRecognizer() {
         recognizer.cancelsTouchesInView = true
 
         handleTouchDown(CGPoint(x: 10, y: 10))
         handleTouchMove(CGPoint(x: 15, y: 10))
         handleTouchUp(CGPoint(x: 15, y: 10))
+
+        XCTAssertTrue(view.touchesBeganWasCalled)
 
         XCTAssertFalse(view.touchesMovedWasCalled)
         XCTAssertFalse(view.touchesEndedWasCalled)
@@ -81,8 +97,13 @@ class TouchHandlingTests: XCTestCase {
 
 private extension TouchHandlingTests {
     class ResponderView: UIView {
+        var touchesBeganWasCalled = false
         var touchesMovedWasCalled = false
         var touchesEndedWasCalled = false
+
+        override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+            touchesBeganWasCalled = true
+        }
 
         override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
             touchesMovedWasCalled = true

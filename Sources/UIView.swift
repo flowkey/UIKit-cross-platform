@@ -122,7 +122,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         // }
         didSet {
             didMoveToSuperview()
-            if !(self.next is UIViewController) && gestureRecognizers.isEmpty {
+            if !(self.next is UIViewController) {
                 self.next = superview
             }
         }
@@ -308,11 +308,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     // MARK: Event handling
     // Reference: http://smnh.me/hit-testing-in-ios/
 
-    internal var gestureRecognizers: Set<UIGestureRecognizer> = [] {
-        didSet {
-            self.next = gestureRecognizers.isEmpty ? superview : nil
-        }
-    }
+    internal var gestureRecognizers: Set<UIGestureRecognizer> = []
     open func addGestureRecognizer(_ recognizer: UIGestureRecognizer) {
         recognizer.view = self
         gestureRecognizers.insert(recognizer)
