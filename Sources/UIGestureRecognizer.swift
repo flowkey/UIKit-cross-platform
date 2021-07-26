@@ -30,10 +30,7 @@ open class UIGestureRecognizer {
     public var state: UIGestureRecognizerState = .possible {
         didSet {
             if
-                state == oldValue ||
-                // do not mutate state when recognizer was cancelled already.
-                // only allow resetting the state on `ended`.
-                oldValue == .cancelled && state != .ended
+                state == oldValue || oldValue == .cancelled && state != .ended
             {
                 return
             }
@@ -41,8 +38,6 @@ open class UIGestureRecognizer {
             onStateChanged?()
 
             switch state {
-            case .cancelled:
-                state = .cancelled
             case .recognized, .ended, .failed:
                 state = .possible
             case .began, .changed:
