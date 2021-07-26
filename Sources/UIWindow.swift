@@ -39,7 +39,7 @@ public class UIWindow: UIView {
 
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
 
-            if !currentTouch.containsTapRecognizersWhichCancelsTouchesInHitview {
+            if !currentTouch.containsRecognizersWhichCancelsTouchesInHitview {
                 hitView.touchesBegan(allTouches, with: event)
             }
 
@@ -66,10 +66,6 @@ public class UIWindow: UIView {
 }
 
 private extension UITouch {
-    var containsTapRecognizersWhichCancelsTouchesInHitview: Bool {
-        return gestureRecognizers.contains(where: { $0 is UITapGestureRecognizer && $0.state == .began && $0.cancelsTouchesInView })
-    }
-
     var containsRecognizersWhichCancelsTouchesInHitview: Bool {
         return gestureRecognizers.contains(where: { ($0.state == .began || $0.state == .changed) && $0.cancelsTouchesInView })
     }
