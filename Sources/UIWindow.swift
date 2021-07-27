@@ -71,7 +71,7 @@ private extension UITouch {
     }
 
     var containsRecognizersWhichCancelsTouchesInHitview: Bool {
-        return gestureRecognizers.contains(where: { ($0.state == .began || $0.state == .changed) && $0.cancelsTouchesInView })
+        return gestureRecognizers.contains(where: { $0.state == .changed && $0.cancelsTouchesInView })
     }
 }
 
