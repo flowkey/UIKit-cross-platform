@@ -226,8 +226,8 @@ import JNI
 
 @_cdecl("Java_org_libsdl_app_SDLActivity_onNativeTouchUIKit")
 public func onNativeTouch(
-    env: UnsafeMutablePointer<JNIEnv>,
-    view: JavaObject,
+    env: UnsafeMutablePointer<JNIEnv?>?,
+    view: JavaObject?,
     touchDeviceID: JavaInt,
     pointerFingerID: JavaInt,
     action: JavaInt,
@@ -236,6 +236,12 @@ public func onNativeTouch(
     pressure: JavaFloat,
     timestampMs: JavaLong
 ) {
+    if env == nil || view == nil {
+        // We're in an invalid state where the JNI has exploded somehow
+        // Passing anything on to UIKit now would probably lead to a crash
+        return
+    }
+
     guard let eventType = SDL_EventType.eventFrom(androidAction: action)
     else { return }
 
