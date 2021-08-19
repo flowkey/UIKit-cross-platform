@@ -1,6 +1,6 @@
 //
 //  UIColor.swift
-//  NativePlayerSDL
+//  UIKit
 //
 //  Created by Geordie Jay on 16.05.17.
 //  Copyright © 2017 Geordie Jay. All rights reserved.
@@ -114,6 +114,7 @@ extension UIColor {
     public static let red = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
     public static let green = UIColor(red: 0, green: 1, blue: 0, alpha: 1)
     public static let blue = UIColor(red: 0, green: 0, blue: 1, alpha: 1)
+    public static let yellow = UIColor(red: 1, green: 1, blue: 0, alpha: 1)
     public static let purple = UIColor(red: 0.5, green: 0, blue: 0.5, alpha: 1)
     public static let orange = UIColor(red: 1, green: 0.5, blue: 0, alpha: 1)
     public static let lightGray = UIColor(red: 2.0 / 3.0, green: 2.0 / 3.0, blue: 2.0 / 3.0, alpha: 1)
