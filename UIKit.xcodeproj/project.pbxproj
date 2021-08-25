@@ -604,6 +604,7 @@
 				83E5F7EA1EF8156400279C59 /* CGImage.swift */,
 				5C6AB77B1ED70F97006F90AC /* DisplayLink.swift */,
 				83E5F7FF1EF826CC00279C59 /* Geometry */,
+				61752BEE26D669480025E3CB /* JavaFile.swift */,
 				5BD476341F4D94F40055EE27 /* Logging.swift */,
 				5C9037241F138B8A0058E592 /* MeteringView.swift */,
 				61C9D3B821B052750012018B /* Notification.swift */,
@@ -655,7 +656,6 @@
 				5C93AEB8208E2D1A005BE853 /* UIWindow+hardwareBackButton.swift */,
 				5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */,
 				833075381F697613002089AC /* Video */,
-				61752BEE26D669480025E3CB /* JavaFile.swift */,
 			);
 			name = UIKit;
 			path = Sources;
