@@ -15,6 +15,7 @@ add_library(UIKit SHARED
     Sources/$<$<PLATFORM_ID:Darwin>:UIApplicationMain+Mac.swift>
     Sources/$<$<PLATFORM_ID:Darwin>:VideoTexture+Mac.swift>
 
+    Sources/AndroidContext.swift
     Sources/AnimatableProperty.swift
     Sources/AnimationKeyPath.swift
     Sources/Bundle.swift
@@ -46,9 +47,11 @@ add_library(UIKit SHARED
     Sources/CGSize.swift
     Sources/Data+fromRelativePathCrossPlatform.swift
     Sources/DisplayLink.swift
+    Sources/FileManager+Android.swift
     Sources/FontRenderer+renderAttributedString.swift
     Sources/FontRenderer+singleLineSize.swift
     Sources/FontRenderer.swift
+    Sources/JavaFile.swift
     Sources/Logging.swift
     Sources/MaskingShaders.swift
     Sources/MeteringView.swift
