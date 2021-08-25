@@ -16,7 +16,9 @@ import JNI
  */
 class AndroidContext: JNIObject {
 
-    static let className = "android.content.Context"
+    override public class var className: String {
+        return "android.content.Context"
+    }
 
     static func getContext() throws -> AndroidContext {
         return try AndroidContext(

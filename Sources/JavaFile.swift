@@ -16,7 +16,10 @@ import JNI
  */
 class JavaFile: JNIObject {
 
-    static let className = "java.io.File"
+
+    override public class var className: String {
+        return "java.io.File"
+    }
 
     convenience init(path: String) throws {
         try self.init(JavaFile.className, arguments: [path])
