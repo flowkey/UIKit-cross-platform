@@ -132,6 +132,7 @@
 		5CFFFA172017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
 		5CFFFA182017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
 		61752BEF26D669480025E3CB /* JavaFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61752BEE26D669480025E3CB /* JavaFile.swift */; };
+		61752BF526D66A300025E3CB /* AndroidContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61752BF426D66A300025E3CB /* AndroidContext.swift */; };
 		61C9D3B121B051B10012018B /* NSNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B021B051B10012018B /* NSNotification.swift */; };
 		61C9D3B921B052750012018B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B821B052750012018B /* Notification.swift */; };
 		61C9D3BB21B052B30012018B /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3BA21B052B30012018B /* NotificationCenter.swift */; };
@@ -423,6 +424,7 @@
 		5CFFF97C20163AF900D989BC /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = SDL/SDL_ttf.xcodeproj; sourceTree = "<group>"; };
 		5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+subviews.swift"; sourceTree = "<group>"; };
 		61752BEE26D669480025E3CB /* JavaFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JavaFile.swift; sourceTree = "<group>"; };
+		61752BF426D66A300025E3CB /* AndroidContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidContext.swift; sourceTree = "<group>"; };
 		61C9D3B021B051B10012018B /* NSNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSNotification.swift; sourceTree = "<group>"; };
 		61C9D3B821B052750012018B /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		61C9D3BA21B052B30012018B /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
@@ -591,6 +593,7 @@
 		5C27E7B01ECB2F6500F5020D /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				61752BF426D66A300025E3CB /* AndroidContext.swift */,
 				5BBEECA21F39E770006E3416 /* Animations */,
 				5C6AB7101ED3BECD006F90AC /* Button.swift */,
 				5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */,
@@ -1195,6 +1198,7 @@
 				5C4AD7E3204EE2B70021DD4A /* AVPlayerItem+Mac.swift in Sources */,
 				5C664CD61FA0DF1D008F41D6 /* Shader.swift in Sources */,
 				5C6AB76E1ED5B8DB006F90AC /* UIGestureRecognizer.swift in Sources */,
+				61752BF526D66A300025E3CB /* AndroidContext.swift in Sources */,
 				5C93AEA82088FB70005BE853 /* UINavigationBar.swift in Sources */,
 				8318D27B1F0695080029816A /* UIControl.swift in Sources */,
 				5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */,
