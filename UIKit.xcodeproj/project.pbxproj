@@ -133,6 +133,7 @@
 		5CFFFA182017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
 		61752BEF26D669480025E3CB /* JavaFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61752BEE26D669480025E3CB /* JavaFile.swift */; };
 		61752BF526D66A300025E3CB /* AndroidContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61752BF426D66A300025E3CB /* AndroidContext.swift */; };
+		61752C0E26D670670025E3CB /* FileManager+Android.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61752C0D26D670670025E3CB /* FileManager+Android.swift */; };
 		61C9D3B121B051B10012018B /* NSNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B021B051B10012018B /* NSNotification.swift */; };
 		61C9D3B921B052750012018B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B821B052750012018B /* Notification.swift */; };
 		61C9D3BB21B052B30012018B /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3BA21B052B30012018B /* NotificationCenter.swift */; };
@@ -425,6 +426,7 @@
 		5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+subviews.swift"; sourceTree = "<group>"; };
 		61752BEE26D669480025E3CB /* JavaFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JavaFile.swift; sourceTree = "<group>"; };
 		61752BF426D66A300025E3CB /* AndroidContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidContext.swift; sourceTree = "<group>"; };
+		61752C0D26D670670025E3CB /* FileManager+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Android.swift"; sourceTree = "<group>"; };
 		61C9D3B021B051B10012018B /* NSNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSNotification.swift; sourceTree = "<group>"; };
 		61C9D3B821B052750012018B /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		61C9D3BA21B052B30012018B /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
@@ -593,6 +595,7 @@
 		5C27E7B01ECB2F6500F5020D /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				61752C0826D6703F0025E3CB /* Android+FileManager */,
 				61752BF426D66A300025E3CB /* AndroidContext.swift */,
 				5BBEECA21F39E770006E3416 /* Animations */,
 				5C6AB7101ED3BECD006F90AC /* Button.swift */,
@@ -810,6 +813,14 @@
 				5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */,
 			);
 			path = UIView;
+			sourceTree = "<group>";
+		};
+		61752C0826D6703F0025E3CB /* Android+FileManager */ = {
+			isa = PBXGroup;
+			children = (
+				61752C0D26D670670025E3CB /* FileManager+Android.swift */,
+			);
+			name = "Android+FileManager";
 			sourceTree = "<group>";
 		};
 		833075381F697613002089AC /* Video */ = {
@@ -1172,6 +1183,7 @@
 				5CDC14CC1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift in Sources */,
 				5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */,
 				61C9D3B121B051B10012018B /* NSNotification.swift in Sources */,
+				61752C0E26D670670025E3CB /* FileManager+Android.swift in Sources */,
 				83AB7B5C1F2B6A2000C7997D /* UIGestureRecognizerDelegate.swift in Sources */,
 				838545721F26536200B64986 /* NSAttributedStringKey.swift in Sources */,
 				5C6AB7611ED5762A006F90AC /* UIEdgeInsets.swift in Sources */,
