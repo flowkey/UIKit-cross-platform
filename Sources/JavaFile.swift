@@ -19,10 +19,6 @@ final class JavaFile: JNIObject {
         return "java.io.File"
     }
 
-    convenience init(path: String) throws {
-        try self.init(JavaFile.className, arguments: [path])
-    }
-
     func getAbsolutePath() throws -> String {
         return try call(methodName: "getAbsolutePath")
     }
