@@ -14,7 +14,7 @@ import JNI
 /**
  https://developer.android.com/reference/android/content/Context
  */
-class AndroidContext: JNIObject {
+final class AndroidContext: JNIObject {
 
     override public class var className: String {
         return "android.content.Context"
