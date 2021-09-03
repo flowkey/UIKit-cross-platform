@@ -11,7 +11,6 @@
 import Foundation
 
 public final class AndroidFileManager: FileManager {
-
     private static var instance = AndroidFileManager()
 
     public static override var `default`: FileManager {

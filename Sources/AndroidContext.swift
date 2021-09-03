@@ -15,7 +15,6 @@ import JNI
  https://developer.android.com/reference/android/content/Context
  */
 final class AndroidContext: JNIObject {
-
     override public class var className: String {
         return "android.content.Context"
     }
@@ -26,13 +25,13 @@ final class AndroidContext: JNIObject {
         )
     }
 
-    func getCacheDir() throws ->  JavaFile {
+    func getCacheDir() throws -> JavaFile {
         return try JavaFile(
             jni.call("getCacheDir", on: self.instance, returningObjectType: JavaFile.className)
         )
     }
 
-    func getFilesDir() throws ->  JavaFile {
+    func getFilesDir() throws -> JavaFile {
         return try JavaFile(
             jni.call("getFilesDir", on: self.instance, returningObjectType: JavaFile.className)
         )

@@ -25,7 +25,7 @@ class JavaFile: JNIObject {
         try self.init(JavaFile.className, arguments: [path])
     }
 
-    func getAbsolutePath() throws ->  String {
+    func getAbsolutePath() throws -> String {
         return try call(methodName: "getAbsolutePath")
     }
 }
