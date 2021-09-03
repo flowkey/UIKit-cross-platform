@@ -19,12 +19,10 @@ public final class AndroidFileManager: FileManager {
 
     public override func urls(for directory: FileManager.SearchPathDirectory,
                               in domainMask: FileManager.SearchPathDomainMask) -> [URL] {
-        do {
-            guard let url = try getDirectory(ofType: directory) else { return [] }
-            return [url]
-        } catch {
+        guard let url = try? getDirectory(ofType: directory) else {
             return []
         }
+        return [url]
     }
 
     func getDirectory(ofType type: FileManager.SearchPathDirectory) throws -> URL? {
