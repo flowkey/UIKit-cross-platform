@@ -10,7 +10,7 @@
 
 import Foundation
 
-public class AndroidFileManager: FileManager {
+public final class AndroidFileManager: FileManager {
 
     private static var instance = AndroidFileManager()
 
