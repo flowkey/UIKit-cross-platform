@@ -15,8 +15,6 @@ import JNI
  https://developer.android.com/reference/java/io/File
  */
 final class JavaFile: JNIObject {
-
-
     override public class var className: String {
         return "java.io.File"
     }
