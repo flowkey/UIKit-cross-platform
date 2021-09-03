@@ -25,10 +25,10 @@ public final class AndroidFileManager: FileManager {
         return [url]
     }
 
-    func getDirectory(ofType type: FileManager.SearchPathDirectory) throws -> URL? {
+    func getDirectory(ofType type: FileManager.SearchPathDirectory) throws -> URL {
         let context = try AndroidContext.getContext()
 
-        let file: JavaFile?
+        let file: JavaFile!
 
         switch type {
         case .cachesDirectory:
@@ -36,10 +36,9 @@ public final class AndroidFileManager: FileManager {
         case .documentDirectory:
             file = try context.getFilesDir()
         default:
-            assertionFailure("Dir type: 'FileManager.SearchPathDirectory.\(type)' is not implemented yet.")
-            return nil
+            fatalError("Dir type: 'FileManager.SearchPathDirectory.\(type)' is not implemented yet.")
         }
-        guard let dirPath = try file?.getAbsolutePath() else { return nil }
+        let dirPath = try file.getAbsolutePath()
         return URL(fileURLWithPath: dirPath)
     }
 }
