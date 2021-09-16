@@ -53,12 +53,17 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     external fun nativeOnVideoSourceError()
 
     init {
-        val bandwidthMeter = DefaultBandwidthMeter()
-        val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
-        val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
+        val exoPlayerBuilder = SimpleExoPlayer.Builder(parent.context)
 
-        exoPlayer = ExoPlayerFactory.newSimpleInstance(parent.context, trackSelector)
-        exoPlayer.prepare(asset.videoSource)
+        val bandwidthMeter = DefaultBandwidthMeter.Builder(parent.context).build()
+        exoPlayerBuilder.setBandwidthMeter(bandwidthMeter)
+
+        val trackSelector = DefaultTrackSelector(parent.context)
+        exoPlayerBuilder.setTrackSelector(trackSelector)
+
+        exoPlayer = exoPlayerBuilder.build()
+        exoPlayer.prepare()
+        exoPlayer.setMediaSource(asset.videoSource)
 
         listener = object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -190,21 +195,22 @@ private class CacheDataSourceFactory(private val context: Context, private val m
     }
 
     init {
-        val userAgent = Util.getUserAgent(context, "com.flowkey.VideoJNI")
-        val bandwidthMeter = DefaultBandwidthMeter()
+        val bandwidthMeter = DefaultBandwidthMeter.Builder(context).build()
         defaultDatasourceFactory = DefaultDataSourceFactory(this.context,
-                bandwidthMeter,
-                DefaultHttpDataSourceFactory(userAgent, bandwidthMeter))
+                bandwidthMeter, DefaultHttpDataSource.Factory())
+
     }
 
     override fun createDataSource(): DataSource {
         if (simpleCache == null) {
             val evictor = LeastRecentlyUsedCacheEvictor(maxCacheSize)
+
+            // TODO: SimpleCache(File, Evictor) is deprectad
             simpleCache = SimpleCache(File(context.cacheDir, "media"), evictor)
         }
 
-        return CacheDataSource(simpleCache, defaultDatasourceFactory.createDataSource(),
-                FileDataSource(), CacheDataSink(simpleCache, maxFileSize),
+        return CacheDataSource(simpleCache!!, defaultDatasourceFactory.createDataSource(),
+                FileDataSource(), CacheDataSink(simpleCache!!, maxFileSize),
                 CacheDataSource.FLAG_BLOCK_ON_CACHE or CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR, null)
     }
 }
