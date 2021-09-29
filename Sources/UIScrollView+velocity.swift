@@ -6,8 +6,13 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+#if os(Android) || os(Linux)
 import func Foundation.sqrt
 import func Foundation.log
+#else
+// use Darwin.log and Darwin.pow
+#endif
+
 
 private extension CGPoint {
     var magnitude: CGFloat {

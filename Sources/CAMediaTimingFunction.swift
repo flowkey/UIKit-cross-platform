@@ -6,7 +6,9 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+#if os(Android) || os(Linux)
 import func Foundation.pow
+#endif
 
 public let kCAMediaTimingFunctionLinear = "linear"
 public let kCAMediaTimingFunctionEaseIn = "easeIn"

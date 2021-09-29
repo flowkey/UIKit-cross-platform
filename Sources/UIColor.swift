@@ -52,8 +52,8 @@ public class UIColor: NSObject/*, Hashable*/ {
     // XXX: This is not currently working as it should but it is better than nothing
     // We currently only use this in testing, but whoever needs it for real should have a look at fixing it..
     public convenience init(hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat) {
-        let c = (1 - ((2 * brightness) - 1).magnitude) * saturation
-        let x = c * (1 - (hue.remainder(dividingBy: 2) - 1).magnitude)
+        let c: CGFloat = (1 - ((2 * brightness) - 1).magnitude) * saturation
+        let x: CGFloat = c * (1 - (hue.remainder(dividingBy: 2) - 1).magnitude)
 
         let m = brightness - (0.5 * c)
 
