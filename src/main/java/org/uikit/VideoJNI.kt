@@ -1,45 +1,43 @@
 package org.uikit
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.RelativeLayout
-import android.content.Context
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
+import com.google.android.exoplayer2.database.ExoDatabaseProvider
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.*
-import com.google.android.exoplayer2.util.Util
-import org.libsdl.app.SDLActivity
-import kotlin.math.absoluteValue
-import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSink
-import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
+import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import org.libsdl.app.SDLActivity
 import java.io.File
+import kotlin.math.absoluteValue
 
 
 @Suppress("unused")
 class AVURLAsset(parent: SDLActivity, url: String) {
-    internal val videoSource: ExtractorMediaSource
+    internal val videoSource: ProgressiveMediaSource
+    private val context: Context = parent.context
 
     init {
-        val videoSourceUri = Uri.parse(url)
+        val mediaItem = MediaItem.Builder().setUri(Uri.parse(url)).build()
 
         // ExtractorMediaSource works for regular media files such as mp4, webm, mkv
         val cacheDataSourceFactory = CacheDataSourceFactory(
-                parent.context,
-                512 * 1024 * 1024,
-                64 * 1024 * 1024
+            context,
+            512 * 1024 * 1024,
+            64 * 1024 * 1024
         )
 
-        videoSource = ExtractorMediaSource
-                        .Factory(cacheDataSourceFactory)
-                        .createMediaSource(videoSourceUri)
+        videoSource = ProgressiveMediaSource
+            .Factory(cacheDataSourceFactory)
+            .createMediaSource(mediaItem)
     }
 }
 
@@ -53,12 +51,17 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     external fun nativeOnVideoSourceError()
 
     init {
-        val bandwidthMeter = DefaultBandwidthMeter()
-        val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
-        val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
+        val exoPlayerBuilder = SimpleExoPlayer.Builder(parent.context)
 
-        exoPlayer = ExoPlayerFactory.newSimpleInstance(parent.context, trackSelector)
-        exoPlayer.prepare(asset.videoSource)
+        val bandwidthMeter = DefaultBandwidthMeter.Builder(parent.context).build()
+        exoPlayerBuilder.setBandwidthMeter(bandwidthMeter)
+
+        val trackSelector = DefaultTrackSelector(parent.context)
+        exoPlayerBuilder.setTrackSelector(trackSelector)
+
+        exoPlayer = exoPlayerBuilder.build()
+        exoPlayer.prepare()
+        exoPlayer.setMediaSource(asset.videoSource)
 
         listener = object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -190,21 +193,21 @@ private class CacheDataSourceFactory(private val context: Context, private val m
     }
 
     init {
-        val userAgent = Util.getUserAgent(context, "com.flowkey.VideoJNI")
-        val bandwidthMeter = DefaultBandwidthMeter()
+        val bandwidthMeter = DefaultBandwidthMeter.Builder(context).build()
         defaultDatasourceFactory = DefaultDataSourceFactory(this.context,
-                bandwidthMeter,
-                DefaultHttpDataSourceFactory(userAgent, bandwidthMeter))
+                bandwidthMeter, DefaultHttpDataSource.Factory())
     }
 
     override fun createDataSource(): DataSource {
         if (simpleCache == null) {
-            val evictor = LeastRecentlyUsedCacheEvictor(maxCacheSize)
-            simpleCache = SimpleCache(File(context.cacheDir, "media"), evictor)
+            val cacheEvictor = LeastRecentlyUsedCacheEvictor(maxCacheSize)
+            val dataBaseProvider = ExoDatabaseProvider(context)
+            val file = File(context.cacheDir, "media")
+            simpleCache = SimpleCache(file, cacheEvictor, dataBaseProvider)
         }
 
-        return CacheDataSource(simpleCache, defaultDatasourceFactory.createDataSource(),
-                FileDataSource(), CacheDataSink(simpleCache, maxFileSize),
+        return CacheDataSource(simpleCache!!, defaultDatasourceFactory.createDataSource(),
+                FileDataSource(), CacheDataSink(simpleCache!!, maxFileSize),
                 CacheDataSource.FLAG_BLOCK_ON_CACHE or CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR, null)
     }
 }
