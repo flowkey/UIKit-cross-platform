@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import func Foundation.pow
+import Foundation
 
 public let kCAMediaTimingFunctionLinear = "linear"
 public let kCAMediaTimingFunctionEaseIn = "easeIn"

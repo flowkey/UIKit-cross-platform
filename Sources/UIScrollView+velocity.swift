@@ -6,8 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import func Foundation.sqrt
-import func Foundation.log
+import Foundation
 
 private extension CGPoint {
     var magnitude: CGFloat {
