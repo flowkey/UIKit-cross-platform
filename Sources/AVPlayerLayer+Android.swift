@@ -7,13 +7,13 @@
 //
 
 import JNI
-import func Foundation.round // For rounding CGFloats in .frame
 
 public class AVPlayerLayer: JNIObject {
+    override public static var className: String { "org.uikit.AVPlayerLayer" }
 
     public convenience init(player: AVPlayer) {
         let parentView = JavaSDLView(getSDLView())
-        try! self.init("org.uikit.AVPlayerLayer", arguments: [parentView, player])
+        try! self.init(arguments: parentView, player)
     }
 
     public var frame: CGRect {
@@ -21,10 +21,10 @@ public class AVPlayerLayer: JNIObject {
         set {
             let scaledFrame = (newValue * UIScreen.main.scale)
             try! call(methodName: "setFrame", arguments: [
-                JavaInt(round(scaledFrame.origin.x)),
-                JavaInt(round(scaledFrame.origin.y)),
-                JavaInt(round(scaledFrame.size.width)),
-                JavaInt(round(scaledFrame.size.height))
+                JavaInt(scaledFrame.origin.x.rounded()),
+                JavaInt(scaledFrame.origin.y.rounded()),
+                JavaInt(scaledFrame.size.width.rounded()),
+                JavaInt(scaledFrame.size.height.rounded())
             ])
         }
     }

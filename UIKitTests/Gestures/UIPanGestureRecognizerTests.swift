@@ -8,9 +8,6 @@
 
 import XCTest
 @testable import UIKit
-import Foundation
-
-
 
 fileprivate class TestPanGestureRecognizer: UIPanGestureRecognizer {
     let stateCancelledExpectation: XCTestExpectation?

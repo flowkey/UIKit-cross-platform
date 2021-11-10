@@ -299,7 +299,7 @@ extension CALayer: Hashable {
     }
 }
 
-public protocol CALayerDelegate: class {
+public protocol CALayerDelegate: AnyObject {
     func action(forKey event: String) -> CABasicAnimation?
     func display(_ layer: CALayer)
 }

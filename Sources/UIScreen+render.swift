@@ -8,7 +8,6 @@
 
 import SDL
 import SDL_gpu
-import func Foundation.round
 
 extension UIScreen {
     func render(window: UIWindow?, atTime frameTimer: Timer) {
@@ -143,10 +142,10 @@ extension UIScreen {
 private extension CGRect {
     func gpuRect(scale: CGFloat) -> GPU_Rect {
         return GPU_Rect(
-            x: Float(round(self.origin.x * scale) / scale),
-            y: Float(round(self.origin.y * scale) / scale),
-            w: Float(round(self.size.width * scale) / scale),
-            h: Float(round(self.size.height * scale) / scale)
+            x: Float((self.origin.x * scale).rounded() / scale),
+            y: Float((self.origin.y * scale).rounded() / scale),
+            w: Float((self.size.width * scale).rounded() / scale),
+            h: Float((self.size.height * scale).rounded() / scale)
         )
     }
 }

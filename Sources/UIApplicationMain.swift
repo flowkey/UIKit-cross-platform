@@ -6,8 +6,8 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-import Foundation
 import SDL
+import func Foundation.NSClassFromString
 
 @discardableResult
 public func UIApplicationMain(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>, _ principalClassName: String?, _ delegateClassName: String?) -> Int32 {

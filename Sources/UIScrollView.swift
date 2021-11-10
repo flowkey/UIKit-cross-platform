@@ -149,7 +149,7 @@ open class UIScrollView: UIView {
     }
 }
 
-public protocol UIScrollViewDelegate: class {
+public protocol UIScrollViewDelegate: AnyObject {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
     func scrollViewDidScroll(_ scrollView: UIScrollView)
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)
