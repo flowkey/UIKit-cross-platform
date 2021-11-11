@@ -65,7 +65,7 @@ open class UINavigationController: UIViewController {
     }
 
     open override func dismiss(animated: Bool, completion: (() -> Void)? = nil) {
-        if self === UIApplication.shared.keyWindow?.rootViewController {
+        guard self !== UIApplication.shared.keyWindow?.rootViewController else {
             completion?()
             return
         }
