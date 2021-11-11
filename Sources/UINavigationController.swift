@@ -65,6 +65,11 @@ open class UINavigationController: UIViewController {
     }
 
     open override func dismiss(animated: Bool, completion: (() -> Void)? = nil) {
+        if self === UIApplication.shared.keyWindow?.rootViewController {
+            completion?()
+            return
+        }
+
         let topOfStack = viewControllers.last
         topOfStack?.viewWillDisappear(animated)
 
