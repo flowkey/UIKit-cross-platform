@@ -33,6 +33,7 @@ open class UINavigationController: UIViewController {
 
     private func updateUIFromViewControllerStack(animated: Bool) {
         guard _view != nil else { return }
+        if presentedViewController === viewControllers.last { return }
 
         transitionView.subviews.forEach { $0.removeFromSuperview() }
         presentedViewController = viewControllers.last
@@ -40,7 +41,9 @@ open class UINavigationController: UIViewController {
         if let viewOnTopOfStack = viewControllers.last?.view {
             // TODO: Animate here
             viewOnTopOfStack.frame = transitionView.bounds
+            presentedViewController?.viewWillAppear(animated)
             transitionView.addSubview(viewOnTopOfStack)
+            presentedViewController?.viewDidAppear(animated)
         }
     }
 
@@ -62,6 +65,11 @@ open class UINavigationController: UIViewController {
     }
 
     open override func dismiss(animated: Bool, completion: (() -> Void)? = nil) {
+        guard self !== UIApplication.shared?.keyWindow?.rootViewController else {
+            completion?()
+            return
+        }
+
         let topOfStack = viewControllers.last
         topOfStack?.viewWillDisappear(animated)
 
