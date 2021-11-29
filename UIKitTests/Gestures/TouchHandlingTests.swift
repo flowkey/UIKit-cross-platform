@@ -48,7 +48,6 @@ class TouchHandlingTests: XCTestCase {
         handleTouchUp(CGPoint(x: 15, y: 10))
 
         XCTAssertFalse(view.touchesMovedWasCalled)
-        XCTAssertFalse(view.touchesEndedWasCalled)
     }
 
     func testDoesNotCancelTouchesInView() {
