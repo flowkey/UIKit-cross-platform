@@ -116,7 +116,7 @@ add_library(UIKit SHARED
     Sources/UIWindow+TouchHandling.swift
     Sources/UIWindow+hardwareBackButton.swift
     Sources/UIWindow.swift
-    Sources/UISwitch.swift
+    Sources/Switch.swift
     )
 
 set_target_properties(UIKit PROPERTIES

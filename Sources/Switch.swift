@@ -2,7 +2,10 @@ private let frameSize = CGSize(width: 51, height: 31)
 private let thumpSize = frameSize.height - 3
 private let animationTime = 0.25
 
-open class UISwitch: UIControl {
+// Note: we deliberately don't wrap UISwitch.
+// This allows us to have a somewhat custom API free of objc selectors etc.
+
+open class Switch: UIControl {
 
     public let tapGestureRecognizer = UITapGestureRecognizer()
 
