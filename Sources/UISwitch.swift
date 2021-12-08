@@ -6,22 +6,20 @@ open class UISwitch: UIControl {
 
     public let tapGestureRecognizer = UITapGestureRecognizer()
 
-    private var backgroundView = UIView()
-    private var thumpView = UIView()
+    private var thumb = UIView()
 
     public var onTintColor: UIColor? = .blue
 
     public var isOn = false {
         didSet {
-            print("UISwitch isOn \(isOn)")
-            backgroundView.backgroundColor = isOn ? onTintColor : .lightGray
+            backgroundColor = isOn ? onTintColor : .lightGray
             
             let newX = isOn
-                ? frame.width - thumpView.frame.width - (frameSize.height - thumpSize) / 2
+                ? frame.width - thumb.frame.width - (frameSize.height - thumpSize) / 2
                 : (frameSize.height - thumpSize) / 2
             
             UIView.animate(withDuration: animationTime) {
-                thumpView.frame.origin.x = newX
+                thumb.frame.origin.x = newX
             }
         }
     }
@@ -31,17 +29,15 @@ open class UISwitch: UIControl {
             frame: CGRect(origin: CGPoint(x: 0, y: 0), size: frameSize)
         )
 
-        backgroundView.frame = frame
-        backgroundView.backgroundColor = isOn ? onTintColor : .lightGray
-        backgroundView.layer.cornerRadius = frame.height / 2
-        addSubview(backgroundView)
+        backgroundColor = isOn ? onTintColor : .lightGray
+        layer.cornerRadius = frame.height / 2
         
-        thumpView.frame.size = CGSize(width: thumpSize, height: thumpSize)
-        thumpView.frame.midY = frame.midY
-        thumpView.frame.origin.x = (frameSize.height - thumpSize) / 2
-        thumpView.layer.cornerRadius = thumpSize / 2
-        thumpView.backgroundColor = .white
-        addSubview(thumpView)
+        thumb.frame.size = CGSize(width: thumpSize, height: thumpSize)
+        thumb.frame.midY = frame.midY
+        thumb.frame.origin.x = (frameSize.height - thumpSize) / 2
+        thumb.layer.cornerRadius = thumpSize / 2
+        thumb.backgroundColor = .white
+        addSubview(thumb)
 
         tapGestureRecognizer.view = self
         tapGestureRecognizer.onPress = {
