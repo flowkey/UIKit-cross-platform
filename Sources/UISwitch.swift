@@ -10,6 +10,11 @@ open class UISwitch: UIControl {
 
     public var onTintColor: UIColor? = .blue
 
+    public var thumbTintColor: UIColor? {
+        set { thumb.backgroundColor = newValue }
+        get { thumb.backgroundColor }
+    }
+
     public var isOn = false {
         didSet {
             backgroundColor = isOn ? onTintColor : .lightGray
