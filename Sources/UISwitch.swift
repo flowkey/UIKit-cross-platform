@@ -17,14 +17,13 @@ open class UISwitch: UIControl {
 
     public var isOn = false {
         didSet {
-            backgroundColor = isOn ? onTintColor : .lightGray
-            
             let newX = isOn
                 ? frame.width - thumb.frame.width - (frameSize.height - thumpSize) / 2
                 : (frameSize.height - thumpSize) / 2
             
             UIView.animate(withDuration: animationTime) {
                 thumb.frame.origin.x = newX
+                backgroundColor = isOn ? onTintColor : .lightGray
             }
         }
     }
