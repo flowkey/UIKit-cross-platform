@@ -51,7 +51,6 @@ class UIAlertControllerView: UIView {
         layer.cornerRadius = 3
 
         header.sizeToFit()
-        header.frame.height += verticalPadding
         header.layer.contentsGravity = .top
         addSubview(header)
         addSubview(text)
@@ -63,8 +62,6 @@ class UIAlertControllerView: UIView {
         switch style {
         case .actionSheet: layoutAsActionSheet()
         case .alert: layoutAsAlert()
-        default: assertionFailure(
-            "The UIAlertControllerStyle style, \(style), is not implemented yet!")
         }
     }
 
@@ -75,48 +72,55 @@ class UIAlertControllerView: UIView {
             let previousElement = (index > 0) ? buttons[index - 1] : header
             button.sizeToFit()
             button.contentHorizontalAlignment = .left
-            button.bounds.size.height += verticalPadding
+            button.frame.size.height += verticalPadding
             button.frame.size.width = max(bounds.size.width, button.frame.size.width)
-            button.frame.origin = CGPoint(x: 0, y: previousElement.frame.maxY)
+            button.frame.origin.y = (previousElement == header)
+                ? previousElement.frame.maxY + verticalPadding
+                : previousElement.frame.maxY
+            button.titleLabelOriginX = horizontalPadding
         })
     }
 
     private func layoutAsAlert() {
         header.frame.origin = CGPoint(x: horizontalPadding, y: verticalPadding)
         text.frame.origin.x = horizontalPadding
-        text.bounds.width = UIScreen.main.bounds.width * 0.5
+        text.frame.width = UIScreen.main.bounds.width * 0.5
         text.sizeToFit()
-        text.frame.minY = header.frame.maxY
+        text.frame.minY = header.frame.maxY + verticalPadding
         buttons.enumerated().forEach({ (arg) in
             let (index, button) = arg
-
             button.sizeToFit()
-            button.contentHorizontalAlignment = .left
-            button.frame.size.width = max(bounds.size.width, button.frame.size.width)
-            
-            let previousElement = (index > 0) ? buttons[index - 1] : text
-            if previousElement == text {
-                button.frame.origin.y = previousElement.frame.maxY + verticalPadding
+            button.frame.width = max(button.frame.width, 75)
+            button.contentHorizontalAlignment = .center
+            button.frame.minY = text.frame.maxY + verticalPadding
+            if button == buttons.first {
+                button.frame.origin.x = bounds.maxX - button.frame.width - verticalPadding
             } else {
-                button.frame.origin.y = previousElement.frame.maxY
-            }
-            
-            if button == buttons.last! {
-                button.bounds.size.height += verticalPadding
+                let previousElement = buttons[index - 1]
+                button.frame.origin.x = previousElement.frame.minX - button.frame.width
             }
         })
     }
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         layoutIfNeeded()
-
-        let widestElement = ([text] + buttons).max { a, b in a.frame.width < b.frame.width }
-        let elementWidth = widestElement?.frame.width ?? header.frame.width
-        let elementHeight = header.frame.height + text.frame.height + buttons.reduce(0, { $0 + $1.bounds.height })
-
+        
+        let width: CGFloat
+        let height: CGFloat
+        
+        switch style {
+        case .actionSheet:
+            width = ([text] + buttons).map { $0.frame.width }.max()!
+            height = buttons.last?.frame.maxY ?? header.frame.height
+        case .alert:
+            let buttonsWidth = buttons.reduce(0, { $0 + $1.frame.width })
+            width = ([header.frame.width, text.frame.width, buttonsWidth]).max()!
+            height = buttons.first?.frame.maxY ?? text.frame.height
+        }
+        
         return CGSize(
-            width: max(minWidth, elementWidth) + horizontalPadding, // on right
-            height: elementHeight + verticalPadding * 2 // at bottom
+            width: max(minWidth, width) + horizontalPadding,
+            height: height + verticalPadding
         )
     }
 }
@@ -129,9 +133,12 @@ class UIAlertControllerButton: Button {
         }
     }
 
+    var titleLabelOriginX: CGFloat?
+    
     override func layoutSubviews() {
         super.layoutSubviews()
-
-        titleLabel?.frame.origin.x = horizontalPadding
+        if let titleLabelOriginX = titleLabelOriginX {
+            titleLabel?.frame.origin.x = titleLabelOriginX
+        }
     }
 }

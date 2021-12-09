@@ -10,7 +10,6 @@ import func Foundation.round
 
 public enum UIAlertControllerStyle {
     case actionSheet
-    case popover
     case alert
 }
 
