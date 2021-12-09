@@ -24,7 +24,11 @@ open class UIViewController: UIResponder {
     open internal(set) weak var presentingViewController: UIViewController?
 
     // The `presentedViewController` is owned by its parent, but not the other way around:
-    open internal(set) var presentedViewController: UIViewController?
+    open internal(set) var presentedViewController: UIViewController? {
+        didSet {
+            print("presentedViewController was set to \(presentedViewController)")
+        }
+    }
 
     public init(nibName: String?, bundle: Bundle?) {
         super.init()
