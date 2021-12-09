@@ -12,6 +12,7 @@ private let minWidth: CGFloat = 300
 
 class UIAlertControllerView: UIView {
     let header = UILabel(frame: .zero)
+    let text = UITextView(frame: .zero)
     var buttons: [UIAlertControllerButton] = []
     let style: UIAlertControllerStyle
 
@@ -24,6 +25,9 @@ class UIAlertControllerView: UIView {
         self.style = style
         header.text = title
         header.font = UIFont.boldSystemFont(ofSize: 20)
+
+        text.text = message
+        text.font = UIFont.systemFont(ofSize: 14)
 
         super.init(frame: .zero)
 
@@ -50,6 +54,7 @@ class UIAlertControllerView: UIView {
         header.frame.height += verticalPadding
         header.layer.contentsGravity = .top
         addSubview(header)
+        addSubview(text)
 
         buttons.forEach{ addSubview($0) }
     }
@@ -57,6 +62,7 @@ class UIAlertControllerView: UIView {
     override func layoutSubviews() {
         switch style {
         case .actionSheet: layoutAsActionSheet()
+        case .alert: layoutAsAlert()
         default: assertionFailure(
             "The UIAlertControllerStyle style, \(style), is not implemented yet!")
         }
@@ -75,12 +81,38 @@ class UIAlertControllerView: UIView {
         })
     }
 
+    private func layoutAsAlert() {
+        header.frame.origin = CGPoint(x: horizontalPadding, y: verticalPadding)
+        text.frame.origin.x = horizontalPadding
+        text.bounds.width = UIScreen.main.bounds.width * 0.5
+        text.sizeToFit()
+        text.frame.minY = header.frame.maxY
+        buttons.enumerated().forEach({ (arg) in
+            let (index, button) = arg
+
+            button.sizeToFit()
+            button.contentHorizontalAlignment = .left
+            button.frame.size.width = max(bounds.size.width, button.frame.size.width)
+            
+            let previousElement = (index > 0) ? buttons[index - 1] : text
+            if previousElement == text {
+                button.frame.origin.y = previousElement.frame.maxY + verticalPadding
+            } else {
+                button.frame.origin.y = previousElement.frame.maxY
+            }
+            
+            if button == buttons.last! {
+                button.bounds.size.height += verticalPadding
+            }
+        })
+    }
+
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         layoutIfNeeded()
 
-        let widestElement = buttons.max { a, b in a.frame.width < b.frame.width }
+        let widestElement = ([text] + buttons).max { a, b in a.frame.width < b.frame.width }
         let elementWidth = widestElement?.frame.width ?? header.frame.width
-        let elementHeight = header.frame.height + buttons.reduce(0, { $0 + $1.bounds.height })
+        let elementHeight = header.frame.height + text.frame.height + buttons.reduce(0, { $0 + $1.bounds.height })
 
         return CGSize(
             width: max(minWidth, elementWidth) + horizontalPadding, // on right
