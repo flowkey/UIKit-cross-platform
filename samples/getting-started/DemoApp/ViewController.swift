@@ -18,8 +18,6 @@ class ViewController: UIViewController {
     let buttonForAlert = Button()
     let buttonForActions = Button()
     
-    let alertController = UIAlertController(title: "Alert Message", message: alertMessage, preferredStyle: .alert)
-    let actionsController = UIAlertController(title: "Actions", message: nil, preferredStyle: .actionSheet)
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -42,36 +40,47 @@ class ViewController: UIViewController {
         buttonForActions.center.y = buttonForAlert.frame.maxY + 10
         
         #if os(iOS)
-        buttonForAlert.addTarget(self, action: #selector(presentAlertController), for: .touchDown)
-        buttonForActions.addTarget(self, action: #selector(presentActionsController), for: .touchDown)
+        buttonForAlert.addTarget(self, action: #selector(objc_presentAlertController), for: .touchDown)
+        buttonForActions.addTarget(self, action: #selector(objc_presentActionsController), for: .touchDown)
         #else
-        buttonForAlert.onPress = {
-            self.present(self.alertController, animated: true, completion: nil)
-        }
-        buttonForActions.onPress = {
-            self.present(self.actionsController, animated: true, completion: nil)
-        }
+        buttonForAlert.onPress = { self.presentAlertController() }
+        buttonForActions.onPress = { self.presentActionsController() }
         #endif
-        
-        actionsController.addAction(UIAlertAction(title: "First Action", style: .default, handler: nil))
-        actionsController.addAction(UIAlertAction(title: "Second Action", style: .destructive, handler: nil))
-        actionsController.addAction(UIAlertAction(title: "Third Action", style: .cancel, handler: nil))
-        
-        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .destructive, handler: nil))
 
         view.backgroundColor = UIColor(red: 0 / 255, green: 206 / 255, blue: 201 / 255, alpha: 1)
         view.addSubview(label)
         view.addSubview(buttonForAlert)
         view.addSubview(buttonForActions)
     }
-    
-    #if os(iOS)
-    @objc func presentAlertController() {
-        self.present(self.alertController, animated: true, completion: nil)
+
+    func presentAlertController() {
+        let alertController = UIAlertController(title: "Alert Message", message: alertMessage, preferredStyle: .alert)
+        #if os(iOS)
+        alertController.popoverPresentationController?.sourceView = buttonForAlert
+        #endif
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .destructive, handler: nil))
+        self.present(alertController, animated: true, completion: nil)
     }
-    @objc func presentActionsController() {
-        self.present(self.actionsController, animated: true, completion: nil)
+
+    func presentActionsController() {
+        let actionsController = UIAlertController(title: "Actions", message: nil, preferredStyle: .actionSheet)
+        #if os(iOS)
+        actionsController.popoverPresentationController?.sourceView = buttonForActions
+        #endif
+        actionsController.addAction(UIAlertAction(title: "First Action", style: .default, handler: nil))
+        actionsController.addAction(UIAlertAction(title: "Second Action", style: .destructive, handler: nil))
+        actionsController.addAction(UIAlertAction(title: "Third Action", style: .cancel, handler: nil))
+        self.present(actionsController, animated: true, completion: nil)
+    }
+
+    #if os(iOS)
+    @objc func objc_presentAlertController() {
+        presentAlertController()
+    }
+
+    @objc func objc_presentActionsController() {
+        presentActionsController()
     }
     #endif
 }
