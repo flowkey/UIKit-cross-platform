@@ -12,7 +12,7 @@ private let minWidth: CGFloat = 300
 
 class UIAlertControllerView: UIView {
     let header = UILabel(frame: .zero)
-    let text = UITextView(frame: .zero)
+    let text: UITextView?
     var buttons: [UIAlertControllerButton] = []
     let style: UIAlertControllerStyle
 
@@ -26,8 +26,13 @@ class UIAlertControllerView: UIView {
         header.text = title
         header.font = UIFont.boldSystemFont(ofSize: 20)
 
-        text.text = message
-        text.font = UIFont.systemFont(ofSize: 14)
+        if let message = message {
+            text = UITextView(frame: .zero)
+            text?.text = message
+            text?.font = UIFont.systemFont(ofSize: 14)
+        } else {
+            text = nil
+        }
 
         super.init(frame: .zero)
 
@@ -53,7 +58,7 @@ class UIAlertControllerView: UIView {
         header.sizeToFit()
         header.layer.contentsGravity = .top
         addSubview(header)
-        addSubview(text)
+        text.map { addSubview($0) }
 
         buttons.forEach{ addSubview($0) }
     }
@@ -82,6 +87,9 @@ class UIAlertControllerView: UIView {
     }
 
     private func layoutAsAlert() {
+        guard let text = text else {
+            return
+        }
         header.frame.origin = CGPoint(x: horizontalPadding, y: verticalPadding)
         text.frame.origin.x = horizontalPadding
         text.frame.width = UIScreen.main.bounds.width * 0.5
@@ -97,7 +105,7 @@ class UIAlertControllerView: UIView {
                 button.frame.origin.x = bounds.maxX - button.frame.width - verticalPadding
             } else {
                 let previousElement = buttons[index - 1]
-                button.frame.origin.x = previousElement.frame.minX - button.frame.width
+                button.frame.origin.x = previousElement.frame.minX - button.frame.width - verticalPadding
             }
         })
     }
@@ -110,12 +118,12 @@ class UIAlertControllerView: UIView {
         
         switch style {
         case .actionSheet:
-            width = ([text] + buttons).map { $0.frame.width }.max()!
+            width = buttons.map { $0.frame.width }.max()!
             height = buttons.last?.frame.maxY ?? header.frame.height
         case .alert:
-            let buttonsWidth = buttons.reduce(0, { $0 + $1.frame.width })
-            width = ([header.frame.width, text.frame.width, buttonsWidth]).max()!
-            height = buttons.first?.frame.maxY ?? text.frame.height
+            let buttonsWidth = buttons.reduce(0, { $0 + $1.frame.width + verticalPadding })
+            width = ([header.frame.width, text?.frame.width ?? 0, buttonsWidth]).max()!
+            height = buttons.first?.frame.maxY ?? text?.frame.height ?? 0
         }
         
         return CGSize(
