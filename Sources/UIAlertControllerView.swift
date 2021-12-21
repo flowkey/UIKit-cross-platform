@@ -40,6 +40,8 @@ class UIAlertControllerView: UIView {
         self.style = style
         header.text = title
         header.font = UIFont.boldSystemFont(ofSize: 20)
+        header.numberOfLines = 0
+        header.layer.contentsGravity = .top
 
         if let message = message {
             text = UILabel(frame: .zero)
@@ -72,8 +74,6 @@ class UIAlertControllerView: UIView {
         backgroundColor = .white
         layer.cornerRadius = 3
 
-        header.numberOfLines = 0
-        header.layer.contentsGravity = .top
         addSubview(header)
         text.map { addSubview($0) }
         buttons.forEach { addSubview($0) }
@@ -93,16 +93,12 @@ class UIAlertControllerView: UIView {
         header.frame.origin = CGPoint(x: horizontalPadding, y: verticalPadding)
         header.bounds.width = subviewWidth
         header.sizeToFit()
+        header.textAlignment = .left // sizeToFit() seems to change textAlignment
 
-        // XXX: sizeToFit() seems to change the alignment, so we're explicitly reassigning it here
-        header.textAlignment = .left
-
-        if let text = text {
-            text.frame.origin.x = horizontalPadding
-            text.frame.width = subviewWidth 
-            text.sizeToFit()
-            text.frame.minY = header.frame.maxY + verticalPadding
-        }
+        text?.frame.origin.x = horizontalPadding
+        text?.frame.width = subviewWidth
+        text?.sizeToFit()
+        text?.frame.minY = header.frame.maxY + verticalPadding
 
         if style == .alert {
             let totalButtonsWidth = buttons.reduce(0, { $0 + $1.frame.width }) + horizontalGap * CGFloat(buttons.count - 1)
