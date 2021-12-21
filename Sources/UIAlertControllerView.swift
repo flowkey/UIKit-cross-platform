@@ -10,26 +10,13 @@ private let verticalPadding: CGFloat = 18
 private let horizontalPadding: CGFloat = 24
 private let horizontalGap: CGFloat = 16
 
-private let minWidth: CGFloat = 300 - 2 * horizontalPadding
-
-private let maxWidth: CGFloat = {
-    var result: CGFloat = 0
-    if UIScreen.main.isPortrait {
-        result = UIScreen.main.bounds.width - 2 * horizontalPadding
-    } else {
-        result = max(minWidth, min(UIScreen.main.bounds.width / 2, 500))
-    }
-    return result - 2 * horizontalPadding
-}()
-
-
 class UIAlertControllerView: UIView {
     let header = UILabel(frame: .zero)
     let text: UILabel?
     let style: UIAlertControllerStyle
 
     var buttons: [UIAlertControllerButton] = []
-    var subviewWidth: CGFloat = minWidth
+    var subviewWidth: CGFloat = 0
 
     init(
         title: String?,
@@ -79,6 +66,15 @@ class UIAlertControllerView: UIView {
         buttons.forEach { addSubview($0) }
 
         subviewWidth = {
+            let minWidth: CGFloat = 300
+            let maxWidth: CGFloat
+            if UIScreen.main.isPortrait {
+                maxWidth = UIScreen.main.bounds.width - 4 * horizontalPadding
+            } else {
+                maxWidth = max(minWidth, UIScreen.main.bounds.width / 1.5)
+            }
+
+            subviews.forEach { $0.sizeToFit() }
             guard let largestSubviewWidth = subviews.map({ $0.frame.width }).max() else {
                 assertionFailure("no subviews exist to determine largestSubviewWidth")
                 return minWidth
