@@ -68,6 +68,7 @@ class UIAlertControllerView: UIView {
             return button
         }
 
+        clipsToBounds = true
         backgroundColor = .white
         layer.cornerRadius = 3
 
