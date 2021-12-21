@@ -8,14 +8,28 @@
 
 private let verticalPadding: CGFloat = 18
 private let horizontalPadding: CGFloat = 24
-private let minWidth: CGFloat = 300
 private let horizontalGap: CGFloat = 16
+
+private let minWidth: CGFloat = 300 - 2 * horizontalPadding
+
+private let maxWidth: CGFloat = {
+    var result: CGFloat = 0
+    if UIScreen.main.isPortrait {
+        result = UIScreen.main.bounds.width - 2 * horizontalPadding
+    } else {
+        result = max(minWidth, min(UIScreen.main.bounds.width / 2, 500))
+    }
+    return result - 2 * horizontalPadding
+}()
+
 
 class UIAlertControllerView: UIView {
     let header = UILabel(frame: .zero)
     let text: UILabel?
-    var buttons: [UIAlertControllerButton] = []
     let style: UIAlertControllerStyle
+
+    var buttons: [UIAlertControllerButton] = []
+    var subviewWidth: CGFloat = minWidth
 
     init(
         title: String?,
@@ -61,16 +75,22 @@ class UIAlertControllerView: UIView {
         header.layer.contentsGravity = .top
         addSubview(header)
         text.map { addSubview($0) }
+        buttons.forEach { addSubview($0) }
 
-        buttons.forEach{ addSubview($0) }
+        subviewWidth = {
+            guard let largestSubviewWidth = subviews.map({ $0.frame.width }).max() else {
+                assertionFailure("no subviews exist to determine largestSubviewWidth")
+                return minWidth
+            }
+            return min(maxWidth, max(largestSubviewWidth, minWidth))
+        }()
     }
 
     override func layoutSubviews() {
         subviews.forEach { $0.sizeToFit() }
-        let preferredWidth = getPreferredWidth()
 
         header.frame.origin = CGPoint(x: horizontalPadding, y: verticalPadding)
-        header.bounds.width = preferredWidth
+        header.bounds.width = subviewWidth
         header.sizeToFit()
 
         // XXX: sizeToFit() seems to change the alignment, so we're explicitly reassigning it here
@@ -78,26 +98,26 @@ class UIAlertControllerView: UIView {
 
         if let text = text {
             text.frame.origin.x = horizontalPadding
-            text.frame.width = preferredWidth 
+            text.frame.width = subviewWidth 
             text.sizeToFit()
             text.frame.minY = header.frame.maxY + verticalPadding
         }
 
         if style == .alert {
             let totalButtonsWidth = buttons.reduce(0, { $0 + $1.frame.width }) + horizontalGap * CGFloat(buttons.count - 1)
-            if totalButtonsWidth < preferredWidth {
+            if totalButtonsWidth < subviewWidth {
                 return layoutButtonsHorizontally()
             }
         }
-        return layoutButtonsVertically(preferredWidth: preferredWidth)
+        return layoutButtonsVertically()
 
     }
 
-    private func layoutButtonsVertically(preferredWidth: CGFloat) {
+    private func layoutButtonsVertically() {
         buttons.enumerated().forEach({ (arg) in
             let (index, button) = arg
 
-            let fullButtonWidth = preferredWidth + horizontalPadding * 2
+            let fullButtonWidth = subviewWidth + horizontalPadding * 2
 
             switch style {
             case .actionSheet:
@@ -136,30 +156,10 @@ class UIAlertControllerView: UIView {
         })
     }
 
-    private func getPreferredWidth() -> CGFloat {
-        let largestSubviewWidth = getWidthOfLargestSubview()
-        let maxWidth = getMaxAlertViewWidth() - horizontalPadding * 2
-        let preferredWidth = max(largestSubviewWidth, minWidth - horizontalPadding * 2)
-        return min(maxWidth, preferredWidth)
-    }
-
-    private func getMaxAlertViewWidth() -> CGFloat {
-        if UIScreen.main.isPortrait {
-            return UIScreen.main.bounds.width - 2 * horizontalPadding
-        } else {
-            return max(minWidth, min(UIScreen.main.bounds.width / 2, 500))
-        }
-    }
-
-    private func getWidthOfLargestSubview() -> CGFloat {
-        return subviews.map { $0.frame.width }.max()!
-    }
-
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         layoutIfNeeded()
-
         return CGSize(
-            width: header.bounds.width + horizontalPadding * 2,
+            width: subviewWidth + horizontalPadding * 2,
             height: CGFloat(buttons.last?.frame.maxY ?? 0) + verticalPadding
         )
     }
@@ -184,7 +184,6 @@ class UIAlertControllerButton: Button {
 }
 
 private extension UIScreen {
-
     var isPortrait: Bool {
         return self.bounds.width < self.bounds.height
     }
