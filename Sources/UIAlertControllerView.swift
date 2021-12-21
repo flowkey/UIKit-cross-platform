@@ -39,14 +39,13 @@ class UIAlertControllerView: UIView {
     {
         self.style = style
         header.text = title
-        header.font = UIFont.systemFont(ofSize: 20)
+        header.font = UIFont.boldSystemFont(ofSize: 20)
 
         if let message = message {
             text = UILabel(frame: .zero)
             text?.numberOfLines = 0
             text?.text = message
-            text?.font = UIFont.systemFont(ofSize: 16, weight: .light)
-            text?.textColor = UIColor(hex: 0x3C3C43)
+            text?.font = UIFont.systemFont(ofSize: 16)
         } else {
             text = nil
         }
@@ -56,7 +55,7 @@ class UIAlertControllerView: UIView {
         buttons = actions.map { action in
             let button = UIAlertControllerButton(frame: .zero)
             button.setTitle(action.title, for: .normal)
-            button.setTitleColor(UIColor(hex: 0x5856D6), for: .normal)
+            button.setTitleColor(UIColor(hex: 0x757575), for: .normal) // color from react-native settings menu
             button.setTitleColor(.black, for: .highlighted)
 
             button.onPress = { [weak self] in
