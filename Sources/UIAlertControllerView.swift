@@ -108,9 +108,7 @@ class UIAlertControllerView: UIView {
     }
 
     private func layoutButtonsVertically() {
-        buttons.enumerated().forEach({ (arg) in
-            let (index, button) = arg
-
+        buttons.enumerated().forEach({ index, button in
             let fullButtonWidth = subviewWidth + horizontalPadding * 2
 
             switch style {
@@ -123,7 +121,7 @@ class UIAlertControllerView: UIView {
             button.frame.size.width = fullButtonWidth
             button.frame.size.height += verticalPadding
 
-            if button == buttons.first {
+            if index == 0 {
                 button.frame.minY = CGFloat(text?.frame.maxY ?? header.frame.maxY) + verticalPadding
             } else {
                 let previousElement = buttons[index - 1]
@@ -134,8 +132,7 @@ class UIAlertControllerView: UIView {
     }
 
     private func layoutButtonsHorizontally() {
-        buttons.enumerated().forEach({ (arg) in
-            let (index, button) = arg
+        buttons.enumerated().forEach({ index, button in
             button.sizeToFit()
             button.clipsToBounds = true
             button.frame.width = max(button.frame.width, 75)
