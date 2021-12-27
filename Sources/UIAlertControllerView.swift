@@ -87,8 +87,6 @@ class UIAlertControllerView: UIView {
     }
 
     override func layoutSubviews() {
-        subviews.forEach { $0.sizeToFit() }
-
         header.frame.origin = CGPoint(x: horizontalPadding, y: verticalPadding)
         header.bounds.width = subviewWidth
         header.sizeToFit()
@@ -110,9 +108,9 @@ class UIAlertControllerView: UIView {
     }
 
     private func layoutButtonsVertically() {
-        buttons.enumerated().forEach({ index, button in
             let fullButtonWidth = subviewWidth + horizontalPadding * 2
-
+        buttons.enumerated().forEach({ index, button in
+            button.sizeToFit()
             switch style {
             case .actionSheet:
                 button.titleLabelOriginX = horizontalPadding
