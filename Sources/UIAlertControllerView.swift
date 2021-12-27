@@ -82,6 +82,8 @@ class UIAlertControllerView: UIView {
             }
             return min(maxWidth, max(largestSubviewWidth, minWidth))
         }()
+        
+        subviews.forEach { $0.clipsToBounds = true }
     }
 
     override func layoutSubviews() {
@@ -134,7 +136,6 @@ class UIAlertControllerView: UIView {
     private func layoutButtonsHorizontally() {
         buttons.enumerated().forEach({ index, button in
             button.sizeToFit()
-            button.clipsToBounds = true
             button.frame.width = max(button.frame.width, 75)
             button.contentHorizontalAlignment = .center
             button.frame.minY = CGFloat(text?.frame.maxY ?? header.frame.maxY) + verticalPadding
