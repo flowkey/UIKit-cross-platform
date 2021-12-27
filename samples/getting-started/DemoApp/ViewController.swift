@@ -40,8 +40,8 @@ class ViewController: UIViewController {
         buttonForActions.center.y = buttonForAlert.frame.maxY + 10
         
         #if os(iOS)
-        buttonForAlert.addTarget(self, action: #selector(objc_presentAlertController), for: .touchDown)
-        buttonForActions.addTarget(self, action: #selector(objc_presentActionsController), for: .touchDown)
+        buttonForAlert.addTarget(self, action: #selector(objc_presentAlertController), for: .touchUpInside)
+        buttonForActions.addTarget(self, action: #selector(objc_presentActionsController), for: .touchUpInside)
         #else
         buttonForAlert.onPress = { self.presentAlertController() }
         buttonForActions.onPress = { self.presentActionsController() }
