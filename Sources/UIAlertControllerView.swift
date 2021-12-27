@@ -67,11 +67,12 @@ class UIAlertControllerView: UIView {
 
         subviewWidth = {
             let minWidth: CGFloat = 300
+            let maxReadableWidth: CGFloat = 540
             let maxWidth: CGFloat
             if UIScreen.main.isPortrait {
-                maxWidth = UIScreen.main.bounds.width - 4 * horizontalPadding
+                maxWidth = min(UIScreen.main.bounds.width - 4 * horizontalPadding, maxReadableWidth)
             } else {
-                maxWidth = max(minWidth, UIScreen.main.bounds.width / 1.5)
+                maxWidth = min(max(minWidth, UIScreen.main.bounds.width / 1.5), maxReadableWidth)
             }
 
             subviews.forEach { $0.sizeToFit() }
