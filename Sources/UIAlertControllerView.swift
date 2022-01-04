@@ -66,8 +66,13 @@ class UIAlertControllerView: UIView {
         buttons.forEach { addSubview($0) }
 
         subviewWidth = {
+            // arbitrary mininum width of the alert view
             let minWidth: CGFloat = 300
+            
+            // assuming a text font size of 16 we want to limit the width
+            // of the alert view so that the text stays well readable
             let maxReadableWidth: CGFloat = 540
+            
             let maxWidth: CGFloat
             if UIScreen.main.isPortrait {
                 maxWidth = min(UIScreen.main.bounds.width - 4 * horizontalPadding, maxReadableWidth)
@@ -163,7 +168,8 @@ class UIAlertControllerButton: Button {
         }
     }
 
-    /// set this to force the x position of the buttons label and ignore the buttons contentHorizontalAlignment
+    /// Set this to force the x position of the buttons label and ignore the buttons contentHorizontalAlignment.
+    /// This is needed to give the vertically layed out buttons the full width of its container while being able to indent its title.
     var titleLabelOriginX: CGFloat?
     
     override func layoutSubviews() {
