@@ -10,7 +10,6 @@ import func Foundation.round
 
 public enum UIAlertControllerStyle {
     case actionSheet
-    case popover
     case alert
 }
 
@@ -23,7 +22,6 @@ public class UIAlertController: UIViewController {
 
     public init(title: String?, message: String?, preferredStyle: UIAlertControllerStyle) {
         self.message = message
-        assert(message == nil, "We haven't implemented `message` yet")
         self.preferredStyle = preferredStyle
         super.init(nibName: nil, bundle: nil)
         self.title = title
