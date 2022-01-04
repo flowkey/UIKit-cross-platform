@@ -89,8 +89,8 @@ class UIAlertControllerView: UIView {
     override func layoutSubviews() {
         header.frame.origin = CGPoint(x: horizontalPadding, y: verticalPadding)
         header.bounds.width = subviewWidth
+        header.textAlignment = .left
         header.sizeToFit()
-        header.textAlignment = .left // sizeToFit() seems to change textAlignment
 
         text?.frame.origin.x = horizontalPadding
         text?.frame.width = subviewWidth
@@ -163,6 +163,7 @@ class UIAlertControllerButton: Button {
         }
     }
 
+    /// set this to force the x position of the buttons label and ignore the buttons contentHorizontalAlignment
     var titleLabelOriginX: CGFloat?
     
     override func layoutSubviews() {
