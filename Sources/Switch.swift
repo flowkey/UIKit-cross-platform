@@ -34,10 +34,13 @@ open class Switch: UIControl {
         )
 
         layer.cornerRadius = frame.height / 2
+                
+        backgroundColor = isOn ? onTintColor : .lightGray
         
         thumb.frame.size = CGSize(width: thumbSize, height: thumbSize)
         thumb.frame.midY = frame.midY
         thumb.layer.cornerRadius = thumbSize / 2
+        thumb.backgroundColor = isOn ? thumbTintColor : .white
         addSubview(thumb)
 
         tapGestureRecognizer.view = self
