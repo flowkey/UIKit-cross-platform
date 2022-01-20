@@ -24,11 +24,9 @@ open class Switch: UIControl {
 
     public var isOn = false {
         didSet {
-            UIView.animate(withDuration: animationTime) {
-                thumb.frame.origin.x = isOn ? frame.width - thumb.frame.width : 0
-                thumb.backgroundColor = isOn ? thumbTintColor : offThumbColor
-                backgroundColor = isOn ? onTintColor : offTrackColor
-            }
+            thumb.frame.origin.x = isOn ? frame.width - thumb.frame.width : 0
+            thumb.backgroundColor = isOn ? thumbTintColor : offThumbColor
+            backgroundColor = isOn ? onTintColor : offTrackColor
         }
     }
 
@@ -49,9 +47,22 @@ open class Switch: UIControl {
 
         tapGestureRecognizer.view = self
         tapGestureRecognizer.onPress = {
-            self.isOn.toggle()
+            self.setOn(!self.isOn, animated: true)
             self.onPress?(self.isOn)
         }
         addGestureRecognizer(tapGestureRecognizer)
     }
+    
+    public func setOn(_ isOn: Bool, animated: Bool) {
+        if animated {
+            UIView.animate(withDuration: animationTime) {
+                self.isOn = isOn
+            }
+        } else {
+            self.isOn = isOn
+        }
+    }
+
+
+
 }
