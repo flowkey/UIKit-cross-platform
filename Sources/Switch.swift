@@ -15,7 +15,7 @@ private let offTrackColor = CGColor(red: 225 / 255, green: 225 / 255 , blue: 225
 open class Switch: UIControl {
     private let tapGestureRecognizer = UITapGestureRecognizer()
     
-    private var thumb = UIView()
+    private var thumb = SwitchThumb()
 
     public var onTintColor: UIColor? = defaultOnTintColor
     public var thumbTintColor: UIColor? = defaultThumbColor
@@ -38,10 +38,8 @@ open class Switch: UIControl {
         layer.cornerRadius = frame.height / 2
                 
         backgroundColor = isOn ? onTintColor : .lightGray
-        
-        thumb.frame.size = CGSize(width: thumbSize, height: thumbSize)
+    
         thumb.frame.midY = frame.midY
-        thumb.layer.cornerRadius = thumbSize / 2
         thumb.backgroundColor = isOn ? thumbTintColor : .white
         addSubview(thumb)
 
@@ -63,6 +61,36 @@ open class Switch: UIControl {
         }
     }
 
+}
 
 
+private final class SwitchThumb: UIView {
+    let thumb = UIView(frame: .zero)
+    let shadow = UIView(frame: .zero)
+    
+    override var backgroundColor: UIColor? {
+        get { thumb.backgroundColor }
+        set { thumb.backgroundColor = newValue }
+    }
+
+    init() {
+        thumb.frame.size = CGSize(width: thumbSize, height: thumbSize)
+        thumb.layer.cornerRadius = thumbSize / 2
+        
+        let shadowSize = thumbSize + 2
+        shadow.frame.size = CGSize(width: shadowSize, height: shadowSize)
+        shadow.frame.midX = thumb.frame.midX
+        shadow.frame.midY = thumb.frame.midY + 2
+        shadow.layer.cornerRadius = shadowSize / 2
+        shadow.backgroundColor = .lightGray.withAlphaComponent(0.4)
+        
+        super.init(frame: .zero)
+        
+        frame.size = CGSize(width: thumbSize, height: thumbSize)
+        layer.cornerRadius = thumbSize / 2
+        
+        self.addSubview(shadow)
+        self.addSubview(thumb)
+    }
+    
 }
