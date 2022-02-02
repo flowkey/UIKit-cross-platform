@@ -45,8 +45,6 @@ class TouchHandlingTests: XCTestCase {
         tapRecognizer.cancelsTouchesInView = true
         view.addGestureRecognizer(tapRecognizer)
 
-        recognizer.cancelsTouchesInView = true
-
         handleTouchDown(CGPoint(x: 10, y: 10))
         handleTouchUp(CGPoint(x: 10, y: 10))
 

@@ -52,7 +52,8 @@ public class UIWindow: UIView {
         case .ended:
             // compute the value before ending the touch on the recognizer hierachy
             // otherwise `hasBeenCancelledByAGestureRecognizer` will always be false because the state was reset
-            let containsRecognizersWhichCancelTouchesInHitview = currentTouch.containsRecognizersWhichCancelsTouchesInHitview
+            let containsRecognizersWhichCancelTouchesInHitview = currentTouch.containsRecognizersWhichCancelsTouchesInHitview ||
+                currentTouch.containsTapRecognizersWhichCancelsTouchesInHitview
 
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(allTouches, with: event) }
 
