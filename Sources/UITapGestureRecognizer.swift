@@ -21,6 +21,10 @@ open class UITapGestureRecognizer: UIGestureRecognizer {
         trackedTouch = touches.first
         self.state = .began
         onTouchesBegan?()
+
+        if cancelsTouchesInView {
+            trackedTouch?.hasBeenCancelledByAGestureRecognizer = true
+        }
     }
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {

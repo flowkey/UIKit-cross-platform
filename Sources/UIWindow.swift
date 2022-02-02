@@ -39,40 +39,29 @@ public class UIWindow: UIView {
 
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
 
-            if !currentTouch.containsTapRecognizersWhichCancelsTouchesInHitview {
+            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
                 hitView.touchesBegan(allTouches, with: event)
             }
 
         case .moved:
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(allTouches, with: event) }
-            if !currentTouch.containsRecognizersWhichCancelsTouchesInHitview {
+            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
                 hitView.touchesMoved(allTouches, with: event)
             }
 
         case .ended:
             // compute the value before ending the touch on the recognizer hierachy
             // otherwise `hasBeenCancelledByAGestureRecognizer` will be false because the state was reset already
-            let containsRecognizersWhichCancelTouchesInHitview = currentTouch.containsRecognizersWhichCancelsTouchesInHitview ||
-                currentTouch.containsTapRecognizersWhichCancelsTouchesInHitview
+            let hasBeenCancelledByAGestureRecognizer = currentTouch.hasBeenCancelledByAGestureRecognizer
 
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(allTouches, with: event) }
 
-            if !containsRecognizersWhichCancelTouchesInHitview {
+            if !hasBeenCancelledByAGestureRecognizer {
                 hitView.touchesEnded(allTouches, with: event)
             }
 
             UIEvent.activeEvents.remove(event)
         }
-    }
-}
-
-private extension UITouch {
-    var containsTapRecognizersWhichCancelsTouchesInHitview: Bool {
-        return gestureRecognizers.contains(where: { $0 is UITapGestureRecognizer && $0.state == .began && $0.cancelsTouchesInView })
-    }
-
-    var containsRecognizersWhichCancelsTouchesInHitview: Bool {
-        return gestureRecognizers.contains(where: { $0.state == .changed && $0.cancelsTouchesInView })
     }
 }
 
