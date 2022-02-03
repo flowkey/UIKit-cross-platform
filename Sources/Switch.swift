@@ -1,14 +1,3 @@
-private let frameSize = CGSize(width: 51, height: 21)
-private let thumbSize = CGFloat(31.0)
-private let animationTime = 0.25
-
-private let defaultOnTintColor = CGColor(red: 169 / 255, green: 218 / 255 , blue: 214 / 255, alpha: 1)
-private let defaultThumbColor = CGColor(red: 14 / 255, green: 136 / 255 , blue: 122 / 255, alpha: 1)
-
-private let offThumbColor = CGColor(red: 176 / 255, green: 176 / 255 , blue: 176 / 255, alpha: 1)
-private let offTrackColor = CGColor(red: 225 / 255, green: 225 / 255 , blue: 225 / 255, alpha: 1)
-
-
 // Note: we deliberately don't wrap UISwitch.
 // This allows us to have a somewhat custom API free of objc selectors etc.
 
@@ -94,3 +83,14 @@ private final class SwitchThumb: UIView {
     }
     
 }
+
+private let frameSize = CGSize(width: 51, height: 21)
+private let thumbSize = CGFloat(31.0)
+private let animationTime = 0.25
+
+private let defaultOnTintColor = CGColor(red: 169 / 255, green: 218 / 255 , blue: 214 / 255, alpha: 1)
+private let defaultThumbColor = CGColor(red: 14 / 255, green: 136 / 255 , blue: 122 / 255, alpha: 1)
+
+private let offThumbColor = CGColor(red: 176 / 255, green: 176 / 255 , blue: 176 / 255, alpha: 1)
+private let offTrackColor = CGColor(red: 225 / 255, green: 225 / 255 , blue: 225 / 255, alpha: 1)
+
