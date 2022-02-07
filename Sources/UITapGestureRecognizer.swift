@@ -22,6 +22,8 @@ open class UITapGestureRecognizer: UIGestureRecognizer {
         self.state = .began
         onTouchesBegan?()
 
+        // run potential cancellation of touches in view and other recognizers
+        // after `self.state` has been mutated
         if cancelsTouchesInView {
             trackedTouch?.hasBeenCancelledByAGestureRecognizer = true
         }
