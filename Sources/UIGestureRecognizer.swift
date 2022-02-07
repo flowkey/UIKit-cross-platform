@@ -29,19 +29,11 @@ open class UIGestureRecognizer {
 
     public var state: UIGestureRecognizerState = .possible {
         didSet {
-            if
-                state == oldValue || oldValue == .cancelled && state != .ended
-            {
-                return
-            }
-
+            if state == oldValue { return }
             onStateChanged?()
-
             switch state {
             case .recognized, .ended, .failed:
                 state = .possible
-            case .began, .changed:
-                cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
             default: break
             }
         }
@@ -76,15 +68,18 @@ open class UIGestureRecognizer {
     }
 }
 
-private extension UIGestureRecognizer {
-    private func cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously() {
-        guard let touch = self.trackedTouch else { return }
+extension UIGestureRecognizer {
+    func cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously() {
+        guard
+            let touch = self.trackedTouch,
+            self.state != .cancelled && self.state != .failed
+        else { return }
 
-        let otherRecognizersWhichMayRecognize = touch.gestureRecognizers.filter {
-            $0 != self && ($0.state == .began || $0.state == .possible)
+        let otherRecognizersThatHaveBeganToRecogize = touch.gestureRecognizers.filter {
+            $0 != self && $0.state == .began
         }
 
-        otherRecognizersWhichMayRecognize.forEach {
+        otherRecognizersThatHaveBeganToRecogize.forEach {
             if $0.delegate?.gestureRecognizer($0, shouldRecognizeSimultaneouslyWith: self) == true {
                 return
             }

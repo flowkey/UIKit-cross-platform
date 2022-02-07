@@ -100,6 +100,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         if cancelsTouchesInView {
             trackedTouch.hasBeenCancelledByAGestureRecognizer = true
         }
+        cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
     }
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
