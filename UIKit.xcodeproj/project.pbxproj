@@ -327,7 +327,6 @@
 		5C1F06AE1F3210F200EFF087 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewController.swift; path = Sources/UIViewController.swift; sourceTree = SOURCE_ROOT; };
 		5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SDL+JNIExtensions.swift"; sourceTree = "<group>"; };
 		5C27E7AE1ECB2F6500F5020D /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C27E7B21ECB2F6500F5020D /* Mac-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Mac-Info.plist"; path = "../Sources/Mac-Info.plist"; sourceTree = "<group>"; };
 		5C27E7B71ECB2F6500F5020D /* UIKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UIKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C27E7BE1ECB2F6500F5020D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5C27E7D21ECB2F9100F5020D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -574,7 +573,6 @@
 				5C27E7B01ECB2F6500F5020D /* UIKit */,
 				5C27E7BB1ECB2F6500F5020D /* UIKitTests */,
 				83C18F391F0FB486008FEA07 /* Resources */,
-				5C27E7E61ECB2FE000F5020D /* zSupporting Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -701,15 +699,6 @@
 				5C27E7DB1ECB2F9100F5020D /* Foundation.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		5C27E7E61ECB2FE000F5020D /* zSupporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				5C27E7B21ECB2F6500F5020D /* Mac-Info.plist */,
-			);
-			name = "zSupporting Files";
-			path = UIKit;
 			sourceTree = "<group>";
 		};
 		5C27E7F51ECB301900F5020D /* SDL */ = {
