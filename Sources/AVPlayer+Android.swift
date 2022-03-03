@@ -10,7 +10,9 @@ import JNI
 
 public class AVPlayer: JNIObject {
     public var onLoaded: ((Error?) -> Void)?
+    public var onVideoReady: (() -> Void)?
     public var onVideoEnded: (() -> Void)?
+    public var onVideoStalled: (() -> Void)?
 
     public convenience init(playerItem: AVPlayerItem) {
         let parentView = JavaSDLView(getSDLView())
@@ -59,11 +61,18 @@ private weak var globalAVPlayer: AVPlayer?
 public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onLoaded?(nil)
     globalAVPlayer?.onLoaded = nil
+
+    globalAVPlayer?.onVideoReady?()
 }
 
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoEnded")
 public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onVideoEnded?()
+}
+
+@_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoStalled")
+public func nativeOnVideoStalled(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
+    globalAVPlayer?.onVideoStalled?()
 }
 
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoSourceError")
