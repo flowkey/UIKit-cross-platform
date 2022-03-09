@@ -1,45 +1,62 @@
-//
-//  UIActivityIndicatorView.swift
-//  UIKit
-//
-//  Created by Chris on 09.08.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
 import Dispatch
-import class Foundation.Timer
+import Foundation
+
 
 // alias since we already have a Timer type in UIKit
 typealias FTimer = Foundation.Timer
 
-public enum UIActivityIndicatorViewStyle {
-    case whiteLarge
-    case white
-    case gray
-}
-
 open class UIActivityIndicatorView: UIView {
-    public var activityIndicatorStyle: UIActivityIndicatorViewStyle
-
-    let imageView = UIImageView()
-    let images: [UIImage?]
-    var currentImageIndex = 0
-    var timer: FTimer?
-
-    public init(style: UIActivityIndicatorViewStyle) {
-        self.activityIndicatorStyle = style
-
-        images = imagePaths.map { UIImage(named: $0) }
-        imageView.image = images[0]
-        imageView.contentMode = .scaleAspectFit
-
-        super.init(frame: .zero)
-
-        addSubview(imageView)
+    
+    public enum Style {
+        case white
+        case gray
+        case whiteLarge
     }
 
-    override open func sizeThatFits(_ size: CGSize) -> CGSize {
-        return imageView.frame.size
+    public var activityIndicatorStyle: Style
+
+    private var timer: FTimer?
+    private var elements: [UIView] = []
+    private var currentHighlightedElementIndex = 0
+    
+    private let numberOfElements = 8
+    private let radius: CGFloat = 7.5
+    private let elementWidth: CGFloat = 3
+    private let elementHeight: CGFloat = 7
+    private let elementCornerRadius: CGFloat
+
+    public init(style: Style) {
+        self.activityIndicatorStyle = style
+        self.elementCornerRadius = elementWidth / 2
+        
+        let size: CGFloat = (radius + elementHeight / 2) * 2
+        super.init(frame: CGRect(x: 0, y: 0, width: size, height: size))
+    
+        elements = (0..<numberOfElements).map { i in
+            let element = UIView()
+            element.frame.size = CGSize(width: elementWidth, height: elementHeight)
+            
+            // calculate equally spaced points on a circle
+            let elementOrigin = CGPoint(
+                x: radius * cos((CGFloat(i) * 2.0 * .pi) / CGFloat(numberOfElements)),
+                y: radius * sin((CGFloat(i) * 2.0 * .pi) / CGFloat(numberOfElements))
+            )
+            
+            // assign origin & center it in this view
+            element.center.x = elementOrigin.x + frame.width / 2
+            element.center.y = elementOrigin.y + frame.height / 2
+            
+            // rotate element
+            let degreesToRotate: CGFloat = -90 + CGFloat((360 / numberOfElements) * i)
+            element.transform = AffineTransform(rotationByDegrees: degreesToRotate)
+            
+            element.backgroundColor = baseGreyShade
+            element.layer.cornerRadius = elementCornerRadius
+
+            return element
+        }
+        
+        elements.forEach { addSubview($0) }
     }
 
     public func startAnimating() {
@@ -58,10 +75,26 @@ open class UIActivityIndicatorView: UIView {
         if self.timer?.isValid ?? false {
             return
         }
-        self.timer = FTimer.scheduledTimer(withTimeInterval: 1/30, repeats: true) { _ in
+        self.timer = FTimer.scheduledTimer(withTimeInterval: 1/Double(numberOfElements), repeats: true) { _ in
             DispatchQueue.main.async {
-                self.currentImageIndex = (self.currentImageIndex + 1) % self.images.count
-                self.imageView.image = self.images[self.currentImageIndex]
+                self.updateColors()
+            }
+        }
+    }
+    
+    private func updateColors() {
+        self.currentHighlightedElementIndex = (self.currentHighlightedElementIndex + 1) % self.numberOfElements
+        self.elements.enumerated().forEach { i, element in
+            if i == self.currentHighlightedElementIndex {
+                element.backgroundColor = fourShadesOfGrey[0]
+            } else if i == self.currentHighlightedElementIndex - 1 {
+                element.backgroundColor = fourShadesOfGrey[1]
+            } else if i == self.currentHighlightedElementIndex - 2 {
+                element.backgroundColor = fourShadesOfGrey[2]
+            } else if i == self.currentHighlightedElementIndex - 3 {
+                element.backgroundColor = fourShadesOfGrey[3]
+            } else {
+                element.backgroundColor = baseGreyShade
             }
         }
     }
@@ -69,38 +102,13 @@ open class UIActivityIndicatorView: UIView {
     public func stopAnimating() {
         timer?.invalidate()
     }
-
 }
 
-private let imagePaths = [
-    "loading_spinner_0.png",
-    "loading_spinner_1.png",
-    "loading_spinner_2.png",
-    "loading_spinner_3.png",
-    "loading_spinner_4.png",
-    "loading_spinner_5.png",
-    "loading_spinner_6.png",
-    "loading_spinner_7.png",
-    "loading_spinner_8.png",
-    "loading_spinner_9.png",
-    "loading_spinner_10.png",
-    "loading_spinner_11.png",
-    "loading_spinner_12.png",
-    "loading_spinner_13.png",
-    "loading_spinner_14.png",
-    "loading_spinner_15.png",
-    "loading_spinner_16.png",
-    "loading_spinner_17.png",
-    "loading_spinner_18.png",
-    "loading_spinner_19.png",
-    "loading_spinner_20.png",
-    "loading_spinner_21.png",
-    "loading_spinner_22.png",
-    "loading_spinner_23.png",
-    "loading_spinner_24.png",
-    "loading_spinner_25.png",
-    "loading_spinner_26.png",
-    "loading_spinner_27.png",
-    "loading_spinner_28.png",
-    "loading_spinner_29.png",
-]
+private let baseGreyShade: CGColor = {
+    let x = 0.85
+    return CGColor(red: x, green: x, blue: x, alpha: 1)
+}()
+
+private let fourShadesOfGrey = [0.5, 0.55, 0.6, 0.65].map { CGColor(red: $0, green: $0, blue: $0, alpha: 1)}
+
+
