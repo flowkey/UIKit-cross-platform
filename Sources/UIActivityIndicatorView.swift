@@ -21,25 +21,23 @@ open class UIActivityIndicatorView: UIView {
     private let radius: CGFloat = 7.5
     private let elementWidth: CGFloat = 3
     private let elementHeight: CGFloat = 7
-    private let elementCornerRadius: CGFloat
+    private var elementCornerRadius: CGFloat {
+        return elementWidth / 2
+    }
 
     public init(style: Style) {
-        print("UIActivityIndicatorView.Style \(style) was passed, but only one color scheme is supported.")
-
-        self.elementCornerRadius = elementWidth / 2
+        print("UIActivityIndicatorView.Style \(style) was passed, but only one color style is supported.")
         
         let size: CGFloat = (radius + elementHeight / 2) * 2
         super.init(frame: CGRect(x: 0, y: 0, width: size, height: size))
 
-
         elements = (0..<numberOfElements).map { i in
-            let element = UIView()
-            element.frame.size = CGSize(width: elementWidth, height: elementHeight)
+            let element = UIView(frame: CGRect(x: 0, y: 0, width: elementWidth, height: elementHeight))
             
             // calculate a point on a circle to use as origin
             let pointOnCircle = CGPoint(
-                x: radius * cos((CGFloat(i) * 2.0 * .pi) / CGFloat(numberOfElements)),
-                y: radius * sin((CGFloat(i) * 2.0 * .pi) / CGFloat(numberOfElements))
+                x: radius * cos((CGFloat(i) * 2 * .pi) / CGFloat(numberOfElements)),
+                y: radius * sin((CGFloat(i) * 2 * .pi) / CGFloat(numberOfElements))
             )
             
             // assign origin & center in this view
@@ -50,7 +48,7 @@ open class UIActivityIndicatorView: UIView {
             let degreesToRotate: CGFloat = -90 + CGFloat((360 / numberOfElements) * i)
             element.transform = AffineTransform(rotationByDegrees: degreesToRotate)
             
-            element.backgroundColor = fiveShadesOfGrey.last
+            element.backgroundColor = shadesOfGrey.last
             element.layer.cornerRadius = elementCornerRadius
 
             return element
@@ -89,17 +87,17 @@ open class UIActivityIndicatorView: UIView {
         }
     }
 
-    private func getElementColorForIndex(_ i: Int) -> UIColor {
-        if i == self.currentHighlightedElementIndex {
-            return fiveShadesOfGrey[0]
-        } else if i == (self.currentHighlightedElementIndex - 1 + self.numberOfElements) % self.numberOfElements {
-            return fiveShadesOfGrey[1]
-        } else if i == (self.currentHighlightedElementIndex - 2 + self.numberOfElements) % self.numberOfElements {
-            return fiveShadesOfGrey[2]
-        } else if i == (self.currentHighlightedElementIndex - 3 + self.numberOfElements) % self.numberOfElements {
-            return fiveShadesOfGrey[3]
+    private func getElementColorForIndex(_ i: Int) -> UIColor? {
+        if i == currentHighlightedElementIndex {
+            return shadesOfGrey[0]
+        } else if i == (currentHighlightedElementIndex - 1 + numberOfElements) % numberOfElements {
+            return shadesOfGrey[1]
+        } else if i == (currentHighlightedElementIndex - 2 + numberOfElements) % numberOfElements {
+            return shadesOfGrey[2]
+        } else if i == (currentHighlightedElementIndex - 3 + numberOfElements) % numberOfElements {
+            return shadesOfGrey[3]
         } else {
-            return fiveShadesOfGrey[4]
+            return shadesOfGrey.last
         }
     }
 
@@ -108,4 +106,6 @@ open class UIActivityIndicatorView: UIView {
     }
 }
 
-private let fiveShadesOfGrey = [0.5, 0.55, 0.6, 0.65, 0.85].map { CGColor(red: $0, green: $0, blue: $0, alpha: 1)}
+private let shadesOfGrey = [0.5, 0.55, 0.6, 0.65, 0.85].map {
+    UIColor(red: $0, green: $0, blue: $0, alpha: 1)
+}
