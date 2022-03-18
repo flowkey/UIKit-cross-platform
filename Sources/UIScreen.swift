@@ -106,7 +106,6 @@ public final class UIScreen {
         UIView.completePendingAnimations()
         UIView.layersWithAnimations.removeAll()
         UIView.currentAnimationPrototype = nil
-
         UIEvent.activeEvents.removeAll()
         FontRenderer.cleanupSession()
 
