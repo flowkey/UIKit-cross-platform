@@ -6,6 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import class Foundation.NSDate
+
 extension UIView {
     static var layersWithAnimations = Set<CALayer>()
     static var currentAnimationPrototype: CABasicAnimationPrototype?
@@ -67,6 +69,10 @@ extension UIView {
 
     static func animateIfNeeded(at currentTime: Timer) {
         layersWithAnimations.forEach { $0.animate(at: currentTime) }
+    }
+
+    static func completePendingAnimations() {
+        layersWithAnimations.forEach { $0.animate(at: Timer(startingAt: NSDate.distantFuture.timeIntervalSince1970)) }
     }
 }
 
