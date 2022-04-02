@@ -73,9 +73,7 @@ extension UIView {
 
     static func completePendingAnimations() {
         layersWithAnimations.forEach {
-            // run pending animations which are supposed to finish within the next 60 minutes
-            let oneHourInMs: Double = 60 * 60 * 1000
-            $0.animate(at: Timer(startingAt: oneHourInMs))
+            $0.animate(at: Timer(startingAt: NSDate.distantFuture.timeIntervalSince1970))
         }
     }
 }
