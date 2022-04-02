@@ -18,13 +18,13 @@ struct Timer {
         var startTime = timeval()
         gettimeofday(&startTime, nil)
 
-        let seconds = startingTimeInMilliseconds / 1000
+        let seconds = (startingTimeInMilliseconds / 1000).rounded(.down)
         let milliseconds = startingTimeInMilliseconds.truncatingRemainder(dividingBy: 1000)
         if !seconds.isZero {
             startTime.tv_sec += type(of: startTime.tv_sec).init(seconds)
         }
         if !milliseconds.isZero {
-            startTime.tv_usec += type(of: startTime.tv_usec).init(milliseconds)
+            startTime.tv_usec += type(of: startTime.tv_usec).init(milliseconds * 1000)
         }
 
         self.startTime = startTime
