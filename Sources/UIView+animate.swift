@@ -73,7 +73,7 @@ extension UIView {
 
     static func completePendingAnimations() {
         layersWithAnimations.forEach {
-            $0.animate(at: Timer(startingAt: NSDate.distantFuture.timeIntervalSince1970))
+            $0.animate(at: Timer(startingAt: NSDate.distantFuture.timeIntervalSinceNow))
         }
     }
 }
