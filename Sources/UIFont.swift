@@ -175,8 +175,8 @@ extension NSAttributedString {
 extension String {
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
         guard
-            let renderer = font.renderer
-            let screen = UIScreen.main.scale
+            let renderer = font.renderer,
+            let screen = UIScreen.main
         else { return .zero }
 
         let retinaResolutionSize =
@@ -184,9 +184,9 @@ extension String {
                 renderer.singleLineSize(of: self) :
                 renderer.multilineSize(
                     of: self,
-                    wrapLength: UInt(wrapLength * screen)
+                    wrapLength: UInt(wrapLength * screen.scale)
                 )
 
-        return retinaResolutionSize / screen
+        return retinaResolutionSize / screen.scale
     }
 }
