@@ -6,8 +6,6 @@
 
 # UIKit-cross-platform
 
-### Your Swift UI Code on Android
-
 UIKit-cross-platform is a **UI framework** for native apps, which enables **code targeting iOS UIKit** to run on other platforms, particularly on **Android**.<br>
 
 ## Goal
