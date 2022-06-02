@@ -24,12 +24,16 @@ public final class UIScreen {
     internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
 
     public let bounds: CGRect
-    public let scale: CGFloat
+    public var scale: CGFloat {
+        return UIScreen.lastKnownScale
+    }
+
+    internal static var lastKnownScale: CGFloat = 1.0
 
     private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
+        UIScreen.lastKnownScale = scale
         self.rawPointer = renderTarget
         self.bounds = bounds
-        self.scale = scale
     }
 
     convenience init() {

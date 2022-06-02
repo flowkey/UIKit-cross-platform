@@ -20,7 +20,7 @@ open class UIImageView: UIView {
 
     private func updateTextureFromImage() {
         layer.contents = image?.cgImage
-        layer.contentsScale = image?.scale ?? UIScreen.main.scale
+        layer.contentsScale = image?.scale ?? UIScreen.lastKnownScale
         if let image = image {
             bounds.size = image.size
         }

@@ -88,7 +88,7 @@ extension FontRenderer {
             if let attributedKerningOffset =
                 attributedString.attribute(.kern, at: index, effectiveRange: nil) as? CGFloat
             {
-                xOffset += Int32(attributedKerningOffset * UIScreen.main.scale)
+                xOffset += Int32(attributedKerningOffset * UIScreen.lastKnownScale)
             }
 
             xOffset += glyph.advance
