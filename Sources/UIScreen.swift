@@ -24,7 +24,7 @@ public final class UIScreen {
     internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
 
     public let bounds: CGRect
-    private(set) public var scale: CGFloat {
+    public var scale: CGFloat {
         return UIScreen.lastKnownScale
     }
 
