@@ -33,6 +33,10 @@ open class UIFont {
     }
 
     public init?(name: String, size: CGFloat) {
+        guard UIScreen.main != nil else {
+            return nil
+        }
+
         let name = name.lowercased()
         let size = Int32(size * UIScreen.main.scale)
 
