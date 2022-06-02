@@ -30,7 +30,8 @@ public final class UIScreen {
 
     internal static var lastKnownScale: CGFloat = 1.0
 
-    private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect) {
+    private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
+        UIScreen.lastKnownScale = scale
         self.rawPointer = renderTarget
         self.bounds = bounds
     }
@@ -87,15 +88,14 @@ public final class UIScreen {
         let scale = CGFloat(gpuTarget.pointee.base_h) / CGFloat(gpuTarget.pointee.h)
         #endif
 
-        UIScreen.lastKnownScale = scale
-
         if size == .zero {
             preconditionFailure("You need window dimensions to run")
         }
 
         self.init(
             renderTarget: gpuTarget,
-            bounds: CGRect(origin: .zero, size: size)
+            bounds: CGRect(origin: .zero, size: size),
+            scale: scale
         )
 
         // Fixes video surface visibility with transparent & opaque views in SDLSurface above
@@ -187,10 +187,10 @@ extension UIScreen {
         bounds: CGRect = CGRect(origin: .zero, size: .samsungGalaxyS7),
         scale: CGFloat
     ) -> UIScreen {
-        UIScreen.lastKnownScale = scale
         return UIScreen(
             renderTarget: nil,
-            bounds: bounds
+            bounds: bounds,
+            scale: scale
         )
     }
 }
