@@ -144,6 +144,6 @@ private extension NSAttributedString {
             }
         }
 
-        return width * UIScreen.main.scale
+        return width * UIScreen.lastKnownScale
     }
 }

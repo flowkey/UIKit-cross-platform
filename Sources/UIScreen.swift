@@ -24,12 +24,15 @@ public final class UIScreen {
     internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
 
     public let bounds: CGRect
-    public let scale: CGFloat
+    private(set) public var scale: CGFloat {
+        return UIScreen.lastKnownScale
+    }
 
-    private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
+    internal static var lastKnownScale: CGFloat = 1.0
+
+    private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect) {
         self.rawPointer = renderTarget
         self.bounds = bounds
-        self.scale = scale
     }
 
     convenience init() {
@@ -84,14 +87,15 @@ public final class UIScreen {
         let scale = CGFloat(gpuTarget.pointee.base_h) / CGFloat(gpuTarget.pointee.h)
         #endif
 
+        UIScreen.lastKnownScale = scale
+
         if size == .zero {
             preconditionFailure("You need window dimensions to run")
         }
 
         self.init(
             renderTarget: gpuTarget,
-            bounds: CGRect(origin: .zero, size: size),
-            scale: scale
+            bounds: CGRect(origin: .zero, size: size)
         )
 
         // Fixes video surface visibility with transparent & opaque views in SDLSurface above
