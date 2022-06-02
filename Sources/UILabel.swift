@@ -48,7 +48,7 @@ open class UILabel: UIView {
         layer.contentsGravity = textAlignment.contentsGravity()
     }
 
-    static var defaultFont = UIFont.systemFont(ofSize: 16)
+    static let defaultFont = UIFont.systemFont(ofSize: 16)
     open var font: UIFont = UILabel.defaultFont {
         didSet { if font != oldValue { setNeedsDisplay() } }
     }
