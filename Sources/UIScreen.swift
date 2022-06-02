@@ -187,10 +187,10 @@ extension UIScreen {
         bounds: CGRect = CGRect(origin: .zero, size: .samsungGalaxyS7),
         scale: CGFloat
     ) -> UIScreen {
+        UIScreen.lastKnownScale = scale
         return UIScreen(
             renderTarget: nil,
-            bounds: bounds,
-            scale: scale
+            bounds: bounds
         )
     }
 }
