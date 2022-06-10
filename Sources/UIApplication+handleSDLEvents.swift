@@ -7,6 +7,7 @@
 //
 
 import SDL
+import JNI
 import struct Foundation.TimeInterval
 
 extension UIApplication {
@@ -228,19 +229,21 @@ import JNI
 public func onNativeTouch(
     env: UnsafeMutablePointer<JNIEnv?>?,
     view: JavaObject?,
-    touchDeviceID: JavaInt,
-    pointerFingerID: JavaInt,
-    action: JavaInt,
-    x: JavaFloat,
-    y: JavaFloat,
-    pressure: JavaFloat,
-    timestampMs: JavaLong
+    touchParameters: JavaObject
 ) {
     if env == nil || view == nil {
         // We're in an invalid state where the JNI has exploded somehow
         // Passing anything on to UIKit now would probably lead to a crash
         return
     }
+
+    let touchDeviceId: JavaInt = try! jni.GetField("touchDeviceId", from: touchParameters)
+    let pointerFingerId: JavaInt = try! jni.GetField("pointerFingerId", from: touchParameters)
+    let action: JavaInt = try! jni.GetField("action", from: touchParameters)
+    let x: JavaFloat = try! jni.GetField("x", from: touchParameters)
+    let y: JavaFloat = try! jni.GetField("y", from: touchParameters)
+    let pressure: JavaFloat = try! jni.GetField("pressure", from: touchParameters)
+    let timestampMs: JavaLong = try! jni.GetField("timestamp", from: touchParameters)
 
     guard let eventType = SDL_EventType.eventFrom(androidAction: action)
     else { return }
@@ -249,8 +252,8 @@ public func onNativeTouch(
         SDL_TouchFingerEvent(
             type: eventType.rawValue,
             timestamp: UInt32(timestampMs),
-            touchId: Int64(touchDeviceID), // some arbitrary number, stays the same per device
-            fingerId: Int64(pointerFingerID),
+            touchId: Int64(touchDeviceId), // some arbitrary number, stays the same per device
+            fingerId: Int64(pointerFingerId),
             x: x / Float(UIScreen.main.scale),
             y: y / Float(UIScreen.main.scale),
             dx: 0,
