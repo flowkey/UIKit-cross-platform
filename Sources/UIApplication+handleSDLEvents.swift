@@ -252,7 +252,7 @@ public func onNativeTouch(
         SDL_TouchFingerEvent(
             type: eventType.rawValue,
             timestamp: UInt32(timestampMs),
-            touchId: Int64(touchDeviceId),
+            touchId: Int64(touchDeviceId), // some arbitrary number, stays the same per device
             fingerId: Int64(pointerFingerId),
             x: x / Float(UIScreen.lastKnownScale),
             y: y / Float(UIScreen.lastKnownScale),
