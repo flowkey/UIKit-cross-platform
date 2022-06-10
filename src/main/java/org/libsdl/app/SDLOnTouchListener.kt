@@ -1,5 +1,6 @@
 package main.java.org.libsdl.app
 
+import android.text.method.Touch
 import android.view.InputDevice
 import android.view.MotionEvent
 import android.view.View
@@ -14,7 +15,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
     var mHasFocus: Boolean
 
     fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
-    fun onNativeTouchUIKit(action: Int, x: Float, y: Float, t: Long)
+    fun onNativeTouchUIKit(touchParameters: TouchParameters)
 
     // Touch events
     override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -68,7 +69,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
         // check if we have focus because of a crash when re-entering the player 
         // from a background state while touching (JNIEnv dead)
         if (this.mHasFocus) {
-            this.onNativeTouchUIKit(action, x, y, t)
+            this.onNativeTouchUIKit(TouchParameters(action, x, y, t))
         }
     }
 }
@@ -85,3 +86,5 @@ private fun MotionEvent.touchValues(i: Int): TouchValues {
             min(this.getPressure(i), 1.0f)
     )
 }
+
+class TouchParameters(val action: Int, val x: Float, val y: Float, val timestamp: Long)

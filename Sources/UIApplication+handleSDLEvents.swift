@@ -7,6 +7,7 @@
 //
 
 import SDL
+import JNI
 import struct Foundation.TimeInterval
 
 extension UIApplication {
@@ -228,16 +229,18 @@ import JNI
 public func onNativeTouch(
     env: UnsafeMutablePointer<JNIEnv?>?,
     view: JavaObject?,
-    action: JavaInt,
-    x: JavaFloat,
-    y: JavaFloat,
-    timestampMs: JavaLong
+    touchParameters: JavaObject
 ) {
     if env == nil || view == nil {
         // We're in an invalid state where the JNI has exploded somehow
         // Passing anything on to UIKit now would probably lead to a crash
         return
     }
+
+    let action: JavaInt = try! jni.GetField("action", from: touchParameters)
+    let x: JavaFloat = try! jni.GetField("x", from: touchParameters)
+    let y: JavaFloat = try! jni.GetField("y", from: touchParameters)
+    let timestampMs: JavaLong = try! jni.GetField("timestamp", from: touchParameters)
 
     guard let eventType = SDL_EventType.eventFrom(androidAction: action)
     else { return }
