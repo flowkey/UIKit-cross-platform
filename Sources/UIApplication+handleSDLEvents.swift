@@ -237,9 +237,12 @@ public func onNativeTouch(
         return
     }
 
+    let touchDeviceId: JavaInt = try! jni.GetField("touchDeviceId", from: touchParameters)
+    let pointerFingerId: JavaInt = try! jni.GetField("pointerFingerId", from: touchParameters)
     let action: JavaInt = try! jni.GetField("action", from: touchParameters)
     let x: JavaFloat = try! jni.GetField("x", from: touchParameters)
     let y: JavaFloat = try! jni.GetField("y", from: touchParameters)
+    let pressure: JavaFloat = try! jni.GetField("pressure", from: touchParameters)
     let timestampMs: JavaLong = try! jni.GetField("timestamp", from: touchParameters)
 
     guard let eventType = SDL_EventType.eventFrom(androidAction: action)
@@ -249,13 +252,13 @@ public func onNativeTouch(
         SDL_TouchFingerEvent(
             type: eventType.rawValue,
             timestamp: UInt32(timestampMs),
-            touchId: 0,
-            fingerId: 0,
+            touchId: Int64(touchDeviceId),
+            fingerId: Int64(pointerFingerId),
             x: x / Float(UIScreen.lastKnownScale),
             y: y / Float(UIScreen.lastKnownScale),
             dx: 0,
             dy: 0,
-            pressure: 0
+            pressure: pressure
         )
     )
 

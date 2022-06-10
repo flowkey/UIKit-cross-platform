@@ -69,7 +69,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
         // check if we have focus because of a crash when re-entering the player 
         // from a background state while touching (JNIEnv dead)
         if (this.mHasFocus) {
-            this.onNativeTouchUIKit(TouchParameters(action, x, y, t))
+            this.onNativeTouchUIKit(TouchParameters(touchDevId, pointerFingerId, action, x, y, p, t))
         }
     }
 }
@@ -87,4 +87,12 @@ private fun MotionEvent.touchValues(i: Int): TouchValues {
     )
 }
 
-class TouchParameters(val action: Int, val x: Float, val y: Float, val timestamp: Long)
+class TouchParameters(
+    val touchDeviceId: Int,
+    val pointerFingerId: Int,
+    val action: Int,
+    val x: Float,
+    val y: Float,
+    val pressure: Float,
+    val timestamp: Long
+)
