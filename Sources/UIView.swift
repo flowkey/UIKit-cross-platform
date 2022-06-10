@@ -140,7 +140,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
 
     public init(frame: CGRect) {
         self.layer = type(of: self).layerClass.init()
-        self.layer.contentsScale = UIScreen.lastKnownScale
+        self.layer.contentsScale = UIScreen.main.scale
         super.init()
 
         self.layer.delegate = self

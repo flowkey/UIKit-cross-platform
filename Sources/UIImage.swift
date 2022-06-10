@@ -29,7 +29,7 @@ public class UIImage {
         let (pathWithoutExtension, fileExtension) = name.pathAndExtension()
 
         // e.g. ["@3x", "@2x", ""]
-        let scale = Int(UIScreen.lastKnownScale.rounded())
+        let scale = Int(UIScreen.main.scale.rounded())
         let possibleScaleStrings = stride(from: scale, to: 1, by: -1)
             .map { "@\($0)x" }
             + [""] // it's possible to have no scale string (e.g. "image.png")

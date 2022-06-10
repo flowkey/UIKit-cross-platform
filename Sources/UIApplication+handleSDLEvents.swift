@@ -251,8 +251,8 @@ public func onNativeTouch(
             timestamp: UInt32(timestampMs),
             touchId: Int64(touchDeviceID), // some arbitrary number, stays the same per device
             fingerId: Int64(pointerFingerID),
-            x: x / Float(UIScreen.lastKnownScale),
-            y: y / Float(UIScreen.lastKnownScale),
+            x: x / Float(UIScreen.main.scale),
+            y: y / Float(UIScreen.main.scale),
             dx: 0,
             dy: 0,
             pressure: pressure

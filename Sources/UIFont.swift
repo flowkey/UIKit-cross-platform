@@ -13,7 +13,7 @@ open class UIFont {
     }
     public var pointSize: CGFloat
     public var lineHeight: CGFloat {
-        return CGFloat(renderer?.getLineHeight() ?? 0) / UIScreen.lastKnownScale
+        return CGFloat(renderer?.getLineHeight() ?? 0) / UIScreen.main.scale
     }
 
     /**
@@ -34,7 +34,7 @@ open class UIFont {
 
     public init?(name: String, size: CGFloat) {
         let name = name.lowercased()
-        let size = Int32(size * UIScreen.lastKnownScale)
+        let size = Int32(size * UIScreen.main.scale)
 
         self.fontName = name
         self.pointSize = CGFloat(size)
@@ -66,7 +66,7 @@ open class UIFont {
     }
 
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
-        return renderer?.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.lastKnownScale))
+        return renderer?.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.main.scale))
     }
 
     internal func render(_ attributedString: NSAttributedString?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
@@ -167,23 +167,26 @@ extension NSAttributedString {
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
         guard let renderer = font.renderer else { return .zero }
         return wrapLength == 0 ?
-            renderer.singleLineSize(of: self) / UIScreen.lastKnownScale :
+            renderer.singleLineSize(of: self) / UIScreen.main.scale :
             string.size(with: font, wrapLength: wrapLength) // fallback to String.size for multiline text
     }
 }
 
 extension String {
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
-        guard let renderer = font.renderer else { return .zero }
+        guard
+            let renderer = font.renderer,
+            let screen = UIScreen.main
+        else { return .zero }
 
         let retinaResolutionSize =
             (wrapLength <= 0) ? // a wrapLength of < 0 leads to a crash, so assume 0
                 renderer.singleLineSize(of: self) :
                 renderer.multilineSize(
                     of: self,
-                    wrapLength: UInt(wrapLength * UIScreen.lastKnownScale)
+                    wrapLength: UInt(wrapLength * screen.scale)
                 )
 
-        return retinaResolutionSize / UIScreen.lastKnownScale
+        return retinaResolutionSize / screen.scale
     }
 }
