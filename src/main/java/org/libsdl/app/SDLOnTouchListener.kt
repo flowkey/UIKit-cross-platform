@@ -14,7 +14,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
     var mHasFocus: Boolean
 
     fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
-    fun onNativeTouchUIKit(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float, t: Long)
+    fun onNativeTouchUIKit(action: Int, x: Float, y: Float, t: Long)
 
     // Touch events
     override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -68,7 +68,7 @@ interface SDLOnTouchListener: View.OnTouchListener {
         // check if we have focus because of a crash when re-entering the player 
         // from a background state while touching (JNIEnv dead)
         if (this.mHasFocus) {
-            this.onNativeTouchUIKit(touchDevId, pointerFingerId, action, x, y, p, t)
+            this.onNativeTouchUIKit(action, x, y, t)
         }
     }
 }

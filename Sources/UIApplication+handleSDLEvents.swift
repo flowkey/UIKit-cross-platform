@@ -228,12 +228,9 @@ import JNI
 public func onNativeTouch(
     env: UnsafeMutablePointer<JNIEnv?>?,
     view: JavaObject?,
-    touchDeviceID: JavaInt,
-    pointerFingerID: JavaInt,
     action: JavaInt,
     x: JavaFloat,
     y: JavaFloat,
-    pressure: JavaFloat,
     timestampMs: JavaLong
 ) {
     if env == nil || view == nil {
@@ -249,13 +246,13 @@ public func onNativeTouch(
         SDL_TouchFingerEvent(
             type: eventType.rawValue,
             timestamp: UInt32(timestampMs),
-            touchId: Int64(touchDeviceID), // some arbitrary number, stays the same per device
-            fingerId: Int64(pointerFingerID),
+            touchId: 0,
+            fingerId: 0,
             x: x / Float(UIScreen.lastKnownScale),
             y: y / Float(UIScreen.lastKnownScale),
             dx: 0,
             dy: 0,
-            pressure: pressure
+            pressure: 0
         )
     )
 
