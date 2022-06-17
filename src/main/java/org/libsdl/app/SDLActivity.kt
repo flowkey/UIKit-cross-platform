@@ -10,13 +10,8 @@ import android.graphics.*
 import android.view.KeyEvent.*
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.content.res.Resources
 import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.core.view.WindowInsetsCompat
 import main.java.org.libsdl.app.*
-import kotlin.math.max
-import kotlin.math.min
 
 private const val TAG = "SDLActivity"
 
