@@ -96,10 +96,3 @@ class TouchParameters(
     val pressure: Float,
     val timestamp: Long
 )
-
-class EdgeInsets(
-        val top: Int,
-        val left: Int,
-        val bottom: Int,
-        val right: Int
-)
