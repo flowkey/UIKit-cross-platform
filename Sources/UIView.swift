@@ -50,7 +50,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         }
     }
 
-    public internal(set) var safeAreaInsets: UIEdgeInsets = .zero
+    open var safeAreaInsets: UIEdgeInsets = .zero
 
     open var mask: UIView? {
         didSet {

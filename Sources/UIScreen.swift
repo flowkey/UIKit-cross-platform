@@ -178,6 +178,7 @@ fileprivate func getAndroidDeviceScale() -> CGFloat {
         return 2.0 // assume retina
     }
 }
+
 #endif
 
 

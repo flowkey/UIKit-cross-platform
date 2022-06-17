@@ -10,6 +10,10 @@ import android.graphics.*
 import android.view.KeyEvent.*
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.content.res.Resources
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.core.view.WindowInsetsCompat
 import main.java.org.libsdl.app.*
 import kotlin.math.max
 import kotlin.math.min
@@ -82,7 +86,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
         // Set up the surface
         mSurface = SurfaceView(context)
-        mSurface.setZOrderOnTop(true) // so we can cover the video (fixes Android 8 bug)
+        mSurface.setZOrderMediaOverlay(true) // so we can cover the video (fixes Android 8 bug)
 
         // Enables the alpha value for colors on the SDLSurface
         // which makes the VideoJNI SurfaceView behind it visible
@@ -99,6 +103,28 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
     @Suppress("unused") // accessed via JNI
     fun getDeviceDensity(): Float = context.resources.displayMetrics.density
+
+    @Suppress("unused")
+    fun getSafeAreaInsets(): RectF {
+        val zeroRect = RectF(0f, 0f, 0f, 0f)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val insets = rootView.rootWindowInsets?.getInsets(
+                WindowInsets.Type.displayCutout() or
+                WindowInsets.Type.navigationBars()
+            ) ?: return zeroRect
+
+            val density = getDeviceDensity().toFloat()
+            return RectF(
+                insets.left.toFloat() / density,
+                insets.top.toFloat() / density,
+                insets.right.toFloat() / density,
+                insets.bottom.toFloat() / density
+            )
+        }
+
+        return zeroRect
+    }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
