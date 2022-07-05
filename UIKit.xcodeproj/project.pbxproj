@@ -14,6 +14,7 @@
 		5B115C5E1F61DBF800AAB895 /* UIProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */; };
 		5B1D6F3E1F8E264F009CE5B4 /* NSMutableAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D961341F2635D5005176DC /* NSMutableAttributedString.swift */; };
 		5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */; };
+		5B4A7830285C799C0066E48C /* UIWindow+getSafeAreaInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4A782F285C799C0066E48C /* UIWindow+getSafeAreaInsets.swift */; };
 		5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */; };
 		5B520DB5208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B520DB4208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift */; };
 		5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */; };
@@ -304,6 +305,7 @@
 		03CC73971FB5B2C6000A2C91 /* UITouchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITouchTests.swift; sourceTree = "<group>"; };
 		5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIProgressView.swift; path = Sources/UIProgressView.swift; sourceTree = SOURCE_ROOT; };
 		5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CAMediaTimingFunction.swift; path = Sources/CAMediaTimingFunction.swift; sourceTree = SOURCE_ROOT; };
+		5B4A782F285C799C0066E48C /* UIWindow+getSafeAreaInsets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+getSafeAreaInsets.swift"; sourceTree = "<group>"; };
 		5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimation.swift; path = Sources/CASpringAnimation.swift; sourceTree = SOURCE_ROOT; };
 		5B520DB4208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontRenderer+renderAttributedString.swift"; sourceTree = "<group>"; };
 		5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CALayer+animations.swift"; path = "Sources/CALayer+animations.swift"; sourceTree = SOURCE_ROOT; };
@@ -652,6 +654,7 @@
 				838545621F26458100B64986 /* UIVisualEffect.swift */,
 				8378E17D1F05503600E138BD /* UIVisualEffectView.swift */,
 				5C6AB7171ED3BECD006F90AC /* UIWindow.swift */,
+				5B4A782F285C799C0066E48C /* UIWindow+getSafeAreaInsets.swift */,
 				5C93AEB8208E2D1A005BE853 /* UIWindow+hardwareBackButton.swift */,
 				5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */,
 				833075381F697613002089AC /* Video */,
@@ -1174,6 +1177,7 @@
 				838545721F26536200B64986 /* NSAttributedStringKey.swift in Sources */,
 				5C6AB7611ED5762A006F90AC /* UIEdgeInsets.swift in Sources */,
 				83AB7B4C1F2B515B00C7997D /* UIAlertAction.swift in Sources */,
+				5B4A7830285C799C0066E48C /* UIWindow+getSafeAreaInsets.swift in Sources */,
 				5C6AB76B1ED5A648006F90AC /* UIView+animate.swift in Sources */,
 				5C6AB77E1ED71867006F90AC /* CATransaction.swift in Sources */,
 				83667CE01F4DC87B00780EA6 /* AVPlayerLayer+Mac.swift in Sources */,
