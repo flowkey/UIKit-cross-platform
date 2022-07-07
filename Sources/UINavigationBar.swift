@@ -59,15 +59,17 @@ open class UINavigationBar: UIView {
     }
 
     open override func layoutSubviews() {
+        let safeAreaInsets = UIWindow.getSafeAreaInsets()
+
         backButton.sizeToFit()
-        backButton.frame.origin.x = horizontalMargin
+        backButton.frame.origin.x = horizontalMargin + safeAreaInsets.left
         backButton.center.y = bounds.midY
 
         titleLabel.sizeToFit()
         titleLabel.center = CGPoint(x: bounds.midX, y: bounds.midY)
 
         rightButton.sizeToFit()
-        rightButton.frame.maxX = bounds.maxX - horizontalMargin
+        rightButton.frame.maxX = bounds.maxX - horizontalMargin - safeAreaInsets.right
         rightButton.center.y = bounds.midY
     }
 
