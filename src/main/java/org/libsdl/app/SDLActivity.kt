@@ -104,12 +104,13 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         val zeroRect = RectF(0f, 0f, 0f, 0f)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val insets = rootView.rootWindowInsets?.getInsets(
-                WindowInsets.Type.displayCutout() or
-                WindowInsets.Type.navigationBars()
-            ) ?: return zeroRect
+            val activity = context as Activity
+            val typeMask =
+                if (activity.window.navigationBarColor == Color.TRANSPARENT) WindowInsets.Type.displayCutout() or WindowInsets.Type.navigationBars()
+                else WindowInsets.Type.displayCutout()
 
-            val density = getDeviceDensity().toFloat()
+            val insets = rootWindowInsets?.getInsets(typeMask) ?: return zeroRect
+            val density = getDeviceDensity()
             return RectF(
                 insets.left.toFloat() / density,
                 insets.top.toFloat() / density,
