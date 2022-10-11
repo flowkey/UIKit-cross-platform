@@ -110,8 +110,9 @@ open class UIScrollView: UIView {
         switch panGestureRecognizer.state {
         case .began:
             showScrollIndicators()
-            delegate?.scrollViewWillBeginDragging(self)
             cancelDeceleratingIfNeccessary()
+        case .changed:
+            delegate?.scrollViewWillBeginDragging(self)
         case .ended:
             startDeceleratingIfNecessary()
             weightedAverageVelocity = .zero

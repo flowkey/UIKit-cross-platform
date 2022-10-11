@@ -5,7 +5,13 @@
         android:supportsRtl="true"
         >
 
+        <!--
+        Setting allowNativeHeapPointerTagging=false below prevents crashes in Swift,
+        but it will stop working in future Android versions. Hopefully Swift Android will support
+        this by then: https://source.android.com/devices/tech/debug/tagged-pointers
+        -->
         <activity
+            android:allowNativeHeapPointerTagging="false"
             android:name="com.example.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"

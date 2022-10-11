@@ -17,9 +17,12 @@ struct Timer {
     init(startingAt startingTimeInMilliseconds: Double = 0.0) {
         var startTime = timeval()
         gettimeofday(&startTime, nil)
-        if !startingTimeInMilliseconds.isZero {
-            startTime.tv_usec += type(of: startTime.tv_usec).init(startingTimeInMilliseconds * 1000)
-        }
+
+        let seconds = (startingTimeInMilliseconds / 1000).rounded(.down)
+        let milliseconds = startingTimeInMilliseconds.truncatingRemainder(dividingBy: 1000)
+        startTime.tv_sec += type(of: startTime.tv_sec).init(seconds)
+        startTime.tv_usec += type(of: startTime.tv_usec).init(milliseconds * 1000)
+
         self.startTime = startTime
     }
 

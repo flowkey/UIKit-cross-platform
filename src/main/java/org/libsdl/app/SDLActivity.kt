@@ -10,9 +10,8 @@ import android.graphics.*
 import android.view.KeyEvent.*
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.os.Build
 import main.java.org.libsdl.app.*
-import kotlin.math.max
-import kotlin.math.min
 
 private const val TAG = "SDLActivity"
 
@@ -62,7 +61,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
     // SDLOnTouchListener conformance
     external override fun onNativeMouse(button: Int, action: Int, x: Float, y: Float)
-    external override fun onNativeTouchUIKit(touchDevId: Int, pointerFingerId: Int, action: Int, x: Float, y: Float, p: Float, t: Long)
+    external override fun onNativeTouchUIKit(touchParameters: TouchParameters)
     override var mWidth: Float = 1.0f // Keep track of the surface size to normalize touch events
     override var mHeight: Float = 1.0f // Start with non-zero values to avoid potential division by zero
 
@@ -82,7 +81,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
         // Set up the surface
         mSurface = SurfaceView(context)
-        mSurface.setZOrderOnTop(true) // so we can cover the video (fixes Android 8 bug)
+        mSurface.setZOrderMediaOverlay(true) // so we can cover the video (fixes Android 8 bug)
 
         // Enables the alpha value for colors on the SDLSurface
         // which makes the VideoJNI SurfaceView behind it visible
@@ -99,6 +98,29 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
     @Suppress("unused") // accessed via JNI
     fun getDeviceDensity(): Float = context.resources.displayMetrics.density
+
+    @Suppress("unused")
+    fun getSafeAreaInsets(): RectF {
+        val zeroRect = RectF(0f, 0f, 0f, 0f)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val activity = context as Activity
+            val typeMask =
+                if (activity.window.navigationBarColor == Color.TRANSPARENT) WindowInsets.Type.displayCutout() or WindowInsets.Type.navigationBars()
+                else WindowInsets.Type.displayCutout()
+
+            val insets = rootWindowInsets?.getInsets(typeMask) ?: return zeroRect
+            val density = getDeviceDensity()
+            return RectF(
+                insets.left.toFloat() / density,
+                insets.top.toFloat() / density,
+                insets.right.toFloat() / density,
+                insets.bottom.toFloat() / density
+            )
+        }
+
+        return zeroRect
+    }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
@@ -247,7 +269,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         mSurface.setOnTouchListener(this)
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder?) {
+    override fun surfaceCreated(holder: SurfaceHolder) {
         Log.v(TAG, "surfaceCreated()")
         mHasFocus = hasFocus()
 

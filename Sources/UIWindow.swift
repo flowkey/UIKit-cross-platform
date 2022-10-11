@@ -12,6 +12,7 @@ public class UIWindow: UIView {
     }
 
     open func makeKeyAndVisible() {
+        self.safeAreaInsets = UIWindow.getSafeAreaInsets()
         UIApplication.shared?.keyWindow = self
 
         if let viewController = rootViewController {
@@ -38,7 +39,10 @@ public class UIWindow: UIView {
             currentTouch.gestureRecognizers = hitView.getRecognizerHierachy()
 
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
-            hitView.touchesBegan(allTouches, with: event)
+
+            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
+                hitView.touchesBegan(allTouches, with: event)
+            }
 
         case .moved:
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(allTouches, with: event) }
@@ -47,8 +51,13 @@ public class UIWindow: UIView {
             }
 
         case .ended:
+            // compute the value before ending the touch on the recognizer hierachy
+            // otherwise `hasBeenCancelledByAGestureRecognizer` will be false because the state was reset already
+            let hasBeenCancelledByAGestureRecognizer = currentTouch.hasBeenCancelledByAGestureRecognizer
+
             currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(allTouches, with: event) }
-            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
+
+            if !hasBeenCancelledByAGestureRecognizer {
                 hitView.touchesEnded(allTouches, with: event)
             }
 

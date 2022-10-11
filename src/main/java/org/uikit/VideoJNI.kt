@@ -48,6 +48,7 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
 
     external fun nativeOnVideoReady()
     external fun nativeOnVideoEnded()
+    external fun nativeOnVideoBuffering()
     external fun nativeOnVideoSourceError()
 
     init {
@@ -65,12 +66,11 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
 
         listener = object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                if (playbackState == Player.STATE_READY) {
-                    nativeOnVideoReady()
-                }
-
-                if (playbackState == Player.STATE_ENDED) {
-                    nativeOnVideoEnded()
+                when (playbackState) {
+                    Player.STATE_READY -> nativeOnVideoReady()
+                    Player.STATE_ENDED -> nativeOnVideoEnded()
+                    Player.STATE_BUFFERING -> nativeOnVideoBuffering()
+                    else -> {}
                 }
             }
 
