@@ -6,6 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+import Foundation
+
 #if os(iOS)
     import UIKit
 #else
