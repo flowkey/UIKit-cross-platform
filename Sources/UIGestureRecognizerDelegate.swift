@@ -11,7 +11,7 @@
 //    @objc optional func someFunc()
 //}
 
-public protocol UIGestureRecognizerDelegate: class {
+public protocol UIGestureRecognizerDelegate: AnyObject {
 //    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool
 
 //    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive: UITouch) -> Bool

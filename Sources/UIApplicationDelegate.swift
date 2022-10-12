@@ -16,7 +16,7 @@ public extension UIApplication {
 }
 
 
-public protocol UIApplicationDelegate: class {
+public protocol UIApplicationDelegate: AnyObject {
     init()
     var window: UIWindow? { get set }
 

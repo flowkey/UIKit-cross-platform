@@ -6,8 +6,6 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import Foundation
-
 public let kCAMediaTimingFunctionLinear = "linear"
 public let kCAMediaTimingFunctionEaseIn = "easeIn"
 public let kCAMediaTimingFunctionEaseOut = "easeOut"
@@ -43,12 +41,12 @@ public class CAMediaTimingFunction {
 
 extension CAMediaTimingFunction {
     static func linear(_ x: CGFloat) -> CGFloat { return x }
-    static func easeInCubic(_ x: CGFloat) -> CGFloat { return pow(x, 3) }
+    static func easeInCubic(_ x: CGFloat) -> CGFloat { return x * x * x }
     static func easeOutCubic(_ x: CGFloat) -> CGFloat { 
         let t = x - 1
         return ((t * t * t) + 1)
     }
-    static func easeInQuad(_ x: CGFloat) -> CGFloat { return pow(x, 2) }
+    static func easeInQuad(_ x: CGFloat) -> CGFloat { return x * x }
     static func easeOutQuad(_ x: CGFloat) -> CGFloat { return x * (2 - x) }
     static func easeInOutCubic(_ x: CGFloat) -> CGFloat {
         return x < 0.5 ? 2 * (x * x) : -1 + (4 - 2 * x) * x
@@ -56,7 +54,7 @@ extension CAMediaTimingFunction {
 
     // from CubicBezier1D optimising away constant terms
     static func customEaseOut(_ x: CGFloat) -> CGFloat {
-        let term1 = UIScrollViewDecelerationRateNormal * 3 * x * pow(1 - x, 2)
+        let term1 = UIScrollViewDecelerationRateNormal * 3 * x * (1 - x) * (1 - x)
         let term2 = 3 * (x * x) * (1 - x)
         let term3 = x * x * x
 

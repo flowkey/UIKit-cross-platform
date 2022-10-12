@@ -1,7 +1,7 @@
 jobs:
     xcodebuild:
         macos:
-            xcode: "12.5.0"
+            xcode: "13.4.1"
         steps:
             - checkout
             - run: git submodule update --recursive --init

@@ -8,7 +8,6 @@
 
 import SDL
 import SDL_gpu
-import func Foundation.round
 
 extension SDLWindowFlags: OptionSet {}
 

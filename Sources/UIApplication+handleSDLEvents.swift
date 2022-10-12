@@ -147,9 +147,9 @@ extension SDL_Scancode {
 extension SDL_Keymod: OptionSet {}
 
 extension SDL_Event {
-    var timestampInSeconds: TimeInterval {
+    var timestampInSeconds: Double {
         // SDL timestamps are in milliseconds intially:
-        return TimeInterval(self.common.timestamp) / 1000
+        return Double(self.common.timestamp) / 1000
     }
 }
 

@@ -9,6 +9,8 @@
 import JNI
 
 public class AVPlayer: JNIObject {
+    public override static var className: String { "org.uikit.AVPlayer" }
+
     public var onLoaded: ((Error?) -> Void)?
     public var onVideoReady: (() -> Void)?
     public var onVideoEnded: (() -> Void)?
@@ -16,7 +18,7 @@ public class AVPlayer: JNIObject {
 
     public convenience init(playerItem: AVPlayerItem) {
         let parentView = JavaSDLView(getSDLView())
-        try! self.init("org.uikit.AVPlayer", arguments: [parentView, playerItem.asset])
+        try! self.init(arguments: parentView, playerItem.asset)
         globalAVPlayer = self
     }
 

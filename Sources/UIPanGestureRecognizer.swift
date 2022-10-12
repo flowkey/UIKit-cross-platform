@@ -6,13 +6,11 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import Foundation
-
 open class UIPanGestureRecognizer: UIGestureRecognizer {
     private var initialTouchPoint: CGPoint?
 
-    private var previousTouchesMovedTimestamp: TimeInterval?
-    private var touchesMovedTimestamp: TimeInterval?
+    private var previousTouchesMovedTimestamp: Double?
+    private var touchesMovedTimestamp: Double?
 
     private let minimumTranslationThreshold: CGFloat = 5
 
@@ -40,7 +38,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     // The velocity of the pan gesture, which is expressed in points per second.
     // The velocity is broken into horizontal and vertical components.
-    func velocity(in view: UIView?, timeDiffSeconds: TimeInterval) -> CGPoint {
+    func velocity(in view: UIView?, timeDiffSeconds: Double) -> CGPoint {
         guard
             let curPos = trackedTouch?.location(in: view),
             let prevPos = trackedTouch?.previousLocation(in: view),

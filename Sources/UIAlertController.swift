@@ -6,8 +6,6 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import func Foundation.round
-
 public enum UIAlertControllerStyle {
     case actionSheet
     case alert
@@ -60,8 +58,8 @@ public class UIAlertController: UIViewController {
         )
 
         self.alertControllerView?.center = CGPoint(
-            x: round(self.view.bounds.midX),
-            y: round(self.view.bounds.midY)
+            x: self.view.bounds.midX.rounded(),
+            y: self.view.bounds.midY.rounded()
         )
     }
 

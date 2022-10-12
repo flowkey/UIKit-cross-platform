@@ -6,7 +6,8 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-import Foundation
+import struct Foundation.Data
+import struct Foundation.URL
 
 extension Data {
     public static func _fromPathCrossPlatform(_ path: String) -> Data? {

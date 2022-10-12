@@ -6,8 +6,6 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-import Foundation
-
 public struct CATransform3D {
     public init(
         m11: Float, m12: Float, m13: Float, m14: Float,
@@ -49,12 +47,16 @@ extension CATransform3D {
 
 internal extension CATransform3D {
     func transformingVector(x: CGFloat, y: CGFloat, z: CGFloat) -> (x: CGFloat, y: CGFloat, z: CGFloat) {
-        let newX = CGFloat(m11) * x + CGFloat(m21) * y + CGFloat(m31) * z + CGFloat(m41)
-        let newY = CGFloat(m12) * x + CGFloat(m22) * y + CGFloat(m32) * z + CGFloat(m42)
-        let newZ = CGFloat(m13) * x + CGFloat(m23) * y + CGFloat(m33) * z + CGFloat(m43)
-        let newW = CGFloat(m14) * x + CGFloat(m24) * y + CGFloat(m34) * z + CGFloat(m44)
+        let newX = Double(m11) * Double(x) + Double(m21) * Double(y) + Double(m31) * Double(z) + Double(m41)
+        let newY = Double(m12) * Double(x) + Double(m22) * Double(y) + Double(m32) * Double(z) + Double(m42)
+        let newZ = Double(m13) * Double(x) + Double(m23) * Double(y) + Double(m33) * Double(z) + Double(m43)
+        let newW = Double(m14) * Double(x) + Double(m24) * Double(y) + Double(m34) * Double(z) + Double(m44)
 
-        return (x: newX / newW, y: newY / newW, z: newZ / newW)
+        return (
+            x: CGFloat(newX / newW),
+            y: CGFloat(newY / newW),
+            z: CGFloat(newZ / newW)
+        )
     }
 }
 

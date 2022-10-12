@@ -6,8 +6,8 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-import Foundation
 import SDL_ttf
+import class Foundation.NSAttributedString
 
 extension FontRenderer {
     func singleLineSize(of attributedString: NSAttributedString) -> CGSize {

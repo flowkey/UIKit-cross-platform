@@ -8,7 +8,8 @@
 
 import SDL
 import SDL_gpu
-import Foundation
+import struct Foundation.Data
+import class Foundation.NSString
 
 public class UIImage {
     public let cgImage: CGImage
