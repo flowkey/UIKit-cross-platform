@@ -76,7 +76,7 @@ open class Button: UIControl {
     }
 
     public let tapGestureRecognizer = UITapGestureRecognizer()
-    public var onPress: (() -> Void)? {
+    public var onPress: (@MainActor () -> Void)? {
         get { return tapGestureRecognizer.onPress }
         set { tapGestureRecognizer.onPress = newValue }
     }
