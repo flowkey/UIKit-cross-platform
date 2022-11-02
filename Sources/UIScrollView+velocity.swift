@@ -6,12 +6,9 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import func Foundation.sqrt
-import func Foundation.log
-
 private extension CGPoint {
     var magnitude: CGFloat {
-        return sqrt(x * x + y * y)
+        return (x * x + y * y).squareRoot()
     }
 }
 
@@ -21,8 +18,8 @@ extension UIScrollView {
         // Otherwise we could animate after scrolling quickly, pausing for a few seconds, then letting go
         let velocityIsLargeEnoughToDecelerate = (self.panGestureRecognizer.velocity(in: self).magnitude > 10)
 
-        let dampingFactor: CGFloat = 0.5 // hand-tuned
-        let nonBoundsCheckedScrollAnimationDistance = self.weightedAverageVelocity * dampingFactor // hand-tuned
+        let dampingFactor = 0.5 // hand-tuned
+        let nonBoundsCheckedScrollAnimationDistance = self.weightedAverageVelocity * CGFloat(dampingFactor) // hand-tuned
         let targetOffset = getBoundsCheckedContentOffset(contentOffset - nonBoundsCheckedScrollAnimationDistance)
         let distanceToBoundsCheckedTarget = contentOffset - targetOffset
 
@@ -37,10 +34,10 @@ extension UIScrollView {
         let animationTimeConstant = 0.325 * dampingFactor
 
         // This calculation is a weird approximation but it's close enough for now...
-        let animationTime = log(distanceToBoundsCheckedTarget.magnitude) * animationTimeConstant
+        let animationTime = log(Double(distanceToBoundsCheckedTarget.magnitude)) * animationTimeConstant
 
         UIView.animate(
-            withDuration: Double(animationTime),
+            withDuration: animationTime,
             options: [.beginFromCurrentState, .customEaseOut, .allowUserInteraction],
             animations: {
                 self.isDecelerating = true
@@ -62,8 +59,10 @@ extension UIScrollView {
     }
 
     func cancelDecelerationAnimations() {
-        layer.removeAnimation(forKey: "bounds")
-        horizontalScrollIndicator.layer.removeAnimation(forKey: "position")
-        verticalScrollIndicator.layer.removeAnimation(forKey: "position")
+        if !layer.animations.isEmpty {
+            layer.removeAnimation(forKey: "bounds")
+            horizontalScrollIndicator.layer.removeAnimation(forKey: "position")
+            verticalScrollIndicator.layer.removeAnimation(forKey: "position")
+        }
     }
 }

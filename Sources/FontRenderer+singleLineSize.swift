@@ -6,8 +6,8 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-import Foundation
 import SDL_ttf
+import class Foundation.NSAttributedString
 
 extension FontRenderer {
     func singleLineSize(of attributedString: NSAttributedString) -> CGSize {
@@ -123,7 +123,8 @@ extension FontRenderer {
             let glyph = self.rawPointer.pointee.current.pointee
 
             let spaceCharacterCode = 32
-            if characterCode != spaceCharacterCode, glyph.maxx - glyph.minx <= 0 {
+            let newLineCharacterCode = 10
+            if characterCode != spaceCharacterCode, characterCode != newLineCharacterCode, glyph.maxx - glyph.minx <= 0 {
                 assertionFailure("Glyph \(characterCode) ('\(Character(UnicodeScalar(characterCode)!))') has no width")
                 return nil
             }

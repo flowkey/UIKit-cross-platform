@@ -133,7 +133,7 @@ open class CALayer {
             guard newBounds != bounds else { return }
             onWillSet(keyPath: .bounds)
 
-            if bounds.size != newBounds.size {
+            if !isPresentationForAnotherLayer && bounds.size != newBounds.size {
                 // It seems weird to access the superview here but it matches the iOS behaviour
                 (self.superlayer?.delegate as? UIView)?.setNeedsLayout()
             }
@@ -226,18 +226,17 @@ open class CALayer {
         return CALayer.defaultAction(forKey: event)
     }
 
-
     /// returns a non animating copy of the layer
     func createPresentation() -> CALayer {
         let copy = CALayer(layer: self)
-        copy.disableAnimations = true
+        copy.isPresentationForAnotherLayer = true
         return copy
     }
 
     internal var _presentation: CALayer?
     open func presentation() -> CALayer? { return _presentation }
 
-    internal var disableAnimations = false
+    internal var isPresentationForAnotherLayer = false
 
     internal var animations = [String: CABasicAnimation]() {
         didSet { onDidSetAnimations(wasEmpty: oldValue.isEmpty) }
@@ -300,7 +299,7 @@ extension CALayer: Hashable {
     }
 }
 
-public protocol CALayerDelegate: class {
+public protocol CALayerDelegate: AnyObject {
     func action(forKey event: String) -> CABasicAnimation?
     func display(_ layer: CALayer)
 }

@@ -32,14 +32,8 @@ open class UIGestureRecognizer {
             if state == oldValue { return }
             onStateChanged?()
             switch state {
-            case .failed, .cancelled:
-                // touchesCancelled(touches: Set<UITouch>, with: UIEvent)
+            case .recognized, .ended, .failed:
                 state = .possible
-            case .recognized, .ended:
-                state = .possible
-            case .changed:
-                cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
-                cancelTouchesInViewIfApplicable()
             default: break
             }
         }
@@ -74,9 +68,12 @@ open class UIGestureRecognizer {
     }
 }
 
-private extension UIGestureRecognizer {
-    private func cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously() {
-        guard let touch = self.trackedTouch else { return }
+extension UIGestureRecognizer {
+    func cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously() {
+        guard
+            let touch = self.trackedTouch,
+            self.state != .cancelled && self.state != .failed
+        else { return }
 
         let otherRecognizersThatHaveBeganToRecogize = touch.gestureRecognizers.filter {
             $0 != self && $0.state == .began
@@ -88,12 +85,6 @@ private extension UIGestureRecognizer {
             }
 
             $0.touchesCancelled([touch], with: UIEvent())
-        }
-    }
-
-    private func cancelTouchesInViewIfApplicable() {
-        if self.cancelsTouchesInView {
-            trackedTouch?.hasBeenCancelledByAGestureRecognizer = true
         }
     }
 }

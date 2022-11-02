@@ -1,6 +1,6 @@
 //
 //  UIColor.swift
-//  NativePlayerSDL
+//  UIKit
 //
 //  Created by Geordie Jay on 16.05.17.
 //  Copyright © 2017 Geordie Jay. All rights reserved.
@@ -52,8 +52,8 @@ public class UIColor: NSObject/*, Hashable*/ {
     // XXX: This is not currently working as it should but it is better than nothing
     // We currently only use this in testing, but whoever needs it for real should have a look at fixing it..
     public convenience init(hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat) {
-        let c = (1 - ((2 * brightness) - 1).magnitude) * saturation
-        let x = c * (1 - (hue.remainder(dividingBy: 2) - 1).magnitude)
+        let c: CGFloat = (1 - ((2 * brightness) - 1).magnitude) * saturation
+        let x: CGFloat = c * (1 - (hue.remainder(dividingBy: 2) - 1).magnitude)
 
         let m = brightness - (0.5 * c)
 
@@ -114,6 +114,7 @@ extension UIColor {
     public static let red = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
     public static let green = UIColor(red: 0, green: 1, blue: 0, alpha: 1)
     public static let blue = UIColor(red: 0, green: 0, blue: 1, alpha: 1)
+    public static let yellow = UIColor(red: 1, green: 1, blue: 0, alpha: 1)
     public static let purple = UIColor(red: 0.5, green: 0, blue: 0.5, alpha: 1)
     public static let orange = UIColor(red: 1, green: 0.5, blue: 0, alpha: 1)
     public static let lightGray = UIColor(red: 2.0 / 3.0, green: 2.0 / 3.0, blue: 2.0 / 3.0, alpha: 1)

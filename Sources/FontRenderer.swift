@@ -97,17 +97,17 @@ extension FontRenderer {
     }
 
     internal func multilineSize(of text: String, wrapLength: UInt) -> CGSize {
-        return multilineSize(of: text, textLength: Int32(text.count), wrapLength: Int(wrapLength))
+        return multilineSize(of: text, wrapLength: Int(wrapLength))
     }
 
-    private func multilineSize(of text: UnsafePointer<CChar>, textLength: Int32, wrapLength: Int) -> CGSize {
+    private func multilineSize(of text: UnsafePointer<CChar>, wrapLength: Int) -> CGSize {
         guard wrapLength > 0 else { return .zero }
         let lineSpace = 2
 
         var textLineHeight: Int32 = 0
 
         var tok = UnsafeMutablePointer(mutating: text)
-        let end = tok + Int(textLength)
+        let end = tok + SDL_strlen(text)
 
         var lines = [UnsafeMutablePointer<CChar>]()
         repeat {
@@ -118,7 +118,7 @@ extension FontRenderer {
             var searchIndex =
                 strchr(tok, newLineR) ??
                     strchr(tok, newLineN) ??
-                    end.advanced(by: -1)
+                    end
 
             var firstCharOfNextLine = searchIndex + 1
 
@@ -161,11 +161,7 @@ extension FontRenderer {
             tok = firstCharOfNextLine
         } while (tok < end)
 
-        // The sizing using linesCount is actually correct, but it gives a different result compared to
-        // what actually gets rendered. So for now, use this updated figure to have correct sizeThatFits etc:
-        let numberOfRandomExtraLinesRenderedBySDLTTF = 1
-        let linesCount = lines.count + numberOfRandomExtraLinesRenderedBySDLTTF
-
+        let linesCount = lines.count
         let combinedTextHeight = Int(textLineHeight) * linesCount
         let combinedLineSpacing = lineSpace * (linesCount - 1)
 

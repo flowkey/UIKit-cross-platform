@@ -70,3 +70,69 @@ class CALayerTests: XCTestCase {
         XCTAssertEqual(layer.frame.origin.y, expectedSize.height, accuracy: accuracy)
     }
 }
+
+extension CALayerTests {
+    class ViewWithLayoutCallback: UIView {
+        var onLayoutSubviews: (() -> ())?
+
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            onLayoutSubviews?()
+        }
+    }
+
+
+    func testLayoutSuperlayerDelegateWhenChangingBoundsSize() {
+        let superView = ViewWithLayoutCallback()
+        let view = UIView()
+        superView.addSubview(view)
+        view.layer.bounds.size = CGSize(width: 10, height: 10)
+        superView.layoutIfNeeded()
+        view.layoutIfNeeded()
+
+        var didLayoutSubviews = false
+        superView.onLayoutSubviews = {
+            didLayoutSubviews = true
+        }
+
+        view.layer.bounds.size = CGSize(width: 15, height: 15)
+        superView.layoutIfNeeded()
+        XCTAssertEqual(didLayoutSubviews, true)
+    }
+
+    func testDoesNotLayoutSuperlayerDelegateWhenChangingBoundsSizeOfPresentation() {
+        let superView = ViewWithLayoutCallback()
+        let view = UIView()
+        superView.addSubview(view)
+        view.layer.bounds.size = CGSize(width: 10, height: 10)
+        superView.layoutIfNeeded()
+        view.layoutIfNeeded()
+
+        var didLayoutSubviews = false
+        superView.onLayoutSubviews = {
+            didLayoutSubviews = true
+        }
+
+        view.layer.presentation()?.bounds.size = CGSize(width: 15, height: 15)
+        superView.layoutIfNeeded()
+        XCTAssertEqual(didLayoutSubviews, false)
+    }
+
+    func testDoesNotLayoutSuperlayerDelegateWhenChangingContentOffsetOfSCrollView() {
+        let superView = ViewWithLayoutCallback()
+        let view = UIScrollView()
+        superView.addSubview(view)
+        view.contentOffset = CGPoint(x: 100, y: 100)
+        superView.layoutIfNeeded()
+        view.layoutIfNeeded()
+
+        var didLayoutSubviews = false
+        superView.onLayoutSubviews = {
+            didLayoutSubviews = true
+        }
+
+        view.contentOffset = CGPoint(x: 200, y: 200)
+        superView.layoutIfNeeded()
+        XCTAssertEqual(didLayoutSubviews, false)
+    }
+}

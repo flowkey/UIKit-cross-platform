@@ -29,8 +29,7 @@ class UIFontTests: XCTestCase {
         let calculatedSize = multilineText.size(with: testFont, wrapLength: wrapLength)
         XCTAssertEqual(calculatedSize.width, CGFloat(wrapLength))
 
-        let numberOfRandomExtraLinesRenderedBySDLTTF = UInt(1)
-        let numberOfLines = CGFloat(multilineText.numberOfLines() + numberOfRandomExtraLinesRenderedBySDLTTF)
+        let numberOfLines = CGFloat(multilineText.numberOfLines())
 
         // SDL_ttf adds an additional 2px per line on top of the font's line height
         // We are testing on retina devices, so 2px becomes 1px after reducing down:

@@ -9,12 +9,16 @@
 import JNI
 
 public class AVPlayer: JNIObject {
+    public override static var className: String { "org.uikit.AVPlayer" }
+
     public var onLoaded: ((Error?) -> Void)?
+    public var onVideoReady: (() -> Void)?
     public var onVideoEnded: (() -> Void)?
+    public var onVideoBuffering: (() -> Void)?
 
     public convenience init(playerItem: AVPlayerItem) {
         let parentView = JavaSDLView(getSDLView())
-        try! self.init("org.uikit.AVPlayer", arguments: [parentView, playerItem.asset])
+        try! self.init(arguments: parentView, playerItem.asset)
         globalAVPlayer = self
     }
 
@@ -59,11 +63,18 @@ private weak var globalAVPlayer: AVPlayer?
 public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onLoaded?(nil)
     globalAVPlayer?.onLoaded = nil
+
+    globalAVPlayer?.onVideoReady?()
 }
 
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoEnded")
 public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
     globalAVPlayer?.onVideoEnded?()
+}
+
+@_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoBuffering")
+public func nativeOnVideoBuffering(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
+    globalAVPlayer?.onVideoBuffering?()
 }
 
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoSourceError")

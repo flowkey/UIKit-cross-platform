@@ -7,7 +7,7 @@
 //
 
 #if os(Android)
-import Foundation
+import class Foundation.NSAttributedString
 
 extension NSAttributedString.Key {
     public static let kern = NSAttributedString.Key(rawValue: "NSKern")

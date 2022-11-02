@@ -50,7 +50,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         }
     }
 
-    public internal(set) var safeAreaInsets: UIEdgeInsets = .zero
+    open internal(set) var safeAreaInsets: UIEdgeInsets = .zero
 
     open var mask: UIView? {
         didSet {
@@ -206,9 +206,15 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     /// Adds a subview without touching the view's layer or any of its sublayers.
     /// We need to be able to add layers at an index that isn't directly related to its subview index.
     private func insertSubviewWithoutTouchingLayer(_ view: UIView, at index: Int) {
+        // remove from superview without removing from superlayer
+        if let oldSuperview = view.superview {
+            oldSuperview.subviews.removeAll(where: { $0 == view })
+            view.superview = nil
+            oldSuperview.setNeedsLayout()
+        }
+
         // ensure index is always in bounds:
         let index = max(subviews.startIndex, min(index, subviews.endIndex))
-        if view.superview != nil { removeFromSuperview() }
         subviews.insert(view, at: index)
         view.superview = self
     }
@@ -217,7 +223,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         guard let superview = superview else { return }
         self.layer.removeFromSuperlayer()
 
-        superview.subviews = superview.subviews.filter { $0 != self }
+        superview.subviews.removeAll(where: { $0 == self })
         self.superview = nil
         superview.setNeedsLayout()
     }

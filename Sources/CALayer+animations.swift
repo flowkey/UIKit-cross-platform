@@ -36,7 +36,7 @@ extension CALayer {
         if let animation = action(forKey: animationKey) as? CABasicAnimation,
             self.hasBeenRenderedInThisPartOfOverallLayerHierarchy
                 || animation.wasCreatedInUIAnimateBlock,
-            !self.disableAnimations,
+            !self.isPresentationForAnotherLayer,
             !CATransaction.disableActions()
         {
             add(animation, forKey: animationKey)

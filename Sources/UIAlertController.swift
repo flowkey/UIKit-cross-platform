@@ -6,11 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import func Foundation.round
-
 public enum UIAlertControllerStyle {
     case actionSheet
-    case popover
     case alert
 }
 
@@ -23,7 +20,6 @@ public class UIAlertController: UIViewController {
 
     public init(title: String?, message: String?, preferredStyle: UIAlertControllerStyle) {
         self.message = message
-        assert(message == nil, "We haven't implemented `message` yet")
         self.preferredStyle = preferredStyle
         super.init(nibName: nil, bundle: nil)
         self.title = title
@@ -62,8 +58,8 @@ public class UIAlertController: UIViewController {
         )
 
         self.alertControllerView?.center = CGPoint(
-            x: round(self.view.bounds.midX),
-            y: round(self.view.bounds.midY)
+            x: self.view.bounds.midX.rounded(),
+            y: self.view.bounds.midY.rounded()
         )
     }
 

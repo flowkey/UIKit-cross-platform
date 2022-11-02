@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.example"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
     }
@@ -21,18 +21,36 @@ android {
             reset()
             enable true
             universalApk false
-            include "armeabi-v7a"
-        }
-    }
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
+            include "arm64-v8a", "x86_64"
         }
     }
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+}
+
+task buildSwiftArm64(type: Exec) {
+    commandLine 'sh', '-c', getSwiftBuildCommand('arm64-v8a')
+}
+
+task buildSwiftIntel64(type: Exec) {
+    commandLine 'sh', '-c', getSwiftBuildCommand('x86_64')
+}
+
+task cleanSwift(type: Exec) {
+    commandLine 'sh', '-c', "rm -rf ../../build"
+}
+
+preBuild.dependsOn buildSwiftArm64
+preBuild.dependsOn buildSwiftIntel64
+
+clean.dependsOn cleanSwift
+
+def getSwiftBuildCommand(abi) {
+    def cmakeBuildType = "RelWithDebInfo"
+    def buildScript = "../../../../swift-android-toolchain/swift-build.sh"
+    return "CMAKE_BUILD_TYPE=$cmakeBuildType ANDROID_ABI=$abi LIBRARY_OUTPUT_DIRECTORY='${projectDir}/src/main/jniLibs/${abi}' $buildScript ../../"
 }
 
 dependencies {

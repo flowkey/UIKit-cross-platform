@@ -6,7 +6,6 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-import Foundation
 import CoreVideo
 
 let displayID = CGMainDisplayID()

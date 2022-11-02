@@ -23,7 +23,13 @@ open class UIScrollView: UIView {
         get { return bounds.origin }
         set {
             guard newValue != contentOffset else { return }
-            cancelDecelerationAnimations()
+
+            // Cancel deceleration animations only when contentOffset gets set without animations.
+            // Otherwise we might cancel any "bounds" animations which are not iniated from velocity scrolling.
+            if isDecelerating && UIView.currentAnimationPrototype == nil {
+                cancelDecelerationAnimations()
+            }
+
             bounds.origin = newValue
             layoutScrollIndicatorsIfNeeded()
         }
@@ -50,9 +56,11 @@ open class UIScrollView: UIView {
 
     /// does some min/max checks to prevent newOffset being out of bounds
     func getBoundsCheckedContentOffset(_ newContentOffset: CGPoint) -> CGPoint {
+        let contentHeight = max(contentSize.height, bounds.height)
+        let contentWidth = max(contentSize.width, bounds.width)
         return CGPoint(
-            x: min(max(newContentOffset.x, -contentInset.left), (contentSize.width + contentInset.right) - bounds.width),
-            y: min(max(newContentOffset.y, -contentInset.top), (contentSize.height + contentInset.bottom) - bounds.height)
+            x: min(max(newContentOffset.x, -contentInset.left), (contentWidth + contentInset.right) - bounds.width),
+            y: min(max(newContentOffset.y, -contentInset.top), (contentHeight + contentInset.bottom) - bounds.height)
         )
     }
 
@@ -102,8 +110,9 @@ open class UIScrollView: UIView {
         switch panGestureRecognizer.state {
         case .began:
             showScrollIndicators()
-            delegate?.scrollViewWillBeginDragging(self)
             cancelDeceleratingIfNeccessary()
+        case .changed:
+            delegate?.scrollViewWillBeginDragging(self)
         case .ended:
             startDeceleratingIfNecessary()
             weightedAverageVelocity = .zero
@@ -141,7 +150,7 @@ open class UIScrollView: UIView {
     }
 }
 
-public protocol UIScrollViewDelegate: class {
+public protocol UIScrollViewDelegate: AnyObject {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
     func scrollViewDidScroll(_ scrollView: UIScrollView)
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)

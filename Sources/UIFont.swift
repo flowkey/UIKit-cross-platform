@@ -174,16 +174,19 @@ extension NSAttributedString {
 
 extension String {
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
-        guard let renderer = font.renderer else { return .zero }
+        guard
+            let renderer = font.renderer,
+            let screen = UIScreen.main
+        else { return .zero }
 
         let retinaResolutionSize =
             (wrapLength <= 0) ? // a wrapLength of < 0 leads to a crash, so assume 0
                 renderer.singleLineSize(of: self) :
                 renderer.multilineSize(
                     of: self,
-                    wrapLength: UInt(wrapLength * UIScreen.main.scale)
+                    wrapLength: UInt(wrapLength * screen.scale)
                 )
 
-        return retinaResolutionSize / UIScreen.main.scale
+        return retinaResolutionSize / screen.scale
     }
 }

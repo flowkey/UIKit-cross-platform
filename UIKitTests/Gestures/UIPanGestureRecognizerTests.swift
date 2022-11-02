@@ -8,9 +8,6 @@
 
 import XCTest
 @testable import UIKit
-import Foundation
-
-
 
 fileprivate class TestPanGestureRecognizer: UIPanGestureRecognizer {
     let stateCancelledExpectation: XCTestExpectation?
@@ -87,7 +84,10 @@ class UIPanGestureRecognizerTests: XCTestCase {
         // expect that state was .cancelled at some point
         wait(for: [cancelledExpectation], timeout: 1)
 
-        // state should transition to .possible after being .cancelled
+        XCTAssert(recognizer.state == .cancelled)
+
+        // state should transition to .possible after ending
+        recognizer.touchesEnded([touch], with: UIEvent())
         XCTAssert(recognizer.state == .possible)
     }
 

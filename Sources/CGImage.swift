@@ -8,7 +8,7 @@
 
 import SDL
 import SDL_gpu
-import Foundation
+import struct Foundation.Data
 
 public class CGImage {
     /// Be careful using this pointer e.g. for another CGImage instance.
@@ -50,10 +50,13 @@ public class CGImage {
 
     internal convenience init?(_ sourceData: Data) {
         var data = sourceData
-        let dataCount = Int32(data.count)
 
-        guard let gpuImagePtr = data.withUnsafeMutableBytes({ (ptr: UnsafeMutablePointer<Int8>) -> UnsafeMutablePointer<GPU_Image>? in
-            let rw = SDL_RWFromMem(ptr, dataCount)
+        guard let gpuImagePtr = data.withUnsafeMutableBytes({ buffer -> UnsafeMutablePointer<GPU_Image>? in
+            guard let ptr = buffer.baseAddress?.assumingMemoryBound(to: Int8.self) else {
+                return nil
+            }
+
+            let rw = SDL_RWFromMem(ptr, Int32(buffer.count))
             return GPU_LoadImage_RW(rw, true)
         }) else { return nil }
 

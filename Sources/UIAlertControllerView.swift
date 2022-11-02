@@ -8,12 +8,15 @@
 
 private let verticalPadding: CGFloat = 18
 private let horizontalPadding: CGFloat = 24
-private let minWidth: CGFloat = 300
+private let horizontalGap: CGFloat = 16
 
 class UIAlertControllerView: UIView {
     let header = UILabel(frame: .zero)
-    var buttons: [UIAlertControllerButton] = []
+    let text: UILabel?
     let style: UIAlertControllerStyle
+
+    var buttons: [UIAlertControllerButton] = []
+    var subviewWidth: CGFloat = 0
 
     init(
         title: String?,
@@ -24,6 +27,17 @@ class UIAlertControllerView: UIView {
         self.style = style
         header.text = title
         header.font = UIFont.boldSystemFont(ofSize: 20)
+        header.numberOfLines = 0
+        header.layer.contentsGravity = .top
+
+        if let message = message {
+            text = UILabel(frame: .zero)
+            text?.numberOfLines = 0
+            text?.text = message
+            text?.font = UIFont.systemFont(ofSize: 16)
+        } else {
+            text = nil
+        }
 
         super.init(frame: .zero)
 
@@ -43,48 +57,105 @@ class UIAlertControllerView: UIView {
             return button
         }
 
+        clipsToBounds = true
         backgroundColor = .white
         layer.cornerRadius = 3
 
-        header.sizeToFit()
-        header.frame.height += verticalPadding
-        header.layer.contentsGravity = .top
         addSubview(header)
+        text.map { addSubview($0) }
+        buttons.forEach { addSubview($0) }
 
-        buttons.forEach{ addSubview($0) }
+        subviewWidth = {
+            // arbitrary mininum width of the alert view
+            let minWidth: CGFloat = 300
+            
+            // assuming a text font size of 16 we want to limit the width
+            // of the alert view so that the text stays well readable
+            let maxReadableWidth: CGFloat = 540
+            
+            let maxWidth: CGFloat
+            if UIScreen.main.isPortrait {
+                maxWidth = min(UIScreen.main.bounds.width - 4 * horizontalPadding, maxReadableWidth)
+            } else {
+                maxWidth = min(max(minWidth, UIScreen.main.bounds.width / 1.5), maxReadableWidth)
+            }
+
+            subviews.forEach { $0.sizeToFit() }
+            guard let largestSubviewWidth = subviews.map({ $0.frame.width }).max() else {
+                assertionFailure("no subviews exist to determine largestSubviewWidth")
+                return minWidth
+            }
+            return min(maxWidth, max(largestSubviewWidth, minWidth))
+        }()
+        
+        subviews.forEach { $0.clipsToBounds = true }
     }
 
     override func layoutSubviews() {
-        switch style {
-        case .actionSheet: layoutAsActionSheet()
-        default: assertionFailure(
-            "The UIAlertControllerStyle style, \(style), is not implemented yet!")
+        header.frame.origin = CGPoint(x: horizontalPadding, y: verticalPadding)
+        header.bounds.width = subviewWidth
+        header.textAlignment = .left
+        header.sizeToFit()
+
+        text?.frame.origin.x = horizontalPadding
+        text?.frame.width = subviewWidth
+        text?.sizeToFit()
+        text?.frame.minY = header.frame.maxY + verticalPadding
+
+        if style == .alert {
+            let totalButtonsWidth = buttons.reduce(0, { $0 + $1.frame.width }) + horizontalGap * CGFloat(buttons.count - 1)
+            if totalButtonsWidth < subviewWidth {
+                return layoutButtonsHorizontally()
+            }
         }
+        return layoutButtonsVertically()
+
     }
 
-    private func layoutAsActionSheet() {
-        header.frame.origin = CGPoint(x: horizontalPadding, y: verticalPadding)
-        buttons.enumerated().forEach({ (arg) in
-            let (index, button) = arg
-            let previousElement = (index > 0) ? buttons[index - 1] : header
+    private func layoutButtonsVertically() {
+        let fullButtonWidth = subviewWidth + horizontalPadding * 2
+        buttons.enumerated().forEach({ index, button in
             button.sizeToFit()
-            button.contentHorizontalAlignment = .left
-            button.bounds.size.height += verticalPadding
-            button.frame.size.width = max(bounds.size.width, button.frame.size.width)
-            button.frame.origin = CGPoint(x: 0, y: previousElement.frame.maxY)
+            switch style {
+            case .actionSheet:
+                button.titleLabelOriginX = horizontalPadding
+            case .alert:
+                button.titleLabelOriginX = fullButtonWidth - horizontalPadding - button.bounds.width
+            }
+
+            button.frame.size.width = fullButtonWidth
+            button.frame.size.height += verticalPadding
+
+            if index == 0 {
+                button.frame.minY = CGFloat(text?.frame.maxY ?? header.frame.maxY) + verticalPadding
+            } else {
+                let previousElement = buttons[index - 1]
+                button.frame.origin.y = previousElement.frame.maxY
+            }
+
+        })
+    }
+
+    private func layoutButtonsHorizontally() {
+        buttons.enumerated().forEach({ index, button in
+            button.sizeToFit()
+            button.frame.width += 25
+            button.contentHorizontalAlignment = .center
+            button.frame.minY = CGFloat(text?.frame.maxY ?? header.frame.maxY) + verticalPadding
+            if button == buttons.first {
+                button.frame.origin.x = bounds.maxX - button.frame.width - horizontalGap
+            } else {
+                let previousElement = buttons[index - 1]
+                button.frame.origin.x = previousElement.frame.minX - button.frame.width - horizontalGap
+            }
         })
     }
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         layoutIfNeeded()
-
-        let widestElement = buttons.max { a, b in a.frame.width < b.frame.width }
-        let elementWidth = widestElement?.frame.width ?? header.frame.width
-        let elementHeight = header.frame.height + buttons.reduce(0, { $0 + $1.bounds.height })
-
         return CGSize(
-            width: max(minWidth, elementWidth) + horizontalPadding, // on right
-            height: elementHeight + verticalPadding * 2 // at bottom
+            width: subviewWidth + horizontalPadding * 2,
+            height: CGFloat(buttons.last?.frame.maxY ?? 0) + verticalPadding
         )
     }
 }
@@ -97,9 +168,20 @@ class UIAlertControllerButton: Button {
         }
     }
 
+    /// Set this to force the x position of the buttons label and ignore the buttons contentHorizontalAlignment.
+    /// This is needed to give the vertically layed out buttons the full width of its container while being able to indent its title.
+    var titleLabelOriginX: CGFloat?
+    
     override func layoutSubviews() {
         super.layoutSubviews()
+        if let titleLabelOriginX = titleLabelOriginX {
+            titleLabel?.frame.origin.x = titleLabelOriginX
+        }
+    }
+}
 
-        titleLabel?.frame.origin.x = horizontalPadding
+private extension UIScreen {
+    var isPortrait: Bool {
+        return self.bounds.width < self.bounds.height
     }
 }

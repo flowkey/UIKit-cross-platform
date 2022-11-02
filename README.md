@@ -1,5 +1,5 @@
 [![CircleCI](https://circleci.com/gh/flowkey/UIKit-cross-platform.svg?style=shield&circle-token=2bc60653f4bb369754b04d97d324d9ba2bee6c6b)](https://circleci.com/gh/flowkey/UIKit-cross-platform)
-[![Swift4.1](https://img.shields.io/badge/swift-4.1-orange.svg?style=flat)](https://swift.org/)
+[![Swift5.4](https://img.shields.io/badge/swift-5.4-orange.svg?style=flat)](https://swift.org/)
 [![Platforms](https://img.shields.io/badge/platform-Android%20%7C%20macOS-lightgrey.svg)](https://swift.org/)
 [![License](https://img.shields.io/badge/license-MIT-71787A.svg)](https://tldrlegal.com/license/mit-license)
 [![codecov](https://codecov.io/gh/flowkey/UIKit-cross-platform/branch/master/graph/badge.svg?token=7pkfn9WaxE)](https://codecov.io/gh/flowkey/UIKit-cross-platform)
@@ -62,15 +62,17 @@ brew install cmake && brew install ninja
 3. Add SDKs in Android Studio
     1. Open Preferences in Android Studio
     2. Go to Appearance & Behavior -> System Settings -> Android SDK
-    3. under SDK Platforms: tick checkbox for API Level 29 (latest should always work)
-    4. under SDK Tools, tick the box for `Android SDK Tools`
-    5. Press Apply / OK to install SDKs
+    3. under SDK Platforms: install SDK for API Level 29
+    4. under SDK Tools, install `Android SDK Build Tools`
+    5. under SDK Tools, install NDK 21.4.7075529 (tick `Show Package Details` to see all available versions)
+    6. Press Apply / OK to install SDKs
+    7. create a symlink in `/usr/local/ndk/21.4.7075529/` pointing to the path of the NDK (`ln -vsi ~/Library/Android/sdk/ndk/21.4.7075529 /usr/local/ndk/21.4.7075529`)
 
 ## Architecture
 
 UIKit-cross-platform renders with [SDL_gpu](https://github.com/grimfang4/sdl-gpu) which translates down to lower-level [OpenGL](https://www.opengl.org/) instructions.
 
-On Android, [Swift Package Manager](https://github.com/apple/swift-package-manager) compiles Swift Code into native binaries, which are called through the [NDK](https://developer.android.com/ndk/).
+On Android, [CMake](https://cmake.org/) compiles Swift Code into native binaries via [Ninja](https://ninja-build.org/), which are called through the [NDK](https://developer.android.com/ndk/).
 
 [More detailed information about the architecture can be found here](docs/ARCHITECTURE.md)
 
@@ -88,9 +90,7 @@ For additional information please refer to our [contribution guidelines](docs/CO
 
 ## FAQs / Troubleshooting
 
-[Our FAQs can be found here (_Work In Progress_)](docs/FAQs.md).
-
-Please contact us regarding upcoming issues on [Spectrum](https://spectrum.chat/uikit-cross-platform) or create a new [Issue](https://github.com/flowkey/UIKit-cross-platform/issues/new/choose).
+[Our FAQs can be found here](docs/FAQs.md).
 
 ## License
 

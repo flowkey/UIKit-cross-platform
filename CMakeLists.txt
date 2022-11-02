@@ -115,7 +115,9 @@ add_library(UIKit SHARED
     Sources/UIVisualEffectView.swift
     Sources/UIWindow+TouchHandling.swift
     Sources/UIWindow+hardwareBackButton.swift
+    Sources/UIWindow+getSafeAreaInsets.swift
     Sources/UIWindow.swift
+    Sources/Switch.swift
     )
 
 set_target_properties(UIKit PROPERTIES

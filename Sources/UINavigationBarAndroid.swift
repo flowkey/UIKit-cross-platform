@@ -27,7 +27,9 @@ open class UINavigationBarAndroid: UINavigationBar {
                 originalLeftButtonOnPress?()
             } else {
                 // We are the last item, or there are no items. Dismiss!
-                (self?.next as? UINavigationController)?.dismiss(animated: true)
+                if let navigationController = self?.next as? UINavigationController {
+                    navigationController.dismiss(animated: true)
+                }
             }
         }
 

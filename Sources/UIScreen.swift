@@ -8,7 +8,6 @@
 
 import SDL
 import SDL_gpu
-import func Foundation.round
 
 extension SDLWindowFlags: OptionSet {}
 
@@ -110,9 +109,10 @@ public final class UIScreen {
     }
 
     deinit {
+        UIView.completePendingAnimations()
         UIView.layersWithAnimations.removeAll()
-        UIEvent.activeEvents.removeAll()
         UIView.currentAnimationPrototype = nil
+        UIEvent.activeEvents.removeAll()
         FontRenderer.cleanupSession()
 
         if rawPointer == nil { return } // dummy screen or already destroyed
