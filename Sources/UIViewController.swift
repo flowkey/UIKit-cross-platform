@@ -56,6 +56,7 @@ open class UIViewController: UIResponder {
 
     open func viewWillLayoutSubviews() {}
     open func viewDidLayoutSubviews() {}
+    open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {}
 
     internal var animationTime: Double { return 0.4 }
 

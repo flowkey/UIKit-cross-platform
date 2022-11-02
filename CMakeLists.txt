@@ -111,6 +111,7 @@ add_library(UIKit SHARED
     Sources/UIView.swift
     Sources/UIViewAnimationGroup.swift
     Sources/UIViewController.swift
+    Sources/UIViewControllerTransitionCoordinator.swift
     Sources/UIVisualEffect.swift
     Sources/UIVisualEffectView.swift
     Sources/UIWindow+TouchHandling.swift

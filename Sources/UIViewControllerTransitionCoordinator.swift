@@ -1,0 +1,3 @@
+public protocol UIViewControllerTransitionCoordinator {}
+
+class DefaultTransitionCoordinator: UIViewControllerTransitionCoordinator {}

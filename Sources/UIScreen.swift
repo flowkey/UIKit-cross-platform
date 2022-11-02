@@ -32,6 +32,7 @@ public final class UIScreen {
 
         if let window = UIApplication.shared?.keyWindow {
             window.frame = bounds
+            window.rootViewController?.viewWillTransition(to: bounds.size, with: DefaultTransitionCoordinator())
         }
     }
 
