@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.example"
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion 24
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
     }
@@ -21,7 +21,7 @@ android {
             reset()
             enable true
             universalApk false
-            include "arm64-v8a", "x86_64"
+            include "arm64-v8a"
         }
     }
     compileOptions {
