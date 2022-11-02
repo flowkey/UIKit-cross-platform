@@ -37,12 +37,3 @@ public class AVPlayerLayer: JNIObject {
         }
     }
 }
-
-extension AVPlayerLayer: JavaParameterConvertible {
-    private static let javaClassname = "org/uikit/VideoJNI"
-    public static let asJNIParameterString = "L\(javaClassname);"
-
-    public func toJavaParameter() -> JavaParameter {
-        return JavaParameter(object: self.instance)
-    }
-}

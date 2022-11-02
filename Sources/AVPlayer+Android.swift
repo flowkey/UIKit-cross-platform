@@ -82,12 +82,3 @@ public func nativeOnVideoSourceError(env: UnsafeMutablePointer<JNIEnv>, cls: Jav
     globalAVPlayer?.onLoaded?(AVPlayer.DataSourceError())
     globalAVPlayer?.onLoaded = nil
 }
-
-extension AVPlayer: JavaParameterConvertible {
-    private static let javaClassname = "org/uikit/AVPlayer"
-    public static let asJNIParameterString = "L\(javaClassname);"
-
-    public func toJavaParameter() -> JavaParameter {
-        return JavaParameter(object: self.instance)
-    }
-}
