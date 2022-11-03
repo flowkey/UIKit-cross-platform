@@ -25,23 +25,3 @@ public class AVURLAsset: JNIObject {
         self.url = url
     }
 }
-
-extension AVURLAsset: JavaParameterConvertible, JavaInitializableFromMethod {
-    private static let javaClassname = "org/uikit/AVURLAsset"
-    public static let asJNIParameterString = "L\(javaClassname);"
-
-    public func toJavaParameter() -> JavaParameter {
-        return JavaParameter(object: self.instance)
-    }
-
-    public static func fromMethod(calling methodID: JavaMethodID, on object: JavaObject, args: [JavaParameter]) throws -> Self {
-        let jObject = try jni.CallObjectMethod(methodID, on: object, parameters: args)
-        return try self.init(jObject)
-    }
-
-    public static func fromStaticMethod(calling methodID: JavaMethodID, on javaClass: JavaClass, args: [JavaParameter]) throws -> Self {
-        let jObject = try jni.CallStaticObjectMethod(methodID, on: javaClass, parameters: args)
-        return try self.init(jObject)
-    }
-}
-
