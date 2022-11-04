@@ -15,6 +15,7 @@ add_library(UIKit SHARED
     Sources/$<$<PLATFORM_ID:Darwin>:UIApplicationMain+Mac.swift>
     Sources/$<$<PLATFORM_ID:Darwin>:VideoTexture+Mac.swift>
 
+    Sources/AffineTransform.swift
     Sources/AnimatableProperty.swift
     Sources/AnimationKeyPath.swift
     Sources/Bundle.swift
@@ -44,6 +45,7 @@ add_library(UIKit SHARED
     Sources/CGRect+animations.swift
     Sources/CGRect.swift
     Sources/CGSize.swift
+    Sources/Data.swift
     Sources/Data+fromRelativePathCrossPlatform.swift
     Sources/DisplayLink.swift
     Sources/FontRenderer+renderAttributedString.swift

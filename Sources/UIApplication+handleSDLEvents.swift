@@ -8,7 +8,6 @@
 
 import SDL
 import JNI
-import struct Foundation.TimeInterval
 
 extension UIApplication {
     func handleEventsIfNeeded() {

@@ -115,6 +115,8 @@
 		5CBC301420D22145000388D1 /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF98120163AF900D989BC /* SDL_ttf.framework */; };
 		5CBC301520D22145000388D1 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF8632016328200D989BC /* SDL2.framework */; };
 		5CBD836520F6584200AF4E8E /* UIApplicationMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBD836020F6584200AF4E8E /* UIApplicationMain.swift */; };
+		5CBEB3E229149DD900D0CC3F /* AffineTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBEB3E129149DD900D0CC3F /* AffineTransform.swift */; };
+		5CBEB3E42914A75C00D0CC3F /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBEB3E32914A75C00D0CC3F /* Data.swift */; };
 		5CC7463E20BDB286000D21AF /* UIScrollView+indicatorsInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC7463D20BDB286000D21AF /* UIScrollView+indicatorsInternal.swift */; };
 		5CCF1BD32017821E00AAF598 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CCF1BD22017821E00AAF598 /* AVFoundation.framework */; };
 		5CCF1C00201A292400AAF598 /* VideoTexture+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */; };
@@ -329,7 +331,6 @@
 		5C1F06AE1F3210F200EFF087 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewController.swift; path = Sources/UIViewController.swift; sourceTree = SOURCE_ROOT; };
 		5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SDL+JNIExtensions.swift"; sourceTree = "<group>"; };
 		5C27E7AE1ECB2F6500F5020D /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C27E7B21ECB2F6500F5020D /* Mac-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Mac-Info.plist"; path = "../Sources/Mac-Info.plist"; sourceTree = "<group>"; };
 		5C27E7B71ECB2F6500F5020D /* UIKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UIKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C27E7BE1ECB2F6500F5020D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5C27E7D21ECB2F9100F5020D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -406,6 +407,8 @@
 		5CB6E1C22033460C001FEAC9 /* CATransform3D+SDL_gpu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CATransform3D+SDL_gpu.swift"; sourceTree = "<group>"; };
 		5CB6E1C42035BC4E001FEAC9 /* CGPoint+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+animations.swift"; sourceTree = "<group>"; };
 		5CBD836020F6584200AF4E8E /* UIApplicationMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationMain.swift; sourceTree = "<group>"; };
+		5CBEB3E129149DD900D0CC3F /* AffineTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AffineTransform.swift; sourceTree = "<group>"; };
+		5CBEB3E32914A75C00D0CC3F /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		5CC7463D20BDB286000D21AF /* UIScrollView+indicatorsInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+indicatorsInternal.swift"; sourceTree = "<group>"; };
 		5CCF1BD22017821E00AAF598 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5CCF1C09201B887400AAF598 /* CATransform3D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CATransform3D.swift; sourceTree = "<group>"; };
@@ -576,7 +579,6 @@
 				5C27E7B01ECB2F6500F5020D /* UIKit */,
 				5C27E7BB1ECB2F6500F5020D /* UIKitTests */,
 				83C18F391F0FB486008FEA07 /* Resources */,
-				5C27E7E61ECB2FE000F5020D /* zSupporting Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -659,6 +661,7 @@
 				5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */,
 				833075381F697613002089AC /* Video */,
 				60D6D8A1275E6CEC00892A7E /* Switch.swift */,
+				5CBEB3E32914A75C00D0CC3F /* Data.swift */,
 			);
 			name = UIKit;
 			path = Sources;
@@ -704,15 +707,6 @@
 				5C27E7DB1ECB2F9100F5020D /* Foundation.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		5C27E7E61ECB2FE000F5020D /* zSupporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				5C27E7B21ECB2F6500F5020D /* Mac-Info.plist */,
-			);
-			name = "zSupporting Files";
-			path = UIKit;
 			sourceTree = "<group>";
 		};
 		5C27E7F51ECB301900F5020D /* SDL */ = {
@@ -865,6 +859,7 @@
 				83E5F8121EF8316C00279C59 /* CGSize.swift */,
 				5CE5C5791EDDAE5000680154 /* CGPath.swift */,
 				5CE5C5771EDDAD8200680154 /* CGRect.swift */,
+				5CBEB3E129149DD900D0CC3F /* AffineTransform.swift */,
 			);
 			name = Geometry;
 			sourceTree = "<group>";
@@ -1208,6 +1203,7 @@
 				83AB7B481F2B504300C7997D /* UIAlertController.swift in Sources */,
 				5C418DC220F5149E005D0E92 /* UIApplicationMain+Mac.swift in Sources */,
 				5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */,
+				5CBEB3E229149DD900D0CC3F /* AffineTransform.swift in Sources */,
 				83E5F7EB1EF8156400279C59 /* CGImage.swift in Sources */,
 				61EE7A2E21B18940003A5FFD /* UIApplication+Notifications.swift in Sources */,
 				5C6AB75F1ED575CF006F90AC /* UIScrollView.swift in Sources */,
@@ -1224,6 +1220,7 @@
 				5C93AE7C2088F7E7005BE853 /* UINavigationController.swift in Sources */,
 				5CE5C5731EDD7C3400680154 /* UIWindow+TouchHandling.swift in Sources */,
 				5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */,
+				5CBEB3E42914A75C00D0CC3F /* Data.swift in Sources */,
 				5B1D6F3E1F8E264F009CE5B4 /* NSMutableAttributedString.swift in Sources */,
 				5C6AB77C1ED70F97006F90AC /* DisplayLink.swift in Sources */,
 				83E5F8161EF8322B00279C59 /* CGPoint.swift in Sources */,
@@ -1462,7 +1459,7 @@
 				INFOPLIST_FILE = "Sources/Mac-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/UIKit";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1486,7 +1483,7 @@
 				INFOPLIST_FILE = "Sources/Mac-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/UIKit";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
