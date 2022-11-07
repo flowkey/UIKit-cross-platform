@@ -1,11 +1,4 @@
-//
-//  UITouch.swift
-//  UIKit
-//
-//  Created by Geordie Jay on 29.05.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
+@MainActor
 public class UITouch {
     public init() {
         absoluteLocation = .zero

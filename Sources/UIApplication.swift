@@ -1,13 +1,6 @@
-//
-//  UIApplication.swift
-//  UIKit
-//
-//  Created by Geordie Jay on 10.07.18.
-//  Copyright © 2018 flowkey. All rights reserved.
-//
-
 import SDL
 
+@MainActor
 open class UIApplication {
     public static var shared: UIApplication! // set via UIApplicationMain(_:_:_:_:)
 
@@ -54,9 +47,11 @@ open class UIApplication {
     }
 
     deinit {
-        UIScreen.main = nil
-        UIFont.clearCachedFontFiles()
-        DisplayLink.activeDisplayLinks.removeAll()
+        Task { @MainActor in
+            UIScreen.main = nil
+            UIFont.clearCachedFontFiles()
+            DisplayLink.activeDisplayLinks.removeAll()
+        }
     }
 }
 
@@ -87,6 +82,7 @@ import JNI
 
 private let maxFrameRenderTimeInSeconds = 1.0 / 60.0
 
+@MainActor
 @_cdecl("Java_org_libsdl_app_SDLActivity_nativeProcessEventsAndRender")
 public func nativeProcessEventsAndRender(env: UnsafeMutablePointer<JNIEnv?>?, view: JavaObject?) {
     let frameTime = Timer()

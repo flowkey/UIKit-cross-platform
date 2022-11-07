@@ -9,6 +9,7 @@
 import SDL_ttf
 
 extension FontRenderer {
+    @MainActor
     func render(attributedString: NSAttributedString, color fallbackColor: UIColor) -> UnsafeMutablePointer<SDLSurface>? {
         guard
             let surface = createSurface(toFit: attributedString),

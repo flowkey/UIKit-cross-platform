@@ -9,6 +9,7 @@
 import SDL
 import func Foundation.NSClassFromString
 
+@MainActor
 @discardableResult
 public func UIApplicationMain(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>, _ principalClassName: String?, _ delegateClassName: String?) -> Int32 {
     let applicationClass: UIApplication.Type? = classFromString(principalClassName)
@@ -30,6 +31,7 @@ private func classFromString<T>(_ string: String?) -> T? {
     return NSClassFromString(string) as? T
 }
 
+@MainActor
 @discardableResult
 internal func UIApplicationMain(
     _ applicationClass: UIApplication.Type?,

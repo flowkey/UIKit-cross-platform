@@ -7,7 +7,7 @@
 //
 
 extension CALayer {
-    open func add(_ animation: CABasicAnimation, forKey keyPath: String) {
+    public func add(_ animation: CABasicAnimation, forKey keyPath: String) {
         let copy = CABasicAnimation(from: animation)
         copy.creationTime = Timer()
 
@@ -22,11 +22,11 @@ extension CALayer {
         animations[keyPath] = copy
     }
 
-    open func removeAnimation(forKey key: String) {
+    public func removeAnimation(forKey key: String) {
         animations.removeValue(forKey: key)
     }
 
-    open func removeAllAnimations() {
+    public func removeAllAnimations() {
         animations.removeAll()
     }
 

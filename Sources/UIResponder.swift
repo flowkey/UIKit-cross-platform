@@ -6,6 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+@MainActor
 open class UIResponder {
     public init() {}
     open weak var next: UIResponder?
@@ -27,6 +28,7 @@ open class UIResponder {
     }
 
     /// Returns whether we handled the press or not
+    @MainActor
     @discardableResult
     open func handleHardwareBackButtonPress() -> Bool {
         return next?.handleHardwareBackButtonPress() ?? false

@@ -135,6 +135,7 @@ extension FontRenderer {
 }
 
 private extension NSAttributedString {
+    @MainActor
     var entireKerningWidth: CGFloat {
         var width: CGFloat = 0
 

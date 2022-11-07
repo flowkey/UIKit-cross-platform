@@ -19,13 +19,15 @@ public class AVPlayerLayer: JNIObject {
     public var frame: CGRect {
         get { return .zero } // FIXME: This would require returning a JavaObject with the various params
         set {
-            let scaledFrame = (newValue * UIScreen.main.scale)
-            try! call(methodName: "setFrame", arguments: [
-                JavaInt(scaledFrame.origin.x.rounded()),
-                JavaInt(scaledFrame.origin.y.rounded()),
-                JavaInt(scaledFrame.size.width.rounded()),
-                JavaInt(scaledFrame.size.height.rounded())
-            ])
+            Task { @MainActor in
+                let scaledFrame = (newValue * UIScreen.main.scale)
+                try! call(methodName: "setFrame", arguments: [
+                    JavaInt(scaledFrame.origin.x.rounded()),
+                    JavaInt(scaledFrame.origin.y.rounded()),
+                    JavaInt(scaledFrame.size.width.rounded()),
+                    JavaInt(scaledFrame.size.height.rounded())
+                ])
+            }
         }
     }
 
