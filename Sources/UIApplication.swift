@@ -63,7 +63,6 @@ open class UIApplication {
 
 import SDL
 import SDL_gpu
-import CoreFoundation
 
 extension UIApplication {
     func handleSDLQuit() {
@@ -87,12 +86,19 @@ import JNI
 
 private let maxFrameRenderTimeInSeconds = 1.0 / 60.0
 
+// ******************
+// Requires Dispatch
+import Dispatch
+@_silgen_name("_dispatch_main_queue_callback_4CF")
+public func dispatchMainQueueCallback(_ msg: UnsafeMutableRawPointer?) -> Void
+// ******************
+
 @_cdecl("Java_org_libsdl_app_SDLActivity_nativeProcessEventsAndRender")
 public func nativeProcessEventsAndRender(env: UnsafeMutablePointer<JNIEnv?>?, view: JavaObject?) {
     let frameTime = Timer()
     UIApplication.shared?.handleEventsIfNeeded()
     UIScreen.main?.render(window: UIApplication.shared?.keyWindow, atTime: frameTime)
     let remainingFrameTime = maxFrameRenderTimeInSeconds - frameTime.elapsedTimeInSeconds
-    CFRunLoopRunInMode(kCFRunLoopDefaultMode, max(0.001, remainingFrameTime / 2), true)
+    dispatchMainQueueCallback(nil)
 }
 #endif

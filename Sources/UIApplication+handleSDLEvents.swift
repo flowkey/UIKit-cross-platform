@@ -132,7 +132,7 @@ extension UIApplication {
 }
 
 private extension UIApplication {
-    class func post(_ name: NSNotification.Name) {
+    class func post(_ name: Notification.Name) {
         // don't post UIApplication.shared as the object because object must be an NSObject as of Swift 5
         NotificationCenter.default.post(name: name, object: nil)
     }

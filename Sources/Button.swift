@@ -109,7 +109,6 @@ open class Button: UIControl {
     }
 
     fileprivate var images = [UIControlState: UIImage]()
-    fileprivate var attributedTitles = [UIControlState: NSAttributedString]()
     fileprivate var titles = [UIControlState: String]()
     fileprivate var titleColors = [UIControlState: UIColor]()
     fileprivate var titleShadowColors = [UIControlState: UIColor]()
@@ -124,8 +123,7 @@ open class Button: UIControl {
 
         let titleLabelIsVisible = !titleLabel.isHidden
 
-        if titleLabelIsVisible, titleLabel.attributedText == nil {
-            // titleColor/titleShadowColor only affect non-attributed text
+        if titleLabelIsVisible {
             if let titleColorForCurrentState = titleColors[state] {
                 titleLabel.textColor = titleColorForCurrentState
             } else if let titleColorForNormalState = titleColors[.normal] {
@@ -181,12 +179,8 @@ open class Button: UIControl {
 
 extension Button {
     fileprivate func updateLabelAndImageForCurrentState() {
-        if let attributedTitleForCurrentState = attributedTitles[state] {
-            titleLabel?.attributedText = attributedTitleForCurrentState
-        } else if let titleForCurrentState = titles[state] {
+        if let titleForCurrentState = titles[state] {
             titleLabel?.text = titleForCurrentState
-        } else if let attributedTitleForNormalState = attributedTitles[.normal] {
-            titleLabel?.attributedText = attributedTitleForNormalState
         } else if let titleForNormalState = titles[.normal] {
             titleLabel?.text = titleForNormalState
         }
@@ -209,12 +203,6 @@ extension Button {
     public func setTitle(_ text: String?, for state: UIControlState) {
         titles[state] = text
         titleLabel?.isHidden = (text == nil)
-        setNeedsLayout()
-    }
-
-    public func setAttributedTitle(_ attributedText: NSAttributedString?, for state: UIControlState) {
-        attributedTitles[state] = attributedText
-        titleLabel?.isHidden = (attributedText == nil)
         setNeedsLayout()
     }
 

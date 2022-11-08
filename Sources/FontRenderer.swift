@@ -64,16 +64,6 @@ public class FontRenderer {
         defer { SDL_FreeSurface(surface) }
         return CGImage(surface: surface)
     }
-
-    func render(_ attributedText: NSAttributedString?, color: UIColor) -> CGImage? {
-        guard let attributedText = attributedText else { return nil }
-
-        guard let surface = self.render(attributedString: attributedText, color: color)
-        else { return nil }
-
-        defer { SDL_FreeSurface(surface) }
-        return CGImage(surface: surface)
-    }
 }
 
 

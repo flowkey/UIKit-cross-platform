@@ -19,6 +19,8 @@ public class AVURLAsset: JNIObject {
     public override static var className: String { "org.uikit.AVURLAsset" }
 
     public var url: String?
+
+    @MainActor
     convenience public init(url: String) {
         try! self.init(arguments: JavaSDLView(getSDLView()), url)
         self.url = url

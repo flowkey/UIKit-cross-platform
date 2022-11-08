@@ -29,12 +29,12 @@ open class UILabel: UIView {
         didSet { if text != oldValue { setNeedsDisplay() } }
     }
 
-    open var attributedText: NSAttributedString? {
-        didSet {
-            text = attributedText?.string
-            setNeedsDisplay()
-        }
-    }
+//     open var attributedText: NSAttributedString? {
+//         didSet {
+//             text = attributedText?.string
+//             setNeedsDisplay()
+//         }
+//     }
 
     open var textColor: UIColor = .black {
         didSet { if textColor != oldValue { setNeedsDisplay() } }
@@ -59,12 +59,7 @@ open class UILabel: UIView {
     open override func draw() {
         super.draw()
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
-
-        if let attributedText = attributedText {
-            layer.contents = font.render(attributedText, color: textColor, wrapLength: wrapLength)
-        } else {
-            layer.contents = font.render(text, color: textColor, wrapLength: wrapLength)
-        }
+        layer.contents = font.render(text, color: textColor, wrapLength: wrapLength)
     }
 
     override open func display(_ layer: CALayer) {
@@ -78,12 +73,8 @@ open class UILabel: UIView {
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
-        guard let text = self.attributedText?.string ?? self.text else { return .zero }
+        guard let text = self.text else { return .zero }
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
-
-        if let attributedText = attributedText {
-            return attributedText.size(with: self.font, wrapLength: wrapLength)
-        }
 
         return text.size(with: self.font, wrapLength: wrapLength)
     }

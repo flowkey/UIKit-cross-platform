@@ -54,11 +54,6 @@ add_library(UIKit SHARED
     Sources/Logging.swift
     Sources/MaskingShaders.swift
     Sources/MeteringView.swift
-    Sources/NSAttributedString.swift
-    Sources/NSAttributedStringKey.swift
-    Sources/NSMutableAttributedString.swift
-    Sources/NSNotification.swift
-    Sources/NSRange.swift
     Sources/Notification.swift
     Sources/NotificationCenter.swift
     Sources/SDL+JNIExtensions.swift

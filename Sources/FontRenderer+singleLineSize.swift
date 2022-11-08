@@ -7,19 +7,8 @@
 //
 
 import SDL_ttf
-import class Foundation.NSAttributedString
 
 extension FontRenderer {
-    func singleLineSize(of attributedString: NSAttributedString) -> CGSize {
-        let (width, height) = size(attributedString.string)
-        if width == 0 { return .zero }
-
-        return CGSize(
-            width: CGFloat(width) + attributedString.entireKerningWidth,
-            height: CGFloat(height)
-        )
-    }
-
     // From `TTF_HANDLE_STYLE_BOLD`
     var fontRequiresManualBoldHandling: Bool {
         return (
@@ -131,19 +120,5 @@ extension FontRenderer {
 
             return glyph
         })
-    }
-}
-
-private extension NSAttributedString {
-    var entireKerningWidth: CGFloat {
-        var width: CGFloat = 0
-
-        enumerateAttribute(.kern, in: NSRange(location: 0, length: length)) { (value, range, _) in
-            if let value = value as? CGFloat {
-                width += value * CGFloat(range.length)
-            }
-        }
-
-        return width * UIScreen.main.scale
     }
 }

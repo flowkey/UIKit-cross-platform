@@ -1,37 +1,11 @@
-//
-//  UIApplication.swift
-//  UIKit
-//
-//  Created by Geordie Jay on 10.07.18.
-//  Copyright © 2018 flowkey. All rights reserved.
-//
-
 import SDL
-import func Foundation.NSClassFromString
+
+// This function doesn't exist in the actual UIKit of course,
+// but the app entrypoint is easily customizable, so it doesn't
+// really matter whether this is identical across platforms.
 
 @discardableResult
-public func UIApplicationMain(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>, _ principalClassName: String?, _ delegateClassName: String?) -> Int32 {
-    let applicationClass: UIApplication.Type? = classFromString(principalClassName)
-    let delegateClass: UIApplicationDelegate.Type? = classFromString(delegateClassName)
-
-    #if os(macOS)
-    // On Mac (like on iOS), the main thread blocks here via RunLoop.current.run().
-    defer { setupRenderAndRunLoop() }
-    #else
-    // Android is handled differently: we don't want to block the main thread because the system needs it.
-    // Instead, we call render periodically from Kotlin via the Android Choreographer API (see UIApplication)
-    #endif
-
-    return UIApplicationMain(applicationClass, delegateClass)
-}
-
-private func classFromString<T>(_ string: String?) -> T? {
-    guard let string = string else { return nil }
-    return NSClassFromString(string) as? T
-}
-
-@discardableResult
-internal func UIApplicationMain(
+public func UIApplicationMain(
     _ applicationClass: UIApplication.Type?,
     _ applicationDelegateClass: UIApplicationDelegate.Type?) -> Int32
 {

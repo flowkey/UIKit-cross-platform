@@ -1,13 +1,3 @@
-//
-//  UIView+animate.swift
-//  UIKit
-//
-//  Created by Geordie Jay on 24.05.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
-import class Foundation.NSDate
-
 extension UIView {
     static var layersWithAnimations = Set<CALayer>()
     static var currentAnimationPrototype: CABasicAnimationPrototype?
@@ -72,8 +62,9 @@ extension UIView {
     }
 
     static func completePendingAnimations() {
+        let ARBITRARY_LARGE_NUMBER = 999_999_999 as Double
         layersWithAnimations.forEach {
-            $0.animate(at: Timer(startingAt: NSDate.distantFuture.timeIntervalSinceNow))
+            $0.animate(at: Timer(startingAt: ARBITRARY_LARGE_NUMBER))
         }
     }
 }

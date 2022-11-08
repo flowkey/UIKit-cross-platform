@@ -1,11 +1,3 @@
-//
-//  UIApplicationDelegate.swift
-//  UIKit
-//
-//  Created by Geordie Jay on 10.07.18.
-//  Copyright © 2018 flowkey. All rights reserved.
-//
-
 public extension UIApplication {
     struct LaunchOptionsKey: RawRepresentable, Hashable {
         public var rawValue: String
@@ -37,4 +29,19 @@ public extension UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {}
     func applicationWillResignActive(_ application: UIApplication) {}
     func applicationDidEnterBackground(_ application: UIApplication) {}
+
+    // Note: this is not used on Android, because there we have a library, so no `main` function will be called.
+    @MainActor
+    static func main() async throws {
+        #if os(macOS)
+        // On Mac (like on iOS), the main thread blocks here via RunLoop.current.run().
+        defer { setupRenderAndRunLoop() }
+        #else
+        // Android is handled differently: we don't want to block the main thread because the system needs it.
+        // Instead, we call render periodically from Kotlin via the Android Choreographer API (see UIApplication).
+        // That said, this function won't even be called on platforms like Android where the app is built as a library, not an executable.
+        #endif
+
+        UIApplicationMain(UIApplication.self, Self.self)
+    }
 }
