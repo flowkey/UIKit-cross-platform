@@ -29,13 +29,6 @@ open class UILabel: UIView {
         didSet { if text != oldValue { setNeedsDisplay() } }
     }
 
-//     open var attributedText: NSAttributedString? {
-//         didSet {
-//             text = attributedText?.string
-//             setNeedsDisplay()
-//         }
-//     }
-
     open var textColor: UIColor = .black {
         didSet { if textColor != oldValue { setNeedsDisplay() } }
     }
