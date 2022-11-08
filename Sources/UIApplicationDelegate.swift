@@ -6,6 +6,8 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
+import func Foundation.NSStringFromClass
+
 public extension UIApplication {
     struct LaunchOptionsKey: RawRepresentable, Hashable {
         public var rawValue: String
@@ -14,7 +16,6 @@ public extension UIApplication {
         }
     }
 }
-
 
 public protocol UIApplicationDelegate: AnyObject {
     init()
@@ -37,4 +38,10 @@ public extension UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {}
     func applicationWillResignActive(_ application: UIApplication) {}
     func applicationDidEnterBackground(_ application: UIApplication) {}
+    
+    @MainActor
+    static func main() {
+        var argv: UnsafeMutablePointer<Int8>? = nil
+        _ = UIApplicationMain(0, &argv, nil, NSStringFromClass(Self.self))
+    } 
 }
