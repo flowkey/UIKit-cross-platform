@@ -26,14 +26,24 @@ public final class UIScreen {
     public let scale: CGFloat
 
     private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
+        print("UIScreen", "init boounds \(bounds)")
         self.rawPointer = renderTarget
         self.bounds = bounds
         self.scale = scale
 
         if let window = UIApplication.shared?.keyWindow {
             window.frame = bounds
-            window.rootViewController?.viewWillTransition(to: bounds.size, with: DefaultTransitionCoordinator())
+
+            if let rootViewController = window.rootViewController {
+                print("UIScreen.init", "viewWillTransition to bounds \(bounds.size)")
+                rootViewController.viewWillTransition(to: bounds.size, with: DefaultTransitionCoordinator())
+            } else {
+                print("UIScreen.init", "no window.rootViewController")
+            }
+        } else {
+            print("UIScreen.init", "no shared.keyWindow to set frame for")
         }
+
     }
 
     convenience init() {
@@ -110,6 +120,7 @@ public final class UIScreen {
     }
 
     deinit {
+        print("[SDLActivity] UIScreen.DEinit")
         UIView.completePendingAnimations()
         UIView.layersWithAnimations.removeAll()
         UIView.currentAnimationPrototype = nil
