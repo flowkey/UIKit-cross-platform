@@ -8,12 +8,24 @@
 
 import JNI
 
+public enum AVLayerVideoGravity: JavaInt {
+    case resizeAspect = 0 // RESIZE_MODE_FIT
+    case resize = 3 // RESIZE_MODE_FILL
+    case resizeAspectFill = 4 // RESIZE_MODE_ZOOM
+}
+
 public class AVPlayerLayer: JNIObject {
     override public static var className: String { "org.uikit.AVPlayerLayer" }
 
     public convenience init(player: AVPlayer) {
         let parentView = JavaSDLView(getSDLView())
         try! self.init(arguments: parentView, player)
+    }
+
+    public var videoGravity: AVLayerVideoGravity = .resizeAspect {
+        didSet {
+            try! call(methodName: "setResizeMode", arguments: [videoGravity.rawValue])
+        }
     }
 
     public var frame: CGRect {
@@ -35,14 +47,5 @@ public class AVPlayerLayer: JNIObject {
         } catch {
             assertionFailure("Couldn't remove AVPlayerLayer from parent")
         }
-    }
-}
-
-extension AVPlayerLayer: JavaParameterConvertible {
-    private static let javaClassname = "org/uikit/VideoJNI"
-    public static let asJNIParameterString = "L\(javaClassname);"
-
-    public func toJavaParameter() -> JavaParameter {
-        return JavaParameter(object: self.instance)
     }
 }
