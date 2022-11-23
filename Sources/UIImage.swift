@@ -1,7 +1,10 @@
 import SDL
 import SDL_gpu
+
+#if os(macOS)
+import Foundation
+#else
 import RegexBuilder
-#if canImport(_StringProcessing)
 import _StringProcessing
 #endif
 
@@ -66,6 +69,25 @@ public class UIImage {
 }
 
 private extension String {
+    #if os(macOS)
+    func pathAndExtension() -> (pathWithoutExtension: String, fileExtension: String) {
+        let path = self.asAbsolutePath()
+        let pathExtension = (path as NSString).pathExtension
+        let pathWithoutExtension = (path as NSString).deletingPathExtension
+        return (pathWithoutExtension, "." + (pathExtension.isEmpty ? "png" : pathExtension))
+    }
+
+    func extractImageScale() -> CGFloat {
+        let pathWithoutExtension = (self as NSString).deletingPathExtension
+        if pathWithoutExtension.hasSuffix("@3x") {
+            return 3.0
+        } else if pathWithoutExtension.hasSuffix("@2x") {
+            return 2.0
+        } else {
+            return 1.0
+        }
+    }
+    #else
     func pathAndExtension() -> (pathWithoutExtension: String, fileExtension: String) {
         let regex = Regex {
             Capture {
@@ -103,6 +125,7 @@ private extension String {
 
         return 1.0
     }
+    #endif
 
     private func asAbsolutePath() -> String {
         #if os(macOS)

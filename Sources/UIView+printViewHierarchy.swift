@@ -18,3 +18,12 @@ extension UIView {
         }
     }
 }
+
+#if os(macOS)
+@available(macOS, deprecated: 13.0, message: "Use the built-in API instead")
+extension String {
+    func replacing(_ input: String, with replacement: String) -> String {
+        return self.replacingOccurrences(of: input, with: replacement)
+    }
+}
+#endif
