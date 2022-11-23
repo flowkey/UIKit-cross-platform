@@ -7,7 +7,6 @@ public extension UIApplication {
     }
 }
 
-
 public protocol UIApplicationDelegate: AnyObject {
     init()
     var window: UIWindow? { get set }

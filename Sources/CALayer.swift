@@ -1,13 +1,6 @@
-//
-//  CALayer.swift
-//  NativePlayerSDL
-//
-//  Created by Geordie Jay on 16.05.17.
-//  Copyright © 2017 Geordie Jay. All rights reserved.
-//
-
 import SDL
 
+@MainActor
 open class CALayer {
     open weak var delegate: CALayerDelegate?
 
@@ -299,6 +292,7 @@ extension CALayer: Hashable {
     }
 }
 
+@MainActor
 public protocol CALayerDelegate: AnyObject {
     func action(forKey event: String) -> CABasicAnimation?
     func display(_ layer: CALayer)

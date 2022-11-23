@@ -1,11 +1,3 @@
-//
-//  Texture.swift
-//  UIKit
-//
-//  Created by Chris on 19.06.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
 import SDL
 import SDL_gpu
 
@@ -13,7 +5,7 @@ public class CGImage {
     /// Be careful using this pointer e.g. for another CGImage instance.
     /// You will have to manually adjust its pointee's reference count.
     var rawPointer: UnsafeMutablePointer<GPU_Image> {
-        didSet { CALayer.layerTreeIsDirty = true }
+        didSet { Task { @MainActor in CALayer.layerTreeIsDirty = true } }
     }
 
     /// Stores the compressed image `Data` this `CGImage` was inited with (if any).
@@ -32,7 +24,7 @@ public class CGImage {
             // We check for GPU errors on render, so clear any error that may have caused GPU_Image to be nil.
             // It's possible there are unrelated errors on the stack at this point, but we immediately catch and
             // handle any errors that interest us *when they occur*, so it's fine to clear unrelated ones here.
-            UIScreen.main?.clearErrors()
+            Task { @MainActor in UIScreen.main?.clearErrors() }
             return nil
         }
 

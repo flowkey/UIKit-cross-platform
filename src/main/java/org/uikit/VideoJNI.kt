@@ -160,7 +160,6 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
         exoPlayerLayout = PlayerView(context)
         exoPlayerLayout.player = player.exoPlayer
         exoPlayerLayout.useController = false
-        exoPlayerLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
         exoPlayerLayout.tag = "ExoPlayer"
         parent.addView(exoPlayerLayout, 0)
     }
@@ -169,6 +168,10 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
         val layoutParams = RelativeLayout.LayoutParams(width, height)
         layoutParams.setMargins(x, y, 0, 0)
         exoPlayerLayout.layoutParams = layoutParams
+    }
+
+    fun setResizeMode(resizeMode: Int) {
+        exoPlayerLayout.resizeMode = resizeMode
     }
 
     fun removeFromParent() {

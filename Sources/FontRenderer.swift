@@ -24,6 +24,7 @@ extension FontRenderer {
     }
 }
 
+@MainActor
 public class FontRenderer {
     let rawPointer: UnsafeMutablePointer<TTF_Font>
     deinit { TTF_CloseFont(rawPointer) }

@@ -18,6 +18,7 @@ public enum UIGestureRecognizerState {
 
 // Reference: https://developer.apple.com/library/content/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/ImplementingaCustomGestureRecognizer.html#//apple_ref/doc/uid/TP40009541-CH8-SW1
 
+@MainActor
 open class UIGestureRecognizer {
     public var minimumNumberOfTouches = 0
     public var maximumNumberOfTouches = 0

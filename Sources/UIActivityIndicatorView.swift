@@ -2,6 +2,7 @@ open class UIActivityIndicatorView: UIView {
     public enum Style {
         case white
         case gray
+        case medium
         case whiteLarge
     }
 

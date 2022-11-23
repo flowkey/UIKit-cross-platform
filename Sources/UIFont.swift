@@ -1,11 +1,4 @@
-//
-//  UIFont.swift
-//  UIKit
-//
-//  Created by Chris on 19.06.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
+@MainActor
 open class UIFont {
     public let fontName: String
     public var familyName: String? {
@@ -124,6 +117,7 @@ extension UIFont {
     }
 }
 
+@MainActor
 extension UIFont {
     public enum LoadingError: Error {
         case couldNotOpenDataFile, couldNotDecodeFont
@@ -160,6 +154,7 @@ extension UIFont {
 }
 
 extension String {
+    @MainActor
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
         guard
             let renderer = font.renderer,

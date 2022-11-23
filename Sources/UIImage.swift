@@ -5,6 +5,7 @@ import RegexBuilder
 import _StringProcessing
 #endif
 
+@MainActor // UIImage is MainActor but CGImage is not
 public class UIImage {
     public let cgImage: CGImage
     public let size: CGSize

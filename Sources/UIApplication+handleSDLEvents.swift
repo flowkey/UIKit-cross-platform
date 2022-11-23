@@ -10,6 +10,7 @@ import SDL
 import JNI
 
 extension UIApplication {
+    @MainActor
     func handleEventsIfNeeded() {
         var e = SDL_Event()
 
@@ -82,7 +83,7 @@ extension UIApplication {
 
                 let scancode = e.key.keysym.scancode
                 if scancode == .androidHardwareBackButton || scancode == .escapeKey {
-                    keyWindow?.deepestPresentedView().handleHardwareBackButtonPress()
+                    _ = keyWindow?.deepestPresentedView().handleHardwareBackButtonPress()
                 }
             case SDL_APP_WILLENTERBACKGROUND:
                 UIApplication.onWillEnterBackground()
@@ -153,6 +154,7 @@ extension SDL_Event {
 }
 
 extension UIEvent {
+    @MainActor
     static func from(_ event: SDL_Event) -> UIEvent? {
         switch SDL_EventType(event.type) {
         case SDL_FINGERDOWN:
@@ -205,7 +207,7 @@ extension UIEvent {
 }
 
 extension UIEvent: CustomStringConvertible {
-    public var description: String {
+    @MainActor public var description: String {
         let text = "Event with touches: "
         guard let allTouches = self.allTouches else {
             return text + "none"
@@ -247,7 +249,8 @@ public func onNativeTouch(
     guard let eventType = SDL_EventType.eventFrom(androidAction: action)
     else { return }
 
-    var event = SDL_Event(tfinger:
+    Task { @MainActor in
+        var event = SDL_Event(tfinger:
         SDL_TouchFingerEvent(
             type: eventType.rawValue,
             timestamp: UInt32(timestampMs),
@@ -264,6 +267,7 @@ public func onNativeTouch(
     // add the event to SDL's event stack
     // don't use SDL_PushEvent because it overrides `event.timestamp` with its own:
     SDL_PeepEvents(&event, 1, SDL_ADDEVENT, 0, 0)
+    }
 }
 
 extension SDL_EventType {

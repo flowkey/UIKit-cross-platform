@@ -4,8 +4,9 @@ import SDL
 // but the app entrypoint is easily customizable, so it doesn't
 // really matter whether this is identical across platforms.
 
+@MainActor
 @discardableResult
-public func UIApplicationMain(
+internal func UIApplicationMain(
     _ applicationClass: UIApplication.Type?,
     _ applicationDelegateClass: UIApplicationDelegate.Type?) -> Int32
 {
