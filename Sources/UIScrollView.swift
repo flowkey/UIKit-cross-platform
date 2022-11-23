@@ -150,6 +150,7 @@ open class UIScrollView: UIView {
     }
 }
 
+@MainActor
 public protocol UIScrollViewDelegate: AnyObject {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
     func scrollViewDidScroll(_ scrollView: UIScrollView)
