@@ -9,6 +9,7 @@
 import XCTest
 @testable import UIKit
 
+@MainActor
 class TouchHandlingTests: XCTestCase {
     private var window = UIWindow()
     private var event = UIEvent()

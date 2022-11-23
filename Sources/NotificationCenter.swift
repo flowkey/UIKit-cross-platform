@@ -1,3 +1,5 @@
+import JNI
+
 public class NotificationCenter {
     public internal(set) static var `default` = NotificationCenter()
 
@@ -33,8 +35,10 @@ public class NotificationCenter {
         observers[name]?.forEach({ observer in
             if let object = object, observer.object !== object { return }
             if observer.queue == .main {
-                Task { @MainActor in
+                if isMainThread {
                     observer.callback(notification)
+                } else {
+                    Task { @MainActor in observer.callback(notification) }
                 }
             } else {
                 observer.callback(notification)

@@ -101,6 +101,7 @@ extension UIApplication {
 }
 
 extension UIApplication {
+    @MainActor
     class func onWillEnterForeground() {
         #if os(Android)
         if UIScreen.main == nil { // sometimes we "enter foreground" after just a loss of focus
@@ -112,16 +113,19 @@ extension UIApplication {
         UIApplication.post(willEnterForegroundNotification)
     }
 
+    @MainActor
     class func onDidEnterForeground() {
         UIApplication.shared?.delegate?.applicationDidBecomeActive(UIApplication.shared)
         UIApplication.post(didBecomeActiveNotification)
     }
 
+    @MainActor
     class func onWillEnterBackground() {
         UIApplication.shared?.delegate?.applicationWillResignActive(UIApplication.shared)
         UIApplication.post(willResignActiveNotification)
     }
 
+    @MainActor
     class func onDidEnterBackground() {
         UIApplication.shared?.delegate?.applicationDidEnterBackground(UIApplication.shared)
         UIApplication.post(didEnterBackgroundNotification)

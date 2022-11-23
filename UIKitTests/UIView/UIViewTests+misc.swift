@@ -8,6 +8,7 @@
 
 import XCTest
 
+@MainActor
 class UIViewMiscellaneousTests: XCTestCase {
     func testNeedsLayoutDefaultTrue() {
         class ParentView: UIView {

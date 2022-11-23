@@ -8,6 +8,7 @@
 
 import XCTest
 
+@MainActor
 class UIViewDidMoveToSuperViewTests: XCTestCase {
     private var view = UIView()
     private var subview = TestView()
