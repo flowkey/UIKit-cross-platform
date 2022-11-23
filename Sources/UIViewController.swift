@@ -1,3 +1,4 @@
+@MainActor
 open class UIViewController: UIResponder {
     internal var _view: UIView?
     open var view: UIView! {

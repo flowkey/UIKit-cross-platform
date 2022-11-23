@@ -11,6 +11,7 @@ import XCTest
 @testable import UIKit
 #endif
 
+@MainActor
 class UIViewPointConversionTests: XCTestCase {
     /*  (0,0, width: 100, height: 100):
      --------------------------

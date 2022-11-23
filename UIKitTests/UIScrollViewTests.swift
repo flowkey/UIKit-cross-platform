@@ -12,7 +12,7 @@ import XCTest
 private let initialSize = CGSize(width: 800, height: 450)
 private let initialOrigin = CGPoint(x: 0, y: 0)
 
-
+@MainActor
 class UIScrollViewTests: XCTestCase {
     var scrollView: UIScrollView!
 

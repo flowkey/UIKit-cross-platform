@@ -8,6 +8,7 @@
 
 import XCTest
 
+@MainActor
 class UIViewSubviewTests: XCTestCase {
     func testSubviewsAndSublayersInitiallyEmpty() {
         let view = UIView()

@@ -9,8 +9,8 @@
 import XCTest
 @testable import UIKit
 
+@MainActor
 class UITouchTests: XCTestCase {
-
     func testLocationInView() {
         let window = UIWindow()
         window.frame.size = CGSize(width: 800, height: 300)

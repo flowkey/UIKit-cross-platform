@@ -9,6 +9,7 @@
 import XCTest
 import UIKit
 
+@MainActor
 class UIViewControllerTests: XCTestCase {
     func testPresentedViewControllerViewHasCorrectFrameOnPhone() {
         let testFrame = CGRect(x: 0, y: 0, width: 300, height: 200)

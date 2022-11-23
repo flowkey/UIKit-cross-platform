@@ -7,7 +7,6 @@
 //
 
 import JNI
-import struct Foundation.URL
 
 public class AVPlayerItem {
     public var asset: AVURLAsset
@@ -19,9 +18,11 @@ public class AVPlayerItem {
 public class AVURLAsset: JNIObject {
     public override static var className: String { "org.uikit.AVURLAsset" }
 
-    public var url: URL?
-    convenience public init(url: URL) {
-        try! self.init(arguments: JavaSDLView(getSDLView()), url.absoluteString)
+    public var url: String?
+
+    @MainActor
+    convenience public init(url: String) {
+        try! self.init(arguments: JavaSDLView(getSDLView()), url)
         self.url = url
     }
 }

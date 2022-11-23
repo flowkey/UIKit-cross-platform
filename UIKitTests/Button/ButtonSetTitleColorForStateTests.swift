@@ -8,8 +8,8 @@
 
 import XCTest
 
+@MainActor
 class ButtonSetTitleColorForStateTests: XCTestCase {
-
     var button = Button(frame: .zero)
 
     override func setUp() {

@@ -8,6 +8,7 @@
 
 import XCTest
 
+@MainActor
 class UIFontTests: XCTestCase {
     let testFont = UIFont.systemFont(ofSize: 16)
 

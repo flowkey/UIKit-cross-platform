@@ -7,33 +7,33 @@
 //
 
 extension UIApplication {
-    public class var didEnterBackgroundNotification: NSNotification.Name {
-        return NSNotification.Name.UIApplicationDidEnterBackground
+    public class var didEnterBackgroundNotification: Notification.Name {
+        return Notification.Name.UIApplicationDidEnterBackground
     }
 
-    public class var willEnterForegroundNotification: NSNotification.Name {
-        return NSNotification.Name.UIApplicationWillEnterForeground
+    public class var willEnterForegroundNotification: Notification.Name {
+        return Notification.Name.UIApplicationWillEnterForeground
     }
 
-    public class var didBecomeActiveNotification: NSNotification.Name {
-        return NSNotification.Name.UIApplicationDidBecomeActive
+    public class var didBecomeActiveNotification: Notification.Name {
+        return Notification.Name.UIApplicationDidBecomeActive
     }
 
-    public class var willResignActiveNotification: NSNotification.Name {
-        return NSNotification.Name.UIApplicationWillResignActive
+    public class var willResignActiveNotification: Notification.Name {
+        return Notification.Name.UIApplicationWillResignActive
     }
 }
 
-extension NSNotification.Name {
+extension Notification.Name {
     public static let UIApplicationDidEnterBackground
-        = NSNotification.Name(rawValue: "UIApplicationDidEnterBackgroundNotification")
+        = Notification.Name(rawValue: "UIApplicationDidEnterBackgroundNotification")
 
     public static let UIApplicationWillEnterForeground
-        = NSNotification.Name(rawValue: "UIApplicationWillEnterForegroundNotification")
+        = Notification.Name(rawValue: "UIApplicationWillEnterForegroundNotification")
 
     public static let UIApplicationDidBecomeActive
-        = NSNotification.Name(rawValue: "UIApplicationDidBecomeActiveNotification")
+        = Notification.Name(rawValue: "UIApplicationDidBecomeActiveNotification")
 
     public static let UIApplicationWillResignActive
-        = NSNotification.Name(rawValue: "UIApplicationWillResignActiveNotification")
+        = Notification.Name(rawValue: "UIApplicationWillResignActiveNotification")
 }

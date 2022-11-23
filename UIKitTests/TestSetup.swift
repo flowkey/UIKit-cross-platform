@@ -1,13 +1,3 @@
-//
-//  TestSetup.swift
-//  UIKitTests
-//
-//  Created by Chris on 31.07.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
-import Foundation
-
 #if os(iOS)
     import UIKit
 #else
@@ -31,8 +21,10 @@ typealias UIEvent = UIKit.UIEvent
 typealias CGSize = UIKit.CGSize
 typealias CGFloat = UIKit.CGFloat
 typealias CGPoint = UIKit.CGPoint
-typealias NSAttributedString = UIKit.NSAttributedString
 
+import Foundation
+
+@MainActor
 @objc(TestSetup) class TestSetup: NSObject {
     override init() {
         // TODO: The implementations of these two methods are almost identical,

@@ -26,6 +26,10 @@ struct Timer {
         self.startTime = startTime
     }
 
+    var startTimeInMilliseconds: Double {
+        startTime.inMilliseconds
+    }
+
     var elapsedTimeInMilliseconds: Double {
         var currentTime = timeval(tv_sec: 0, tv_usec: 0)
         gettimeofday(&currentTime, nil)

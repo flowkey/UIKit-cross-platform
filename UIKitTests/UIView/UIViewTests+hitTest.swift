@@ -8,6 +8,7 @@
 
 import XCTest
 
+@MainActor
 class UIViewHitTests: XCTestCase {
     func testPointInside() {
         let view = UIView()

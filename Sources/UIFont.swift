@@ -1,11 +1,4 @@
-//
-//  UIFont.swift
-//  UIKit
-//
-//  Created by Chris on 19.06.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
+@MainActor
 open class UIFont {
     public let fontName: String
     public var familyName: String? {
@@ -68,10 +61,6 @@ open class UIFont {
     internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
         return renderer?.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.main.scale))
     }
-
-    internal func render(_ attributedString: NSAttributedString?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
-        return renderer?.render(attributedString, color: color)
-    }
 }
 
 // MARK: Caches
@@ -128,6 +117,7 @@ extension UIFont {
     }
 }
 
+@MainActor
 extension UIFont {
     public enum LoadingError: Error {
         case couldNotOpenDataFile, couldNotDecodeFont
@@ -163,16 +153,8 @@ extension UIFont {
     }
 }
 
-extension NSAttributedString {
-    public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
-        guard let renderer = font.renderer else { return .zero }
-        return wrapLength == 0 ?
-            renderer.singleLineSize(of: self) / UIScreen.main.scale :
-            string.size(with: font, wrapLength: wrapLength) // fallback to String.size for multiline text
-    }
-}
-
 extension String {
+    @MainActor
     public func size(with font: UIFont, wrapLength: CGFloat = 0) -> CGSize {
         guard
             let renderer = font.renderer,

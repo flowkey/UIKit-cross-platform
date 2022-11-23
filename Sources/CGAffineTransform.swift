@@ -6,7 +6,6 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import struct Foundation.AffineTransform
 public typealias CGAffineTransform = AffineTransform
 
 public extension CGAffineTransform {

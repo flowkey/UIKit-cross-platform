@@ -8,9 +8,9 @@
 
 import SDL
 import JNI
-import struct Foundation.TimeInterval
 
 extension UIApplication {
+    @MainActor
     func handleEventsIfNeeded() {
         var e = SDL_Event()
 
@@ -83,7 +83,7 @@ extension UIApplication {
 
                 let scancode = e.key.keysym.scancode
                 if scancode == .androidHardwareBackButton || scancode == .escapeKey {
-                    keyWindow?.deepestPresentedView().handleHardwareBackButtonPress()
+                    _ = keyWindow?.deepestPresentedView().handleHardwareBackButtonPress()
                 }
             case SDL_APP_WILLENTERBACKGROUND:
                 UIApplication.onWillEnterBackground()
@@ -101,6 +101,7 @@ extension UIApplication {
 }
 
 extension UIApplication {
+    @MainActor
     class func onWillEnterForeground() {
         #if os(Android)
         if UIScreen.main == nil { // sometimes we "enter foreground" after just a loss of focus
@@ -112,16 +113,19 @@ extension UIApplication {
         UIApplication.post(willEnterForegroundNotification)
     }
 
+    @MainActor
     class func onDidEnterForeground() {
         UIApplication.shared?.delegate?.applicationDidBecomeActive(UIApplication.shared)
         UIApplication.post(didBecomeActiveNotification)
     }
 
+    @MainActor
     class func onWillEnterBackground() {
         UIApplication.shared?.delegate?.applicationWillResignActive(UIApplication.shared)
         UIApplication.post(willResignActiveNotification)
     }
 
+    @MainActor
     class func onDidEnterBackground() {
         UIApplication.shared?.delegate?.applicationDidEnterBackground(UIApplication.shared)
         UIApplication.post(didEnterBackgroundNotification)
@@ -133,7 +137,7 @@ extension UIApplication {
 }
 
 private extension UIApplication {
-    class func post(_ name: NSNotification.Name) {
+    class func post(_ name: Notification.Name) {
         // don't post UIApplication.shared as the object because object must be an NSObject as of Swift 5
         NotificationCenter.default.post(name: name, object: nil)
     }
@@ -154,6 +158,7 @@ extension SDL_Event {
 }
 
 extension UIEvent {
+    @MainActor
     static func from(_ event: SDL_Event) -> UIEvent? {
         switch SDL_EventType(event.type) {
         case SDL_FINGERDOWN:
@@ -206,7 +211,7 @@ extension UIEvent {
 }
 
 extension UIEvent: CustomStringConvertible {
-    public var description: String {
+    @MainActor public var description: String {
         let text = "Event with touches: "
         guard let allTouches = self.allTouches else {
             return text + "none"
@@ -248,7 +253,8 @@ public func onNativeTouch(
     guard let eventType = SDL_EventType.eventFrom(androidAction: action)
     else { return }
 
-    var event = SDL_Event(tfinger:
+    Task { @MainActor in
+        var event = SDL_Event(tfinger:
         SDL_TouchFingerEvent(
             type: eventType.rawValue,
             timestamp: UInt32(timestampMs),
@@ -265,6 +271,7 @@ public func onNativeTouch(
     // add the event to SDL's event stack
     // don't use SDL_PushEvent because it overrides `event.timestamp` with its own:
     SDL_PeepEvents(&event, 1, SDL_ADDEVENT, 0, 0)
+    }
 }
 
 extension SDL_EventType {

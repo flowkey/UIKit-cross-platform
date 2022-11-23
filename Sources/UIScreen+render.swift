@@ -10,6 +10,7 @@ import SDL
 import SDL_gpu
 
 extension UIScreen {
+    @MainActor
     func render(window: UIWindow?, atTime frameTimer: Timer) {
         guard let window = window else {
             print("Not rendering because `window` was `nil`")

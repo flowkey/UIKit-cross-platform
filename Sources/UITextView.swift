@@ -25,14 +25,6 @@ open class UITextView: UIScrollView {
         }
     }
 
-    public var attributedText: NSAttributedString? {
-        get { return label.attributedText }
-        set {
-            label.attributedText = newValue
-            setNeedsLayout()
-        }
-    }
-
     public var font: UIFont {
         get { return label.font }
         set {

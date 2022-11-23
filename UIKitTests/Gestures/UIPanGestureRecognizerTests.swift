@@ -28,6 +28,7 @@ fileprivate class TestPanGestureRecognizer: UIPanGestureRecognizer {
     }
 }
 
+@MainActor
 class UIPanGestureRecognizerTests: XCTestCase {
     var mockView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100)))
 

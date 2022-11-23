@@ -1,13 +1,6 @@
-//
-//  UIView.swift
-//  sdl2testapinotes
-//
-//  Created by Geordie Jay on 11.05.17.
-//  Copyright © 2017 Geordie Jay. All rights reserved.
-//
-
 import SDL
 
+@MainActor
 open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     open class var layerClass: CALayer.Type {
         return CALayer.self

@@ -1,6 +1,7 @@
 import XCTest
 @testable import UIKit
 
+@MainActor
 class DraggableViews: XCTestCase {
     let windowFrame = CGRect(x: 0, y: 0, width: 800, height: 450)
     let draggableInitialFrame = CGRect(x: 180, y: 0, width: 20, height: 50)

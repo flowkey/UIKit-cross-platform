@@ -8,6 +8,7 @@
 
 import XCTest
 
+@MainActor
 class ButtonContentAlignmentTests: XCTestCase {
     var button = Button(frame: .zero)
     let buttonSize = CGSize(width: 200, height: 100)

@@ -83,7 +83,7 @@ open class UINavigationBar: UIView {
     }
 
     @discardableResult
-    open func popItem(animated: Bool) -> UINavigationItem? {
+    public func popItem(animated: Bool) -> UINavigationItem? {
         return items?.popLast()
     }
 }
