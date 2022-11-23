@@ -98,7 +98,6 @@ public func nativeProcessEventsAndRender(env: UnsafeMutablePointer<JNIEnv?>?, vi
     let frameTime = Timer()
     UIApplication.shared?.handleEventsIfNeeded()
     UIScreen.main?.render(window: UIApplication.shared?.keyWindow, atTime: frameTime)
-    let remainingFrameTime = maxFrameRenderTimeInSeconds - frameTime.elapsedTimeInSeconds
     dispatchMainQueueCallback(nil)
 }
 #endif
