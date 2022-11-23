@@ -27,7 +27,7 @@ jobs:
                       CODE_SIGN_IDENTITY=""
                       PROVISIONING_PROFILE=""
                       -sdk "iphonesimulator"
-                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
+                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 14 Pro'
                       -scheme "UIKit iOSTestTarget"
                       test |
                       xcpretty --color --report junit
@@ -40,7 +40,7 @@ jobs:
                       CODE_SIGN_IDENTITY=""
                       PROVISIONING_PROFILE=""
                       -sdk "iphonesimulator"
-                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 8 Plus'
+                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 14 Pro'
                       -scheme "DemoApp"
                       build |
                       xcpretty --color --report junit
