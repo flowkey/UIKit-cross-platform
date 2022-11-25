@@ -93,6 +93,26 @@ extension UIApplication {
                 UIApplication.onWillEnterForeground()
             case SDL_APP_DIDENTERFOREGROUND:
                 UIApplication.onDidEnterForeground()
+            case SDL_WINDOWEVENT:
+                var width: Int32 = 0
+                var height: Int32 = 0
+                let sdlWindowID = UIScreen.main.rawPointer.pointee.context.pointee.windowID
+                let sdlWindow = SDL_GetWindowFromID(sdlWindowID)
+                SDL_GetWindowSize(sdlWindow, &width, &height)
+                
+                let newSize = CGSize(width: CGFloat(width), height: CGFloat(height))
+                let newRect = CGRect(origin: .zero, size: newSize)
+                UIApplication.shared.keyWindow?.bounds = newRect
+                UIScreen.main.bounds = newRect
+                
+                UIApplication.shared.delegate?.window?.rootViewController?.viewWillTransition(
+                    to: newSize,
+                    with: DefaultTransitionCoordinator.shared
+                )
+                
+                UIApplication.shared.keyWindow?.setNeedsDisplay()
+                UIApplication.shared.keyWindow?.setNeedsLayout()
+                
             default:
                 break
             }
