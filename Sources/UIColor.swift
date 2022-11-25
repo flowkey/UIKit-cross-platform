@@ -8,12 +8,7 @@
 
 import SDL
 
-// XXX: We don't actually *want* UIColor to be an NSObject but we 
-// can't avoid it for now either because of a crash in Foundation
-// https://bugs.swift.org/browse/SR-11233
-import class Foundation.NSObject
-//
-public class UIColor: NSObject/*, Hashable*/ {
+public class UIColor: Hashable {
     let redValue: UInt8
     let greenValue: UInt8
     let blueValue: UInt8
@@ -31,21 +26,6 @@ public class UIColor: NSObject/*, Hashable*/ {
         self.greenValue = green.normalisedToUInt8()
         self.blueValue = blue.normalisedToUInt8()
         self.alphaValue = alpha.normalisedToUInt8()
-    }
-
-    // Without this we'd break Hashable / Equatable contracts for collections.
-    // We MUST guarantee that two _equal_ values also have the same `hashValue`.
-    // It is necessary because UIColor is currently an NSObject due to bugs in Foundation (see above).
-    // Otherwise we could just use the automatic Hashable conformance
-    override public var hash: Int {
-        // On Android Int/UInt are 32bit
-        // `255 << 24` (the "actual" number) does not fit into Int32.
-        // It _does_ fit into a UInt32 though, so here we add up the binary values
-        // as UInts, and then use that binary value (bit pattern) to construct
-        // an Int whose "actual" value we don't care about (it just has to be
-        // unique for each combination of the component colour values)...
-        let result = UInt(redValue) << 24 + UInt(greenValue) << 16 + UInt(blueValue) << 8 + UInt(alphaValue)
-        return Int(bitPattern: UInt(result))
     }
 
     // from wikipedia: https://en.wikipedia.org/wiki/HSL_and_HSV
@@ -93,18 +73,24 @@ public class UIColor: NSObject/*, Hashable*/ {
         return (lhs.redValue == rhs.redValue) && (lhs.greenValue == rhs.greenValue) && (lhs.blueValue == rhs.blueValue) && (lhs.alphaValue == rhs.alphaValue)
     }
 
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(redValue)
+        hasher.combine(greenValue)
+        hasher.combine(blueValue)
+        hasher.combine(alphaValue)
+    }
+
     // Initialise from a color struct from e.g. renderer.getDrawColor()
     init(_ tuple: (r: UInt8, g: UInt8, b: UInt8, a: UInt8)) {
         redValue = tuple.r; greenValue = tuple.g; blueValue = tuple.b; alphaValue = tuple.a
     }
 }
 
-// XXX: Can't override NSObject's description
-// extension UIColor: CustomStringConvertible {
-//     public var description: String {
-//         return "rgba(\(red), \(green), \(blue), \(alpha))"
-//     }
-// }
+extension UIColor: CustomStringConvertible {
+    public var description: String {
+        return "rgba(\(redValue), \(greenValue), \(blueValue), \(alphaValue))"
+    }
+}
 
 public typealias CGColor = UIColor // They can be the same for us.
 

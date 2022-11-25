@@ -9,6 +9,7 @@
 import XCTest
 @testable import UIKit
 
+@MainActor
 class UIViewAnimationTests: XCTestCase {
     var view = UIView()
 

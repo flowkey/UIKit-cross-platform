@@ -9,6 +9,7 @@
 import XCTest
 @testable import UIKit
 
+@MainActor
 class CAMediaTimingFunctionTests: XCTestCase {
     var view = UIView()
 

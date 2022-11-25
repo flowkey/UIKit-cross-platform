@@ -8,6 +8,7 @@
 
 import XCTest
 
+@MainActor
 class ButtonLayoutingTests: XCTestCase {
     var button = Button(frame: .zero)
 

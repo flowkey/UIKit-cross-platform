@@ -1,20 +1,11 @@
-//
-//  Texture.swift
-//  UIKit
-//
-//  Created by Chris on 19.06.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
 import SDL
 import SDL_gpu
-import struct Foundation.Data
 
 public class CGImage {
     /// Be careful using this pointer e.g. for another CGImage instance.
     /// You will have to manually adjust its pointee's reference count.
     var rawPointer: UnsafeMutablePointer<GPU_Image> {
-        didSet { CALayer.layerTreeIsDirty = true }
+        didSet { Task { @MainActor in CALayer.layerTreeIsDirty = true } }
     }
 
     /// Stores the compressed image `Data` this `CGImage` was inited with (if any).
@@ -33,7 +24,7 @@ public class CGImage {
             // We check for GPU errors on render, so clear any error that may have caused GPU_Image to be nil.
             // It's possible there are unrelated errors on the stack at this point, but we immediately catch and
             // handle any errors that interest us *when they occur*, so it's fine to clear unrelated ones here.
-            UIScreen.main?.clearErrors()
+            Task { @MainActor in UIScreen.main?.clearErrors() }
             return nil
         }
 
@@ -100,15 +91,27 @@ public class CGImage {
         guard let surface = GPU_CopySurfaceFromImage(rawPointer) else { return nil }
         defer { SDL_FreeSurface(surface) }
 
-        let pngWritingFunc: @convention(c) (UnsafeMutableRawPointer?, UnsafeMutableRawPointer?, Int32) -> Void = { (outData, pngData, dataSize) in
-            guard let pngData = pngData, dataSize > 0 else { return }
-            outData?.assumingMemoryBound(to: Data.self)
-                .pointee
-                .append(pngData.assumingMemoryBound(to: UInt8.self), count: Int(dataSize))
+        struct ArrayInitInfo {
+            var buffer: UnsafeMutableBufferPointer<UInt8>
+            var initializedCount: Int
         }
 
-        var data = Data()
-        stbi_write_png_to_func(pngWritingFunc, &data, surface.pointee.w, surface.pointee.h, Int32(surface.pointee.format.pointee.BytesPerPixel), surface.pointee.pixels, surface.pointee.pitch)
+        let pngWritingFunc: @convention(c) (UnsafeMutableRawPointer?, UnsafeMutableRawPointer?, Int32) -> Void = { (outData, pngData, dataSize) in
+            guard let pngData = pngData, dataSize > 0 else { return }
+
+            let buffer = UnsafeMutableBufferPointer(start: pngData.assumingMemoryBound(to: UInt8.self), count: Int(dataSize))
+
+            outData?.bindMemory(to: ArrayInitInfo.self, capacity: 1).pointee.initializedCount = Int(dataSize)
+            _ = outData?.bindMemory(to: ArrayInitInfo.self, capacity: 1).pointee.buffer.initialize(from: buffer)
+        }
+
+        let uncompressedSize = Int(surface.pointee.w * surface.pointee.h) * Int(surface.pointee.format.pointee.BytesPerPixel)
+        let data = [UInt8](unsafeUninitializedCapacity: uncompressedSize) { buffer, initializedCount in
+            var info = ArrayInitInfo(buffer: buffer, initializedCount: initializedCount)
+            stbi_write_png_to_func(pngWritingFunc, &info, surface.pointee.w, surface.pointee.h, Int32(surface.pointee.format.pointee.BytesPerPixel), surface.pointee.pixels, surface.pointee.pitch)
+            initializedCount = info.initializedCount
+        }
+
         return data.count > 0 ? data : nil
     }
 }

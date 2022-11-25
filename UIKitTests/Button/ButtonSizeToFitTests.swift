@@ -12,6 +12,7 @@ private let frameSizeWithShortLabelText = CGSize(width: 28.5, height: 26.5)
 private let frameSizeWithMediumLabelText = CGSize(width: 137, height: 31.0)
 private let frameSizeWithLongLabelText = CGSize(width: 307.5, height: 36.0)
 
+@MainActor
 class ButtonSizeToFitTests: XCTestCase {
     var button = Button(frame: .zero)
 

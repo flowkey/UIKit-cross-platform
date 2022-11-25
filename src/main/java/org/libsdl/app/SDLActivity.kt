@@ -38,7 +38,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         internal var mSeparateMouseAndTouch = false
 
         init {
-            arrayOf("icuuc", "icui18n", "JNI", "SDL", "UIKit").forEach { System.loadLibrary(it) }
+            arrayOf("JNI", "SDL", "UIKit").forEach { System.loadLibrary(it) }
         }
     }
 

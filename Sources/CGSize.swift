@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public struct CGSize {
+public struct CGSize: Hashable, Sendable {
     public var width: CGFloat = 0
     public var height: CGFloat = 0
     

@@ -12,18 +12,20 @@ import SDL_gpu
 extension SDLWindowFlags: OptionSet {}
 
 public extension UIScreen {
+    @MainActor
     internal(set) static var main: UIScreen! {
         didSet { CALayer.layerTreeIsDirty = true }
     }
 }
 
+@MainActor
 public final class UIScreen {
     // If we could use `private` members from an extension this would be private
     // Keep that in mind when using it: i.e. if possible, don't ;)
     internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
 
-    public let bounds: CGRect
-    public let scale: CGFloat
+    nonisolated public let bounds: CGRect
+    nonisolated public let scale: CGFloat
 
     private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
         print("UIScreen", "init boounds \(bounds)")
@@ -121,25 +123,27 @@ public final class UIScreen {
 
     deinit {
         print("[SDLActivity] UIScreen.DEinit")
-        UIView.completePendingAnimations()
-        UIView.layersWithAnimations.removeAll()
-        UIView.currentAnimationPrototype = nil
-        UIEvent.activeEvents.removeAll()
-        FontRenderer.cleanupSession()
+        let rawPointer = self.rawPointer
+        Task { @MainActor in
+            UIView.completePendingAnimations()
+            UIView.layersWithAnimations.removeAll()
+            UIView.currentAnimationPrototype = nil
+            UIEvent.activeEvents.removeAll()
+            FontRenderer.cleanupSession()
 
-        if rawPointer == nil { return } // dummy screen or already destroyed
-        defer { GPU_Quit() }
+            if rawPointer == nil { return } // dummy screen or already destroyed
+            defer { GPU_Quit() }
 
-        // get and destroy existing GLRenderer because only one SDL_Window can exist on Android at the same time
-        guard let gpuContext = self.rawPointer.pointee.context else {
-            assertionFailure("glRenderer gpuContext not found")
-            return
+            // get and destroy existing GLRenderer because only one SDL_Window can exist on Android at the same time
+            guard let gpuContext = rawPointer?.pointee.context else {
+                assertionFailure("glRenderer gpuContext not found")
+                return
+            }
+
+            let existingWindowID = gpuContext.pointee.windowID
+            let existingWindow = SDL_GetWindowFromID(existingWindowID)
+            SDL_DestroyWindow(existingWindow)
         }
-
-        let existingWindowID = gpuContext.pointee.windowID
-        let existingWindow = SDL_GetWindowFromID(existingWindowID)
-        SDL_DestroyWindow(existingWindow)
-        rawPointer = nil
     }
 
     // Should be in UIScreen+render.swift but you can't store properties in an extension..

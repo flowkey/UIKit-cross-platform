@@ -1,16 +1,14 @@
-//
-//  UIImage+SDL.swift
-//  sdl2testapinotes
-//
-//  Created by Geordie Jay on 10.05.17.
-//  Copyright © 2017 Geordie Jay. All rights reserved.
-//
-
 import SDL
 import SDL_gpu
-import struct Foundation.Data
-import class Foundation.NSString
 
+#if os(macOS)
+import Foundation
+#else
+import RegexBuilder
+import _StringProcessing
+#endif
+
+@MainActor // UIImage is MainActor but CGImage is not
 public class UIImage {
     public let cgImage: CGImage
     public let size: CGSize
@@ -71,23 +69,63 @@ public class UIImage {
 }
 
 private extension String {
+    #if os(macOS)
     func pathAndExtension() -> (pathWithoutExtension: String, fileExtension: String) {
-        let path = NSString(string: self.asAbsolutePath())
-        let fileExtension = path.pathExtension
-        return (path.deletingPathExtension, "." + (fileExtension.isEmpty ? "png" : fileExtension))
+        let path = self.asAbsolutePath()
+        let pathExtension = (path as NSString).pathExtension
+        let pathWithoutExtension = (path as NSString).deletingPathExtension
+        return (pathWithoutExtension, "." + (pathExtension.isEmpty ? "png" : pathExtension))
     }
 
     func extractImageScale() -> CGFloat {
-        let pathWithoutExtension = NSString(string: self).deletingPathExtension
-
+        let pathWithoutExtension = (self as NSString).deletingPathExtension
         if pathWithoutExtension.hasSuffix("@3x") {
             return 3.0
         } else if pathWithoutExtension.hasSuffix("@2x") {
             return 2.0
+        } else {
+            return 1.0
+        }
+    }
+    #else
+    func pathAndExtension() -> (pathWithoutExtension: String, fileExtension: String) {
+        let regex = Regex {
+            Capture {
+                OneOrMore(.any, .reluctant)
+            }
+            Optionally {
+                Capture {
+                    "."
+                    OneOrMore(.word)
+                    Anchor.endOfLine
+                }
+            }
+        }
+
+        let path = self.asAbsolutePath()
+        let result = try! regex.wholeMatch(in: path)!
+
+        return (String(result.1), String(result.2 ?? ".png"))
+    }
+
+    func extractImageScale() -> CGFloat {
+        let regex = Regex {
+            "@"
+            TryCapture { One(.digit) } transform: { CGFloat($0) }
+            "x"
+            Optionally {
+              "."
+              OneOrMore(CharacterClass(.word))
+            }
+        }
+
+        if let result = self.firstMatch(of: regex) {
+            return result.output.1
         }
 
         return 1.0
     }
+    #endif
 
     private func asAbsolutePath() -> String {
         #if os(macOS)

@@ -1,10 +1,19 @@
-//
-//  Notification.swift
-//  UIKit
-//
-//  Created by Chetan Agarwal on 29.11.18.
-//  Copyright © 2018 flowkey. All rights reserved.
-//
+public struct Notification {
+    public let name: Name
+    weak internal(set) public var object: AnyObject?
 
-import struct Foundation.Notification
-public typealias Notification = Foundation.Notification
+    internal init(name: Name, object: AnyObject? = nil) {
+        self.name = name
+        self.object = object
+    }
+}
+
+extension Notification {
+    public struct Name: Hashable {
+        public let rawValue: String
+
+        public init(rawValue: String) {
+            self.rawValue = rawValue
+        }
+    }
+}

@@ -9,6 +9,7 @@
 import XCTest
 @testable import UIKit
 
+@MainActor
 class CABasicAnimationTests: XCTestCase {
     func testCanAnimateOpacity() {
         let layer = CALayer()

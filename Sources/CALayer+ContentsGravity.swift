@@ -11,6 +11,7 @@ public enum CALayerContentsGravity: String {
     case resize, resizeAspect, resizeAspectFill
 }
 
+@MainActor
 struct ContentsGravityTransformation {
     /// `offset` is in the provided `layer`'s own (`bounds`) coordinates
     let offset: CGPoint

@@ -17,6 +17,7 @@ public struct UIKitAndroid {
 @_silgen_name("SDL_Android_Init")
 public func SDL_Android_Init(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaObject)
 
+@MainActor
 @_cdecl("Java_org_libsdl_app_SDLActivity_nativeInit")
 public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
     print("SDLActivity_nativeInit")
@@ -37,6 +38,7 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
     return 0
 }
 
+@MainActor
 @_cdecl("Java_org_libsdl_app_SDLActivity_nativeDestroyScreen")
 public func nativeDestroyScreen(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
     print("SDLActivity_nativeDestroyScreen")

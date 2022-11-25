@@ -1,22 +1,15 @@
-import Dispatch
-import Foundation
-
-
-// alias since we already have a Timer type in UIKit
-typealias FTimer = Foundation.Timer
-
 open class UIActivityIndicatorView: UIView {
-    
     public enum Style {
         case white
         case gray
+        case medium
         case whiteLarge
     }
 
-    private var timer: FTimer?
+    private var timerTask: Task<Void, Never>?
     private var elements: [UIView] = []
     private var currentHighlightedElementIndex = 0
-    
+
     private let numberOfElements = 8
     private let radius: CGFloat = 7.5
     private let elementWidth: CGFloat = 3
@@ -58,24 +51,18 @@ open class UIActivityIndicatorView: UIView {
     }
 
     public func startAnimating() {
-        #if os(macOS)
-            if #available(macOS 10.12, *) {
-                startTimer()
-            }
-        #else
-            startTimer()
-        #endif
-
+        startTimer()
     }
 
-    @available(macOS 10.12, *) // also works for Android
     private func startTimer() {
-        if self.timer?.isValid ?? false {
-            return
-        }
-        self.timer = FTimer.scheduledTimer(withTimeInterval: 1/Double(numberOfElements), repeats: true) { _ in
-            DispatchQueue.main.async {
-                self.updateColors()
+        guard timerTask == nil else { return }
+
+        let updateIntervalInSeconds = 1 / Double(numberOfElements)
+
+        timerTask = Task {
+            while(!Task.isCancelled) {
+                try? await Task.sleep(nanoseconds: UInt64(updateIntervalInSeconds * 1000 * 1000 * 1000))
+                Task { @MainActor in self.updateColors() }
             }
         }
     }
@@ -102,7 +89,8 @@ open class UIActivityIndicatorView: UIView {
     }
 
     public func stopAnimating() {
-        timer?.invalidate()
+        timerTask?.cancel()
+        timerTask = nil
     }
 }
 

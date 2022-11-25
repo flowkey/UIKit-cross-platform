@@ -7,10 +7,9 @@
 //
 
 open class UITapGestureRecognizer: UIGestureRecognizer {
-
     var onTouchesBegan: (() -> Void)?
     var onTouchesEnded: (() -> Void)?
-    var onPress: (() -> Void)?
+    var onPress: (@MainActor () -> Void)?
 
     public init(onPress: (() -> Void)? = nil) {
         self.onPress = onPress

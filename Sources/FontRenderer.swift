@@ -24,6 +24,7 @@ extension FontRenderer {
     }
 }
 
+@MainActor
 public class FontRenderer {
     let rawPointer: UnsafeMutablePointer<TTF_Font>
     deinit { TTF_CloseFont(rawPointer) }
@@ -60,16 +61,6 @@ public class FontRenderer {
                 TTF_RenderUTF8_Blended_Wrapped(rawPointer, text, color.sdlColor, UInt32(wrapLength)) :
                 TTF_RenderUTF8_Blended(rawPointer, text, color.sdlColor)
             else { return nil }
-
-        defer { SDL_FreeSurface(surface) }
-        return CGImage(surface: surface)
-    }
-
-    func render(_ attributedText: NSAttributedString?, color: UIColor) -> CGImage? {
-        guard let attributedText = attributedText else { return nil }
-
-        guard let surface = self.render(attributedString: attributedText, color: color)
-        else { return nil }
 
         defer { SDL_FreeSurface(surface) }
         return CGImage(surface: surface)

@@ -6,17 +6,8 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-import struct Foundation.Data
-import struct Foundation.URL
-
 extension Data {
     public static func _fromPathCrossPlatform(_ path: String) -> Data? {
-        #if !os(Android)
-        // At time of writing the SDL code below worked on all supported SDL platforms.
-        // But, because of some crashes in `Data` we're doing an unneccessary copy there
-        // which makes that version less efficient than Foundation's, so use it here instead:
-        return try? Data(contentsOf: URL(fileURLWithPath: path))
-        #else
         guard let fileReader = SDL_RWFromFile(path, "r") else {
             return nil
         }
@@ -30,10 +21,9 @@ extension Data {
 
         let bytesRead = fileReader.pointee.read(fileReader, buffer, 1, fileSize)
         if bytesRead == fileSize {
-            return Data(bytes: buffer, count: fileSize)
+            return Data(UnsafeBufferPointer(start: buffer, count: fileSize))
         } else {
             return nil
         }
-        #endif
     }
 }
