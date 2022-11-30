@@ -24,7 +24,11 @@ public final class UIScreen {
     // Keep that in mind when using it: i.e. if possible, don't ;)
     internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
 
-    public var bounds: CGRect
+    public var bounds: CGRect {
+        didSet {
+            print("UIScreen", "did set bounds to \(bounds)")
+        }
+    }
     nonisolated public let scale: CGFloat
 
     private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
@@ -67,7 +71,7 @@ public final class UIScreen {
         var size = CGSize.zero
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
         #else
-        var size = CGSize.samsungGalaxyS7.landscape
+        var size = CGSize.nexus9.landscape
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
             SDL_WINDOW_RESIZABLE,
