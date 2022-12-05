@@ -6,7 +6,7 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-import SDL_gpu
+@_implementationOnly import SDL_gpu
 
 extension CATransform3D {
     /// Set the current transformation as SDL_GPU's current transform matrix

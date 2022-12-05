@@ -6,10 +6,14 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
-import SDL_gpu
+@_implementationOnly import SDL
+@_implementationOnly import SDL_gpu
 
-extension SDLWindowFlags: OptionSet {}
+extension SDLWindowFlags {
+    func contains(_ flags: SDLWindowFlags) -> Bool {
+        return (self.rawValue & flags.rawValue) != 0 // FIXME?
+    }
+}
 
 public extension UIScreen {
     @MainActor
@@ -49,13 +53,10 @@ public final class UIScreen {
         #if os(Android)
         // height/width are determined by the window when fullscreen:
         var size = CGSize.zero
-        let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
+        let options: SDLWindowFlags = SDL_WINDOW_FULLSCREEN
         #else
         var size = CGSize.samsungGalaxyS7.landscape
-        let options: SDLWindowFlags = [
-            SDL_WINDOW_ALLOW_HIGHDPI,
-            //SDL_WINDOW_FULLSCREEN
-        ]
+        let options: SDLWindowFlags = SDL_WINDOW_ALLOW_HIGHDPI
         #endif
 
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)

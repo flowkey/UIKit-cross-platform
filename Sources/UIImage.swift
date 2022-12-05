@@ -1,5 +1,5 @@
-import SDL
-import SDL_gpu
+@_implementationOnly import SDL
+@_implementationOnly import SDL_gpu
 
 #if os(macOS)
 import Foundation

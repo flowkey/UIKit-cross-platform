@@ -9,7 +9,7 @@
 import JNI
 #endif
 
-import SDL
+@_implementationOnly import SDL
 
 extension UIApplication {
     @MainActor
@@ -150,7 +150,7 @@ extension SDL_Scancode {
     static let androidHardwareBackButton = SDL_Scancode(rawValue: 270)
 }
 
-extension SDL_Keymod: OptionSet {}
+// extension SDL_Keymod: OptionSet {}
 
 extension SDL_Event {
     var timestampInSeconds: Double {
@@ -277,7 +277,7 @@ public func onNativeTouch(
 }
 
 extension SDL_EventType {
-    public static func eventFrom(androidAction: JavaInt) -> SDL_EventType? {
+    static func eventFrom(androidAction: JavaInt) -> SDL_EventType? {
         switch androidAction {
         case 0, 5: return SDL_FINGERDOWN
         case 1, 6: return SDL_FINGERUP

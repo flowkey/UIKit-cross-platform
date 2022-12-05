@@ -6,6 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+@_implementationOnly import SDL
+
 protocol SDLEventWithCoordinates {
     var x: Int32 { get }
     var y: Int32 { get }

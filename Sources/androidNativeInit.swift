@@ -7,7 +7,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
+@_implementationOnly import SDL
 import JNI
 
 public struct UIKitAndroid {

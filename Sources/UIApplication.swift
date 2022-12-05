@@ -1,4 +1,4 @@
-import SDL
+@_implementationOnly import SDL
 
 @MainActor
 open class UIApplication {
@@ -56,8 +56,8 @@ open class UIApplication {
 }
 
 
-import SDL
-import SDL_gpu
+@_implementationOnly import SDL
+@_implementationOnly import SDL_gpu
 
 extension UIApplication {
     func handleSDLQuit() {
