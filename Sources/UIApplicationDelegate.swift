@@ -41,6 +41,6 @@ public extension UIApplicationDelegate {
         // That said, this function won't even be called on platforms like Android where the app is built as a library, not an executable.
         #endif
 
-        UIApplicationMain(UIApplication.self, Self.self)
+        _ = UIApplicationMain(UIApplication.self, Self.self)
     }
 }

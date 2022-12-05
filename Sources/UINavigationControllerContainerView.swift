@@ -6,4 +6,5 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
+@MainActor
 internal class UINavigationControllerContainerView: UIView {}

@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  AVPlayerItem+Android.swift
 //  UIKit
@@ -26,3 +27,4 @@ public class AVURLAsset: JNIObject {
         self.url = url
     }
 }
+#endif

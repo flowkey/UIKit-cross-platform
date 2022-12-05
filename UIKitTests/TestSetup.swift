@@ -32,7 +32,10 @@ import Foundation
         #if os(iOS)
             FontLoader.loadBundledFonts()
         #else
-            UIScreen.main = UIScreen.dummyScreen(scale: 2)
+            UIScreen.main = UIScreen.dummyScreen(
+                bounds: CGRect(origin: .zero, size: .samsungGalaxyS7),
+                scale: 2
+            )
             UIFont.loadSystemFonts()
         #endif
     }

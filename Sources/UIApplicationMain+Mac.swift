@@ -1,3 +1,4 @@
+#if os(macOS)
 //
 //  UIApplication+Mac.swift
 //  UIKit
@@ -42,3 +43,4 @@ func setupRenderAndRunLoop() {
 
     RunLoop.current.run()
 }
+#endif

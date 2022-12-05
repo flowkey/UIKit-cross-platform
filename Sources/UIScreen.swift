@@ -179,13 +179,10 @@ fileprivate func getAndroidDeviceScale() -> CGFloat {
 }
 #endif
 
-
+@MainActor
 extension UIScreen {
     /// Used in tests only and doesn't actually render anything
-    static func dummyScreen(
-        bounds: CGRect = CGRect(origin: .zero, size: .samsungGalaxyS7),
-        scale: CGFloat
-    ) -> UIScreen {
+    static func dummyScreen(bounds: CGRect, scale: CGFloat) -> UIScreen {
         return UIScreen(
             renderTarget: nil,
             bounds: bounds,
@@ -194,6 +191,7 @@ extension UIScreen {
     }
 }
 
+@MainActor
 private extension CGSize {
     // smartphones:
     static let samsungGalaxyJ5 = CGSize(width: 1280 / 2.0, height: 720 / 2.0)

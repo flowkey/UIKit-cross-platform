@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  JNIVideo.swift
 //  UIKit
@@ -82,3 +83,4 @@ public func nativeOnVideoSourceError(env: UnsafeMutablePointer<JNIEnv>, cls: Jav
     globalAVPlayer?.onLoaded?(AVPlayer.DataSourceError())
     globalAVPlayer?.onLoaded = nil
 }
+#endif

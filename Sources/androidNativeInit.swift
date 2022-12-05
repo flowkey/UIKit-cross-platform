@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  androidNativeInit.swift
 //  UIKit
@@ -43,3 +44,4 @@ public func nativeDestroyScreen(env: UnsafeMutablePointer<JNIEnv>, view: JavaObj
     UIApplication.onWillEnterBackground()
     UIApplication.onDidEnterBackground()
 }
+#endif

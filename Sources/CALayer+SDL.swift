@@ -9,6 +9,7 @@
 import SDL_gpu
 
 extension CALayer {
+    @MainActor
     final func sdlRender(parentAbsoluteOpacity: Float = 1) {
         guard let renderer = UIScreen.main else { return }
         let opacity = self.opacity * parentAbsoluteOpacity

@@ -5,9 +5,11 @@
 //  Created by Geordie Jay on 20.03.18.
 //  Copyright © 2018 flowkey. All rights reserved.
 //
+#if os(Android)
+import JNI
+#endif
 
 import SDL
-import JNI
 
 extension UIApplication {
     @MainActor
