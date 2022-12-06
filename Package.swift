@@ -15,18 +15,14 @@ let package = Package(
         .target(
             name: "UIKit",
             dependencies: [
+                .product(name: "SDL_macOS", package: "SDL", condition: .when(platforms: [.macOS])),
                 .product(name: "SDL_Android", package: "SDL", condition: .when(platforms: [.android])),
                 .product(name: "JNI", package: "swift-jni", condition: .when(platforms: [.android])),
                 .target(name: "UIKit_C_API", condition: .when(platforms: [.android])),
             ],
             path: "Sources",
-            exclude: [
-                "Mac-Info.plist",
-            ]
+            exclude: ["Mac-Info.plist"]
         ),
-        .target(
-            name: "UIKit_C_API",
-            path: "UIKit_C_API"
-        ),
+        .target(name: "UIKit_C_API", path: "UIKit_C_API"),
     ]
 )
