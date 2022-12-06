@@ -1,4 +1,5 @@
 @_implementationOnly import SDL
+@_exported import UIKit_C_API
 
 @MainActor
 open class UIApplication {
