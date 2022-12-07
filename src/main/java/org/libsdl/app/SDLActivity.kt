@@ -1,17 +1,18 @@
 package org.libsdl.app
 
 import android.app.Activity
-import java.lang.reflect.Method
-
-import android.view.*
-import android.widget.RelativeLayout
-import android.util.Log
-import android.graphics.*
-import android.view.KeyEvent.*
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.graphics.*
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.view.*
+import android.view.KeyEvent.*
+import android.widget.RelativeLayout
 import main.java.org.libsdl.app.*
+import java.lang.reflect.Method
 
 private const val TAG = "SDLActivity"
 
@@ -192,10 +193,10 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         this.nativeQuit()
 
         // renderer should now be destroyed but we need to process events once more to clean up
-        this.nativeProcessEventsAndRender()
+        this.processPendingSDLEvents()
     }
 
-    fun removeFrameCallback() {
+    private fun removeFrameCallback() {
         Log.v(TAG, "removeFrameCallback()")
         Choreographer.getInstance().removeFrameCallback(this)
         this.isRunning = false
@@ -363,7 +364,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         removeFrameCallback()
 
         // renderer should now be destroyed but we need to process events once more to clean up
-        this.nativeProcessEventsAndRender()
+        this.processPendingSDLEvents()
     }
 
     /** Called by SDL using JNI. */
@@ -373,5 +374,14 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         mSurface.setOnTouchListener(null)
         mSurface.holder?.removeCallback(this) // should only happen on SDL_Quit
         nativeSurface.release()
+    }
+
+    private fun processPendingSDLEvents(invocations: Int = 0) {
+        if (invocations > 5) return
+
+        this.nativeProcessEventsAndRender()
+        Handler(Looper.getMainLooper()).postDelayed({
+            processPendingSDLEvents(invocations + 1)
+        }, 100)
     }
 }
