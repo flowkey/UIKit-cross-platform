@@ -193,7 +193,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         this.nativeQuit()
 
         // renderer should now be destroyed but we need to process events once more to clean up
-        this.processPendingSDLEvents()
+        this.nativeProcessEventsAndRender()
     }
 
     private fun removeFrameCallback() {
@@ -364,7 +364,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         removeFrameCallback()
 
         // renderer should now be destroyed but we need to process events once more to clean up
-        this.processPendingSDLEvents()
+        this.nativeProcessEventsAndRender()
     }
 
     /** Called by SDL using JNI. */
@@ -374,14 +374,5 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         mSurface.setOnTouchListener(null)
         mSurface.holder?.removeCallback(this) // should only happen on SDL_Quit
         nativeSurface.release()
-    }
-
-    private fun processPendingSDLEvents(invocations: Int = 0) {
-        if (invocations > 5) return
-
-        this.nativeProcessEventsAndRender()
-        Handler(Looper.getMainLooper()).postDelayed({
-            processPendingSDLEvents(invocations + 1)
-        }, 100)
     }
 }

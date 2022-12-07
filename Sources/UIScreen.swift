@@ -8,6 +8,7 @@
 
 import SDL
 import SDL_gpu
+import Dispatch
 
 extension SDLWindowFlags: OptionSet {}
 
@@ -104,7 +105,7 @@ public final class UIScreen {
     }
 
     deinit {
-        Task { @MainActor in
+        DispatchQueue.main.syncSafe {
             UIView.completePendingAnimations()
             UIView.layersWithAnimations.removeAll()
             UIView.currentAnimationPrototype = nil
@@ -112,11 +113,11 @@ public final class UIScreen {
             FontRenderer.cleanupSession()
         }
 
-
         guard let rawPointer = self.rawPointer else {
             return
         }
 
+        defer { GPU_Quit() }
         guard let gpuContext = rawPointer.pointee.context else {
             assertionFailure("glRenderer gpuContext not found")
             return
@@ -125,7 +126,6 @@ public final class UIScreen {
         let existingWindowID = gpuContext.pointee.windowID
         let existingWindow = SDL_GetWindowFromID(existingWindowID)
         SDL_DestroyWindow(existingWindow)
-        GPU_Quit()
     }
 
     // Should be in UIScreen+render.swift but you can't store properties in an extension..

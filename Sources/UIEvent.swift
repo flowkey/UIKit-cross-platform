@@ -1,3 +1,4 @@
+@MainActor
 public class UIEvent {
     internal static var activeEvents = Set<UIEvent>()
 
