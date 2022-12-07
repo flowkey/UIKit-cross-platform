@@ -7,8 +7,8 @@ public extension DispatchQueue {
         callback()
     }
 
+    /// this is supposed to dispatch events on `DispatchQueue.main` only
     func syncSafe(_ callback: @escaping @MainActor () -> Void) {
-        print("isMainThread", isMainThread)
         if isMainThread {
             DispatchQueue.main.unsafelyRunOnMainActor(callback)
         } else {
