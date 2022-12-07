@@ -19,7 +19,7 @@ public class AVPlayer: JNIObject {
     public convenience init(playerItem: AVPlayerItem) {
         let parentView = JavaSDLView(getSDLView())
         try! self.init(arguments: parentView, playerItem.asset)
-        globalAVPlayer = self
+        try! self.call(methodName: "setUserContext", arguments: [self.userContext])
     }
 
     public func play() {
@@ -60,28 +60,51 @@ public class AVPlayer: JNIObject {
     }
 }
 
-private weak var globalAVPlayer: AVPlayer?
-
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoReady")
-public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onVideoReady?()
+public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject, userContext: JavaLong) {
+    AVPlayer.from(userContext: userContext)?.onVideoReady?()
 }
 
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoEnded")
-public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onVideoEnded?()
+public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject, userContext: JavaLong) {
+    AVPlayer.from(userContext: userContext)?.onVideoEnded?()
 }
 
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoBuffering")
-public func nativeOnVideoBuffering(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onVideoBuffering?()
+public func nativeOnVideoBuffering(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject, userContext: JavaLong) {
+    AVPlayer.from(userContext: userContext)?.onVideoBuffering?()
 }
 
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoError")
-public func nativeOnVideoError(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject, type: JavaInt, message: JavaString) {
+public func nativeOnVideoError(
+    env: UnsafeMutablePointer<JNIEnv>,
+    cls: JavaObject,
+    type: JavaInt,
+    message: JavaString,
+    userContext: JavaLong
+) {
     let error = AVPlayer.ExoPlaybackError(
         type: Int(type),
         message: (try? String(javaString: message)) ?? ""
     )
-    globalAVPlayer?.onError?(error)
+    AVPlayer.from(userContext: userContext)?.onError?(error)
+}
+
+extension AVPlayer {
+    static func from(userContext: JavaLong) -> AVPlayer? {
+        guard let reference = UnsafeRawPointer(bitPattern: Int(userContext)) else {
+            let msg = "Could not derefence AVPlayer instance from userContext."
+            print(msg)
+            assertionFailure(msg)
+            return nil
+        }
+        return Unmanaged<AVPlayer>.fromOpaque(reference).takeUnretainedValue()
+    }
+}
+
+extension JNIObject {
+    var userContext: JavaLong {
+        let ptr = Unmanaged.passUnretained(self).toOpaque()
+        return JavaLong(Int(bitPattern: ptr))
+    }
 }
