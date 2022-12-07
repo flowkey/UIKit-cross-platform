@@ -44,11 +44,12 @@ class AVURLAsset(parent: SDLActivity, url: String) {
 class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     internal val exoPlayer: SimpleExoPlayer
     private var listener: Player.EventListener
+    private var userContext: Long? = null
 
-    external fun nativeOnVideoReady()
-    external fun nativeOnVideoEnded()
-    external fun nativeOnVideoBuffering()
-    external fun nativeOnVideoError(type: Int, message: String)
+    external fun nativeOnVideoReady(userContext: Long)
+    external fun nativeOnVideoEnded(userContext: Long)
+    external fun nativeOnVideoBuffering(userContext: Long)
+    external fun nativeOnVideoError(type: Int, message: String, userContext: Long)
 
     init {
         val bandwidthMeter = DefaultBandwidthMeter.Builder(parent.context).build()
@@ -63,11 +64,13 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
 
         listener = object: Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                when (playbackState) {
-                    Player.STATE_READY -> nativeOnVideoReady()
-                    Player.STATE_ENDED -> nativeOnVideoEnded()
-                    Player.STATE_BUFFERING -> nativeOnVideoBuffering()
-                    else -> {}
+                this@AVPlayer.userContext?.let { userContext ->
+                    when (playbackState) {
+                        Player.STATE_READY -> nativeOnVideoReady(userContext)
+                        Player.STATE_ENDED -> nativeOnVideoEnded(userContext)
+                        Player.STATE_BUFFERING -> nativeOnVideoBuffering(userContext)
+                        else -> {}
+                    }
                 }
             }
 
@@ -79,13 +82,19 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
             }
 
             override fun onPlayerError(error: ExoPlaybackException) {
-                Log.e("SDL", "ExoPlaybackException occurred")
-                val message = error.message ?: "unknown"
-                nativeOnVideoError(error.type, message)
+                this@AVPlayer.userContext?.let { userContext ->
+                    Log.e("SDL", "ExoPlaybackException occurred")
+                    val message = error.message ?: "unknown"
+                    nativeOnVideoError(error.type, message, userContext)
+                }
             }
         }
 
         exoPlayer.addListener(listener)
+    }
+
+    fun setUserContext(ctx: Long) {
+        this.userContext = ctx
     }
 
     fun play() {
