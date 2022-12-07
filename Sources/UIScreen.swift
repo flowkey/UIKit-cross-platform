@@ -104,27 +104,28 @@ public final class UIScreen {
     }
 
     deinit {
-        let rawPointer = self.rawPointer
         Task { @MainActor in
             UIView.completePendingAnimations()
             UIView.layersWithAnimations.removeAll()
             UIView.currentAnimationPrototype = nil
             UIEvent.activeEvents.removeAll()
             FontRenderer.cleanupSession()
-
-            if rawPointer == nil { return } // dummy screen or already destroyed
-            defer { GPU_Quit() }
-
-            // get and destroy existing GLRenderer because only one SDL_Window can exist on Android at the same time
-            guard let gpuContext = rawPointer?.pointee.context else {
-                assertionFailure("glRenderer gpuContext not found")
-                return
-            }
-
-            let existingWindowID = gpuContext.pointee.windowID
-            let existingWindow = SDL_GetWindowFromID(existingWindowID)
-            SDL_DestroyWindow(existingWindow)
         }
+
+
+        guard let rawPointer = self.rawPointer else {
+            return
+        }
+
+        guard let gpuContext = rawPointer.pointee.context else {
+            assertionFailure("glRenderer gpuContext not found")
+            return
+        }
+
+        let existingWindowID = gpuContext.pointee.windowID
+        let existingWindow = SDL_GetWindowFromID(existingWindowID)
+        SDL_DestroyWindow(existingWindow)
+        GPU_Quit()
     }
 
     // Should be in UIScreen+render.swift but you can't store properties in an extension..
