@@ -1,5 +1,6 @@
 import SDL
 import SDL_gpu
+import Dispatch
 
 public class CGImage {
     /// Be careful using this pointer e.g. for another CGImage instance.
@@ -24,7 +25,7 @@ public class CGImage {
             // We check for GPU errors on render, so clear any error that may have caused GPU_Image to be nil.
             // It's possible there are unrelated errors on the stack at this point, but we immediately catch and
             // handle any errors that interest us *when they occur*, so it's fine to clear unrelated ones here.
-            Task { @MainActor in UIScreen.main?.clearErrors() }
+            DispatchQueue.main.syncSafe { UIScreen.main?.clearErrors() }
             return nil
         }
 

@@ -1,18 +1,17 @@
 package org.libsdl.app
 
 import android.app.Activity
+import java.lang.reflect.Method
+
+import android.view.*
+import android.widget.RelativeLayout
+import android.util.Log
+import android.graphics.*
+import android.view.KeyEvent.*
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.*
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import android.view.*
-import android.view.KeyEvent.*
-import android.widget.RelativeLayout
 import main.java.org.libsdl.app.*
-import java.lang.reflect.Method
 
 private const val TAG = "SDLActivity"
 
@@ -196,7 +195,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         this.nativeProcessEventsAndRender()
     }
 
-    private fun removeFrameCallback() {
+    fun removeFrameCallback() {
         Log.v(TAG, "removeFrameCallback()")
         Choreographer.getInstance().removeFrameCallback(this)
         this.isRunning = false

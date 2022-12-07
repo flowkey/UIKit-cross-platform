@@ -2,15 +2,17 @@
 import Dispatch
 import JNI
 
-extension DispatchQueue {
-    func syncSafe(callback: @escaping @MainActor () -> Void) {
-        if isMainThread {
-            unsafeBitCast(callback, to: (() -> Void).self)()
-            return
-        }
+public extension DispatchQueue {
+    private func unsafelyRunOnMainActor(_ callback: @escaping () -> Void) {
+        callback()
+    }
 
-        DispatchQueue.main.sync {
-            callback()
+    func syncSafe(_ callback: @escaping @MainActor () -> Void) {
+        print("isMainThread", isMainThread)
+        if isMainThread {
+            DispatchQueue.main.unsafelyRunOnMainActor(callback)
+        } else {
+            DispatchQueue.main.sync { callback() }
         }
     }
 }
