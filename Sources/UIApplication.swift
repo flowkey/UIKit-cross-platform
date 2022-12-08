@@ -1,4 +1,5 @@
 import SDL
+import Dispatch
 
 @MainActor
 open class UIApplication {
@@ -49,7 +50,7 @@ open class UIApplication {
     }
 
     deinit {
-        Task { @MainActor in
+        DispatchQueue.main.syncSafe {
             UIScreen.main = nil
             UIFont.clearCachedFontFiles()
             DisplayLink.activeDisplayLinks.removeAll()

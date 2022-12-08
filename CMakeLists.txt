@@ -116,6 +116,7 @@ add_library(UIKit SHARED
     Sources/UIWindow+getSafeAreaInsets.swift
     Sources/UIWindow.swift
     Sources/Switch.swift
+    Sources/DispatchQueue+syncSafe.swift
     )
 
 set_target_properties(UIKit PROPERTIES
