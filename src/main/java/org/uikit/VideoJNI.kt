@@ -8,7 +8,6 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.upstream.cache.CacheDataSink
@@ -49,18 +48,16 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     external fun nativeOnVideoReady()
     external fun nativeOnVideoEnded()
     external fun nativeOnVideoBuffering()
-    external fun nativeOnVideoSourceError()
+    external fun nativeOnVideoError(type: Int, message: String)
 
     init {
-        val exoPlayerBuilder = SimpleExoPlayer.Builder(parent.context)
-
         val bandwidthMeter = DefaultBandwidthMeter.Builder(parent.context).build()
-        exoPlayerBuilder.setBandwidthMeter(bandwidthMeter)
-
         val trackSelector = DefaultTrackSelector(parent.context)
-        exoPlayerBuilder.setTrackSelector(trackSelector)
-
-        exoPlayer = exoPlayerBuilder.build()
+        
+        exoPlayer = SimpleExoPlayer.Builder(parent.context)
+                .setBandwidthMeter(bandwidthMeter)
+                .setTrackSelector(trackSelector)
+                .build()
         exoPlayer.prepare()
         exoPlayer.setMediaSource(asset.videoSource)
 
@@ -82,10 +79,9 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
             }
 
             override fun onPlayerError(error: ExoPlaybackException) {
-                if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                    nativeOnVideoSourceError()
-                    Log.e("SDL", "ExoPlaybackException occurred")
-                }
+                Log.e("SDL", "ExoPlaybackException occurred")
+                val message = error.message ?: "N/A"
+                nativeOnVideoError(error.type, message)
             }
         }
 
