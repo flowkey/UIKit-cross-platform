@@ -55,7 +55,7 @@ public class AVPlayer: JNIObject {
     }
 
     public struct ExoPlaybackError: Error {
-        let type: Int
+        let type: Int // https://exoplayer.dev/doc/reference/com/google/android/exoplayer2/ExoPlaybackException.Type.html
         let message: String
     }
 }
@@ -81,7 +81,7 @@ public func nativeOnVideoBuffering(env: UnsafeMutablePointer<JNIEnv>, cls: JavaO
 public func nativeOnVideoError(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject, type: JavaInt, message: JavaString) {
     let error = AVPlayer.ExoPlaybackError(
         type: Int(type),
-        message: (try? String(javaString: message)) ?? ""
+        message: (try? String(javaString: message)) ?? "N/A"
     )
     globalAVPlayer?.onError?(error)
 }

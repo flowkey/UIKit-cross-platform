@@ -80,7 +80,7 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
 
             override fun onPlayerError(error: ExoPlaybackException) {
                 Log.e("SDL", "ExoPlaybackException occurred")
-                val message = error.message ?: "unknown"
+                val message = error.message ?: "N/A"
                 nativeOnVideoError(error.type, message)
             }
         }
