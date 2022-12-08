@@ -1,6 +1,5 @@
 import SDL
 import SDL_gpu
-import Dispatch
 
 public class CGImage {
     /// Be careful using this pointer e.g. for another CGImage instance.
