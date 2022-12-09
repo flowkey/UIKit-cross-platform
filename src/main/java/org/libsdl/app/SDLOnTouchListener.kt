@@ -1,5 +1,6 @@
 package main.java.org.libsdl.app
 
+import android.os.SystemClock
 import android.text.method.Touch
 import android.view.InputDevice
 import android.view.MotionEvent
@@ -9,7 +10,7 @@ import kotlin.math.min
 
 
 interface SDLOnTouchListener: View.OnTouchListener {
-
+    var sessionStartTime: Long
     var mWidth: Float
     var mHeight: Float
     var mHasFocus: Boolean
@@ -22,7 +23,11 @@ interface SDLOnTouchListener: View.OnTouchListener {
         /* Ref: http://developer.android.com/training/gestures/multi.html */
         val touchDevId = event.deviceId
         val action = event.actionMasked
-        val timestamp = event.eventTime
+
+        // we subtract sessionStartTime to reduce the likelihood
+        // that timestamp will overflow out of a UInt32 in Swift
+        // (which will occur after 49 days of uptime otherwise)
+        val timestamp = event.eventTime - sessionStartTime
 
         if (event.source == InputDevice.SOURCE_MOUSE && SDLActivity.mSeparateMouseAndTouch) {
             val mouseButton = try { event.buttonState } catch (e: Exception) { 1 } // 1 is left button
