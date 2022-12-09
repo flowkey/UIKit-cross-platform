@@ -20,6 +20,7 @@
 		5B71D7472292B68E008CEC66 /* UIAccessibilityIdentification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B71D7462292B68E008CEC66 /* UIAccessibilityIdentification.swift */; };
 		5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */; };
 		5B840BB71F42FCBD0010AC95 /* AnimatableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */; };
+		5B8B85EF2940EF7900881E7F /* DispatchQueue+syncSafe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8B85EA2940EF7400881E7F /* DispatchQueue+syncSafe.swift */; };
 		5BA1FC4E1F6694CA005843B9 /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA1FC4D1F6694CA005843B9 /* UITextView.swift */; };
 		5BA7B40B1F45A6AD0040CB58 /* CABasicAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */; };
 		5BA87A9C2018FC990080C876 /* CATransform3D+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA87A942018FC980080C876 /* CATransform3D+animations.swift */; };
@@ -309,6 +310,7 @@
 		5B71D7462292B68E008CEC66 /* UIAccessibilityIdentification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAccessibilityIdentification.swift; sourceTree = "<group>"; };
 		5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewAnimationGroup.swift; path = Sources/UIViewAnimationGroup.swift; sourceTree = SOURCE_ROOT; };
 		5B840BB61F42FCBC0010AC95 /* AnimatableProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimatableProperty.swift; path = Sources/AnimatableProperty.swift; sourceTree = SOURCE_ROOT; };
+		5B8B85EA2940EF7400881E7F /* DispatchQueue+syncSafe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchQueue+syncSafe.swift"; sourceTree = "<group>"; };
 		5BA1FC4D1F6694CA005843B9 /* UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UITextView.swift; path = Sources/UITextView.swift; sourceTree = SOURCE_ROOT; };
 		5BA7B40A1F45A6AD0040CB58 /* CABasicAnimationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CABasicAnimationTests.swift; sourceTree = "<group>"; };
 		5BA87A942018FC980080C876 /* CATransform3D+animations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CATransform3D+animations.swift"; path = "Sources/CATransform3D+animations.swift"; sourceTree = SOURCE_ROOT; };
@@ -647,6 +649,7 @@
 				833075381F697613002089AC /* Video */,
 				60D6D8A1275E6CEC00892A7E /* Switch.swift */,
 				5CBEB3E32914A75C00D0CC3F /* Data.swift */,
+				5B8B85EA2940EF7400881E7F /* DispatchQueue+syncSafe.swift */,
 			);
 			name = UIKit;
 			path = Sources;
@@ -1162,6 +1165,7 @@
 				5BA87A9C2018FC990080C876 /* CATransform3D+animations.swift in Sources */,
 				5C6AB71F1ED3BECD006F90AC /* UIWindow.swift in Sources */,
 				5CB6E1C32033460C001FEAC9 /* CATransform3D+SDL_gpu.swift in Sources */,
+				5B8B85EF2940EF7900881E7F /* DispatchQueue+syncSafe.swift in Sources */,
 				5C8E6A21203A089A00D1DBE0 /* CALayer+ContentsGravity.swift in Sources */,
 				5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */,
 				5B840BB71F42FCBD0010AC95 /* AnimatableProperty.swift in Sources */,

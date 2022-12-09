@@ -12,7 +12,7 @@ import JNI
 public class AVPlayer: JNIObject {
     public override static var className: String { "org.uikit.AVPlayer" }
 
-    public var onLoaded: ((Error?) -> Void)?
+    public var onError: ((ExoPlaybackError) -> Void)?
     public var onVideoReady: (() -> Void)?
     public var onVideoEnded: (() -> Void)?
     public var onVideoBuffering: (() -> Void)?
@@ -55,16 +55,16 @@ public class AVPlayer: JNIObject {
         try? call(methodName: "cleanup")
     }
 
-    public struct DataSourceError: Error {}
+    public struct ExoPlaybackError: Error {
+        let type: Int // https://exoplayer.dev/doc/reference/com/google/android/exoplayer2/ExoPlaybackException.Type.html
+        let message: String
+    }
 }
 
 private weak var globalAVPlayer: AVPlayer?
 
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoReady")
 public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onLoaded?(nil)
-    globalAVPlayer?.onLoaded = nil
-
     globalAVPlayer?.onVideoReady?()
 }
 
@@ -78,9 +78,12 @@ public func nativeOnVideoBuffering(env: UnsafeMutablePointer<JNIEnv>, cls: JavaO
     globalAVPlayer?.onVideoBuffering?()
 }
 
-@_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoSourceError")
-public func nativeOnVideoSourceError(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onLoaded?(AVPlayer.DataSourceError())
-    globalAVPlayer?.onLoaded = nil
+@_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoError")
+public func nativeOnVideoError(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject, type: JavaInt, message: JavaString) {
+    let error = AVPlayer.ExoPlaybackError(
+        type: Int(type),
+        message: (try? String(javaString: message)) ?? "N/A"
+    )
+    globalAVPlayer?.onError?(error)
 }
 #endif
