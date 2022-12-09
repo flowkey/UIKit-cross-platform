@@ -270,12 +270,12 @@ public func onNativeTouch(
     let pressure: JavaFloat = try! jni.GetField("pressure", from: touchParameters)
     let timestampMs: JavaLong = try! jni.GetField("timestamp", from: touchParameters)
 
-    guard
-        let eventType = SDL_EventType.eventFrom(androidAction: action),
-        let screenScale = UIScreen.main?.scale
+    guard let eventType = SDL_EventType.eventFrom(androidAction: action)
     else { return }
 
     Task { @MainActor in
+        guard let screenScale = UIScreen.main?.scale else { return }
+
         var event = SDL_Event(tfinger:
             SDL_TouchFingerEvent(
                 type: eventType.rawValue,
