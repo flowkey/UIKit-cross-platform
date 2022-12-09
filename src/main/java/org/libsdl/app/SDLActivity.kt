@@ -11,6 +11,7 @@ import android.view.KeyEvent.*
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
+import android.os.SystemClock
 import main.java.org.libsdl.app.*
 
 private const val TAG = "SDLActivity"
@@ -45,6 +46,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     private var mSurface: SurfaceView
     private var mIsSurfaceReady = false
     override var mHasFocus = false
+    override var sessionStartTime: Long = SystemClock.uptimeMillis()
 
     private external fun nativeProcessEventsAndRender()
     private external fun nativeInit(): Int
