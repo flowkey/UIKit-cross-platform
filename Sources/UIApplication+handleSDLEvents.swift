@@ -267,7 +267,7 @@ public func onNativeTouch(
         var event = SDL_Event(tfinger:
             SDL_TouchFingerEvent(
                 type: eventType.rawValue,
-                timestamp: UInt32(timestampMs % JavaLong(UInt32.max - 1)),
+                timestamp: UInt32(truncatingIfNeeded: timestampMs),
                 touchId: Int64(touchDeviceId), // some arbitrary number, stays the same per device
                 fingerId: Int64(pointerFingerId),
                 x: x / Float(screenScale),
