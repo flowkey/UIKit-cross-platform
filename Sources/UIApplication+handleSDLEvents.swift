@@ -236,12 +236,6 @@ public func onNativeTouch(
     view: JavaObject?,
     touchParameters: JavaObject
 ) {
-    if env == nil || view == nil {
-        // We're in an invalid state where the JNI has exploded somehow
-        // Passing anything on to UIKit now would probably lead to a crash
-        return
-    }
-
     let touchDeviceId: JavaInt = try! jni.GetField("touchDeviceId", from: touchParameters)
     let pointerFingerId: JavaInt = try! jni.GetField("pointerFingerId", from: touchParameters)
     let action: JavaInt = try! jni.GetField("action", from: touchParameters)
@@ -250,27 +244,29 @@ public func onNativeTouch(
     let pressure: JavaFloat = try! jni.GetField("pressure", from: touchParameters)
     let timestampMs: JavaLong = try! jni.GetField("timestamp", from: touchParameters)
 
-    guard let eventType = SDL_EventType.eventFrom(androidAction: action)
+    guard
+        let eventType = SDL_EventType.eventFrom(androidAction: action),
+        let screenScale = UIScreen.main?.scale
     else { return }
 
     Task { @MainActor in
         var event = SDL_Event(tfinger:
-        SDL_TouchFingerEvent(
-            type: eventType.rawValue,
-            timestamp: UInt32(timestampMs),
-            touchId: Int64(touchDeviceId), // some arbitrary number, stays the same per device
-            fingerId: Int64(pointerFingerId),
-            x: x / Float(UIScreen.main.scale),
-            y: y / Float(UIScreen.main.scale),
-            dx: 0,
-            dy: 0,
-            pressure: pressure
+            SDL_TouchFingerEvent(
+                type: eventType.rawValue,
+                timestamp: UInt32(truncatingIfNeeded: timestampMs),
+                touchId: Int64(touchDeviceId), // a seemingly arbitrary number, stays the same per device
+                fingerId: Int64(pointerFingerId),
+                x: x / Float(screenScale),
+                y: y / Float(screenScale),
+                dx: 0,
+                dy: 0,
+                pressure: pressure
+            )
         )
-    )
 
-    // add the event to SDL's event stack
-    // don't use SDL_PushEvent because it overrides `event.timestamp` with its own:
-    SDL_PeepEvents(&event, 1, SDL_ADDEVENT, 0, 0)
+        // add the event to SDL's event stack
+        // don't use SDL_PushEvent because it overrides `event.timestamp` with its own:
+        SDL_PeepEvents(&event, 1, SDL_ADDEVENT, 0, 0)
     }
 }
 
@@ -284,5 +280,4 @@ extension SDL_EventType {
         }
     }
 }
-
 #endif
