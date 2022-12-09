@@ -150,7 +150,11 @@ extension SDL_Scancode {
     static let androidHardwareBackButton = SDL_Scancode(rawValue: 270)
 }
 
-// extension SDL_Keymod: OptionSet {}
+extension SDL_Keymod {
+    func contains(_ other: SDL_Keymod) -> Bool {
+        return (self.rawValue & other.rawValue) == other.rawValue
+    }
+}
 
 extension SDL_Event {
     var timestampInSeconds: Double {
@@ -256,23 +260,27 @@ public func onNativeTouch(
     else { return }
 
     Task { @MainActor in
-        var event = SDL_Event(tfinger:
-        SDL_TouchFingerEvent(
-            type: eventType.rawValue,
-            timestamp: UInt32(timestampMs),
-            touchId: Int64(touchDeviceId), // some arbitrary number, stays the same per device
-            fingerId: Int64(pointerFingerId),
-            x: x / Float(UIScreen.main.scale),
-            y: y / Float(UIScreen.main.scale),
-            dx: 0,
-            dy: 0,
-            pressure: pressure
-        )
-    )
+        guard let screenScale = UIScreen.main?.scale else {
+            return
+        }
 
-    // add the event to SDL's event stack
-    // don't use SDL_PushEvent because it overrides `event.timestamp` with its own:
-    SDL_PeepEvents(&event, 1, SDL_ADDEVENT, 0, 0)
+        var event = SDL_Event(tfinger:
+            SDL_TouchFingerEvent(
+                type: eventType.rawValue,
+                timestamp: UInt32(timestampMs % JavaLong(UInt32.max - 1)),
+                touchId: Int64(touchDeviceId), // some arbitrary number, stays the same per device
+                fingerId: Int64(pointerFingerId),
+                x: x / Float(screenScale),
+                y: y / Float(screenScale),
+                dx: 0,
+                dy: 0,
+                pressure: pressure
+            )
+        )
+
+        // add the event to SDL's event stack
+        // don't use SDL_PushEvent because it overrides `event.timestamp` with its own:
+        SDL_PeepEvents(&event, 1, SDL_ADDEVENT, 0, 0)
     }
 }
 
@@ -286,5 +294,4 @@ extension SDL_EventType {
         }
     }
 }
-
 #endif

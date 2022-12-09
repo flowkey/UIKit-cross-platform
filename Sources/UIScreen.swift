@@ -11,7 +11,7 @@
 
 extension SDLWindowFlags {
     func contains(_ flags: SDLWindowFlags) -> Bool {
-        return (self.rawValue & flags.rawValue) != 0 // FIXME?
+        return (self.rawValue & flags.rawValue) == flags.rawValue
     }
 }
 
