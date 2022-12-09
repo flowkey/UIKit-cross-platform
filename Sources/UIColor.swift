@@ -6,7 +6,7 @@
 //  Copyright © 2017 Geordie Jay. All rights reserved.
 //
 
-import SDL
+@_implementationOnly import SDL
 
 public class UIColor: Hashable {
     let redValue: UInt8

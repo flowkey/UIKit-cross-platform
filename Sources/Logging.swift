@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  Logging.swift
 //  UIKit
@@ -6,13 +7,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
-
-#if os(Android)
+@_implementationOnly import SDL
 import Glibc
-#else
-import Darwin.C.stdio
-#endif
 
 private let loggingTag = "Swift"
 
@@ -48,3 +44,4 @@ public func fatalError(_ message: @autoclosure () -> String = "", file: StaticSt
 public enum LogPriority: Int32 {
     case `unknown`,`default`,`verbose`,`debug`,`info`,`warn`,`error`,`fatal`,`silent`
 }
+#endif

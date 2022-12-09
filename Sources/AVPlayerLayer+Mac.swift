@@ -1,3 +1,4 @@
+#if os(macOS)
 //
 //  AVPlayerLayer+Mac.swift
 //  UIKit
@@ -123,3 +124,4 @@ public final class AVPlayerLayer: CALayer {
         contents?.replacePixels(with: pixelBytes, bytesPerPixel: 4)
     }
 }
+#endif

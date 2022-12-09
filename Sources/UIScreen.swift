@@ -6,11 +6,15 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
-import SDL_gpu
+@_implementationOnly import SDL
+@_implementationOnly import SDL_gpu
 import Dispatch
 
-extension SDLWindowFlags: OptionSet {}
+extension SDLWindowFlags {
+    func contains(_ flags: SDLWindowFlags) -> Bool {
+        return (self.rawValue & flags.rawValue) == flags.rawValue
+    }
+}
 
 public extension UIScreen {
     @MainActor
@@ -50,13 +54,10 @@ public final class UIScreen {
         #if os(Android)
         // height/width are determined by the window when fullscreen:
         var size = CGSize.zero
-        let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
+        let options: SDLWindowFlags = SDL_WINDOW_FULLSCREEN
         #else
         var size = CGSize.samsungGalaxyS7.landscape
-        let options: SDLWindowFlags = [
-            SDL_WINDOW_ALLOW_HIGHDPI,
-            //SDL_WINDOW_FULLSCREEN
-        ]
+        let options: SDLWindowFlags = SDL_WINDOW_ALLOW_HIGHDPI
         #endif
 
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
@@ -180,13 +181,10 @@ fileprivate func getAndroidDeviceScale() -> CGFloat {
 }
 #endif
 
-
+@MainActor
 extension UIScreen {
     /// Used in tests only and doesn't actually render anything
-    static func dummyScreen(
-        bounds: CGRect = CGRect(origin: .zero, size: .samsungGalaxyS7),
-        scale: CGFloat
-    ) -> UIScreen {
+    static func dummyScreen(bounds: CGRect, scale: CGFloat) -> UIScreen {
         return UIScreen(
             renderTarget: nil,
             bounds: bounds,
@@ -195,6 +193,7 @@ extension UIScreen {
     }
 }
 
+@MainActor
 private extension CGSize {
     // smartphones:
     static let samsungGalaxyJ5 = CGSize(width: 1280 / 2.0, height: 720 / 2.0)

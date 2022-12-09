@@ -1,4 +1,11 @@
+#if os(Android)
 import JNI
+#elseif canImport(Darwin)
+import class Foundation.Thread
+private var isMainThread: Bool {
+    return Thread.isMainThread
+}
+#endif
 
 public class NotificationCenter {
     public internal(set) static var `default` = NotificationCenter()

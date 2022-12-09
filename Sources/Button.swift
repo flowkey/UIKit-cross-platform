@@ -11,6 +11,7 @@
 
 fileprivate let labelVerticalPadding: CGFloat = 6
 
+@MainActor
 open class Button: UIControl {
     internal (set) public var imageView: UIImageView? {
         didSet {
@@ -18,7 +19,7 @@ open class Button: UIControl {
             if let imageView = imageView { addSubview(imageView) }
         }
     }
-    
+
     internal (set) public var titleLabel: UILabel? {
         didSet {
             oldValue?.removeFromSuperview()
@@ -75,22 +76,24 @@ open class Button: UIControl {
         }
     }
 
-    public let tapGestureRecognizer = UITapGestureRecognizer()
+    public let tapGestureRecognizer: UITapGestureRecognizer
     public var onPress: (@MainActor () -> Void)? {
         get { return tapGestureRecognizer.onPress }
         set { tapGestureRecognizer.onPress = newValue }
     }
 
+    @MainActor
     public override init(frame: CGRect) {
+        tapGestureRecognizer = UITapGestureRecognizer(onPress: nil)
         super.init(frame: frame)
 
-        let titleLabel = UILabel()
+        let titleLabel = UILabel(frame: .zero)
         titleLabel.isHidden = true
         addSubview(titleLabel)
         setTitleColor(.white, for: .normal)
         self.titleLabel = titleLabel
 
-        let imageView = UIImageView()
+        let imageView = UIImageView(frame: .zero)
         imageView.isHidden = true
         imageView.contentMode = .scaleAspectFit
         addSubview(imageView)

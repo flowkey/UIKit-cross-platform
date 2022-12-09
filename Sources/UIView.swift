@@ -1,4 +1,4 @@
-import SDL
+@_implementationOnly import SDL
 
 @MainActor
 open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {

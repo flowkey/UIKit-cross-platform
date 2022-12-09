@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL_gpu
+@_implementationOnly import SDL_gpu
 
 extension ShaderProgram {
     static let mask = try! MaskShaderProgram()

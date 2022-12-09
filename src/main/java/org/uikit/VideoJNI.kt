@@ -53,7 +53,7 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     init {
         val bandwidthMeter = DefaultBandwidthMeter.Builder(parent.context).build()
         val trackSelector = DefaultTrackSelector(parent.context)
-        
+
         exoPlayer = SimpleExoPlayer.Builder(parent.context)
                 .setBandwidthMeter(bandwidthMeter)
                 .setTrackSelector(trackSelector)

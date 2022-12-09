@@ -6,7 +6,7 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-import SDL_ttf
+@_implementationOnly import SDL_ttf
 
 extension FontRenderer {
     // From `TTF_HANDLE_STYLE_BOLD`

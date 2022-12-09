@@ -6,7 +6,7 @@
 //  Copyright © 2017 Geordie Jay. All rights reserved.
 //
 
-import SDL
+@_implementationOnly import SDL
 
 struct SDLError: Error {
     let description: String
@@ -27,30 +27,7 @@ extension SDLDisplayMode {
     }
 }
 
-extension SDLBool: ExpressibleByBooleanLiteral {
+extension SDLBool {
     static let `true` = __SDL_TRUE
     static let `false` = __SDL_FALSE
-
-    public init(booleanLiteral value: Bool) {
-        self = (value ? .true : .false)
-    }
-}
-
-extension SDLRect: Equatable {
-    public func intersects(_ other: SDLRect) -> Bool {
-        var other = other
-        return self.intersects(&other) == .true
-    }
-
-    public func intersection(with other: SDLRect) -> SDLRect {
-        var other = other
-        var result = SDLRect()
-        self.intersection(with: &other, result: &result)
-        return result
-    }
-
-    public static func == (lhs: SDLRect, rhs: SDLRect) -> Bool {
-        var rhs = rhs
-        return lhs.equals(&rhs) == .true
-    }
 }

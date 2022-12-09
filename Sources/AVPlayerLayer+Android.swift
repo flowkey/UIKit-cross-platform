@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  JNIVideo.swift
 //  UIKit
@@ -50,3 +51,4 @@ public class AVPlayerLayer: JNIObject {
         }
     }
 }
+#endif
