@@ -1,5 +1,5 @@
 public protocol UIViewControllerTransitionCoordinator {}
 
-class DefaultTransitionCoordinator: UIViewControllerTransitionCoordinator {
-    static let shared = DefaultTransitionCoordinator()
+class DummyTransitionCoordinator: UIViewControllerTransitionCoordinator {
+    static let shared = DummyTransitionCoordinator()
 }

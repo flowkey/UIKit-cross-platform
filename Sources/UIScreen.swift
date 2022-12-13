@@ -38,7 +38,7 @@ public final class UIScreen {
 
             if let rootViewController = window.rootViewController {
                 print("UIScreen.init", "viewWillTransition to bounds \(bounds.size)")
-                rootViewController.viewWillTransition(to: bounds.size, with: DefaultTransitionCoordinator())
+                rootViewController.viewWillTransition(to: bounds.size, with: DummyTransitionCoordinator())
             } else {
                 print("UIScreen.init", "no window.rootViewController")
             }

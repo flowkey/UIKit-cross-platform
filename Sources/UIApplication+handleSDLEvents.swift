@@ -94,25 +94,30 @@ extension UIApplication {
             case SDL_APP_DIDENTERFOREGROUND:
                 UIApplication.onDidEnterForeground()
             case SDL_WINDOWEVENT:
-                var width: Int32 = 0
-                var height: Int32 = 0
-                let sdlWindowID = UIScreen.main.rawPointer.pointee.context.pointee.windowID
-                let sdlWindow = SDL_GetWindowFromID(sdlWindowID)
-                SDL_GetWindowSize(sdlWindow, &width, &height)
+                let windowEventId = SDL_WindowEventID(UInt32(e.window.event))
+
+                // seems we could also check for SDL_WINDOWEVENT_SIZE_CHANGED instead
+                guard windowEventId == SDL_WINDOWEVENT_RESIZED else {
+                    break
+                }
+
+                let newSize = CGSize(
+                    width: CGFloat(e.window.data1),
+                    height: CGFloat(e.window.data2)
+                )
                 
-                let newSize = CGSize(width: CGFloat(width), height: CGFloat(height))
                 let newRect = CGRect(origin: .zero, size: newSize)
                 UIApplication.shared.keyWindow?.bounds = newRect
                 UIScreen.main.bounds = newRect
                 
                 UIApplication.shared.delegate?.window?.rootViewController?.viewWillTransition(
                     to: newSize,
-                    with: DefaultTransitionCoordinator.shared
+                    with: DummyTransitionCoordinator.shared
                 )
-                
+
                 UIApplication.shared.keyWindow?.setNeedsDisplay()
                 UIApplication.shared.keyWindow?.setNeedsLayout()
-                
+
             default:
                 break
             }
