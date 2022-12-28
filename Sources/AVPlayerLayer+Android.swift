@@ -32,7 +32,8 @@ public class AVPlayerLayer: JNIObject {
     public var frame: CGRect {
         get { return .zero } // FIXME: This would require returning a JavaObject with the various params
         set {
-            let scaledFrame = (newValue * UIScreen.main.scale)
+            guard let scale = UIScreen.main?.scale else { return }
+            let scaledFrame = (newValue * scale)
             try! call(methodName: "setFrame", arguments: [
                 JavaInt(scaledFrame.origin.x.rounded()),
                 JavaInt(scaledFrame.origin.y.rounded()),
