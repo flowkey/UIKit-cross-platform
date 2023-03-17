@@ -9,6 +9,7 @@ add_library(UIKit SHARED
     Sources/$<$<PLATFORM_ID:Android>:AVPlayer+Android.swift>
     Sources/$<$<PLATFORM_ID:Android>:AVPlayerLayer+Android.swift>
     Sources/$<$<PLATFORM_ID:Android>:AVURLAsset+Android.swift>
+    Sources/$<$<PLATFORM_ID:Android>:UserDefaults.swift>
 
     Sources/$<$<PLATFORM_ID:Darwin>:AVPlayerItem+Mac.swift>
     Sources/$<$<PLATFORM_ID:Darwin>:AVPlayerLayer+Mac.swift>
