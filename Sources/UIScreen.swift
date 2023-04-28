@@ -25,36 +25,16 @@ public final class UIScreen {
     // Keep that in mind when using it: i.e. if possible, don't ;)
     internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
 
-    public var bounds: CGRect {
-        didSet {
-            print("UIScreen", "did set bounds to \(bounds)")
-        }
-    }
+    nonisolated public let bounds: CGRect
     nonisolated public let scale: CGFloat
 
     private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
-        print("UIScreen", "init boounds \(bounds)")
         self.rawPointer = renderTarget
         self.bounds = bounds
         self.scale = scale
-
-        if let window = UIApplication.shared?.keyWindow {
-            window.frame = bounds
-
-            if let rootViewController = window.rootViewController {
-                print("UIScreen.init", "viewWillTransition to bounds \(bounds.size)")
-                rootViewController.viewWillTransition(to: bounds.size, with: DummyTransitionCoordinator())
-            } else {
-                print("UIScreen.init", "no window.rootViewController")
-            }
-        } else {
-            print("UIScreen.init", "no shared.keyWindow to set frame for")
-        }
-
     }
 
     convenience init() {
-        print("[SDLActivity] UIScreen.init")
         guard UIScreen.main == nil else {
             // This is a problem because it means something else in the logic is probably incorrect
             // For example, if you are restarting the app, you should ensure the previous app is fully deinited first
@@ -88,8 +68,6 @@ public final class UIScreen {
             // The easiest solution is just to work in 1:1 pixels
             GPU_SetPreInitFlags(GPU_GetPreInitFlags() | GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)
             size = CGSize(width: CGFloat(displayMode.w), height: CGFloat(displayMode.h))
-            print("[SDLActivity] SDLDisplayMode.current.w:", size.width)
-            print("[SDLActivity] SDLDisplayMode.current.h:", size.height)
         }
 
         guard let gpuTarget = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue) else {

@@ -21,7 +21,6 @@ extension UIView {
         }
 
         if needsDisplay {
-            print("sdlDrawAndLayoutTreeIfNeeded needs Display")
             draw()
             needsDisplay = false
         }

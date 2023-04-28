@@ -33,9 +33,7 @@ open class UIApplication {
     }
 
     open weak var keyWindow: UIWindow? {
-        didSet {
-            print("UIApplication did set new key window")
-            keyWindow?.frame = UIScreen.main.bounds }
+        didSet { keyWindow?.frame = UIScreen.main.bounds }
     }
 
     /// Currently not implemented but could be useful for Android
