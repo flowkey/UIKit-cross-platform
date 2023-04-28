@@ -101,10 +101,17 @@ extension UIApplication {
                     break
                 }
 
+                #if os(Android)
+                let newSize = CGSize(
+                    width: CGFloat(e.window.data1) / UIScreen.main.scale,
+                    height: CGFloat(e.window.data2) / UIScreen.main.scale
+                )
+                #else
                 let newSize = CGSize(
                     width: CGFloat(e.window.data1),
                     height: CGFloat(e.window.data2)
                 )
+                #endif
                 
                 let newRect = CGRect(origin: .zero, size: newSize)
                 UIScreen.main.bounds.size = newSize
@@ -114,9 +121,6 @@ extension UIApplication {
                     to: newSize,
                     with: DummyTransitionCoordinator.shared
                 )
-
-                UIApplication.shared.keyWindow?.setNeedsDisplay()
-                UIApplication.shared.keyWindow?.setNeedsLayout()
 
             default:
                 break

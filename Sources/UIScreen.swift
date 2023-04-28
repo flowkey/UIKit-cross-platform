@@ -34,8 +34,8 @@ public final class UIScreen {
 
             GPU_SetVirtualResolution(
                 rawPointer,
-                UInt16((bounds.width).rounded()),
-                UInt16((bounds.height).rounded())
+                UInt16(bounds.width),
+                UInt16(bounds.height)
             )
         }
     }
@@ -65,7 +65,7 @@ public final class UIScreen {
         var size = CGSize.zero
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
         #else
-        var size = CGSize.nexus9.landscape
+        var size = CGSize.samsungGalaxyJ5.landscape
 
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
