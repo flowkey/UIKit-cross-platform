@@ -345,8 +345,6 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         this.onNativeResize(mWidth.toInt(), mHeight.toInt(), sdlFormat, display.refreshRate) // calls Android_SetScreenResolution
         Log.v(TAG, "Window size: " + mWidth + "x" + mHeight)
 
-        nativeDestroyScreen() // SDL_DestroyWindow
-
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
