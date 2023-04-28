@@ -63,9 +63,10 @@ public class UIAlertController: UIViewController {
         )
     }
 
-    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
+    public override func viewWillLayoutSubviews() {
+        let size = view.bounds.size
         self.alertControllerView?.center = CGPoint(x: size.width / 2,y: size.height / 2)
+        super.viewWillLayoutSubviews()
     }
 
     override func makeViewDisappear(animated: Bool, completion: @escaping (Bool) -> Void) {

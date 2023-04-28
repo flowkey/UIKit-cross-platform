@@ -134,7 +134,6 @@
 		5CFBD23E1EF8145C00BC9EBB /* FontRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFBD23D1EF8145C00BC9EBB /* FontRenderer.swift */; };
 		5CFFFA172017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
 		5CFFFA182017457100D989BC /* UIViewTests+subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */; };
-		60898EBF2912E18A000F2189 /* UIViewControllerTransitionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60898EBA2912E18A000F2189 /* UIViewControllerTransitionCoordinator.swift */; };
 		60D6D8A2275E6CEC00892A7E /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D6D8A1275E6CEC00892A7E /* Switch.swift */; };
 		61C9D3B921B052750012018B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3B821B052750012018B /* Notification.swift */; };
 		61C9D3BB21B052B30012018B /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9D3BA21B052B30012018B /* NotificationCenter.swift */; };
@@ -425,7 +424,6 @@
 		5CFFF87F201632FC00D989BC /* SDL-gpu.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "SDL-gpu.xcodeproj"; path = "SDL/SDL-gpu.xcodeproj"; sourceTree = "<group>"; };
 		5CFFF97C20163AF900D989BC /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = SDL/SDL_ttf.xcodeproj; sourceTree = "<group>"; };
 		5CFFFA162017457100D989BC /* UIViewTests+subviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+subviews.swift"; sourceTree = "<group>"; };
-		60898EBA2912E18A000F2189 /* UIViewControllerTransitionCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerTransitionCoordinator.swift; sourceTree = "<group>"; };
 		60D6D8A1275E6CEC00892A7E /* Switch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
 		61C9D3B821B052750012018B /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		61C9D3BA21B052B30012018B /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
@@ -752,7 +750,6 @@
 				5C93AEAD208A4242005BE853 /* UINavigationControllerContainerView.swift */,
 				5C93AEA9208A1541005BE853 /* UINavigationItem.swift */,
 				5C1F06AE1F3210F200EFF087 /* UIViewController.swift */,
-				60898EBA2912E18A000F2189 /* UIViewControllerTransitionCoordinator.swift */,
 				5C93AEAF208A44BC005BE853 /* UIModalPresentationStyle.swift */,
 			);
 			name = UIViewController;
@@ -1174,7 +1171,6 @@
 				5B840BB71F42FCBD0010AC95 /* AnimatableProperty.swift in Sources */,
 				8337A8591F3B143400475F80 /* UIActivityIndicatorView.swift in Sources */,
 				5CCF1C00201A292400AAF598 /* VideoTexture+Mac.swift in Sources */,
-				60898EBF2912E18A000F2189 /* UIViewControllerTransitionCoordinator.swift in Sources */,
 				5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */,
 				5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */,
 				5C915950218B6BE300AFEB7E /* Data+fromRelativePathCrossPlatform.swift in Sources */,
