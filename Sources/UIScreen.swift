@@ -25,7 +25,20 @@ public final class UIScreen {
     // Keep that in mind when using it: i.e. if possible, don't ;)
     internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
 
-    nonisolated public let bounds: CGRect
+    public var bounds: CGRect {
+        didSet {
+            GPU_SetWindowResolution(
+                UInt16(bounds.width),
+                UInt16(bounds.height)
+            )
+
+            GPU_SetVirtualResolution(
+                rawPointer,
+                UInt16((bounds.width).rounded()),
+                UInt16((bounds.height).rounded())
+            )
+        }
+    }
     nonisolated public let scale: CGFloat
 
     private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
@@ -53,6 +66,7 @@ public final class UIScreen {
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
         #else
         var size = CGSize.nexus9.landscape
+
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
             SDL_WINDOW_RESIZABLE,

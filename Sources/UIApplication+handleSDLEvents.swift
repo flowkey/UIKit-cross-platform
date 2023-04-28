@@ -107,8 +107,8 @@ extension UIApplication {
                 )
                 
                 let newRect = CGRect(origin: .zero, size: newSize)
-                
-                UIApplication.shared.keyWindow!.bounds = newRect // sets needsLayout of keyWindow to true
+                UIScreen.main.bounds.size = newSize
+                UIApplication.shared.keyWindow!.frame = newRect // sets needsLayout of keyWindow to true
 
                 UIApplication.shared.delegate!.window!.rootViewController!.viewWillTransition(
                     to: newSize,
