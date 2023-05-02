@@ -334,7 +334,6 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         }
 
         if (mIsSurfaceReady && mWidth.toInt() == width && mHeight.toInt() == height) {
-            Log.v(TAG, "skipping resize because width and height did not change")
             return
         }
 
@@ -349,7 +348,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         onNativeSurfaceChanged()
 
         doNativeInitAndPostFrameCallbackIfNotRunning()
-        
+
         if (mHasFocus) {
             handleSurfaceResume()
         }
