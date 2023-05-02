@@ -28,7 +28,7 @@ public final class UIScreen {
     public var bounds: CGRect {
         didSet {
             let newWidth = UInt16(bounds.width.rounded())
-            let newHeight = UInt16(bounds.width.rounded())
+            let newHeight = UInt16(bounds.height.rounded())
             GPU_SetWindowResolution(newWidth, newHeight)
             GPU_SetVirtualResolution(rawPointer, newWidth, newHeight)
         }
