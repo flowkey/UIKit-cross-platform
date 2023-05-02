@@ -92,7 +92,7 @@ open class CALayer {
             )
 
             guard let inverseTransform = affineTransform().inverted() else {
-//                assertionFailure("You tried to set the frame of a CALayer whose transform cannot be inverted. This is undefined behaviour.")
+                assertionFailure("You tried to set the frame of a CALayer whose transform cannot be inverted. This is undefined behaviour.")
                 return
             }
 
