@@ -100,6 +100,7 @@ extension UIApplication {
                     break
                 }
 
+                // Initialize UIScreen in @1x pixels on Android due to SDL quirks on that platform; retina points on Mac
                 #if os(Android)
                 let newWidth = CGFloat(e.window.data1) / UIScreen.main.scale
                 let newHeight = CGFloat(e.window.data2) / UIScreen.main.scale
