@@ -96,25 +96,22 @@ extension UIApplication {
             case SDL_WINDOWEVENT:
                 let windowEventId = SDL_WindowEventID(UInt32(e.window.event))
 
-                // seems we could also check for SDL_WINDOWEVENT_SIZE_CHANGED instead
                 guard windowEventId == SDL_WINDOWEVENT_RESIZED else {
                     break
                 }
 
                 #if os(Android)
-                let newSize = CGSize(
-                    width: CGFloat(e.window.data1) / UIScreen.main.scale,
-                    height: CGFloat(e.window.data2) / UIScreen.main.scale
-                )
+                let newWidth = CGFloat(e.window.data1) / UIScreen.main.scale
+                let newHeight = CGFloat(e.window.data2) / UIScreen.main.scale
                 #else
-                let newSize = CGSize(
-                    width: CGFloat(e.window.data1),
-                    height: CGFloat(e.window.data2)
-                )
+                let newWidth = CGFloat(e.window.data1)
+                let newHeight = CGFloat(e.window.data2)
                 #endif
+
+                let newSize = CGSize(width: newWidth, height: newHeight)
+                UIScreen.main.bounds.size = newSize
                 
                 let newRect = CGRect(origin: .zero, size: newSize)
-                UIScreen.main.bounds.size = newSize
                 UIApplication.shared.keyWindow!.frame = newRect // sets needsLayout of keyWindow to true
                 UIApplication.shared.delegate?.window?.rootViewController?.view.frame = newRect
 
