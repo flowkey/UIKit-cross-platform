@@ -93,6 +93,29 @@ extension UIApplication {
                 UIApplication.onWillEnterForeground()
             case SDL_APP_DIDENTERFOREGROUND:
                 UIApplication.onDidEnterForeground()
+            case SDL_WINDOWEVENT:
+                let windowEventId = SDL_WindowEventID(UInt32(e.window.event))
+
+                guard windowEventId == SDL_WINDOWEVENT_RESIZED else {
+                    break
+                }
+
+                // Initialize UIScreen in @1x pixels on Android due to SDL quirks on that platform; retina points on Mac
+                #if os(Android)
+                let newWidth = CGFloat(e.window.data1) / UIScreen.main.scale
+                let newHeight = CGFloat(e.window.data2) / UIScreen.main.scale
+                #else
+                let newWidth = CGFloat(e.window.data1)
+                let newHeight = CGFloat(e.window.data2)
+                #endif
+
+                let newSize = CGSize(width: newWidth, height: newHeight)
+                UIScreen.main.bounds.size = newSize
+                
+                let newRect = CGRect(origin: .zero, size: newSize)
+                UIApplication.shared.keyWindow!.frame = newRect // sets needsLayout of keyWindow to true
+                UIApplication.shared.delegate?.window?.rootViewController?.view.frame = newRect
+
             default:
                 break
             }

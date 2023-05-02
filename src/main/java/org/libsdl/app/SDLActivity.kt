@@ -337,8 +337,6 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
             return
         }
 
-        nativeDestroyScreen()
-
         mWidth = width.toFloat()
         mHeight = height.toFloat()
 

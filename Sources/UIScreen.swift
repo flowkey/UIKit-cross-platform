@@ -25,7 +25,14 @@ public final class UIScreen {
     // Keep that in mind when using it: i.e. if possible, don't ;)
     internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
 
-    nonisolated public let bounds: CGRect
+    public var bounds: CGRect {
+        didSet {
+            let newWidth = UInt16(bounds.width.rounded())
+            let newHeight = UInt16(bounds.height.rounded())
+            GPU_SetWindowResolution(newWidth, newHeight)
+            GPU_SetVirtualResolution(rawPointer, newWidth, newHeight)
+        }
+    }
     nonisolated public let scale: CGFloat
 
     private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
@@ -52,10 +59,11 @@ public final class UIScreen {
         var size = CGSize.zero
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
         #else
-        var size = CGSize.samsungGalaxyS7.landscape
+        var size = CGSize.samsungGalaxyJ5.landscape
+
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
-            //SDL_WINDOW_FULLSCREEN
+            SDL_WINDOW_RESIZABLE,
         ]
         #endif
 
