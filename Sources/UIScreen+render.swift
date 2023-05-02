@@ -140,7 +140,7 @@ extension UIScreen {
     }
 }
 
-extension CGRect {
+private extension CGRect {
     func gpuRect(scale: CGFloat) -> GPU_Rect {
         return GPU_Rect(
             x: Float((self.origin.x * scale).rounded() / scale),
