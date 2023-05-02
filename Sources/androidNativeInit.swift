@@ -20,7 +20,6 @@ public func SDL_Android_Init(_ env: UnsafeMutablePointer<JNIEnv>, _ view: JavaOb
 @MainActor
 @_cdecl("Java_org_libsdl_app_SDLActivity_nativeInit")
 public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> JavaInt {
-    print("SDLActivity_nativeInit")
     SDL_Android_Init(env, view)
     SDL_SetMainReady()
 
@@ -41,7 +40,6 @@ public func nativeInit(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) -> J
 @MainActor
 @_cdecl("Java_org_libsdl_app_SDLActivity_nativeDestroyScreen")
 public func nativeDestroyScreen(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
-    print("SDLActivity_nativeDestroyScreen")
     UIApplication.onWillEnterBackground()
     UIApplication.onDidEnterBackground()
 }
