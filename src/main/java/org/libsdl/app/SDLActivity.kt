@@ -237,7 +237,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     @Suppress("unused")
     fun inputGetInputDeviceIds(sources: Int): IntArray {
         return InputDevice.getDeviceIds().fold(intArrayOf(0)) { result: IntArray, id: Int ->
-            val device = InputDevice.getDevice(id)
+            val device = InputDevice.getDevice(id) ?: return result
             return if (device.sources and sources != 0) (result + device.id) else result
         }
     }
