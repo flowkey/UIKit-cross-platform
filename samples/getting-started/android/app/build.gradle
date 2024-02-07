@@ -23,10 +23,16 @@ android {
             include "arm64-v8a"
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+    kotlinOptions {
+        jvmTarget=17
+    }
+
+    namespace 'com.flowkey.uikit.example' 
 }
 
 task buildSwiftArm64(type: Exec) {
