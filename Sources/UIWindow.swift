@@ -19,7 +19,6 @@ public class UIWindow: UIView {
     }
 
     open func makeKeyAndVisible() {
-        self.safeAreaInsets = UIWindow.getSafeAreaInsets()
         UIApplication.shared?.keyWindow = self
 
         if let viewController = rootViewController {

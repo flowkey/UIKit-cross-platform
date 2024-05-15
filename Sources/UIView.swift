@@ -43,7 +43,9 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         }
     }
 
-    open internal(set) var safeAreaInsets: UIEdgeInsets = .zero
+    public var safeAreaInsets: UIEdgeInsets {
+        return UIWindow.getSafeAreaInsets()
+    }
 
     open var mask: UIView? {
         didSet {
