@@ -28,6 +28,10 @@ open class UIGestureRecognizer {
     public weak var delegate: UIGestureRecognizerDelegate?
     internal weak var trackedTouch: UITouch?
 
+    open func location(in view: UIView?) -> CGPoint {
+        return trackedTouch?.location(in: view) ?? .zero
+    }
+
     public var state: UIGestureRecognizerState = .possible {
         didSet {
             if state == oldValue { return }
