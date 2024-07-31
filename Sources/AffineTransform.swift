@@ -133,6 +133,10 @@ extension AffineTransform {
         let α = angle * .pi / 180
         self.init(rotationByRadians: α)
     }
+
+    public init(rotationAngle: CGFloat) {
+        self.init(rotationByRadians: rotationAngle)
+    }
 }
 
 extension AffineTransform {
