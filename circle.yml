@@ -1,8 +1,13 @@
+version: "2.1"
+orbs:
+    macos: circleci/macos@2.5.2
+
 jobs:
     build:
         macos:
-            xcode: "15.1.0"
+            xcode: "15.4.0"
         steps:
+            - macos/install-rosetta
             - checkout
             - run: git submodule update --recursive --init
 
