@@ -1,7 +1,7 @@
 jobs:
     build:
         macos:
-            xcode: "15.1.0"
+            xcode: "15.4.0"
         steps:
             - checkout
             - run: git submodule update --recursive --init
