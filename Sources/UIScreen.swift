@@ -59,11 +59,11 @@ public final class UIScreen {
         var size = CGSize.zero
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
         #else
-        var size = CGSize.samsungGalaxyJ5.landscape
+        var size = CGSize.samsungGalaxyTabA_T380.landscape
 
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
-            SDL_WINDOW_RESIZABLE,
+        //    SDL_WINDOW_RESIZABLE,
         ]
         #endif
 
@@ -215,7 +215,7 @@ private extension CGSize {
     static let huaweiM3lite = CGSize(width: 1920 / 2.0, height: 1200 / 2.0)
     static let samsungGalaxyTabS_T800 = CGSize(width: 2560 / 2.0, height: 1600 / 2.0)
     static let samsungGalaxyTab10 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
-    static let samsungGalaxyTabA_T380 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
+    static let samsungGalaxyTabA_T380 = CGSize(width: 1280 / 1.3, height: 800 / 1.3)
     static let samsungGalaxyTabA_T580 = CGSize(width: 1920 / 1.0, height: 1200 / 1.0)
 
     // change orientation if needed
