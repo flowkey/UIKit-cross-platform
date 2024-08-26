@@ -247,7 +247,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         guard let otherView = view, otherView != self else { return point }
 
         // Fast paths:
-        if otherView.superview == self {
+        if self == otherView.superview {
             return convertToSubview(point, subview: otherView)
         } else if let superview = self.superview, superview == otherView {
             return convertToSuperview(point)
@@ -281,7 +281,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         var result: CGPoint = .zero
         var view = self
         while let superview = view.superview {
-            let translatedFrameOrigin = view.convert(view.bounds.origin, to: superview)
+            let translatedFrameOrigin = view.convert(.zero, to: superview)
             let translatedFrameOriginOffsetBySuperviewBounds = translatedFrameOrigin - superview.bounds.origin
 
             // This is the important step:
