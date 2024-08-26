@@ -258,7 +258,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         let otherAbsoluteOrigin = otherView.absoluteOrigin()
 
         let originDifference = (otherAbsoluteOrigin - selfAbsoluteOrigin)
-        return point - originDifference
+        return (point - originDifference).applying(view?.superview?.transform.inverted() ?? .identity)
     }
 
     private func convertToSuperview(_ point: CGPoint) -> CGPoint {
