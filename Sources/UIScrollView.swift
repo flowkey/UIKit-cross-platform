@@ -54,6 +54,7 @@ open class UIScrollView: UIView {
         return (layer._presentation ?? layer).bounds.origin
     }
 
+    /// prevent `newContentOffset` being out of bounds
     func getBoundsCheckedContentOffset(_ newContentOffset: CGPoint) -> CGPoint {
         let contentHeight = contentSize.height
         let contentWidth = contentSize.width
