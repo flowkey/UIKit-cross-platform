@@ -54,10 +54,10 @@ open class UIScrollView: UIView {
         return (layer._presentation ?? layer).bounds.origin
     }
 
-    /// does some min/max checks to prevent newOffset being out of bounds
     func getBoundsCheckedContentOffset(_ newContentOffset: CGPoint) -> CGPoint {
-        let contentHeight = max(contentSize.height, bounds.height)
-        let contentWidth = max(contentSize.width, bounds.width)
+        let contentHeight = contentSize.height
+        let contentWidth = contentSize.width
+
         return CGPoint(
             x: min(max(newContentOffset.x, -contentInset.left), (contentWidth + contentInset.right) - bounds.width),
             y: min(max(newContentOffset.y, -contentInset.top), (contentHeight + contentInset.bottom) - bounds.height)
