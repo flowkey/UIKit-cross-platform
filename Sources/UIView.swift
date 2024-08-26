@@ -282,13 +282,12 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         var view = self
         while let superview = view.superview {
             let translatedFrameOrigin = view.convert(.zero, to: superview)
-            let translatedFrameOriginOffsetBySuperviewBounds = translatedFrameOrigin - superview.bounds.origin
 
             // This is the important step:
             // We start deep in the hierarchy and at every level multiply the total result by the parent transform
             // Without this, we would be ignoring the fact that a transform in (e.g.) the UIWindow affects ALL
             // its subviews and their subviews, rather than just one level at a time.
-            result = (result + translatedFrameOriginOffsetBySuperviewBounds).applying(superview.transform)
+            result = (result + translatedFrameOrigin).applying(superview.transform)
             view = superview
         }
 
