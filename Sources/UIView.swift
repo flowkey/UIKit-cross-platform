@@ -242,9 +242,9 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     /// Converts the given point from `self`'s bounds to the bounds of another UIView.
     /// If the other view is `nil` or is not in the same view hierarchy as `self`,
     /// the original point will be return unchanged.
-    public func convert(_ point: CGPoint, to view: UIView?) -> CGPoint {
+    public func convert(_ point: CGPoint, to otherView: UIView?) -> CGPoint {
         // Fastest path is doing no work :)
-        guard let otherView = view, otherView != self else { return point }
+        guard let otherView, otherView != self else { return point }
 
         // Fast paths:
         if self == otherView.superview {
