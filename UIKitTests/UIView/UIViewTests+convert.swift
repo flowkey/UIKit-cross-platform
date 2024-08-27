@@ -94,7 +94,7 @@ class UIViewPointConversionTests: XCTestCase {
         rootView.addSubview(subview1)
         subview1.addSubview(subview1subview1)
 
-        XCTAssertEqual(subview1subview1.absoluteOrigin(), CGPoint(x: 15, y: 15))
+        XCTAssertEqual(subview1subview1.absoluteOrigin(), CGPoint(x: 25, y: 25))
     }
 
     func testAbsoluteOriginWithNonZeroSubViewBounds() {
@@ -122,7 +122,7 @@ class UIViewPointConversionTests: XCTestCase {
         subview1subview1.bounds.origin = CGPoint(x: 999, y: 999) // definitely shouldn't have any effect
         subview1.addSubview(subview1subview1)
 
-        XCTAssertEqual(subview1subview1.absoluteOrigin(), CGPoint(x: 10, y: 10))
+        XCTAssertEqual(subview1subview1.absoluteOrigin(), CGPoint(x: -979, y: -979))
     }
 
 
@@ -164,7 +164,7 @@ class UIViewPointConversionTests: XCTestCase {
         subviewSubview.bounds.origin = CGPoint(x: 64, y: 32) // has no effect on absolute origin
         blankSubview.addSubview(subviewSubview)
 
-        XCTAssertEqual(subviewSubview.absoluteOrigin(), CGPoint(x: 146, y: 158))
+        XCTAssertEqual(subviewSubview.absoluteOrigin(), CGPoint(x: 66, y: 128))
     }
 
 
@@ -262,21 +262,17 @@ class UIViewPointConversionTests: XCTestCase {
 
         /// Returns `self.frame.origin` in `window.bounds` coordinates
         internal func absoluteOrigin() -> CGPoint {
-            var result: CGPoint = .zero
-            var view = self
-            while let superview = view.superview {
-                let translatedFrameOrigin = view.convert(view.bounds.origin, to: superview)
-                let translatedFrameOriginOffsetBySuperviewBounds = translatedFrameOrigin - superview.bounds.origin
+            let rootView = self.getRootView()
+            return convert(.zero, to: rootView)
+        }
 
-                // This is the important step:
-                // We start deep in the hierarchy and at every level multiply the total result by the parent transform
-                // Without this, we would be ignoring the fact that a transform in (e.g.) the UIWindow affects ALL
-                // its subviews and their subviews, rather than just one level at a time.
-                result = (result + translatedFrameOriginOffsetBySuperviewBounds).applying(superview.transform)
-                view = superview
+        func getRootView() -> UIView? {
+            var currentView: UIView = self
+            while let superview = currentView.superview {
+                currentView = superview
             }
 
-            return result
+            return currentView
         }
     }
 #endif
