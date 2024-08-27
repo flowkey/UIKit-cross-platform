@@ -288,6 +288,17 @@ struct DecomposedTransform {
     var rotation: Quaternion
 }
 
+#if os(Android)
+private func sqrt(_ value: Float) -> Float {
+    return Float(sqrt(Double(value)))
+}
+private func acos(_ value: Float) -> Float {
+    return Float(acos(Double(value)))
+}
+private func sin(_ value: Float) -> Float {
+    return Float(sin(Double(value)))
+}
+#endif
 
 func decompose(transform: CATransform3D) -> DecomposedTransform {
     // Extract scale
@@ -324,21 +335,18 @@ func decompose(transform: CATransform3D) -> DecomposedTransform {
 
 
 func interpolate(start: DecomposedTransform, end: DecomposedTransform, progress: Float) -> DecomposedTransform {
-    // Interpolate scale
     let interpolatedScale = (
         x: start.scale.x + (end.scale.x - start.scale.x) * progress,
         y: start.scale.y + (end.scale.y - start.scale.y) * progress,
         z: start.scale.z + (end.scale.z - start.scale.z) * progress
     )
 
-    // Interpolate translation
     let interpolatedTranslation = (
         x: start.translation.x + (end.translation.x - start.translation.x) * progress,
         y: start.translation.y + (end.translation.y - start.translation.y) * progress,
         z: start.translation.z + (end.translation.z - start.translation.z) * progress
     )
 
-    // Interpolate rotation using SLERP
     let interpolatedRotation = Quaternion.slerp(
         from: start.rotation,
         to: end.rotation,
@@ -351,7 +359,6 @@ func interpolate(start: DecomposedTransform, end: DecomposedTransform, progress:
         rotation: interpolatedRotation
     )
 }
-
 
 func recompose(transform: DecomposedTransform) -> CATransform3D {
     // Create scale matrix
