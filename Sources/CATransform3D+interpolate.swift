@@ -42,9 +42,9 @@ private struct DecomposedTransform {
 
 private func decompose(transform: CATransform3D) -> DecomposedTransform {
     // Extract scale
-    let scaleX = sqrt(transform.m11 * transform.m11 + transform.m12 * transform.m12 + transform.m13 * transform.m13)
-    let scaleY = sqrt(transform.m21 * transform.m21 + transform.m22 * transform.m22 + transform.m23 * transform.m23)
-    let scaleZ = sqrt(transform.m31 * transform.m31 + transform.m32 * transform.m32 + transform.m33 * transform.m33)
+    let scaleX = sqrtf(transform.m11 * transform.m11 + transform.m12 * transform.m12 + transform.m13 * transform.m13)
+    let scaleY = sqrtf(transform.m21 * transform.m21 + transform.m22 * transform.m22 + transform.m23 * transform.m23)
+    let scaleZ = sqrtf(transform.m31 * transform.m31 + transform.m32 * transform.m32 + transform.m33 * transform.m33)
 
     // Normalize the rotation matrix
     var rotationMatrix = CATransform3DIdentity
@@ -99,25 +99,25 @@ private struct Quaternion {
 
         let trace = m11 + m22 + m33
         if trace > 0 {
-            let s = sqrt(trace + 1.0) * 2
+            let s = sqrtf(trace + 1.0) * 2
             self.w = 0.25 * s
             self.x = (m32 - m23) / s
             self.y = (m13 - m31) / s
             self.z = (m21 - m12) / s
         } else if (m11 > m22) && (m11 > m33) {
-            let s = sqrt(1.0 + m11 - m22 - m33) * 2
+            let s = sqrtf(1.0 + m11 - m22 - m33) * 2
             self.w = (m32 - m23) / s
             self.x = 0.25 * s
             self.y = (m12 + m21) / s
             self.z = (m13 + m31) / s
         } else if m22 > m33 {
-            let s = sqrt(1.0 + m22 - m11 - m33) * 2
+            let s = sqrtf(1.0 + m22 - m11 - m33) * 2
             self.w = (m13 - m31) / s
             self.x = (m12 + m21) / s
             self.y = 0.25 * s
             self.z = (m23 + m32) / s
         } else {
-            let s = sqrt(1.0 + m33 - m11 - m22) * 2
+            let s = sqrtf(1.0 + m33 - m11 - m22) * 2
             self.w = (m21 - m12) / s
             self.x = (m13 + m31) / s
             self.y = (m23 + m32) / s
@@ -177,10 +177,10 @@ private struct Quaternion {
         }
 
         // Perform the slerp interpolation
-        let angle = acos(cosTheta)
-        let sinTheta = sqrt(1.0 - cosTheta * cosTheta)
-        let a = sin((1.0 - progress) * angle) / sinTheta
-        let b = sin(progress * angle) / sinTheta
+        let angle = acosf(cosTheta)
+        let sinTheta = sqrtf(1.0 - cosTheta * cosTheta)
+        let a = sinf((1.0 - progress) * angle) / sinTheta
+        let b = sinf(progress * angle) / sinTheta
 
         return Quaternion(
             x: a * q1.x + b * q2.x,
@@ -191,7 +191,7 @@ private struct Quaternion {
     }
 
     static func normalize(_ q: Quaternion) -> Quaternion {
-        let magnitude = sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w)
+        let magnitude = sqrtf(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w)
         return Quaternion(x: q.x / magnitude, y: q.y / magnitude, z: q.z / magnitude, w: q.w / magnitude)
     }
 }
@@ -223,15 +223,3 @@ private extension DecomposedTransform {
         return resultTransform
     }
 }
-
-#if os(Android)
-private func sqrt(_ value: Float) -> Float {
-    return Float(sqrt(Double(value)))
-}
-private func acos(_ value: Float) -> Float {
-    return Float(acos(Double(value)))
-}
-private func sin(_ value: Float) -> Float {
-    return Float(sin(Double(value)))
-}
-#endif
