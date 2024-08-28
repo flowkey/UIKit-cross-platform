@@ -204,13 +204,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5BF8AFE92C7E95C200065D8E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5CFFF97C20163AF900D989BC /* SDL_ttf.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5B30D3C32C5C194C000ED8D8;
-			remoteInfo = lolTests;
-		};
 		5C2714DF1F2B9FB90026BBA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
@@ -788,7 +781,6 @@
 			isa = PBXGroup;
 			children = (
 				5CFFF98120163AF900D989BC /* SDL_ttf.framework */,
-				5BF8AFEA2C7E95C200065D8E /* lolTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1014,13 +1006,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		5BF8AFEA2C7E95C200065D8E /* lolTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = lolTests.xctest;
-			remoteRef = 5BF8AFE92C7E95C200065D8E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		5CFFF8632016328200D989BC /* SDL2.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
