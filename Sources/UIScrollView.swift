@@ -127,11 +127,7 @@ open class UIScrollView: UIView {
     }
 
     open var contentInset: UIEdgeInsets = .zero
-    open var contentSize: CGSize = .zero {
-        didSet {
-            print("did")
-        }
-    }
+    open var contentSize: CGSize = .zero
 
 
     // MARK: Scroll Indicators
