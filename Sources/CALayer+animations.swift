@@ -104,7 +104,6 @@ extension CALayer {
         case .transform:
             guard let startTransform = animation.fromValue as? CATransform3D else { return }
             let endTransform = animation.toValue as? CATransform3D ?? self.transform
-
             let interpolatedTransform = interpolate(
                 startTransform: startTransform,
                 endTransform: endTransform,
@@ -146,4 +145,3 @@ private extension CABasicAnimation {
         return animationGroup != nil
     }
 }
-

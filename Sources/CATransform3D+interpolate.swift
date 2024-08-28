@@ -3,7 +3,6 @@ func interpolate(
     endTransform: CATransform3D,
     progress: Float
 ) -> CATransform3D {
-
     let start = decompose(transform: startTransform)
     let end = decompose(transform: endTransform)
 
