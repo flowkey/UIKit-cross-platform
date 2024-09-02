@@ -255,11 +255,8 @@ class UIViewPointConversionTests: XCTestCase {
             )
         )
 
-        // NOT RELEVANT, BECAUSE WE'RE LOOKING IN *WINDOW'S* COORDINATES
-        window.bounds.origin = CGPoint(
-            x: Int.random(in: 0 ..< 5),
-            y: Int.random(in:  0 ..< 5)
-        )
+        // not relevant, becase we're looking in *window's* coordinates
+        window.bounds.origin = CGPoint(x: Int.random(in: 0 ..< 5), y: Int.random(in:  0 ..< 5))
 
         let subview = UIView(frame: CGRect(x: 80, y: 80, width: 100, height: 100))
         subview.bounds.origin = .init(x: 15, y: 15)
