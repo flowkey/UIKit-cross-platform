@@ -34,6 +34,7 @@
 		5BEEF829202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */; };
 		5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */; };
 		5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */; };
+		5BF8AFE32C7E95C200065D8E /* CATransform3D+interpolate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8AFE22C7E95C200065D8E /* CATransform3D+interpolate.swift */; };
 		5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F06AE1F3210F200EFF087 /* UIViewController.swift */; };
 		5C27E7B81ECB2F6500F5020D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7AE1ECB2F6500F5020D /* UIKit.framework */; };
 		5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D21ECB2F9100F5020D /* Cocoa.framework */; };
@@ -324,6 +325,7 @@
 		5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewTests+didMoveToSuperView.swift"; sourceTree = "<group>"; };
 		5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CABasicAnimationPrototype.swift; path = Sources/CABasicAnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
 		5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimationPrototype.swift; path = Sources/CASpringAnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
+		5BF8AFE22C7E95C200065D8E /* CATransform3D+interpolate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CATransform3D+interpolate.swift"; sourceTree = "<group>"; };
 		5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNI.xcodeproj; path = "swift-jni/JNI.xcodeproj"; sourceTree = "<group>"; };
 		5C1F06AE1F3210F200EFF087 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewController.swift; path = Sources/UIViewController.swift; sourceTree = SOURCE_ROOT; };
 		5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SDL+JNIExtensions.swift"; sourceTree = "<group>"; };
@@ -547,6 +549,7 @@
 				5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */,
 				5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */,
 				5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */,
+				5BF8AFE22C7E95C200065D8E /* CATransform3D+interpolate.swift */,
 				5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */,
 				5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */,
 				5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */,
@@ -1201,6 +1204,7 @@
 				5C4CD51120615FCF00217B4C /* UIApplication+handleSDLEvents.swift in Sources */,
 				5C27E80F1ECB301900F5020D /* SDL2-Shims.swift in Sources */,
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
+				5BF8AFE32C7E95C200065D8E /* CATransform3D+interpolate.swift in Sources */,
 				5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */,
 				5C93AE7C2088F7E7005BE853 /* UINavigationController.swift in Sources */,
 				5CE5C5731EDD7C3400680154 /* UIWindow+TouchHandling.swift in Sources */,
