@@ -104,7 +104,12 @@ extension CALayer {
         case .transform:
             guard let startTransform = animation.fromValue as? CATransform3D else { return }
             let endTransform = animation.toValue as? CATransform3D ?? self.transform
-            presentation.transform = startTransform + ((endTransform - startTransform) * Float(progress))
+            let interpolatedTransform = interpolate(
+                startTransform: startTransform,
+                endTransform: endTransform,
+                progress: Float(progress)
+            )
+            presentation.transform = interpolatedTransform
 
         case .unknown: break
         }

@@ -27,6 +27,7 @@ add_library(UIKit SHARED
     Sources/CALayer+ContentsGravity.swift
     Sources/CALayer+SDL.swift
     Sources/CALayer+animations.swift
+    Sources/CATransform3D+interpolate.swift
     Sources/CALayer.swift
     Sources/CAMediaTimingFunction.swift
     Sources/CASpringAnimation.swift
