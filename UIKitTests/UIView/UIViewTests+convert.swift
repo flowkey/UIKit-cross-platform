@@ -244,7 +244,7 @@ class UIViewPointConversionTests: XCTestCase {
         XCTAssertEqual(convertedPoint1, CGPoint(x: 50, y: 50))
     }
 
-    func testConversionWithMultipleSubviewsBoundsOriginAndTransforms() {
+    func testConversionWithMultipleSubviewsBounds() {
         let window = UIWindow(
             // frame.origin does not affect the calculations
             frame: CGRect(
@@ -261,26 +261,20 @@ class UIViewPointConversionTests: XCTestCase {
             y: Int.random(in:  0 ..< 5)
         )
 
-        // ALSO NOT RELEVANT!
-      //  window.transform = .init(scaleX: CGFloat(Int.random(in: 0 ..< 5)), y: CGFloat(Int.random(in: 0 ..< 5)))
-
         let subview = UIView(frame: CGRect(x: 80, y: 80, width: 100, height: 100))
         subview.bounds.origin = .init(x: 15, y: 15)
-     //   subview.transform = .init(scaleX: 10, y: 10)
         window.addSubview(subview)
 
         let subview2 = UIView(frame: CGRect(x: 70, y: 70, width: 100, height: 100))
         subview2.bounds.origin = .init(x: 25, y: 25)
-    //  subview2.transform = .init(scaleX: 1.3, y: 1.3)
         subview.addSubview(subview2)
 
         let subview3 = UIView(frame: CGRect(x: 50, y: 50, width: 100, height: 100))
         subview3.bounds.origin = .init(x: 64, y: 64)
-     //   subview3.transform = .init(scaleX: 0.33, y: 0.33)
         subview2.addSubview(subview3)
 
-        let convertedPoint = subview3.convert(CGPoint(x: 20, y: 20), to: window)
-        XCTAssertEqual(convertedPoint, CGPoint(x: 116, y: 116))
+        let convertedPoint = subview3.convert(CGPoint(x: 20, y: 10), to: window)
+        XCTAssertEqual(convertedPoint, CGPoint(x: 116, y: 106))
     }
 }
 
