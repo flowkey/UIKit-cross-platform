@@ -24,10 +24,7 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         let initialPositionInTargetView = view?.convert(initialTouchPoint, from: trackedTouch.window)
             ?? initialTouchPoint
 
-        return (positionInTargetView - initialPositionInTargetView)
-            // if positionInTargetView and initialTouchPoint would be converted correctly
-            // this wouldnt be neccesary. TODO: fix slow path in UIView.convert
-            .applying(view?.superview?.transform.inverted() ?? .identity)
+        return positionInTargetView - initialPositionInTargetView
     }
 
     open func setTranslation(_ translation: CGPoint, in view: UIView?) {
