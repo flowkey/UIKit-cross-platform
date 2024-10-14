@@ -59,7 +59,7 @@ public final class UIScreen {
         var size = CGSize.zero
         let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
         #else
-        var size = CGSize.samsungGalaxyTab10.portrait
+        var size = CGSize.samsungGalaxyJ5.landscape
 
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,

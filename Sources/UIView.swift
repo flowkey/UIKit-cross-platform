@@ -258,6 +258,8 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         let otherAbsoluteOrigin = otherView.absoluteOrigin()
 
         let originDifference = (otherAbsoluteOrigin - selfAbsoluteOrigin)
+
+        // TODO: This is a hack. We don't properly incorporate all transforms up the tree.
         return (point - originDifference).applying(otherView.superview?.transform.inverted() ?? .identity)
     }
 
