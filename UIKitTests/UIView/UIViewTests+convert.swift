@@ -258,8 +258,12 @@ class UIViewPointConversionTests: XCTestCase {
         // not relevant, becase we're looking in *window's* coordinates
         window.bounds.origin = CGPoint(x: Int.random(in: 0 ..< 5), y: Int.random(in:  0 ..< 5))
 
+        // TODO: should not be relevant, but unfortunately it is in our UIKit
+        // window.transform = .init(scaleX: 0.5, y: 0.5)
+
         let subview = UIView(frame: CGRect(x: 80, y: 80, width: 100, height: 100))
         subview.bounds.origin = .init(x: 15, y: 15)
+        // subview.transform = .init(scaleX: 10, y: 10) // TODO: wrong behaviour in our UIKIt
         window.addSubview(subview)
 
         let subview2 = UIView(frame: CGRect(x: 70, y: 70, width: 100, height: 100))
@@ -268,6 +272,7 @@ class UIViewPointConversionTests: XCTestCase {
 
         let subview3 = UIView(frame: CGRect(x: 50, y: 50, width: 100, height: 100))
         subview3.bounds.origin = .init(x: 64, y: 64)
+        // subview3.transform = .init(scaleX: 0.5, y: 0.5) // TODO: wrong behaviour in our UIKIt
         subview2.addSubview(subview3)
 
         let convertedPoint = subview3.convert(CGPoint(x: 20, y: 10), to: window)
