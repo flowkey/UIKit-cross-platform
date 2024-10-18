@@ -140,7 +140,6 @@ public final class UIScreen {
 
         let existingWindowID = gpuContext.pointee.windowID
         let existingWindow = SDL_GetWindowFromID(existingWindowID)
-
         SDL_DestroyWindow(existingWindow)
     }
 
@@ -190,9 +189,9 @@ import JNI
 fileprivate func getAndroidScreenDimension() -> (width: CGFloat, height: CGFloat, scale: CGFloat) {
     guard
         let dimension = try? jni.call(
-            "getDeviceDimension",
+            "getScreenDimension",
             on: getSDLView(),
-            returningObjectType: "org.libsdl.app.DeviceDimension"
+            returningObjectType: "org.libsdl.app.ScreenDimension"
         ),
         let width: JavaFloat = try? jni.GetField("width", from: dimension),
         let height: JavaFloat = try? jni.GetField("height", from: dimension),
