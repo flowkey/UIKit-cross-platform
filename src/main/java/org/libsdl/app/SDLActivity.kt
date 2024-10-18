@@ -98,8 +98,12 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         this.addView(mSurface)
     }
 
+    private fun getDeviceDensity(): Float = context.resources.displayMetrics.density
+
     @Suppress("unused") // accessed via JNI
-    fun getDeviceDensity(): Float = context.resources.displayMetrics.density
+    fun getScreenDimension(): ScreenDimension {
+        return ScreenDimension(mWidth, mHeight, getDeviceDensity())
+    }
 
     @Suppress("unused")
     fun getSafeAreaInsets(): RectF {
@@ -375,3 +379,5 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         nativeSurface.release()
     }
 }
+
+data class ScreenDimension(val width: Float, val height: Float, val scale: Float)
