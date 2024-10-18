@@ -99,11 +99,8 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     }
 
     @Suppress("unused") // accessed via JNI
-    fun getDeviceDensity(): Float = context.resources.displayMetrics.density
-
-    @Suppress("unused") // accessed via JNI
     fun getScreenDimension(): DeviceDimension {
-        return DeviceDimension(mWidth, mHeight, getDeviceDensity())
+        return DeviceDimension(mWidth, mHeight, context.resources.displayMetrics.density)
     }
 
     @Suppress("unused")

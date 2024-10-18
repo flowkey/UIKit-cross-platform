@@ -96,7 +96,6 @@ public final class UIScreen {
         GPU_SetVirtualResolution(gpuTarget, UInt16(size.width / scale), UInt16(size.height / scale))
         size.width /= scale
         size.height /= scale
-
         #else
         // Mac:
         let scale = CGFloat(gpuTarget.pointee.base_h) / CGFloat(gpuTarget.pointee.h)
