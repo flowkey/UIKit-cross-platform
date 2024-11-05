@@ -6,7 +6,9 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+#if os(Android)
 import JNI
+#endif
 
 @_silgen_name("Android_JNI_GetActivityClass")
 public func getSDLViewClass() -> JavaClass

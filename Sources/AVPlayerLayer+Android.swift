@@ -6,7 +6,9 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+#if os(Android)
 import JNI
+#endif
 
 public enum AVLayerVideoGravity: JavaInt {
     case resizeAspect = 0 // RESIZE_MODE_FIT

@@ -10,7 +10,9 @@
 import class Foundation.Bundle
 public typealias Bundle = Foundation.Bundle
 #elseif os(Android)
+#if os(Android)
 import JNI
+#endif
 
 private func listFiles(inDirectory subpath: String) throws -> [String] {
     let context = try jni.call("getContext", on: getSDLView(), returningObjectType: "android.content.Context")

@@ -6,7 +6,9 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+#if os(Android)
 import JNI
+#endif
 
 public class AVPlayer: JNIObject {
     public override static var className: String { "org.uikit.AVPlayer" }

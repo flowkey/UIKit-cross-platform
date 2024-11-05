@@ -7,7 +7,9 @@
 //
 
 import SDL
+#if os(Android)
 import JNI
+#endif
 
 public struct UIKitAndroid {
     public static var UIApplicationDelegateClass: UIApplicationDelegate.Type?
