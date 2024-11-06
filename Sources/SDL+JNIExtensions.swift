@@ -27,7 +27,7 @@ struct JavaSDLView: JavaParameterConvertible {
     static let asJNIParameterString = "L\(javaClassname);"
 
     func toJavaParameter() -> JavaParameter {
-        return JavaParameter(object: self.object)
+        return JavaParameter(l: self.object)
     }
 
     static func fromStaticField(_ fieldID: JavaFieldID, of javaClass: JavaClass) throws -> JavaSDLView {

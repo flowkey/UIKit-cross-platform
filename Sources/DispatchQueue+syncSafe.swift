@@ -1,5 +1,7 @@
 import Dispatch
+#if os(Android)
 import JNI
+#endif
 
 public extension DispatchQueue {
     private func unsafelyRunOnMainActor(_ callback: @escaping () -> Void) {

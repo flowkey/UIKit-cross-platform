@@ -9,7 +9,7 @@
 import SDL
 
 #if os(Android)
-import Glibc
+import Bionic
 #else
 import Darwin.C.stdio
 #endif

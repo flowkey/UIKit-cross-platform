@@ -1,4 +1,11 @@
-import JNI
+#if os(Android)
+import var JNI.isMainThread
+#else
+import Foundation
+var isMainThread: Bool {
+    return Thread.isMainThread
+}
+#endif
 
 public class NotificationCenter {
     public internal(set) static var `default` = NotificationCenter()

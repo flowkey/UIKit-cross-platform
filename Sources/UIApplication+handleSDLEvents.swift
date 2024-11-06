@@ -7,7 +7,6 @@
 //
 
 import SDL
-import JNI
 
 extension UIApplication {
     @MainActor
