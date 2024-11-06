@@ -8,10 +8,6 @@
 
 import SDL
 
-#if os(Android)
-import JNI
-#endif
-
 extension UIApplication {
     @MainActor
     func handleEventsIfNeeded() {
@@ -254,9 +250,7 @@ extension UITouch: CustomStringConvertible {
 }
 
 #if os(Android)
-#if os(Android)
 import JNI
-#endif
 
 @_cdecl("Java_org_libsdl_app_SDLActivity_onNativeTouchUIKit")
 public func onNativeTouch(

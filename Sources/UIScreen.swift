@@ -184,9 +184,7 @@ extension UIScreen {
 #endif
 
 #if os(Android)
-#if os(Android)
 import JNI
-#endif
 
 fileprivate func getAndroidScreenDimension() -> (width: CGFloat, height: CGFloat, scale: CGFloat) {
     guard

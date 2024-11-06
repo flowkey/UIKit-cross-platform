@@ -78,9 +78,7 @@ public enum UIStatusBarStyle {
 
 
 #if os(Android)
-#if os(Android)
 import JNI
-#endif
 
 private let maxFrameRenderTimeInSeconds = 1.0 / 60.0
 
