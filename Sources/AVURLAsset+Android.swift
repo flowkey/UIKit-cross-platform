@@ -6,9 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-#if os(Android)
 import JNI
-#endif
 
 public class AVPlayerItem {
     public var asset: AVURLAsset
