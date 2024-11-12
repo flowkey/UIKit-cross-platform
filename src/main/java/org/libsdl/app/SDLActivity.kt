@@ -11,6 +11,7 @@ import android.view.KeyEvent.*
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
+import android.os.SystemClock
 import main.java.org.libsdl.app.*
 
 private const val TAG = "SDLActivity"
@@ -41,6 +42,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     private var mSurface: SurfaceView
     private var mIsSurfaceReady = false
     override var mHasFocus = false
+    override var sessionStartTime: Long = SystemClock.uptimeMillis()
 
     private external fun nativeProcessEventsAndRender()
     private external fun nativeInit(): Int
@@ -92,8 +94,12 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         this.addView(mSurface)
     }
 
+    private fun getDeviceDensity(): Float = context.resources.displayMetrics.density
+
     @Suppress("unused") // accessed via JNI
-    fun getDeviceDensity(): Float = context.resources.displayMetrics.density
+    fun getScreenDimension(): ScreenDimension {
+        return ScreenDimension(mWidth, mHeight, getDeviceDensity())
+    }
 
     @Suppress("unused")
     fun getSafeAreaInsets(): RectF {
@@ -231,7 +237,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     @Suppress("unused")
     fun inputGetInputDeviceIds(sources: Int): IntArray {
         return InputDevice.getDeviceIds().fold(intArrayOf(0)) { result: IntArray, id: Int ->
-            val device = InputDevice.getDevice(id)
+            val device = InputDevice.getDevice(id) ?: return result
             return if (device.sources and sources != 0) (result + device.id) else result
         }
     }
@@ -331,8 +337,6 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
             return
         }
 
-        nativeDestroyScreen()
-
         mWidth = width.toFloat()
         mHeight = height.toFloat()
 
@@ -371,3 +375,5 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         nativeSurface.release()
     }
 }
+
+data class ScreenDimension(val width: Float, val height: Float, val scale: Float)

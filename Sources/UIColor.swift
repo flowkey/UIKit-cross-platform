@@ -69,11 +69,11 @@ public class UIColor: Hashable {
         self.alphaValue = 255
     }
     
-    public static func == (lhs: UIColor, rhs: UIColor) -> Bool {
+    public static func ==(lhs: UIColor, rhs: UIColor) -> Bool {
         return (lhs.redValue == rhs.redValue) && (lhs.greenValue == rhs.greenValue) && (lhs.blueValue == rhs.blueValue) && (lhs.alphaValue == rhs.alphaValue)
     }
 
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(redValue)
         hasher.combine(greenValue)
         hasher.combine(blueValue)

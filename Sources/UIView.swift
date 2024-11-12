@@ -43,7 +43,9 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         }
     }
 
-    open internal(set) var safeAreaInsets: UIEdgeInsets = .zero
+    public var safeAreaInsets: UIEdgeInsets {
+        return UIWindow.getSafeAreaInsets()
+    }
 
     open var mask: UIView? {
         didSet {
@@ -240,12 +242,12 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     /// Converts the given point from `self`'s bounds to the bounds of another UIView.
     /// If the other view is `nil` or is not in the same view hierarchy as `self`,
     /// the original point will be return unchanged.
-    public func convert(_ point: CGPoint, to view: UIView?) -> CGPoint {
+    public func convert(_ point: CGPoint, to otherView: UIView?) -> CGPoint {
         // Fastest path is doing no work :)
-        guard let otherView = view, otherView != self else { return point }
+        guard let otherView, otherView != self else { return point }
 
         // Fast paths:
-        if otherView.superview == self {
+        if self == otherView.superview {
             return convertToSubview(point, subview: otherView)
         } else if let superview = self.superview, superview == otherView {
             return convertToSuperview(point)
@@ -256,7 +258,9 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         let otherAbsoluteOrigin = otherView.absoluteOrigin()
 
         let originDifference = (otherAbsoluteOrigin - selfAbsoluteOrigin)
-        return point - originDifference
+
+        // TODO: This is a hack. We don't properly incorporate all transforms up the tree.
+        return (point - originDifference).applying(otherView.superview?.transform.inverted() ?? .identity)
     }
 
     private func convertToSuperview(_ point: CGPoint) -> CGPoint {
@@ -279,14 +283,13 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         var result: CGPoint = .zero
         var view = self
         while let superview = view.superview {
-            let translatedFrameOrigin = view.convert(view.bounds.origin, to: superview)
-            let translatedFrameOriginOffsetBySuperviewBounds = translatedFrameOrigin - superview.bounds.origin
+            let translatedFrameOrigin = view.convert(.zero, to: superview)
 
             // This is the important step:
             // We start deep in the hierarchy and at every level multiply the total result by the parent transform
             // Without this, we would be ignoring the fact that a transform in (e.g.) the UIWindow affects ALL
             // its subviews and their subviews, rather than just one level at a time.
-            result = (result + translatedFrameOriginOffsetBySuperviewBounds).applying(superview.transform)
+            result = (result + translatedFrameOrigin).applying(superview.transform)
             view = superview
         }
 
@@ -372,15 +375,14 @@ extension UIView: CustomStringConvertible {
 }
 
 
-// for some reason classes are not automatically equatable:
 extension UIView: Equatable {
-    public static func == (lhs: UIView, rhs: UIView) -> Bool {
+    nonisolated public static func == (lhs: UIView, rhs: UIView) -> Bool {
         return lhs === rhs
     }
 }
 
 extension UIView: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self).hashValue)
     }
 }

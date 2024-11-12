@@ -34,6 +34,7 @@
 		5BEEF829202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */; };
 		5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */; };
 		5BF666A01F4AEC6800BF698C /* CASpringAnimationPrototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */; };
+		5BF8AFE32C7E95C200065D8E /* CATransform3D+interpolate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8AFE22C7E95C200065D8E /* CATransform3D+interpolate.swift */; };
 		5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F06AE1F3210F200EFF087 /* UIViewController.swift */; };
 		5C27E7B81ECB2F6500F5020D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7AE1ECB2F6500F5020D /* UIKit.framework */; };
 		5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7D21ECB2F9100F5020D /* Cocoa.framework */; };
@@ -110,7 +111,6 @@
 		5CB6E1C12031EDF2001FEAC9 /* SDL_gpu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF8C4201635AF00D989BC /* SDL_gpu.framework */; };
 		5CB6E1C32033460C001FEAC9 /* CATransform3D+SDL_gpu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB6E1C22033460C001FEAC9 /* CATransform3D+SDL_gpu.swift */; };
 		5CB6E1C52035BC4F001FEAC9 /* CGPoint+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB6E1C42035BC4E001FEAC9 /* CGPoint+animations.swift */; };
-		5CBC2FFB20D2209E000388D1 /* JNI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 835693311F8CD3C100C6D253 /* JNI.framework */; };
 		5CBC301320D22145000388D1 /* SDL_gpu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF8C4201635AF00D989BC /* SDL_gpu.framework */; };
 		5CBC301420D22145000388D1 /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF98120163AF900D989BC /* SDL_ttf.framework */; };
 		5CBC301520D22145000388D1 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFFF8632016328200D989BC /* SDL2.framework */; };
@@ -203,13 +203,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5C2714DF1F2B9FB90026BBA9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = "JNI::JNI";
-			remoteInfo = JNI;
-		};
 		5C27E7B91ECB2F6500F5020D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5C27E7A51ECB2F6500F5020D /* Project object */;
@@ -280,20 +273,6 @@
 			remoteGlobalIDString = 5CFFF97120163AC900D989BC;
 			remoteInfo = SDL_ttf;
 		};
-		835693301F8CD3C100C6D253 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = "JNI::JNI::Product";
-			remoteInfo = JNI;
-		};
-		835693321F8CD3C100C6D253 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = "JNI::CJNI::Product";
-			remoteInfo = CJNI;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -324,7 +303,7 @@
 		5BEEF820202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewTests+didMoveToSuperView.swift"; sourceTree = "<group>"; };
 		5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CABasicAnimationPrototype.swift; path = Sources/CABasicAnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
 		5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CASpringAnimationPrototype.swift; path = Sources/CASpringAnimationPrototype.swift; sourceTree = SOURCE_ROOT; };
-		5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JNI.xcodeproj; path = "swift-jni/JNI.xcodeproj"; sourceTree = "<group>"; };
+		5BF8AFE22C7E95C200065D8E /* CATransform3D+interpolate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CATransform3D+interpolate.swift"; sourceTree = "<group>"; };
 		5C1F06AE1F3210F200EFF087 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewController.swift; path = Sources/UIViewController.swift; sourceTree = SOURCE_ROOT; };
 		5C2714A11F2A3FC50026BBA9 /* SDL+JNIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SDL+JNIExtensions.swift"; sourceTree = "<group>"; };
 		5C27E7AE1ECB2F6500F5020D /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -483,7 +462,6 @@
 				5CBC301320D22145000388D1 /* SDL_gpu.framework in Frameworks */,
 				5CBC301420D22145000388D1 /* SDL_ttf.framework in Frameworks */,
 				5CBC301520D22145000388D1 /* SDL2.framework in Frameworks */,
-				5CBC2FFB20D2209E000388D1 /* JNI.framework in Frameworks */,
 				5CCF1BD32017821E00AAF598 /* AVFoundation.framework in Frameworks */,
 				5C27E7DC1ECB2F9100F5020D /* Cocoa.framework in Frameworks */,
 				5C27E7DD1ECB2F9100F5020D /* AudioToolbox.framework in Frameworks */,
@@ -547,6 +525,7 @@
 				5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */,
 				5BF666991F472A3400BF698C /* CABasicAnimationPrototype.swift */,
 				5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */,
+				5BF8AFE22C7E95C200065D8E /* CATransform3D+interpolate.swift */,
 				5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */,
 				5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */,
 				5BF6669F1F4AEC6800BF698C /* CASpringAnimationPrototype.swift */,
@@ -563,7 +542,6 @@
 				5CFFF97C20163AF900D989BC /* SDL_ttf.xcodeproj */,
 				5CFFF87F201632FC00D989BC /* SDL-gpu.xcodeproj */,
 				5CFFF85B2016328200D989BC /* SDL.xcodeproj */,
-				5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */,
 				5C27E7D11ECB2F9100F5020D /* Frameworks */,
 				5C27E7AF1ECB2F6500F5020D /* Products */,
 				5C27E7F51ECB301900F5020D /* SDL */,
@@ -807,15 +785,6 @@
 			name = Video;
 			sourceTree = "<group>";
 		};
-		8356932D1F8CD2C000C6D253 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				835693311F8CD3C100C6D253 /* JNI.framework */,
-				835693331F8CD3C100C6D253 /* CJNI.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		83C18F391F0FB486008FEA07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -894,7 +863,6 @@
 				5CBC301720D22174000388D1 /* PBXTargetDependency */,
 				5CBC301920D22174000388D1 /* PBXTargetDependency */,
 				5CBC301B20D22174000388D1 /* PBXTargetDependency */,
-				5C2714E01F2B9FB90026BBA9 /* PBXTargetDependency */,
 			);
 			name = UIKit;
 			productName = UIKit;
@@ -977,10 +945,6 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 8356932D1F8CD2C000C6D253 /* Products */;
-					ProjectRef = 5C1D2F2B1F1E277A0006682E /* JNI.xcodeproj */;
-				},
-				{
 					ProductGroup = 5CFFF8C0201635AF00D989BC /* Products */;
 					ProjectRef = 5CFFF87F201632FC00D989BC /* SDL-gpu.xcodeproj */;
 				},
@@ -1043,20 +1007,6 @@
 			fileType = wrapper.framework;
 			path = SDL_ttf.framework;
 			remoteRef = 5CFFF98020163AF900D989BC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		835693311F8CD3C100C6D253 /* JNI.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = JNI.framework;
-			remoteRef = 835693301F8CD3C100C6D253 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		835693331F8CD3C100C6D253 /* CJNI.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = CJNI.framework;
-			remoteRef = 835693321F8CD3C100C6D253 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1201,6 +1151,7 @@
 				5C4CD51120615FCF00217B4C /* UIApplication+handleSDLEvents.swift in Sources */,
 				5C27E80F1ECB301900F5020D /* SDL2-Shims.swift in Sources */,
 				83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */,
+				5BF8AFE32C7E95C200065D8E /* CATransform3D+interpolate.swift in Sources */,
 				5BF6669A1F472A3400BF698C /* CABasicAnimationPrototype.swift in Sources */,
 				5C93AE7C2088F7E7005BE853 /* UINavigationController.swift in Sources */,
 				5CE5C5731EDD7C3400680154 /* UIWindow+TouchHandling.swift in Sources */,
@@ -1286,11 +1237,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		5C2714E01F2B9FB90026BBA9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = JNI;
-			targetProxy = 5C2714DF1F2B9FB90026BBA9 /* PBXContainerItemProxy */;
-		};
 		5C27E7BA1ECB2F6500F5020D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5C27E7AD1ECB2F6500F5020D /* UIKit */;
@@ -1443,7 +1389,6 @@
 				INFOPLIST_FILE = "Sources/Mac-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/UIKit";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1467,7 +1412,6 @@
 				INFOPLIST_FILE = "Sources/Mac-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/UIKit";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1492,7 +1436,6 @@
 				INFOPLIST_FILE = UIKitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/UIKit";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -1513,7 +1456,6 @@
 				INFOPLIST_FILE = UIKitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/UIKit";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

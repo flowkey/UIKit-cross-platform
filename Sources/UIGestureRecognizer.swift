@@ -28,6 +28,10 @@ open class UIGestureRecognizer {
     public weak var delegate: UIGestureRecognizerDelegate?
     internal weak var trackedTouch: UITouch?
 
+    open func location(in view: UIView?) -> CGPoint {
+        return trackedTouch?.location(in: view) ?? .zero
+    }
+
     public var state: UIGestureRecognizerState = .possible {
         didSet {
             if state == oldValue { return }
@@ -92,11 +96,11 @@ extension UIGestureRecognizer {
 
 // Allow UIGestureRecognizers to be added to a `Set` etc.
 extension UIGestureRecognizer: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self).hashValue)
     }
 
-    public static func == (lhs: UIGestureRecognizer, rhs: UIGestureRecognizer) -> Bool {
+    nonisolated public static func == (lhs: UIGestureRecognizer, rhs: UIGestureRecognizer) -> Bool {
         return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
     }
 }

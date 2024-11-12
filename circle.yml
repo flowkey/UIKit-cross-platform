@@ -1,8 +1,13 @@
+version: "2.1"
+orbs:
+    macos: circleci/macos@2.5.2
+
 jobs:
-    xcodebuild:
+    build:
         macos:
-            xcode: "14.1.0"
+            xcode: "15.4.0"
         steps:
+            - macos/install-rosetta
             - checkout
             - run: git submodule update --recursive --init
 
@@ -27,7 +32,7 @@ jobs:
                       CODE_SIGN_IDENTITY=""
                       PROVISIONING_PROFILE=""
                       -sdk "iphonesimulator"
-                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 14 Pro'
+                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 15 Pro'
                       -scheme "UIKit iOSTestTarget"
                       test |
                       xcpretty --color --report junit
@@ -40,14 +45,8 @@ jobs:
                       CODE_SIGN_IDENTITY=""
                       PROVISIONING_PROFILE=""
                       -sdk "iphonesimulator"
-                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 14 Pro'
+                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 15 Pro'
                       -scheme "DemoApp"
                       build |
                       xcpretty --color --report junit
                   path: ./samples/getting-started
-
-workflows:
-    version: 2
-    uikit:
-        jobs:
-            - xcodebuild

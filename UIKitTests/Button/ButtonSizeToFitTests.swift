@@ -21,7 +21,7 @@ class ButtonSizeToFitTests: XCTestCase {
     }
 
     func testSizeToFitWithNoLabelAndNoImage () {
-        let defaultSizeForEmptyButton = CGSize(width: 30.0, height: 34.0)
+        let defaultSizeForEmptyButton = CGSize(width: 30, height: 34)
         button.sizeToFit()
         XCTAssertEqual(button.frame.size, defaultSizeForEmptyButton)
     }

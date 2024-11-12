@@ -24,35 +24,35 @@ public class AVPlayer: JNIObject {
     }
 
     public func play() {
-        try! call(methodName: "play")
+        try! call("play")
     }
 
     public func pause() {
-        try! call(methodName: "pause")
+        try! call("pause")
     }
 
     public func getCurrentTimeInMS() -> Int64 {
-        return try! call(methodName: "getCurrentTimeInMilliseconds")
+        return try! call("getCurrentTimeInMilliseconds")
     }
 
     public func seek(to timeInMilliseconds: Int64) {
-        try! call(methodName: "seekToTimeInMilliseconds", arguments: [timeInMilliseconds])
+        try! call("seekToTimeInMilliseconds", arguments: [timeInMilliseconds])
     }
 
     public var rate: Float {
-        get { return try! call(methodName: "getPlaybackRate") }
-        set { try! call(methodName: "setPlaybackRate", arguments: [newValue]) }
+        get { return try! call("getPlaybackRate") }
+        set { try! call("setPlaybackRate", arguments: [newValue]) }
     }
 
     public var isMuted: Bool = false {
         didSet {
             let newVolume = isMuted ? 0.0 : 1.0
-            try! call(methodName: "setVolume", arguments: [newVolume])
+            try! call("setVolume", arguments: [newVolume])
         }
     }
 
     deinit {
-        try? call(methodName: "cleanup")
+        try? call("cleanup")
     }
 
     public struct ExoPlaybackError: Error {

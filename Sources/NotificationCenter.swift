@@ -1,5 +1,5 @@
 #if os(Android)
-import JNI
+import var JNI.isMainThread
 #elseif canImport(Darwin)
 import class Foundation.Thread
 private var isMainThread: Bool {

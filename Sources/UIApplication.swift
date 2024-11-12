@@ -49,7 +49,7 @@ open class UIApplication {
     }
 
     deinit {
-        DispatchQueue.main.syncSafe {
+        MainActor.assumeIsolated {
             UIScreen.main = nil
             UIFont.clearCachedFontFiles()
             DisplayLink.activeDisplayLinks.removeAll()

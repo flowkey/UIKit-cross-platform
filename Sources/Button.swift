@@ -13,14 +13,14 @@ fileprivate let labelVerticalPadding: CGFloat = 6
 
 @MainActor
 open class Button: UIControl {
-    internal (set) public var imageView: UIImageView? {
+    internal(set) public var imageView: UIImageView? {
         didSet {
             oldValue?.removeFromSuperview()
             if let imageView = imageView { addSubview(imageView) }
         }
     }
 
-    internal (set) public var titleLabel: UILabel? {
+    internal(set) public var titleLabel: UILabel? {
         didSet {
             oldValue?.removeFromSuperview()
             if let titleLabel = titleLabel { addSubview(titleLabel) }

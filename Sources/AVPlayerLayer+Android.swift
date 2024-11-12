@@ -26,15 +26,16 @@ public class AVPlayerLayer: JNIObject {
 
     public var videoGravity: AVLayerVideoGravity = .resizeAspect {
         didSet {
-            try! call(methodName: "setResizeMode", arguments: [videoGravity.rawValue])
+            try! call("setResizeMode", arguments: [videoGravity.rawValue])
         }
     }
 
     public var frame: CGRect {
         get { return .zero } // FIXME: This would require returning a JavaObject with the various params
         set {
-            let scaledFrame = (newValue * UIScreen.main.scale)
-            try! call(methodName: "setFrame", arguments: [
+            guard let scale = UIScreen.main?.scale else { return }
+            let scaledFrame = (newValue * scale)
+            try! call("setFrame", arguments: [
                 JavaInt(scaledFrame.origin.x.rounded()),
                 JavaInt(scaledFrame.origin.y.rounded()),
                 JavaInt(scaledFrame.size.width.rounded()),
@@ -45,7 +46,7 @@ public class AVPlayerLayer: JNIObject {
 
     deinit {
         do {
-            try call(methodName: "removeFromParent")
+            try call("removeFromParent")
         } catch {
             assertionFailure("Couldn't remove AVPlayerLayer from parent")
         }

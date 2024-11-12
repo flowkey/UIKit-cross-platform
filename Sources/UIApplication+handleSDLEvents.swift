@@ -95,6 +95,29 @@ extension UIApplication {
                 UIApplication.onWillEnterForeground()
             case SDL_APP_DIDENTERFOREGROUND:
                 UIApplication.onDidEnterForeground()
+            case SDL_WINDOWEVENT:
+                let windowEventId = SDL_WindowEventID(UInt32(e.window.event))
+
+                guard windowEventId == SDL_WINDOWEVENT_RESIZED else {
+                    break
+                }
+
+                // Initialize UIScreen in @1x pixels on Android due to SDL quirks on that platform; retina points on Mac
+                #if os(Android)
+                let newWidth = CGFloat(e.window.data1) / UIScreen.main.scale
+                let newHeight = CGFloat(e.window.data2) / UIScreen.main.scale
+                #else
+                let newWidth = CGFloat(e.window.data1)
+                let newHeight = CGFloat(e.window.data2)
+                #endif
+
+                let newSize = CGSize(width: newWidth, height: newHeight)
+                UIScreen.main.bounds.size = newSize
+                
+                let newRect = CGRect(origin: .zero, size: newSize)
+                UIApplication.shared.keyWindow!.frame = newRect // sets needsLayout of keyWindow to true
+                UIApplication.shared.delegate?.window?.rootViewController?.view.frame = newRect
+
             default:
                 break
             }
@@ -242,12 +265,6 @@ public func onNativeTouch(
     view: JavaObject?,
     touchParameters: JavaObject
 ) {
-    if env == nil || view == nil {
-        // We're in an invalid state where the JNI has exploded somehow
-        // Passing anything on to UIKit now would probably lead to a crash
-        return
-    }
-
     let touchDeviceId: JavaInt = try! jni.GetField("touchDeviceId", from: touchParameters)
     let pointerFingerId: JavaInt = try! jni.GetField("pointerFingerId", from: touchParameters)
     let action: JavaInt = try! jni.GetField("action", from: touchParameters)
@@ -260,15 +277,13 @@ public func onNativeTouch(
     else { return }
 
     Task { @MainActor in
-        guard let screenScale = UIScreen.main?.scale else {
-            return
-        }
+        guard let screenScale = UIScreen.main?.scale else { return }
 
         var event = SDL_Event(tfinger:
             SDL_TouchFingerEvent(
                 type: eventType.rawValue,
                 timestamp: UInt32(truncatingIfNeeded: timestampMs),
-                touchId: Int64(touchDeviceId), // some arbitrary number, stays the same per device
+                touchId: Int64(touchDeviceId), // a seemingly arbitrary number, stays the same per device
                 fingerId: Int64(pointerFingerId),
                 x: x / Float(screenScale),
                 y: y / Float(screenScale),

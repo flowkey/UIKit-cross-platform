@@ -104,7 +104,12 @@ extension CALayer {
         case .transform:
             guard let startTransform = animation.fromValue as? CATransform3D else { return }
             let endTransform = animation.toValue as? CATransform3D ?? self.transform
-            presentation.transform = startTransform + ((endTransform - startTransform) * Float(progress))
+            let interpolatedTransform = interpolate(
+                startTransform: startTransform,
+                endTransform: endTransform,
+                progress: Float(progress)
+            )
+            presentation.transform = interpolatedTransform
 
         case .unknown: break
         }
@@ -112,7 +117,7 @@ extension CALayer {
 }
 
 extension CALayer {
-    static let defaultAnimationDuration: CGFloat = 0.25
+    nonisolated static let defaultAnimationDuration: CGFloat = 0.25
 
     static func defaultAction(forKey event: String) -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: AnimationKeyPath(stringLiteral: event))

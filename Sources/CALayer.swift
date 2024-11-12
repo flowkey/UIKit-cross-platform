@@ -14,8 +14,8 @@ open class CALayer {
 
     open var contentsGravity: CALayerContentsGravity = .resize
 
-    internal (set) public weak var superlayer: CALayer?
-    internal (set) public var sublayers: [CALayer]? {
+    internal(set) public weak var superlayer: CALayer?
+    internal(set) public var sublayers: [CALayer]? {
         didSet { CALayer.layerTreeIsDirty = true }
     }
 
@@ -283,11 +283,11 @@ extension CALayer {
 }
 
 extension CALayer: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self).hashValue)
     }
 
-    public static func == (lhs: CALayer, rhs: CALayer) -> Bool {
+    nonisolated public static func == (lhs: CALayer, rhs: CALayer) -> Bool {
         return lhs === rhs
     }
 }

@@ -8,7 +8,12 @@
 //
 
 @_implementationOnly import SDL
-import Glibc
+
+#if os(Android)
+import Bionic
+#else
+import Darwin.C.stdio
+#endif
 
 private let loggingTag = "Swift"
 

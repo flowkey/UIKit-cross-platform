@@ -101,6 +101,13 @@ open class UINavigationController: UIViewController {
         updateUIFromViewControllerStack(animated: false)
     }
 
+    open override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+
+        navigationBar.frame.size.width = view.bounds.width
+        transitionView.frame = view.bounds
+    }
+
     open override func handleHardwareBackButtonPress() -> Bool {
         if let onPress = navigationBar.backButton.onPress {
             onPress()

@@ -49,11 +49,11 @@ public class UITouch {
 }
 
 extension UITouch: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(touchId)
     }
 
-    public static func == (lhs: UITouch, rhs: UITouch) -> Bool {
+    nonisolated public static func == (lhs: UITouch, rhs: UITouch) -> Bool {
         return lhs.touchId == rhs.touchId
     }
 }

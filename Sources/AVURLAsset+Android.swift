@@ -19,6 +19,7 @@ public class AVPlayerItem {
 public class AVURLAsset: JNIObject {
     public override static var className: String { "org.uikit.AVURLAsset" }
 
+    @MainActor
     public var url: String?
 
     @MainActor

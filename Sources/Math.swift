@@ -4,16 +4,18 @@
 @_exported import func WASILibc.log2
 @_exported import func WASILibc.sin
 @_exported import func WASILibc.cos
-#elseif canImport(Glibc)
-@_exported import func Glibc.pow
-@_exported import func Glibc.log10
-@_exported import func Glibc.log2
-@_exported import func Glibc.sin
-@_exported import func Glibc.cos
-@_exported import var Glibc.CLOCK_REALTIME
-@_exported import func Glibc.clock_gettime
-@_exported import struct Glibc.timespec
-@_exported import struct Glibc.clockid_t
+#elseif canImport(Bionic)
+@_exported import func Bionic.pow
+@_exported import func Bionic.acosf
+@_exported import func Bionic.log10
+@_exported import func Bionic.log2
+@_exported import func Bionic.sin
+@_exported import func Bionic.sinf
+@_exported import func Bionic.cos
+@_exported import var Bionic.CLOCK_REALTIME
+@_exported import func Bionic.clock_gettime
+@_exported import struct Bionic.timespec
+@_exported import struct Bionic.clockid_t
 #elseif canImport(Darwin)
 @_exported import func Foundation.pow
 @_exported import func Foundation.log10
