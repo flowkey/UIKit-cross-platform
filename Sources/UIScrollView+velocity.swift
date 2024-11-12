@@ -34,7 +34,7 @@ extension UIScrollView {
         let animationTimeConstant = 0.325 * dampingFactor
 
         // This calculation is a weird approximation but it's close enough for now...
-        let animationTime = log2(Double(distanceToBoundsCheckedTarget.magnitude)) * animationTimeConstant
+        let animationTime = log(Double(distanceToBoundsCheckedTarget.magnitude)) * animationTimeConstant
 
         UIView.animate(
             withDuration: animationTime,
