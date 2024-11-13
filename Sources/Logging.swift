@@ -7,7 +7,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-@_implementationOnly import SDL
+internal import SDL
 
 #if os(Android)
 import Bionic

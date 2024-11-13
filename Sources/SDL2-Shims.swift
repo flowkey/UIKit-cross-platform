@@ -6,7 +6,7 @@
 //  Copyright © 2017 Geordie Jay. All rights reserved.
 //
 
-@_implementationOnly import SDL
+internal import SDL
 
 struct SDLError: Error {
     let description: String

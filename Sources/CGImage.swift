@@ -1,5 +1,5 @@
-@_implementationOnly import SDL
-@_implementationOnly import SDL_gpu
+internal import SDL
+internal import SDL_gpu
 
 public class CGImage {
     /// Be careful using this pointer e.g. for another CGImage instance.

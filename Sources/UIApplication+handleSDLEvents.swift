@@ -9,7 +9,7 @@
 import JNI
 #endif
 
-@_implementationOnly import SDL
+internal import SDL
 
 extension UIApplication {
     @MainActor

@@ -6,7 +6,7 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-@_implementationOnly import SDL
+internal import SDL
 
 extension Data {
     static func _fromPathCrossPlatform(_ path: String) -> Data? {

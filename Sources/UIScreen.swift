@@ -6,14 +6,10 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-@_implementationOnly import SDL
-@_implementationOnly import SDL_gpu
+internal import SDL
+internal import SDL_gpu
 
-extension SDLWindowFlags {
-    func contains(_ flags: SDLWindowFlags) -> Bool {
-        return (self.rawValue & flags.rawValue) == flags.rawValue
-    }
-}
+extension SDLWindowFlags: @retroactive OptionSet {}
 
 public extension UIScreen {
     @MainActor

@@ -17,10 +17,12 @@
 @_exported import struct Bionic.timespec
 @_exported import struct Bionic.clockid_t
 #elseif canImport(Darwin)
+@_exported import func Foundation.acosf
 @_exported import func Foundation.pow
 @_exported import func Foundation.log10
 @_exported import func Foundation.log
 @_exported import func Foundation.sin
+@_exported import func Foundation.sinf
 @_exported import func Foundation.cos
 @_exported import func Foundation.clock_gettime
 @_exported import struct Foundation.timespec

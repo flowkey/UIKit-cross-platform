@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-@_implementationOnly import SDL
+internal import SDL
 
 public class CGDataProvider {
     public var data: [CChar]

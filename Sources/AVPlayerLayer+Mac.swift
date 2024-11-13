@@ -8,7 +8,7 @@
 //
 
 import AVFoundation
-import var SDL_gpu.GPU_FORMAT_RGBA
+internal import var SDL_gpu.GPU_FORMAT_RGBA
 
 public typealias AVPlayer = AVFoundation.AVPlayer
 

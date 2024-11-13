@@ -15,8 +15,7 @@ let package = Package(
         .target(
             name: "UIKit",
             dependencies: [
-                .product(name: "SDL_macOS", package: "SDL", condition: .when(platforms: [.macOS])),
-                .product(name: "SDL_Android", package: "SDL", condition: .when(platforms: [.android])),
+                .product(name: "SDL", package: "SDL"),
                 .product(name: "JNI", package: "swift-jni", condition: .when(platforms: [.android])),
                 .target(name: "UIKit_C_API", condition: .when(platforms: [.android])),
             ],

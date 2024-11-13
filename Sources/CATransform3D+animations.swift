@@ -5,7 +5,7 @@
 //  Created by Michael Knoch on 19.01.18.
 //
 
-@_implementationOnly import SDL_gpu
+internal import SDL_gpu
 
 // It doesn't make sense to make these public, they're only to simplify our animation code:
 internal extension CATransform3D {

@@ -8,7 +8,7 @@
 
 #if os(macOS)
 
-@_implementationOnly import SDL_gpu
+internal import SDL_gpu
 
 internal final class VideoTexture: CGImage {
     convenience init?(width: Int, height: Int, format: GPU_FormatEnum) {

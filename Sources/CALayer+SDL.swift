@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-@_implementationOnly import SDL_gpu
+internal import SDL_gpu
 
 extension CALayer {
     @MainActor
