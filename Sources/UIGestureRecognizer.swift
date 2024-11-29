@@ -96,11 +96,11 @@ extension UIGestureRecognizer {
 
 // Allow UIGestureRecognizers to be added to a `Set` etc.
 extension UIGestureRecognizer: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self).hashValue)
     }
 
-    public static func == (lhs: UIGestureRecognizer, rhs: UIGestureRecognizer) -> Bool {
+    nonisolated public static func == (lhs: UIGestureRecognizer, rhs: UIGestureRecognizer) -> Bool {
         return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
     }
 }

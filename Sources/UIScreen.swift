@@ -6,11 +6,10 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
-import SDL_gpu
-import Dispatch
+internal import SDL
+internal import SDL_gpu
 
-extension SDLWindowFlags: OptionSet {}
+extension SDLWindowFlags: @retroactive OptionSet {}
 
 public extension UIScreen {
     @MainActor
@@ -57,7 +56,7 @@ public final class UIScreen {
         #if os(Android)
         // height/width are determined by the window when fullscreen:
         var size = CGSize.zero
-        let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
+        let options: SDLWindowFlags = SDL_WINDOW_FULLSCREEN
         #else
         var size = CGSize.samsungGalaxyJ5.landscape
 
@@ -120,7 +119,7 @@ public final class UIScreen {
     }
 
     deinit {
-        DispatchQueue.main.syncSafe {
+        MainActor.assumeIsolated {
             UIView.completePendingAnimations()
             UIView.layersWithAnimations.removeAll()
             UIView.currentAnimationPrototype = nil
@@ -202,7 +201,7 @@ fileprivate func getAndroidScreenDimension() -> (width: CGFloat, height: CGFloat
 }
 #endif
 
-
+@MainActor
 extension UIScreen {
     /// Used in tests only and doesn't actually render anything
     static func dummyScreen(
@@ -217,20 +216,21 @@ extension UIScreen {
     }
 }
 
-private extension CGSize {
+@MainActor
+extension CGSize {
     // smartphones:
-    static let samsungGalaxyJ5 = CGSize(width: 1280 / 2.0, height: 720 / 2.0)
-    static let samsungGalaxyS5 = CGSize(width: 1920 / 3.0, height: 1080 / 3.0)
-    static let samsungGalaxyS7 = CGSize(width: 2560 / 4.0, height: 1440 / 4.0) // 1080p 1.5x Retina
-    static let samsungGalaxyS8 = CGSize(width: 2960 / 4.0, height: 1440 / 4.0)
+    nonisolated static let samsungGalaxyJ5 = CGSize(width: 1280 / 2.0, height: 720 / 2.0)
+    nonisolated static let samsungGalaxyS5 = CGSize(width: 1920 / 3.0, height: 1080 / 3.0)
+    nonisolated static let samsungGalaxyS7 = CGSize(width: 2560 / 4.0, height: 1440 / 4.0) // 1080p 1.5x Retina
+    nonisolated static let samsungGalaxyS8 = CGSize(width: 2960 / 4.0, height: 1440 / 4.0)
 
     // tablets:
-    static let nexus9 = CGSize(width: 2048 / 2.0, height: 1536 / 2.0)
-    static let huaweiM3lite = CGSize(width: 1920 / 2.0, height: 1200 / 2.0)
-    static let samsungGalaxyTabS_T800 = CGSize(width: 2560 / 2.0, height: 1600 / 2.0)
-    static let samsungGalaxyTab10 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
-    static let samsungGalaxyTabA_T380 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
-    static let samsungGalaxyTabA_T580 = CGSize(width: 1920 / 1.0, height: 1200 / 1.0)
+    nonisolated static let nexus9 = CGSize(width: 2048 / 2.0, height: 1536 / 2.0)
+    nonisolated static let huaweiM3lite = CGSize(width: 1920 / 2.0, height: 1200 / 2.0)
+    nonisolated static let samsungGalaxyTabS_T800 = CGSize(width: 2560 / 2.0, height: 1600 / 2.0)
+    nonisolated static let samsungGalaxyTab10 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
+    nonisolated static let samsungGalaxyTabA_T380 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
+    nonisolated static let samsungGalaxyTabA_T580 = CGSize(width: 1920 / 1.0, height: 1200 / 1.0)
 
     // change orientation if needed
     var landscape: CGSize {

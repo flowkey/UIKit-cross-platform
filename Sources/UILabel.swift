@@ -20,6 +20,7 @@ public enum NSTextAlignment: Int {
     }
 }
 
+@MainActor
 open class UILabel: UIView {
     open var numberOfLines: Int = 1 {
         didSet { if numberOfLines != oldValue { setNeedsDisplay() } }

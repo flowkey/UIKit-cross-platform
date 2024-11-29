@@ -1,4 +1,3 @@
-
 #if os(Android)
 import JNI
 #endif

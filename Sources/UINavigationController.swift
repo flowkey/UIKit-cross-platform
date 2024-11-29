@@ -1,3 +1,4 @@
+@MainActor
 open class UINavigationController: UIViewController {
     /// Note: not currently implemented!
     open var modalPresentationStyle: UIModalPresentationStyle = .formSheet
@@ -9,7 +10,7 @@ open class UINavigationController: UIViewController {
     }
 
     open override func loadView() {
-        view = UINavigationControllerContainerView()
+        view = UINavigationControllerContainerView(frame: .zero)
         view.addSubview(transitionView)
         view.addSubview(navigationBar)
     }

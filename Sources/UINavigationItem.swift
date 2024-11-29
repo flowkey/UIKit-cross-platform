@@ -17,7 +17,7 @@ open class UIBarButtonItemWithClosure {
     open var action: (() -> Void)?
     open var title: String?
 
-    internal private (set) var systemItem: UIBarButtonSystemItem?
+    internal private(set) var systemItem: UIBarButtonSystemItem?
 
     public init() {} // match iOS init
 

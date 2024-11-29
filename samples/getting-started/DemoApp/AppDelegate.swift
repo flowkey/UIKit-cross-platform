@@ -10,7 +10,6 @@ import UIKit
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
 
     func application(
@@ -18,7 +17,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions:
         [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-
         window = UIWindow()
         window?.rootViewController = UINavigationController(rootViewController: ViewController())
         window?.makeKeyAndVisible()
