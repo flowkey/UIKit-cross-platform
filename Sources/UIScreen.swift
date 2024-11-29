@@ -217,7 +217,7 @@ extension UIScreen {
 }
 
 @MainActor
-private extension CGSize {
+extension CGSize {
     // smartphones:
     nonisolated static let samsungGalaxyJ5 = CGSize(width: 1280 / 2.0, height: 720 / 2.0)
     nonisolated static let samsungGalaxyS5 = CGSize(width: 1920 / 3.0, height: 1080 / 3.0)
