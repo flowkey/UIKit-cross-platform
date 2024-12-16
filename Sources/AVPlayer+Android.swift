@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  JNIVideo.swift
 //  UIKit
@@ -85,3 +86,4 @@ public func nativeOnVideoError(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObjec
     )
     globalAVPlayer?.onError?(error)
 }
+#endif

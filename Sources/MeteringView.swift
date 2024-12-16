@@ -35,7 +35,7 @@ class MeteringView: UILabel {
 
     private func updateDisplay(to value: Double) {
         guard value.isFinite else { return }
-        let value = Int(round(value))
+        let value = Int(value.rounded())
         self.text = metric + ": \(value)"
         self.sizeToFit()
     }

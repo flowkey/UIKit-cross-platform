@@ -11,9 +11,10 @@
 let UIScrollViewDecelerationRateNormal: CGFloat = 0.998
 let UIScrollViewDecelerationRateFast: CGFloat = 0.99
 
+@MainActor
 open class UIScrollView: UIView {
     open weak var delegate: UIScrollViewDelegate? // TODO: change this to individually settable callbacks
-    open var panGestureRecognizer = UIPanGestureRecognizer()
+    open var panGestureRecognizer: UIPanGestureRecognizer
 
     var verticalScrollIndicator = UIView()
     var horizontalScrollIndicator = UIView()
@@ -82,6 +83,7 @@ open class UIScrollView: UIView {
     var weightedAverageVelocity: CGPoint = .zero
 
     override public init(frame: CGRect) {
+        panGestureRecognizer = UIPanGestureRecognizer()
         super.init(frame: frame)
         panGestureRecognizer.onAction = { [weak self] in self?.onPan() }
         panGestureRecognizer.onStateChanged = { [weak self] in self?.onPanGestureStateChanged() }

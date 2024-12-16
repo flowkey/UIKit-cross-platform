@@ -1,3 +1,4 @@
+@MainActor
 open class UINavigationBar: UIView {
     internal var barHeight: CGFloat { return 40 }
     internal var horizontalMargin: CGFloat { return 20 }
@@ -42,7 +43,7 @@ open class UINavigationBar: UIView {
         backgroundColor = UIColor(red: 0.91, green: 0.91, blue: 0.91, alpha: 1)
 
         backButton.onPress = { [weak self] in
-            self?.popItem(animated: true)
+            _ = self?.popItem(animated: true)
         }
 
         rightButton.onPress = { [weak self] in
@@ -73,9 +74,9 @@ open class UINavigationBar: UIView {
         rightButton.center.y = bounds.midY
     }
 
-    internal var titleLabel = UILabel()
-    internal var backButton = Button()
-    internal var rightButton = Button()
+    internal var titleLabel = UILabel(frame: .zero)
+    internal var backButton = Button(frame: .zero)
+    internal var rightButton = Button(frame: .zero)
 
     open func pushItem(_ item: UINavigationItem, animated: Bool) {
         items = items ?? []

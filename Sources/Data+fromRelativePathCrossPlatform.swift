@@ -6,8 +6,10 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
+internal import SDL
+
 extension Data {
-    public static func _fromPathCrossPlatform(_ path: String) -> Data? {
+    static func _fromPathCrossPlatform(_ path: String) -> Data? {
         guard let fileReader = SDL_RWFromFile(path, "r") else {
             return nil
         }

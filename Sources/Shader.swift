@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL_gpu
+internal import SDL_gpu
 
 class VertexShader: Shader {
     // Some keywords have changed since the earlier shader language versions available on Android:

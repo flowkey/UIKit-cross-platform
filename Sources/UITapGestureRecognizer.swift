@@ -6,12 +6,13 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
+@MainActor
 open class UITapGestureRecognizer: UIGestureRecognizer {
     var onTouchesBegan: (() -> Void)?
     var onTouchesEnded: (() -> Void)?
     var onPress: (@MainActor () -> Void)?
 
-    public init(onPress: (() -> Void)? = nil) {
+    public init(onPress: (@MainActor () -> Void)? = nil) {
         self.onPress = onPress
     }
 
