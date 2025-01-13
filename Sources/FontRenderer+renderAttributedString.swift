@@ -6,7 +6,7 @@
 //  Copyright © 2018 flowkey. All rights reserved.
 //
 
-import SDL_ttf
+internal import SDL_ttf
 
 extension FontRenderer {
     func getFontKerningOffset(between previousIndex: FT_UInt?, and currentIndex: FT_UInt) -> Int32 {

@@ -1,8 +1,8 @@
 #if os(Android)
 import var JNI.isMainThread
-#else
-import Foundation
-var isMainThread: Bool {
+#elseif canImport(Darwin)
+import class Foundation.Thread
+private var isMainThread: Bool {
     return Thread.isMainThread
 }
 #endif

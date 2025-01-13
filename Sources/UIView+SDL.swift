@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-@_exported import SDL
+internal import SDL
 
 extension UIView {
     final func sdlDrawAndLayoutTreeIfNeeded(parentAlpha: CGFloat = 1.0) {

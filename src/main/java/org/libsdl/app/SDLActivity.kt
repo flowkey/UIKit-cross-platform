@@ -37,10 +37,6 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         // and it is a major overhaul to change the native C code (there are a lot of dependencies)
         @JvmStatic
         internal var mSeparateMouseAndTouch = false
-
-        init {
-            arrayOf("JNI", "SDL", "UIKit").forEach { System.loadLibrary(it) }
-        }
     }
 
     private var mSurface: SurfaceView

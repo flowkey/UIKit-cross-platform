@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  AVPlayerItem+Android.swift
 //  UIKit
@@ -18,6 +19,7 @@ public class AVPlayerItem {
 public class AVURLAsset: JNIObject {
     public override static var className: String { "org.uikit.AVURLAsset" }
 
+    @MainActor
     public var url: String?
 
     @MainActor
@@ -26,3 +28,4 @@ public class AVURLAsset: JNIObject {
         self.url = url
     }
 }
+#endif

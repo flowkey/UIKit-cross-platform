@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  SDL+JNIExtensions.swift
 //  UIKit
@@ -50,3 +51,4 @@ struct JavaSDLView: JavaParameterConvertible {
         return self.init(javaStringObject)
     }
 }
+#endif

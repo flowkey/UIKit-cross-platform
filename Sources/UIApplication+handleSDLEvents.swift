@@ -5,8 +5,11 @@
 //  Created by Geordie Jay on 20.03.18.
 //  Copyright © 2018 flowkey. All rights reserved.
 //
+#if os(Android)
+import JNI
+#endif
 
-import SDL
+internal import SDL
 
 extension UIApplication {
     @MainActor
@@ -170,7 +173,11 @@ extension SDL_Scancode {
     static let androidHardwareBackButton = SDL_Scancode(rawValue: 270)
 }
 
-extension SDL_Keymod: OptionSet {}
+extension SDL_Keymod {
+    func contains(_ other: SDL_Keymod) -> Bool {
+        return (self.rawValue & other.rawValue) == other.rawValue
+    }
+}
 
 extension SDL_Event {
     var timestampInSeconds: Double {
@@ -293,7 +300,7 @@ public func onNativeTouch(
 }
 
 extension SDL_EventType {
-    public static func eventFrom(androidAction: JavaInt) -> SDL_EventType? {
+    static func eventFrom(androidAction: JavaInt) -> SDL_EventType? {
         switch androidAction {
         case 0, 5: return SDL_FINGERDOWN
         case 1, 6: return SDL_FINGERUP

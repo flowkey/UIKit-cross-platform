@@ -1,4 +1,4 @@
-import SDL
+internal import SDL
 
 @MainActor
 open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
@@ -375,15 +375,14 @@ extension UIView: CustomStringConvertible {
 }
 
 
-// for some reason classes are not automatically equatable:
 extension UIView: Equatable {
-    public static func == (lhs: UIView, rhs: UIView) -> Bool {
+    nonisolated public static func == (lhs: UIView, rhs: UIView) -> Bool {
         return lhs === rhs
     }
 }
 
 extension UIView: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self).hashValue)
     }
 }
