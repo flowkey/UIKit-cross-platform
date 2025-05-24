@@ -74,12 +74,6 @@ open class UIScrollView: UIView {
         )
     }
 
-    public var indicatorStyle: UIScrollViewIndicatorStyle = .`default` {
-        didSet { applyScrollIndicatorsStyle() }
-    }
-
-    // TODO: var scrollIndicatorInsets
-
     var weightedAverageVelocity: CGPoint = .zero
 
     override public init(frame: CGRect) {
@@ -94,6 +88,39 @@ open class UIScrollView: UIView {
         [horizontalScrollIndicator, verticalScrollIndicator].forEach {
             $0.alpha = 0
             addSubview($0)
+        }
+    }
+
+    // When adding subviews, make sure that the scroll indicators stay on top.
+    // Subview list goes back-to-front, so indicators need to take the last two positions.
+    // We use the earliestIndicatorInSubviewHierarchy variable to make sure new views are always inserted below them.
+    private lazy var firstIndicatorInSubviews: UIView? = {
+        return subviews.first(where: { $0 === horizontalScrollIndicator || $0 === verticalScrollIndicator })
+    }()
+
+
+    open override func addSubview(_ view: UIView) {
+        // Indicators should always stay on top of the view hierarchy (so the end of the subviews list, at two highest indexes)
+        // we add new views "below them" (so one position before the scroll indicator with the lower of two highest indexes)
+        if
+            view !== horizontalScrollIndicator,
+            view !== verticalScrollIndicator,
+            let firstIndicatorInSubviews = firstIndicatorInSubviews
+        {
+            super.insertSubview(view, belowSubview: firstIndicatorInSubviews)
+        } else {
+            super.addSubview(view)
+        }
+    }
+
+    open override func insertSubview(_ view: UIView, at index: Int) {
+        // Indicators should always stay on top of the view hierarchy (so the end of the subviews list, at two highest indexes)
+        // if we are asked to insert at their positions, we insert at the first non-indicator index instead
+        if let firstIndicatorInSubviews = firstIndicatorInSubviews {
+            let indexOfFirstIndicator = subviews.index(of: firstIndicatorInSubviews)!
+            super.insertSubview(view, at: min(index, indexOfFirstIndicator))
+        } else {
+            super.insertSubview(view, at: index)
         }
     }
 
@@ -140,10 +167,26 @@ open class UIScrollView: UIView {
     open var contentInset: UIEdgeInsets = .zero
     open var contentSize: CGSize = .zero
 
-
     // MARK: Scroll Indicators
 
+    // Matching Apple's value
     let indicatorThickness: CGFloat = 2.5
+
+    // Determined experimentally to be as close as possible to Apple's (likely exactly matching)
+    private let baseScrollIndicatorInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
+
+    public var indicatorStyle: IndicatorStyle = .`default` {
+        didSet { applyScrollIndicatorsStyle() } // also called on `init` separately
+    }
+
+    public var scrollIndicatorInsets = UIEdgeInsets.zero
+
+    var totalScrollIndicatorInsets: UIEdgeInsets {
+        return UIEdgeInsets(top: baseScrollIndicatorInsets.top + scrollIndicatorInsets.top,
+                            left: baseScrollIndicatorInsets.left + scrollIndicatorInsets.left,
+                            bottom: baseScrollIndicatorInsets.bottom + scrollIndicatorInsets.bottom,
+                            right: baseScrollIndicatorInsets.right + scrollIndicatorInsets.right)
+    }
 
     private func applyScrollIndicatorsStyle() {
         for scrollIndicator in [verticalScrollIndicator, horizontalScrollIndicator] {
@@ -168,19 +211,21 @@ public protocol UIScrollViewDelegate: AnyObject {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)
 }
 
-public enum UIScrollViewIndicatorStyle {
-    case `default`
-    case black
-    case white
+extension UIScrollView {
+    public enum IndicatorStyle {
+        case `default`
+        case black
+        case white
 
-    var backgroundColor: UIColor {
-        switch self {
-        // Default according to iOS UIKit docs is "black with a white border".
-        // But actually it's a black stretchable image with a peak opacity of 0.35.
-        // We render it differently, so we add a little opacity to get a similar effect:
-        case .`default`: return UIColor.black.withAlphaComponent(0.37)
-        case .black: return UIColor.black
-        case .white: return UIColor.white
+        var backgroundColor: UIColor {
+            switch self {
+            // Default according to iOS UIKit docs is "black with a white border".
+            // But actually it's a black stretchable image with a peak opacity of 0.35.
+            // We render it differently, so we add a little opacity to get a similar effect:
+            case .`default`: return UIColor.black.withAlphaComponent(0.37)
+            case .black: return UIColor.black
+            case .white: return UIColor.white
+            }
         }
     }
 }
