@@ -49,10 +49,8 @@ class AVURLAsset(parent: SDLActivity, url: String) {
     }
 }
 
-
 @Suppress("unused")
 class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
-
     internal val exoPlayer: ExoPlayer
     private val listener: Player.Listener
 
@@ -73,7 +71,7 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
                 prepare()
             }
 
-        listener = object : Player.Listener {
+        listener = object: Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
                 when (state) {
                     Player.STATE_READY -> nativeOnVideoReady()
@@ -129,8 +127,13 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
 
     private fun seekToTimeInMilliseconds(timeMs: Long) {
         desiredSeekPosition = timeMs
-        if (isSeeking) return     // already mid‑seek
 
+        // This *should* mean we don't always scroll to the last position provided.
+        // In practice we always seem to be at the position we want anyway:
+        if (isSeeking) return
+
+        // Seeking to the exact millisecond is very processor intensive (and SLOW!)
+        // Only do put that effort in if we're scrubbing very slowly over a short time period:
         val seekParameters = if ((desiredSeekPosition - lastSeekedToTime).absoluteValue < 250) {
             SeekParameters.EXACT
         } else {
@@ -174,13 +177,12 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
     fun removeFromParent() = parent.removeViewInLayout(exoPlayerView)
 }
 
-/** Data‑source factory that adds a read/write LRU cache around HTTP & file accesses. */
+// Data‑source factory that adds a read/write LRU cache around HTTP & file accesses
 internal class CacheDataSourceFactory(
     private val context: Context,
     private val maxCacheSize: Long,
     private val maxFileSize: Long
 ) : DataSource.Factory {
-
     private val upstreamFactory = DefaultDataSource.Factory(context)
 
     private val simpleCache by lazy {
