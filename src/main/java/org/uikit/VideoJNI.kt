@@ -2,48 +2,59 @@ package org.uikit
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
-import android.widget.RelativeLayout
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.database.ExoDatabaseProvider
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.*
-import com.google.android.exoplayer2.upstream.cache.CacheDataSink
-import com.google.android.exoplayer2.upstream.cache.CacheDataSource
-import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
-import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import org.libsdl.app.SDLActivity
+import androidx.media3.database.ExoDatabaseProvider
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.FileDataSource
+import androidx.media3.datasource.cache.CacheDataSink
+import androidx.media3.datasource.cache.CacheDataSource
+import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
+import androidx.media3.datasource.cache.SimpleCache
 import java.io.File
+import android.widget.RelativeLayout
+import android.util.Log
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.SeekParameters
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter
+import androidx.media3.ui.PlayerView
 import kotlin.math.absoluteValue
-
 
 @Suppress("unused")
 class AVURLAsset(parent: SDLActivity, url: String) {
-    internal val videoSource: ProgressiveMediaSource
+    internal val mediaSource: ProgressiveMediaSource
     private val context: Context = parent.context
 
     init {
-        val mediaItem = MediaItem.Builder().setUri(Uri.parse(url)).build()
+        val mediaItem = MediaItem.Builder()
+            .setUri(Uri.parse(url))
+            .build()
 
-        // ExtractorMediaSource works for regular media files such as mp4, webm, mkv
-        val cacheDataSourceFactory = CacheDataSourceFactory(
+        // 512 MiB total cache, individual file parts ≤ 64 MiB
+        val cacheFactory = CacheDataSourceFactory(
             context,
-            512 * 1024 * 1024,
-            64 * 1024 * 1024
+            maxCacheSize = 512L * 1024 * 1024,
+            maxFileSize = 64L * 1024 * 1024
         )
 
-        videoSource = ProgressiveMediaSource
-            .Factory(cacheDataSourceFactory)
+        mediaSource = ProgressiveMediaSource
+            .Factory(cacheFactory)
             .createMediaSource(mediaItem)
     }
 }
 
+
 @Suppress("unused")
 class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
-    internal val exoPlayer: SimpleExoPlayer
-    private var listener: Player.EventListener
+
+    internal val exoPlayer: ExoPlayer
+    private val listener: Player.Listener
 
     external fun nativeOnVideoReady()
     external fun nativeOnVideoEnded()
@@ -54,34 +65,39 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
         val bandwidthMeter = DefaultBandwidthMeter.Builder(parent.context).build()
         val trackSelector = DefaultTrackSelector(parent.context)
 
-        exoPlayer = SimpleExoPlayer.Builder(parent.context)
-                .setBandwidthMeter(bandwidthMeter)
-                .setTrackSelector(trackSelector)
-                .build()
-        exoPlayer.prepare()
-        exoPlayer.setMediaSource(asset.videoSource)
+        exoPlayer = ExoPlayer.Builder(parent.context)
+            .setBandwidthMeter(bandwidthMeter)
+            .setTrackSelector(trackSelector)
+            .build().apply {
+                setMediaSource(asset.mediaSource)
+                prepare()
+            }
 
-        listener = object: Player.EventListener {
-            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                when (playbackState) {
+        listener = object : Player.Listener {
+            override fun onPlaybackStateChanged(state: Int) {
+                when (state) {
                     Player.STATE_READY -> nativeOnVideoReady()
-                    Player.STATE_ENDED -> nativeOnVideoEnded()
                     Player.STATE_BUFFERING -> nativeOnVideoBuffering()
-                    else -> {}
+                    Player.STATE_ENDED -> nativeOnVideoEnded()
                 }
             }
 
-            override fun onSeekProcessed() {
-                isSeeking = false
-                if (desiredSeekPosition != getCurrentTimeInMilliseconds()) {
-                    seekToTimeInMilliseconds(desiredSeekPosition)
+            override fun onPositionDiscontinuity(
+                oldPosition: Player.PositionInfo,
+                newPosition: Player.PositionInfo,
+                reason: Int
+            ) {
+                if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+                    isSeeking = false
+                    if (desiredSeekPosition != getCurrentTimeInMilliseconds()) {
+                        seekToTimeInMilliseconds(desiredSeekPosition)
+                    }
                 }
             }
 
-            override fun onPlayerError(error: ExoPlaybackException) {
-                Log.e("SDL", "ExoPlaybackException occurred")
-                val message = error.message ?: "N/A"
-                nativeOnVideoError(error.type, message)
+            override fun onPlayerError(error: PlaybackException) {   // PlaybackException replaces ExoPlaybackException :contentReference[oaicite:1]{index=1}
+                Log.e("SDL", "PlaybackException: ${error.errorCodeName}")
+                nativeOnVideoError(error.errorCode, error.message ?: "N/A")
             }
         }
 
@@ -89,12 +105,10 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     }
 
     fun play() {
-        // ExoPlayer API to play the video
         exoPlayer.playWhenReady = true
     }
 
     fun pause() {
-        // ExoPlayer API to pause the video
         exoPlayer.playWhenReady = false
     }
 
@@ -102,42 +116,31 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
         exoPlayer.volume = newVolume.toFloat()
     }
 
-    fun getCurrentTimeInMilliseconds(): Long {
-        return exoPlayer.currentPosition
-    }
+    fun getCurrentTimeInMilliseconds(): Long = exoPlayer.currentPosition
 
+    fun getPlaybackRate(): Float = exoPlayer.playbackParameters.speed
+    fun setPlaybackRate(rate: Float) {
+        exoPlayer.setPlaybackParameters(PlaybackParameters(rate, /*pitch*/1.0f))
+    }
 
     private var isSeeking = false
     private var desiredSeekPosition: Long = 0
     private var lastSeekedToTime: Long = 0
 
-    private fun seekToTimeInMilliseconds(timeInMilliseconds: Long) {
-        desiredSeekPosition = timeInMilliseconds
+    private fun seekToTimeInMilliseconds(timeMs: Long) {
+        desiredSeekPosition = timeMs
+        if (isSeeking) return     // already mid‑seek
 
-        // This *should* mean we don't always scroll to the last position provided.
-        // In practice we always seem to be at the position we want anyway:
-        if (isSeeking) { return }
-
-        // Seeking to the exact millisecond is very processor intensive (and SLOW!)
-        // Only do put that effort in if we're scrubbing very slowly over a short time period:
-        val syncParameters = if ((desiredSeekPosition - lastSeekedToTime).absoluteValue < 250) {
+        val seekParameters = if ((desiredSeekPosition - lastSeekedToTime).absoluteValue < 250) {
             SeekParameters.EXACT
         } else {
             SeekParameters.CLOSEST_SYNC
         }
 
         isSeeking = true
-        exoPlayer.setSeekParameters(syncParameters)
-        exoPlayer.seekTo(timeInMilliseconds)
-        lastSeekedToTime = timeInMilliseconds
-    }
-
-    fun getPlaybackRate(): Float {
-        return exoPlayer.playbackParameters.speed
-    }
-
-    fun setPlaybackRate(rate: Float) {
-        exoPlayer.setPlaybackParameters(PlaybackParameters(rate, 1.0F))
+        exoPlayer.setSeekParameters(seekParameters)
+        exoPlayer.seekTo(timeMs)
+        lastSeekedToTime = timeMs
     }
 
     fun cleanup() {
@@ -148,65 +151,55 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
 
 @Suppress("unused")
 class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
-    private var exoPlayerLayout: PlayerView
+    private val exoPlayerView: PlayerView = PlayerView(parent.context).apply {
+        useController = false
+        tag = "ExoPlayer"
+        this.player = player.exoPlayer
+    }
 
     init {
-        val context = parent.context
-
-        exoPlayerLayout = PlayerView(context)
-        exoPlayerLayout.player = player.exoPlayer
-        exoPlayerLayout.useController = false
-        exoPlayerLayout.tag = "ExoPlayer"
-        parent.addView(exoPlayerLayout, 0)
+        parent.addView(exoPlayerView, 0)
     }
 
     fun setFrame(x: Int, y: Int, width: Int, height: Int) {
-        val layoutParams = RelativeLayout.LayoutParams(width, height)
-        layoutParams.setMargins(x, y, 0, 0)
-        exoPlayerLayout.layoutParams = layoutParams
+        exoPlayerView.layoutParams = RelativeLayout.LayoutParams(width, height).also {
+            it.setMargins(x, y, 0, 0)
+        }
     }
 
     fun setResizeMode(resizeMode: Int) {
-        exoPlayerLayout.resizeMode = resizeMode
+        exoPlayerView.resizeMode = resizeMode
     }
 
-    fun removeFromParent() {
-        Log.v("SDL", "Removing video from parent layout")
-        parent.removeViewInLayout(exoPlayerLayout)
-    }
+    fun removeFromParent() = parent.removeViewInLayout(exoPlayerView)
 }
 
+/** Data‑source factory that adds a read/write LRU cache around HTTP & file accesses. */
+internal class CacheDataSourceFactory(
+    private val context: Context,
+    private val maxCacheSize: Long,
+    private val maxFileSize: Long
+) : DataSource.Factory {
 
+    private val upstreamFactory = DefaultDataSource.Factory(context)
 
-
-///// Caching data source
-// Thank you https://stackoverflow.com/a/45488510/3086440
-
-private class CacheDataSourceFactory(private val context: Context, private val maxCacheSize: Long, private val maxFileSize: Long) : DataSource.Factory {
-
-    private val defaultDatasourceFactory: DefaultDataSourceFactory
-
-    // The cache survives the application lifetime, otherwise the cache keys can get confused
-    companion object {
-        var simpleCache: SimpleCache? = null
+    private val simpleCache by lazy {
+        val cacheDir = File(context.cacheDir, "media")
+        SimpleCache(
+            cacheDir,
+            LeastRecentlyUsedCacheEvictor(maxCacheSize),
+            ExoDatabaseProvider(context)
+        )
     }
 
-    init {
-        val bandwidthMeter = DefaultBandwidthMeter.Builder(context).build()
-        defaultDatasourceFactory = DefaultDataSourceFactory(this.context,
-                bandwidthMeter, DefaultHttpDataSource.Factory())
-    }
-
-    override fun createDataSource(): DataSource {
-        if (simpleCache == null) {
-            val cacheEvictor = LeastRecentlyUsedCacheEvictor(maxCacheSize)
-            val dataBaseProvider = ExoDatabaseProvider(context)
-            val file = File(context.cacheDir, "media")
-            simpleCache = SimpleCache(file, cacheEvictor, dataBaseProvider)
-        }
-
-        return CacheDataSource(simpleCache!!, defaultDatasourceFactory.createDataSource(),
-                FileDataSource(), CacheDataSink(simpleCache!!, maxFileSize),
-                CacheDataSource.FLAG_BLOCK_ON_CACHE or CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR, null)
-    }
+    override fun createDataSource(): DataSource =
+        CacheDataSource(
+            simpleCache,
+            upstreamFactory.createDataSource(),
+            FileDataSource(),
+            CacheDataSink(simpleCache, maxFileSize),
+            CacheDataSource.FLAG_BLOCK_ON_CACHE or
+                    CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR,
+            null
+        )
 }
