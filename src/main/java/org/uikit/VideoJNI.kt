@@ -107,11 +107,18 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
 
     private fun seekToTimeInMilliseconds(timeMs: Long) {
         desiredSeekPosition = timeMs
+
+        // This *should* mean we don't always scroll to the last position provided.
+        // In practice we always seem to be at the position we want anyway:
         if (isSeeking) return
+        
         val delta = (desiredSeekPosition - lastSeekedToTime).absoluteValue
-        val mode = if (delta < 250) SeekParameters.EXACT else SeekParameters.CLOSEST_SYNC
+        
+        // Seeking to the exact millisecond is very processor intensive (and SLOW!)
+        // Only do put that effort in if we're scrubbing very slowly over a short time period:
+        val seekParameters = if (delta < 250) SeekParameters.EXACT else SeekParameters.CLOSEST_SYNC
         isSeeking = true
-        exoPlayer.setSeekParameters(mode)
+        exoPlayer.setSeekParameters(seekParameters)
         exoPlayer.seekTo(timeMs)
         lastSeekedToTime = timeMs
     }
@@ -221,7 +228,6 @@ class AVURLAsset(parent: SDLActivity, url: String) {
     private val context: Context = parent.context
 
     init {
-        // Ensure our singletons are initialized (512 MiB cache, 20 MiB HTTP cache)
         Media3Singleton.init(
             context = context,
             httpCacheSize = 20L * 1024 * 1024,
