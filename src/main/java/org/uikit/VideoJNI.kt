@@ -2,52 +2,33 @@ package org.uikit
 
 import android.content.Context
 import android.net.Uri
+import android.widget.RelativeLayout
+import android.util.Log
 import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import org.libsdl.app.SDLActivity
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
+import androidx.media3.common.Player
 import androidx.media3.database.ExoDatabaseProvider
 import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.FileDataSource
 import androidx.media3.datasource.cache.CacheDataSink
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
-import java.io.File
-import android.widget.RelativeLayout
-import android.util.Log
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.PlaybackParameters
-import androidx.media3.common.Player
+import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter
 import androidx.media3.ui.PlayerView
+import org.libsdl.app.SDLActivity
+import okhttp3.Cache as OkHttpCache
+import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import java.io.File
+import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
-
-@Suppress("unused")
-class AVURLAsset(parent: SDLActivity, url: String) {
-    internal val mediaSource: ProgressiveMediaSource
-    private val context: Context = parent.context
-
-    init {
-        val mediaItem = MediaItem.Builder()
-            .setUri(Uri.parse(url))
-            .build()
-
-        // 512 MiB total cache, individual file parts ≤ 64 MiB
-        val cacheFactory = CacheDataSourceFactory(
-            context,
-            maxCacheSize = 512L * 1024 * 1024,
-            maxFileSize = 64L * 1024 * 1024
-        )
-
-        mediaSource = ProgressiveMediaSource
-            .Factory(cacheFactory)
-            .createMediaSource(mediaItem)
-    }
-}
 
 @Suppress("unused")
 class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
@@ -71,7 +52,7 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
                 prepare()
             }
 
-        listener = object: Player.Listener {
+        listener = object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
                 when (state) {
                     Player.STATE_READY -> nativeOnVideoReady()
@@ -87,14 +68,14 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
             ) {
                 if (reason == Player.DISCONTINUITY_REASON_SEEK) {
                     isSeeking = false
-                    if (desiredSeekPosition != getCurrentTimeInMilliseconds()) {
+                    if (desiredSeekPosition != exoPlayer.currentPosition) {
                         seekToTimeInMilliseconds(desiredSeekPosition)
                     }
                 }
             }
 
-            override fun onPlayerError(error: PlaybackException) {   // PlaybackException replaces ExoPlaybackException :contentReference[oaicite:1]{index=1}
-                Log.e("SDL", "PlaybackException: ${error.errorCodeName}")
+            override fun onPlayerError(error: PlaybackException) {
+                Log.e("SDL", "PlaybackException: ${'$'}{error.errorCodeName}")
                 nativeOnVideoError(error.errorCode, error.message ?: "N/A")
             }
         }
@@ -115,10 +96,9 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     }
 
     fun getCurrentTimeInMilliseconds(): Long = exoPlayer.currentPosition
-
     fun getPlaybackRate(): Float = exoPlayer.playbackParameters.speed
     fun setPlaybackRate(rate: Float) {
-        exoPlayer.setPlaybackParameters(PlaybackParameters(rate, /*pitch*/1.0f))
+        exoPlayer.setPlaybackParameters(PlaybackParameters(rate, 1.0f))
     }
 
     private var isSeeking = false
@@ -127,21 +107,11 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
 
     private fun seekToTimeInMilliseconds(timeMs: Long) {
         desiredSeekPosition = timeMs
-
-        // This *should* mean we don't always scroll to the last position provided.
-        // In practice we always seem to be at the position we want anyway:
         if (isSeeking) return
-
-        // Seeking to the exact millisecond is very processor intensive (and SLOW!)
-        // Only do put that effort in if we're scrubbing very slowly over a short time period:
-        val seekParameters = if ((desiredSeekPosition - lastSeekedToTime).absoluteValue < 250) {
-            SeekParameters.EXACT
-        } else {
-            SeekParameters.CLOSEST_SYNC
-        }
-
+        val delta = (desiredSeekPosition - lastSeekedToTime).absoluteValue
+        val mode = if (delta < 250) SeekParameters.EXACT else SeekParameters.CLOSEST_SYNC
         isSeeking = true
-        exoPlayer.setSeekParameters(seekParameters)
+        exoPlayer.setSeekParameters(mode)
         exoPlayer.seekTo(timeMs)
         lastSeekedToTime = timeMs
     }
@@ -177,22 +147,26 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
     fun removeFromParent() = parent.removeViewInLayout(exoPlayerView)
 }
 
-// Data‑source factory that adds a read/write LRU cache around HTTP & file accesses
+/**
+ * Data-source factory that wraps a single shared OkHttpClient + SimpleCache.
+ */
 internal class CacheDataSourceFactory(
     private val context: Context,
     private val maxCacheSize: Long,
     private val maxFileSize: Long
 ) : DataSource.Factory {
-    private val upstreamFactory = DefaultDataSource.Factory(context)
 
-    private val simpleCache by lazy {
-        val cacheDir = File(context.cacheDir, "media")
-        SimpleCache(
-            cacheDir,
-            LeastRecentlyUsedCacheEvictor(maxCacheSize),
-            ExoDatabaseProvider(context)
+    init {
+        // Initialize the singleton with context and cache sizes
+        Media3Singleton.init(
+            context = context,
+            httpCacheSize = 20L * 1024 * 1024,
+            mediaCacheSize = maxCacheSize
         )
     }
+
+    private val upstreamFactory = OkHttpDataSource.Factory(Media3Singleton.okHttpClient)
+    private val simpleCache = Media3Singleton.simpleCache
 
     override fun createDataSource(): DataSource =
         CacheDataSource(
@@ -200,8 +174,67 @@ internal class CacheDataSourceFactory(
             upstreamFactory.createDataSource(),
             FileDataSource(),
             CacheDataSink(simpleCache, maxFileSize),
-            CacheDataSource.FLAG_BLOCK_ON_CACHE or
-                    CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR,
+            CacheDataSource.FLAG_BLOCK_ON_CACHE or CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR,
             null
         )
+}
+
+/**
+ * Singleton holder for shared OkHttpClient (HTTP/2) and ExoPlayer disk cache.
+ */
+object Media3Singleton {
+    private var initialized = false
+
+    lateinit var okHttpClient: OkHttpClient
+        private set
+
+    lateinit var simpleCache: SimpleCache
+        private set
+
+    /**
+     * Initialize once with application context and cache sizes.
+     */
+    fun init(context: Context, httpCacheSize: Long, mediaCacheSize: Long) {
+        if (initialized) return
+        initialized = true
+
+        // ① Shared OkHttpClient with HTTP/2 support and disk cache
+        val httpCacheDir = File(context.cacheDir, "http_http2_cache")
+        val okCache = OkHttpCache(httpCacheDir, httpCacheSize)
+        okHttpClient = OkHttpClient.Builder()
+            .cache(okCache)
+            .protocols(listOf(Protocol.HTTP_2, Protocol.HTTP_1_1))
+            .connectTimeout(8, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .build()
+
+        // ② Shared ExoPlayer disk cache (LRU evictor)
+        val mediaCacheDir = File(context.cacheDir, "media")
+        val evictor = LeastRecentlyUsedCacheEvictor(mediaCacheSize)
+        simpleCache = SimpleCache(mediaCacheDir, evictor, ExoDatabaseProvider(context))
+    }
+}
+
+@Suppress("unused")
+class AVURLAsset(parent: SDLActivity, url: String) {
+    internal val mediaSource: ProgressiveMediaSource
+    private val context: Context = parent.context
+
+    init {
+        // Ensure our singletons are initialized (512 MiB cache, 20 MiB HTTP cache)
+        Media3Singleton.init(
+            context = context,
+            httpCacheSize = 20L * 1024 * 1024,
+            mediaCacheSize = 512L * 1024 * 1024
+        )
+
+        val mediaItem = MediaItem.fromUri(Uri.parse(url))
+        val cacheFactory = CacheDataSourceFactory(
+            context = context,
+            maxCacheSize = 512L * 1024 * 1024,
+            maxFileSize = 64L * 1024 * 1024
+        )
+        mediaSource = ProgressiveMediaSource.Factory(cacheFactory)
+            .createMediaSource(mediaItem)
+    }
 }
