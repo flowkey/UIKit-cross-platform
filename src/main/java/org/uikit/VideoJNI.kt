@@ -116,7 +116,7 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
         
         // Seeking to the exact millisecond is very processor intensive (and SLOW!)
         // Only do put that effort in if we're scrubbing very slowly over a short time period:
-        val seekParameters = if (delta < 250) SeekParameters.EXACT else SeekParameters.CLOSEST_SYNC
+        val seekParameters = if (delta < 150) SeekParameters.EXACT else SeekParameters.CLOSEST_SYNC
         isSeeking = true
         exoPlayer.setSeekParameters(seekParameters)
         exoPlayer.seekTo(timeMs)
@@ -155,23 +155,9 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
 }
 
 /**
- * Data-source factory that wraps a single shared OkHttpClient + SimpleCache.
+ * Data-source factory that reuses the singleton cache and HTTP client.
  */
-internal class CacheDataSourceFactory(
-    private val context: Context,
-    private val maxCacheSize: Long,
-    private val maxFileSize: Long
-) : DataSource.Factory {
-
-    init {
-        // Initialize the singleton with context and cache sizes
-        Media3Singleton.init(
-            context = context,
-            httpCacheSize = 20L * 1024 * 1024,
-            mediaCacheSize = maxCacheSize
-        )
-    }
-
+internal class CacheDataSourceFactory(private val maxFileSize: Long): DataSource.Factory {
     private val upstreamFactory = OkHttpDataSource.Factory(Media3Singleton.okHttpClient)
     private val simpleCache = Media3Singleton.simpleCache
 
@@ -185,6 +171,7 @@ internal class CacheDataSourceFactory(
             null
         )
 }
+
 
 /**
  * Singleton holder for shared OkHttpClient (HTTP/2) and ExoPlayer disk cache.
@@ -205,17 +192,15 @@ object Media3Singleton {
         if (initialized) return
         initialized = true
 
-        // ① Shared OkHttpClient with HTTP/2 support and disk cache
+        // 1. Shared OkHttpClient with HTTP/2 support and disk cache
         val httpCacheDir = File(context.cacheDir, "http_http2_cache")
         val okCache = OkHttpCache(httpCacheDir, httpCacheSize)
         okHttpClient = OkHttpClient.Builder()
             .cache(okCache)
             .protocols(listOf(Protocol.HTTP_2, Protocol.HTTP_1_1))
-            .connectTimeout(8, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
             .build()
 
-        // ② Shared ExoPlayer disk cache (LRU evictor)
+        // 2. Shared ExoPlayer disk cache (LRU evictor)
         val mediaCacheDir = File(context.cacheDir, "media")
         val evictor = LeastRecentlyUsedCacheEvictor(mediaCacheSize)
         simpleCache = SimpleCache(mediaCacheDir, evictor, ExoDatabaseProvider(context))
@@ -230,15 +215,18 @@ class AVURLAsset(parent: SDLActivity, url: String) {
     init {
         Media3Singleton.init(
             context = context,
+
+            // the http cache holds HTTP responses/validators (ETags, headers, small bodies), 
+            // so we get fast 304s and header compression.
             httpCacheSize = 20L * 1024 * 1024,
+
+            // this cache actually holds the raw MP4 bytes
             mediaCacheSize = 512L * 1024 * 1024
         )
 
         val mediaItem = MediaItem.fromUri(Uri.parse(url))
         val cacheFactory = CacheDataSourceFactory(
-            context = context,
-            maxCacheSize = 512L * 1024 * 1024,
-            maxFileSize = 64L * 1024 * 1024
+            maxFileSize = 256L * 1024 * 1024
         )
         mediaSource = ProgressiveMediaSource.Factory(cacheFactory)
             .createMediaSource(mediaItem)
