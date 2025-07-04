@@ -77,7 +77,7 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
                         // debounce/cancel any in-flight correction
                         pendingSeek?.let { mainHandler.removeCallbacks(it) }
                         // schedule a corrective seek
-                        pendingSeek = Runnable { doSeek(desiredSeekPosition) }
+                        pendingSeek = Runnable { doSeekSync(desiredSeekPosition) }
                         mainHandler.post(pendingSeek!!)
                     }
                 }
@@ -121,11 +121,11 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
         pendingSeek?.let { mainHandler.removeCallbacks(it) }
 
         // schedule the new seek on the main thread
-        pendingSeek = Runnable { doSeek(timeMs) }
+        pendingSeek = Runnable { doSeekSync(timeMs) }
         mainHandler.post(pendingSeek!!)
     }
 
-    private fun doSeek(timeMs: Long) {
+    private fun doSeekSync(timeMs: Long) {
         if (isSeeking) return
 
         val deltaTotal = (timeMs - lastSeekedToTime).absoluteValue
