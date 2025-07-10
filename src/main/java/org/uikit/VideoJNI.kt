@@ -2,6 +2,8 @@ package org.uikit
 
 import android.content.Context
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.widget.RelativeLayout
 import android.util.Log
 import androidx.media3.common.MediaItem
@@ -27,13 +29,15 @@ import okhttp3.Cache as OkHttpCache
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import java.io.File
-import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
 
 @Suppress("unused")
 class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     internal val exoPlayer: ExoPlayer
     private val listener: Player.Listener
+
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private var pendingSeek: Runnable? = null
 
     external fun nativeOnVideoReady()
     external fun nativeOnVideoEnded()
@@ -68,8 +72,13 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
             ) {
                 if (reason == Player.DISCONTINUITY_REASON_SEEK) {
                     isSeeking = false
-                    if (desiredSeekPosition != exoPlayer.currentPosition) {
-                        seekToTimeInMilliseconds(desiredSeekPosition)
+                    val delta = (newPosition.positionMs - desiredSeekPosition).absoluteValue
+                    if (delta > 50) {
+                        // debounce/cancel any in-flight correction
+                        pendingSeek?.let { mainHandler.removeCallbacks(it) }
+                        // schedule a corrective seek
+                        pendingSeek = Runnable { doSeekSync(desiredSeekPosition) }
+                        mainHandler.post(pendingSeek!!)
                     }
                 }
             }
@@ -105,25 +114,31 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     private var desiredSeekPosition: Long = 0
     private var lastSeekedToTime: Long = 0
 
-    private fun seekToTimeInMilliseconds(timeMs: Long) {
+    fun seekToTimeInMilliseconds(timeMs: Long) {
         desiredSeekPosition = timeMs
 
-        // This *should* mean we don't always scroll to the last position provided.
-        // In practice we always seem to be at the position we want anyway:
+        // debounce any previous seek attempts
+        pendingSeek?.let { mainHandler.removeCallbacks(it) }
+
+        // schedule the new seek on the main thread
+        pendingSeek = Runnable { doSeekSync(timeMs) }
+        mainHandler.post(pendingSeek!!)
+    }
+
+    private fun doSeekSync(timeMs: Long) {
         if (isSeeking) return
-        
-        val delta = (desiredSeekPosition - lastSeekedToTime).absoluteValue
-        
-        // Seeking to the exact millisecond is very processor intensive (and SLOW!)
-        // Only do put that effort in if we're scrubbing very slowly over a short time period:
-        val seekParameters = if (delta < 150) SeekParameters.EXACT else SeekParameters.CLOSEST_SYNC
+
+        val deltaTotal = (timeMs - lastSeekedToTime).absoluteValue
+        val params = if (deltaTotal < 100) SeekParameters.EXACT else SeekParameters.CLOSEST_SYNC
+        exoPlayer.setSeekParameters(params)
+
         isSeeking = true
-        exoPlayer.setSeekParameters(seekParameters)
         exoPlayer.seekTo(timeMs)
         lastSeekedToTime = timeMs
     }
 
     fun cleanup() {
+        pendingSeek?.let { mainHandler.removeCallbacks(it) }
         exoPlayer.removeListener(listener)
         exoPlayer.release()
     }

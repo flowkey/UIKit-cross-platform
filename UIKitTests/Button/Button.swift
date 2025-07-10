@@ -16,7 +16,7 @@ public class Button: UIButton {
         }
     }
 
-    public var onPress: (@MainActor () -> Void)? {
+    public var onPress: (() -> Void)? {
         didSet {
             if onPress != nil {
                 // The docs say it is safe to add the same target/action multiple times:
