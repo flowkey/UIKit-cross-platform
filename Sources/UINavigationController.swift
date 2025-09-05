@@ -1,3 +1,4 @@
+@MainActor
 open class UINavigationController: UIViewController {
     /// Note: not currently implemented!
     open var modalPresentationStyle: UIModalPresentationStyle = .formSheet
@@ -9,7 +10,7 @@ open class UINavigationController: UIViewController {
     }
 
     open override func loadView() {
-        view = UINavigationControllerContainerView()
+        view = UINavigationControllerContainerView(frame: .zero)
         view.addSubview(transitionView)
         view.addSubview(navigationBar)
     }
@@ -98,6 +99,13 @@ open class UINavigationController: UIViewController {
 
         // This `animated` bool is unrelated to the one passed into viewWillAppear:
         updateUIFromViewControllerStack(animated: false)
+    }
+
+    open override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+
+        navigationBar.frame.size.width = view.bounds.width
+        transitionView.frame = view.bounds
     }
 
     open override func handleHardwareBackButtonPress() -> Bool {

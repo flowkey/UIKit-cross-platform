@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  androidNativeInit.swift
 //  UIKit
@@ -6,7 +7,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
+internal import SDL
 import JNI
 
 public struct UIKitAndroid {
@@ -43,3 +44,4 @@ public func nativeDestroyScreen(env: UnsafeMutablePointer<JNIEnv>, view: JavaObj
     UIApplication.onWillEnterBackground()
     UIApplication.onDidEnterBackground()
 }
+#endif

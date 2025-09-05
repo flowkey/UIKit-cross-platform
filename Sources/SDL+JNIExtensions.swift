@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  SDL+JNIExtensions.swift
 //  UIKit
@@ -27,7 +28,7 @@ struct JavaSDLView: JavaParameterConvertible {
     static let asJNIParameterString = "L\(javaClassname);"
 
     func toJavaParameter() -> JavaParameter {
-        return JavaParameter(object: self.object)
+        return JavaParameter(l: self.object)
     }
 
     static func fromStaticField(_ fieldID: JavaFieldID, of javaClass: JavaClass) throws -> JavaSDLView {
@@ -50,3 +51,4 @@ struct JavaSDLView: JavaParameterConvertible {
         return self.init(javaStringObject)
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  Logging.swift
 //  UIKit
@@ -6,10 +7,10 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
+internal import SDL
 
 #if os(Android)
-import Glibc
+import Bionic
 #else
 import Darwin.C.stdio
 #endif
@@ -48,3 +49,4 @@ public func fatalError(_ message: @autoclosure () -> String = "", file: StaticSt
 public enum LogPriority: Int32 {
     case `unknown`,`default`,`verbose`,`debug`,`info`,`warn`,`error`,`fatal`,`silent`
 }
+#endif

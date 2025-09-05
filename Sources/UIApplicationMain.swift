@@ -1,4 +1,4 @@
-import SDL
+internal import SDL
 
 // This function doesn't exist in the actual UIKit of course,
 // but the app entrypoint is easily customizable, so it doesn't

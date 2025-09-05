@@ -6,10 +6,10 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
-import SDL_gpu
+internal import SDL
+internal import SDL_gpu
 
-extension SDLWindowFlags: OptionSet {}
+extension SDLWindowFlags: @retroactive OptionSet {}
 
 public extension UIScreen {
     @MainActor
@@ -24,7 +24,14 @@ public final class UIScreen {
     // Keep that in mind when using it: i.e. if possible, don't ;)
     internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
 
-    nonisolated public let bounds: CGRect
+    public var bounds: CGRect {
+        didSet {
+            let newWidth = UInt16(bounds.width.rounded())
+            let newHeight = UInt16(bounds.height.rounded())
+            GPU_SetWindowResolution(newWidth, newHeight)
+            GPU_SetVirtualResolution(rawPointer, newWidth, newHeight)
+        }
+    }
     nonisolated public let scale: CGFloat
 
     private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
@@ -49,24 +56,33 @@ public final class UIScreen {
         #if os(Android)
         // height/width are determined by the window when fullscreen:
         var size = CGSize.zero
-        let options: SDLWindowFlags = [SDL_WINDOW_FULLSCREEN]
+        let options: SDLWindowFlags = SDL_WINDOW_FULLSCREEN
         #else
-        var size = CGSize.samsungGalaxyS7.landscape
+        var size = CGSize.samsungGalaxyJ5.landscape
+
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
-            //SDL_WINDOW_FULLSCREEN
+            SDL_WINDOW_RESIZABLE,
         ]
         #endif
 
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
         GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC)
 
+        #if os(Android)
+        let androidScreenDimension = getAndroidScreenDimension()
+        #endif
+
         if options.contains(SDL_WINDOW_FULLSCREEN), let displayMode = SDLDisplayMode.current {
             // Fix fullscreen resolution on Mac and make Android easier to reason about:
             // There is an inconsistency between Mac and Android when setting SDL_WINDOW_FULLSCREEN
             // The easiest solution is just to work in 1:1 pixels
             GPU_SetPreInitFlags(GPU_GetPreInitFlags() | GPU_INIT_DISABLE_AUTO_VIRTUAL_RESOLUTION)
+            #if os(Android)
+            size = CGSize(width: CGFloat(androidScreenDimension.width), height: CGFloat(androidScreenDimension.height))
+            #else
             size = CGSize(width: CGFloat(displayMode.w), height: CGFloat(displayMode.h))
+            #endif
         }
 
         guard let gpuTarget = GPU_Init(UInt16(size.width), UInt16(size.height), UInt32(GPU_DEFAULT_INIT_FLAGS) | options.rawValue) else {
@@ -75,8 +91,7 @@ public final class UIScreen {
         }
 
         #if os(Android)
-        let scale = getAndroidDeviceScale()
-
+        let scale = androidScreenDimension.scale
         GPU_SetVirtualResolution(gpuTarget, UInt16(size.width / scale), UInt16(size.height / scale))
         size.width /= scale
         size.height /= scale
@@ -104,27 +119,27 @@ public final class UIScreen {
     }
 
     deinit {
-        let rawPointer = self.rawPointer
-        Task { @MainActor in
+        MainActor.assumeIsolated {
             UIView.completePendingAnimations()
             UIView.layersWithAnimations.removeAll()
             UIView.currentAnimationPrototype = nil
             UIEvent.activeEvents.removeAll()
             FontRenderer.cleanupSession()
-
-            if rawPointer == nil { return } // dummy screen or already destroyed
-            defer { GPU_Quit() }
-
-            // get and destroy existing GLRenderer because only one SDL_Window can exist on Android at the same time
-            guard let gpuContext = rawPointer?.pointee.context else {
-                assertionFailure("glRenderer gpuContext not found")
-                return
-            }
-
-            let existingWindowID = gpuContext.pointee.windowID
-            let existingWindow = SDL_GetWindowFromID(existingWindowID)
-            SDL_DestroyWindow(existingWindow)
         }
+
+        guard let rawPointer = self.rawPointer else {
+            return
+        }
+
+        defer { GPU_Quit() }
+        guard let gpuContext = rawPointer.pointee.context else {
+            assertionFailure("glRenderer gpuContext not found")
+            return
+        }
+
+        let existingWindowID = gpuContext.pointee.windowID
+        let existingWindow = SDL_GetWindowFromID(existingWindowID)
+        SDL_DestroyWindow(existingWindow)
     }
 
     // Should be in UIScreen+render.swift but you can't store properties in an extension..
@@ -170,20 +185,27 @@ extension UIScreen {
 #if os(Android)
 import JNI
 
-fileprivate func getAndroidDeviceScale() -> CGFloat {
-    if let density: Float = try? jni.call("getDeviceDensity", on: getSDLView()) {
-        return CGFloat(density)
-    } else {
-        return 2.0 // assume retina
-    }
+fileprivate func getAndroidScreenDimension() -> (width: CGFloat, height: CGFloat, scale: CGFloat) {
+    guard
+        let dimension = try? jni.call(
+            "getScreenDimension",
+            on: getSDLView(),
+            returningObjectType: "org.libsdl.app.ScreenDimension"
+        ),
+        let width: JavaFloat = try? jni.GetField("width", from: dimension),
+        let height: JavaFloat = try? jni.GetField("height", from: dimension),
+        let scale: JavaFloat = try? jni.GetField("scale", from: dimension)
+    else { return(0, 0, 2) }
+
+    return (CGFloat(width), CGFloat(height), CGFloat(scale))
 }
 #endif
 
-
+@MainActor
 extension UIScreen {
     /// Used in tests only and doesn't actually render anything
     static func dummyScreen(
-        bounds: CGRect = CGRect(origin: .zero, size: .samsungGalaxyS7),
+        bounds: CGRect = CGRect(origin: .zero, size: .samsungGalaxyTab10),
         scale: CGFloat
     ) -> UIScreen {
         return UIScreen(
@@ -194,20 +216,21 @@ extension UIScreen {
     }
 }
 
-private extension CGSize {
+@MainActor
+extension CGSize {
     // smartphones:
-    static let samsungGalaxyJ5 = CGSize(width: 1280 / 2.0, height: 720 / 2.0)
-    static let samsungGalaxyS5 = CGSize(width: 1920 / 3.0, height: 1080 / 3.0)
-    static let samsungGalaxyS7 = CGSize(width: 2560 / 4.0, height: 1440 / 4.0) // 1080p 1.5x Retina
-    static let samsungGalaxyS8 = CGSize(width: 2960 / 4.0, height: 1440 / 4.0)
+    nonisolated static let samsungGalaxyJ5 = CGSize(width: 1280 / 2.0, height: 720 / 2.0)
+    nonisolated static let samsungGalaxyS5 = CGSize(width: 1920 / 3.0, height: 1080 / 3.0)
+    nonisolated static let samsungGalaxyS7 = CGSize(width: 2560 / 4.0, height: 1440 / 4.0) // 1080p 1.5x Retina
+    nonisolated static let samsungGalaxyS8 = CGSize(width: 2960 / 4.0, height: 1440 / 4.0)
 
     // tablets:
-    static let nexus9 = CGSize(width: 2048 / 2.0, height: 1536 / 2.0)
-    static let huaweiM3lite = CGSize(width: 1920 / 2.0, height: 1200 / 2.0)
-    static let samsungGalaxyTabS_T800 = CGSize(width: 2560 / 2.0, height: 1600 / 2.0)
-    static let samsungGalaxyTab10 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
-    static let samsungGalaxyTabA_T380 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
-    static let samsungGalaxyTabA_T580 = CGSize(width: 1920 / 1.0, height: 1200 / 1.0)
+    nonisolated static let nexus9 = CGSize(width: 2048 / 2.0, height: 1536 / 2.0)
+    nonisolated static let huaweiM3lite = CGSize(width: 1920 / 2.0, height: 1200 / 2.0)
+    nonisolated static let samsungGalaxyTabS_T800 = CGSize(width: 2560 / 2.0, height: 1600 / 2.0)
+    nonisolated static let samsungGalaxyTab10 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
+    nonisolated static let samsungGalaxyTabA_T380 = CGSize(width: 1280 / 1.0, height: 800 / 1.0)
+    nonisolated static let samsungGalaxyTabA_T580 = CGSize(width: 1920 / 1.0, height: 1200 / 1.0)
 
     // change orientation if needed
     var landscape: CGSize {

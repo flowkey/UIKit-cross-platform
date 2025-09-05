@@ -34,11 +34,11 @@ open class DisplayLink {
 }
 
 extension DisplayLink: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self).hashValue)
     }
 
-    public static func == (lhs: DisplayLink, rhs: DisplayLink) -> Bool {
+    nonisolated public static func ==(lhs: DisplayLink, rhs: DisplayLink) -> Bool {
         return lhs === rhs
     }
 }

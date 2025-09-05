@@ -6,8 +6,8 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-import SDL
-import SDL_gpu
+internal import SDL
+internal import SDL_gpu
 
 extension UIScreen {
     @MainActor

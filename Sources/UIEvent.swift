@@ -1,3 +1,4 @@
+@MainActor
 public class UIEvent {
     internal static var activeEvents = Set<UIEvent>()
 
@@ -12,11 +13,11 @@ public class UIEvent {
 }
 
 extension UIEvent: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self).hashValue)
     }
 
-    public static func == (lhs: UIEvent, rhs: UIEvent) -> Bool {
+    nonisolated public static func ==(lhs: UIEvent, rhs: UIEvent) -> Bool {
         return lhs === rhs
     }
 }

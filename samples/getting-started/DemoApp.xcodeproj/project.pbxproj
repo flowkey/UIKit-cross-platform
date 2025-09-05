@@ -10,9 +10,7 @@
 		5B7506AF20FCF07400EC187D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7506AE20FCF07400EC187D /* AppDelegate.swift */; };
 		5B7506B120FCF07400EC187D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7506B020FCF07400EC187D /* ViewController.swift */; };
 		5B7506B920FCF07600EC187D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B7506B720FCF07600EC187D /* LaunchScreen.storyboard */; };
-		5B7506C120FCF0CF00EC187D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7506C020FCF0CF00EC187D /* main.swift */; };
 		5B7506D420FCF24600EC187D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7506AE20FCF07400EC187D /* AppDelegate.swift */; };
-		5B7506D520FCF24600EC187D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7506C020FCF0CF00EC187D /* main.swift */; };
 		5B7506D620FCF24600EC187D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7506B020FCF07400EC187D /* ViewController.swift */; };
 		5B7506E720FCF26200EC187D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7506E220FCF25700EC187D /* UIKit.framework */; };
 		5B7506E820FCF26200EC187D /* UIKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7506E220FCF25700EC187D /* UIKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -70,7 +68,6 @@
 		5B7506B020FCF07400EC187D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		5B7506B820FCF07600EC187D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5B7506BA20FCF07600EC187D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5B7506C020FCF0CF00EC187D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		5B7506C620FCF23300EC187D /* DemoAppMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoAppMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B7506CF20FCF23500EC187D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5B7506D020FCF23500EC187D /* DemoAppMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DemoAppMac.entitlements; sourceTree = "<group>"; };
@@ -119,7 +116,6 @@
 			isa = PBXGroup;
 			children = (
 				5B7506AE20FCF07400EC187D /* AppDelegate.swift */,
-				5B7506C020FCF0CF00EC187D /* main.swift */,
 				5B7506B020FCF07400EC187D /* ViewController.swift */,
 				5B4A506120FE2F3F004E3D77 /* androidMain.swift */,
 				5B7506B720FCF07600EC187D /* LaunchScreen.storyboard */,
@@ -278,7 +274,6 @@
 			files = (
 				5B7506B120FCF07400EC187D /* ViewController.swift in Sources */,
 				5B7506AF20FCF07400EC187D /* AppDelegate.swift in Sources */,
-				5B7506C120FCF0CF00EC187D /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,7 +282,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B7506D620FCF24600EC187D /* ViewController.swift in Sources */,
-				5B7506D520FCF24600EC187D /* main.swift in Sources */,
 				5B7506D420FCF24600EC187D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -365,7 +359,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -420,7 +413,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -479,7 +471,6 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.DemoAppMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -501,7 +492,6 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.DemoAppMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

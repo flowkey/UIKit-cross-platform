@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/flowkey/UIKit-cross-platform.svg?style=shield&circle-token=2bc60653f4bb369754b04d97d324d9ba2bee6c6b)](https://circleci.com/gh/flowkey/UIKit-cross-platform)
+[![CircleCI](https://circleci.com/gh/flowkey/UIKit-cross-platform.svg?style=shield)](https://circleci.com/gh/flowkey/UIKit-cross-platform)
 [![Swift5.4](https://img.shields.io/badge/swift-5.4-orange.svg?style=flat)](https://swift.org/)
 [![Platforms](https://img.shields.io/badge/platform-Android%20%7C%20macOS-lightgrey.svg)](https://swift.org/)
 [![License](https://img.shields.io/badge/license-MIT-71787A.svg)](https://tldrlegal.com/license/mit-license)
@@ -64,9 +64,9 @@ brew install cmake && brew install ninja
     2. Go to Appearance & Behavior -> System Settings -> Android SDK
     3. under SDK Platforms: install SDK for API Level 29
     4. under SDK Tools, install `Android SDK Build Tools`
-    5. under SDK Tools, install NDK 21.4.7075529 (tick `Show Package Details` to see all available versions)
+    5. under SDK Tools, install NDK 27.1.12297006 (tick `Show Package Details` to see all available versions)
     6. Press Apply / OK to install SDKs
-    7. create a symlink in `/usr/local/ndk/21.4.7075529/` pointing to the path of the NDK (`ln -vsi ~/Library/Android/sdk/ndk/21.4.7075529 /usr/local/ndk/21.4.7075529`)
+    7. create a symlink in `/usr/local/ndk/27.1.12297006/` pointing to the path of the NDK (`ln -vsi ~/Library/Android/sdk/ndk/27.1.12297006 /usr/local/ndk/27.1.12297006`)
 
 ## Architecture
 

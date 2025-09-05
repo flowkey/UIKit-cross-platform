@@ -55,7 +55,9 @@ open class UIViewController: UIResponder {
     open func viewWillDisappear(_ animated: Bool) {}
     open func viewDidDisappear(_ animated: Bool) {}
 
-    open func viewWillLayoutSubviews() {}
+    open func viewWillLayoutSubviews() {
+        self.presentedViewController?.view.frame.size = view.bounds.size
+    }
     open func viewDidLayoutSubviews() {}
 
     internal var animationTime: Double { return 0.4 }

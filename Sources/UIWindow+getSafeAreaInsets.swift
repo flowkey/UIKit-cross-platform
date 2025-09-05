@@ -1,5 +1,6 @@
-
+#if os(Android)
 import JNI
+#endif
 
 extension UIWindow {
     static func getSafeAreaInsets() -> UIEdgeInsets {

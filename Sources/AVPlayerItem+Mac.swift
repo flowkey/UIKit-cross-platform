@@ -1,3 +1,4 @@
+#if os(macOS)
 //
 //  AVPlayerItem+Mac.swift
 //  UIKit
@@ -17,3 +18,4 @@ extension AVPlayerItem {
         return duration.seconds * 1000
     }
 }
+#endif

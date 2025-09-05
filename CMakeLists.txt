@@ -27,6 +27,7 @@ add_library(UIKit SHARED
     Sources/CALayer+ContentsGravity.swift
     Sources/CALayer+SDL.swift
     Sources/CALayer+animations.swift
+    Sources/CATransform3D+interpolate.swift
     Sources/CALayer.swift
     Sources/CAMediaTimingFunction.swift
     Sources/CASpringAnimation.swift
@@ -115,6 +116,7 @@ add_library(UIKit SHARED
     Sources/UIWindow+getSafeAreaInsets.swift
     Sources/UIWindow.swift
     Sources/Switch.swift
+    Sources/DispatchQueue+syncSafe.swift
     )
 
 set_target_properties(UIKit PROPERTIES

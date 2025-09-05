@@ -1,4 +1,9 @@
-import SDL
+internal import SDL
+import Dispatch
+
+#if canImport(UIKit_C_API)
+@_exported import UIKit_C_API
+#endif
 
 @MainActor
 open class UIApplication {
@@ -47,7 +52,7 @@ open class UIApplication {
     }
 
     deinit {
-        Task { @MainActor in
+        MainActor.assumeIsolated {
             UIScreen.main = nil
             UIFont.clearCachedFontFiles()
             DisplayLink.activeDisplayLinks.removeAll()
@@ -56,8 +61,8 @@ open class UIApplication {
 }
 
 
-import SDL
-import SDL_gpu
+internal import SDL
+internal import SDL_gpu
 
 extension UIApplication {
     func handleSDLQuit() {

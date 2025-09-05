@@ -1,3 +1,4 @@
+#if os(macOS)
 //
 //  AVPlayerLayer+Mac.swift
 //  UIKit
@@ -7,7 +8,7 @@
 //
 
 import AVFoundation
-import var SDL_gpu.GPU_FORMAT_RGBA
+internal import var SDL_gpu.GPU_FORMAT_RGBA
 
 public typealias AVPlayer = AVFoundation.AVPlayer
 
@@ -123,3 +124,4 @@ public final class AVPlayerLayer: CALayer {
         contents?.replacePixels(with: pixelBytes, bytesPerPixel: 4)
     }
 }
+#endif

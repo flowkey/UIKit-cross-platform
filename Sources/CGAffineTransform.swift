@@ -13,8 +13,11 @@ public extension CGAffineTransform {
         self.init(scaleByX: scaleX, byY: y)
     }
 
+    init(rotationAngle: CGFloat) {
+        self.init(rotationByRadians: rotationAngle)
+    }
+
     var isIdentity: Bool {
         return self == .identity
     }
-
 }

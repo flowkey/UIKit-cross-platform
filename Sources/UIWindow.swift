@@ -11,8 +11,14 @@ public class UIWindow: UIView {
         didSet { rootViewController?.next = self }
     }
 
+    override open func layoutIfNeeded() {
+        super.layoutIfNeeded()
+        subviews.forEach { subview in
+            subview.frame = bounds
+        }
+    }
+
     open func makeKeyAndVisible() {
-        self.safeAreaInsets = UIWindow.getSafeAreaInsets()
         UIApplication.shared?.keyWindow = self
 
         if let viewController = rootViewController {

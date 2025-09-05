@@ -1,3 +1,4 @@
+#if os(Android)
 //
 //  JNIVideo.swift
 //  UIKit
@@ -14,6 +15,7 @@ public enum AVLayerVideoGravity: JavaInt {
     case resizeAspectFill = 4 // RESIZE_MODE_ZOOM
 }
 
+@MainActor
 public class AVPlayerLayer: JNIObject {
     override public static var className: String { "org.uikit.AVPlayerLayer" }
 
@@ -24,30 +26,30 @@ public class AVPlayerLayer: JNIObject {
 
     public var videoGravity: AVLayerVideoGravity = .resizeAspect {
         didSet {
-            try! call(methodName: "setResizeMode", arguments: [videoGravity.rawValue])
+            try! call("setResizeMode", arguments: [videoGravity.rawValue])
         }
     }
 
     public var frame: CGRect {
         get { return .zero } // FIXME: This would require returning a JavaObject with the various params
         set {
-            Task { @MainActor in
-                let scaledFrame = (newValue * UIScreen.main.scale)
-                try! call(methodName: "setFrame", arguments: [
-                    JavaInt(scaledFrame.origin.x.rounded()),
-                    JavaInt(scaledFrame.origin.y.rounded()),
-                    JavaInt(scaledFrame.size.width.rounded()),
-                    JavaInt(scaledFrame.size.height.rounded())
-                ])
-            }
+            guard let scale = UIScreen.main?.scale else { return }
+            let scaledFrame = (newValue * scale)
+            try! call("setFrame", arguments: [
+                JavaInt(scaledFrame.origin.x.rounded()),
+                JavaInt(scaledFrame.origin.y.rounded()),
+                JavaInt(scaledFrame.size.width.rounded()),
+                JavaInt(scaledFrame.size.height.rounded())
+            ])
         }
     }
 
     deinit {
         do {
-            try call(methodName: "removeFromParent")
+            try call("removeFromParent")
         } catch {
             assertionFailure("Couldn't remove AVPlayerLayer from parent")
         }
     }
 }
+#endif

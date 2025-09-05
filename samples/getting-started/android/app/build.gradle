@@ -1,16 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 34
     defaultConfig {
         applicationId "com.example"
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
+    packagingOptions.jniLibs.keepDebugSymbols += "**/libdispatch.so"
     buildTypes {
         release {
             minifyEnabled false
@@ -24,33 +24,35 @@ android {
             include "arm64-v8a"
         }
     }
+
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    namespace 'com.flowkey.uikit.example' 
 }
 
 task buildSwiftArm64(type: Exec) {
     commandLine 'sh', '-c', getSwiftBuildCommand('arm64-v8a')
 }
 
-task buildSwiftIntel64(type: Exec) {
-    commandLine 'sh', '-c', getSwiftBuildCommand('x86_64')
-}
-
 task cleanSwift(type: Exec) {
-    commandLine 'sh', '-c', "rm -rf ../../build"
+    commandLine 'sh', '-c', "rm -rf ../../.build"
 }
 
 preBuild.dependsOn buildSwiftArm64
-preBuild.dependsOn buildSwiftIntel64
 
 clean.dependsOn cleanSwift
 
 def getSwiftBuildCommand(abi) {
-    def cmakeBuildType = "RelWithDebInfo"
-    def buildScript = "../../../../swift-android-toolchain/swift-build.sh"
-    return "CMAKE_BUILD_TYPE=$cmakeBuildType ANDROID_ABI=$abi LIBRARY_OUTPUT_DIRECTORY='${projectDir}/src/main/jniLibs/${abi}' $buildScript ../../"
+    def BUILD_TYPE = "release"
+    def buildScript = "../../../../swift-android-toolchain/swiftpm.sh"
+    return "ANDROID_ABI=$abi LIBRARY_OUTPUT_DIRECTORY='${projectDir}/src/main/jniLibs/${abi}' $buildScript -c $BUILD_TYPE --package-path ../.."
 }
 
 dependencies {
