@@ -20,7 +20,7 @@ public class AVPlayer: JNIObject {
     public convenience init(playerItem: AVPlayerItem) {
         let parentView = JavaSDLView(getSDLView())
         try! self.init(arguments: parentView, playerItem.asset)
-        globalAVPlayer = self
+        try! self.call("setSwiftAVPlayerInstancePtr", arguments: [self.swiftAVPlayerInstancePtr])
     }
 
     public func play() {
@@ -56,34 +56,57 @@ public class AVPlayer: JNIObject {
     }
 
     public struct ExoPlaybackError: Error {
-        let type: Int // https://exoplayer.dev/doc/reference/com/google/android/exoplayer2/ExoPlaybackException.Type.html
+        let type: Int
         let message: String
     }
 }
 
-private weak var globalAVPlayer: AVPlayer?
-
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoReady")
-public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onVideoReady?()
+public func nativeOnVideoReady(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject, swiftAVPlayerInstancePtr: JavaLong) {
+    AVPlayer.from(swiftAVPlayerInstancePtr: swiftAVPlayerInstancePtr)?.onVideoReady?()
 }
 
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoEnded")
-public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onVideoEnded?()
+public func nativeOnVideoEnded(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject, swiftAVPlayerInstancePtr: JavaLong) {
+    AVPlayer.from(swiftAVPlayerInstancePtr: swiftAVPlayerInstancePtr)?.onVideoEnded?()
 }
 
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoBuffering")
-public func nativeOnVideoBuffering(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject) {
-    globalAVPlayer?.onVideoBuffering?()
+public func nativeOnVideoBuffering(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject, swiftAVPlayerInstancePtr: JavaLong) {
+    AVPlayer.from(swiftAVPlayerInstancePtr: swiftAVPlayerInstancePtr)?.onVideoBuffering?()
 }
 
 @_cdecl("Java_org_uikit_AVPlayer_nativeOnVideoError")
-public func nativeOnVideoError(env: UnsafeMutablePointer<JNIEnv>, cls: JavaObject, type: JavaInt, message: JavaString) {
+public func nativeOnVideoError(
+    env: UnsafeMutablePointer<JNIEnv>,
+    cls: JavaObject,
+    type: JavaInt,
+    message: JavaString,
+    swiftAVPlayerInstancePtr: JavaLong
+) {
     let error = AVPlayer.ExoPlaybackError(
         type: Int(type),
-        message: (try? String(javaString: message)) ?? "N/A"
+        message: (try? String(javaString: message)) ?? ""
     )
-    globalAVPlayer?.onError?(error)
+    AVPlayer.from(swiftAVPlayerInstancePtr: swiftAVPlayerInstancePtr)?.onError?(error)
+}
+
+extension AVPlayer {
+    static func from(swiftAVPlayerInstancePtr: JavaLong) -> AVPlayer? {
+        guard let reference = UnsafeRawPointer(bitPattern: Int(swiftAVPlayerInstancePtr)) else {
+            let msg = "Could not derefence AVPlayer instance from swiftAVPlayerInstancePtr."
+            print(msg)
+            assertionFailure(msg)
+            return nil
+        }
+        return Unmanaged<AVPlayer>.fromOpaque(reference).takeUnretainedValue()
+    }
+}
+
+extension JNIObject {
+    var swiftAVPlayerInstancePtr: JavaLong {
+        let ptr = Unmanaged.passUnretained(self).toOpaque()
+        return JavaLong(Int(bitPattern: ptr))
+    }
 }
 #endif

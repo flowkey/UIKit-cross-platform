@@ -35,14 +35,15 @@ import kotlin.math.absoluteValue
 class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     internal val exoPlayer: ExoPlayer
     private val listener: Player.Listener
+    private var swiftAVPlayerInstancePtr: Long? = null
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private var pendingSeek: Runnable? = null
 
-    external fun nativeOnVideoReady()
-    external fun nativeOnVideoEnded()
-    external fun nativeOnVideoBuffering()
-    external fun nativeOnVideoError(type: Int, message: String)
+    external fun nativeOnVideoReady(swiftAVPlayerInstancePtr: Long)
+    external fun nativeOnVideoEnded(swiftAVPlayerInstancePtr: Long)
+    external fun nativeOnVideoBuffering(swiftAVPlayerInstancePtr: Long)
+    external fun nativeOnVideoError(type: Int, message: String, swiftAVPlayerInstancePtr: Long)
 
     init {
         val bandwidthMeter = DefaultBandwidthMeter.Builder(parent.context).build()
@@ -57,11 +58,14 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
             }
 
         listener = object : Player.Listener {
-            override fun onPlaybackStateChanged(state: Int) {
-                when (state) {
-                    Player.STATE_READY -> nativeOnVideoReady()
-                    Player.STATE_BUFFERING -> nativeOnVideoBuffering()
-                    Player.STATE_ENDED -> nativeOnVideoEnded()
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                this@AVPlayer.swiftAVPlayerInstancePtr?.let { userContext ->
+                    when (playbackState) {
+                        Player.STATE_READY -> nativeOnVideoReady(userContext)
+                        Player.STATE_ENDED -> nativeOnVideoEnded(userContext)
+                        Player.STATE_BUFFERING -> nativeOnVideoBuffering(userContext)
+                        else -> {}
+                    }
                 }
             }
 
@@ -84,12 +88,19 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
             }
 
             override fun onPlayerError(error: PlaybackException) {
-                Log.e("SDL", "PlaybackException: ${'$'}{error.errorCodeName}")
-                nativeOnVideoError(error.errorCode, error.message ?: "N/A")
+                this@AVPlayer.swiftAVPlayerInstancePtr?.let { swiftAVPlayerInstancePtr ->
+                    Log.e("SDL", "ExoPlaybackException occurred")
+                    val message = error.message ?: "unknown"
+                    nativeOnVideoError(error.errorCode, message, swiftAVPlayerInstancePtr)
+                }
             }
         }
 
         exoPlayer.addListener(listener)
+    }
+
+    fun setSwiftAVPlayerInstancePtr(ptr: Long) {
+        this.swiftAVPlayerInstancePtr = ptr
     }
 
     fun play() {
