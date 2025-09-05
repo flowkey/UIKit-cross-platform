@@ -33,7 +33,6 @@ import kotlin.math.absoluteValue
 
 @Suppress("unused")
 class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
-
     internal val exoPlayer: ExoPlayer
     private val listener: Player.Listener
     private var swiftAVPlayerInstancePtr: Long? = null
