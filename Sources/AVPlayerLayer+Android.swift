@@ -44,6 +44,13 @@ public class AVPlayerLayer: JNIObject {
         }
     }
 
+    public var zIndex: Int {
+        get { return .zero } // FIXME: This would require returning a JavaObject with the various params
+        set {
+            try! call("setZIndex", arguments: [JavaInt(newValue)])
+        }
+    }
+
     deinit {
         do {
             try call("removeFromParent")

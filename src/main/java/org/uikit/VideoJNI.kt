@@ -173,6 +173,10 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
         }
     }
 
+    fun setZIndex(newValue: Int) {
+        exoPlayerView.elevation = newValue.toFloat()
+    }
+
     fun setResizeMode(resizeMode: Int) {
         exoPlayerView.resizeMode = resizeMode
     }
