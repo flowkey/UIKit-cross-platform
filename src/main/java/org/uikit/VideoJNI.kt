@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.RelativeLayout
 import android.util.Log
+import android.view.SurfaceView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
@@ -175,6 +176,11 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
 
     fun setZIndex(newValue: Int) {
         exoPlayerView.elevation = newValue.toFloat()
+        (exoPlayerView.videoSurfaceView as? SurfaceView)?.apply {
+            if (newValue > 0) {
+                setZOrderOnTop(true)
+            }
+        }
     }
 
     fun setResizeMode(resizeMode: Int) {
