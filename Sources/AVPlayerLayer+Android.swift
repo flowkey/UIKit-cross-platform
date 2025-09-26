@@ -16,7 +16,32 @@ public enum AVLayerVideoGravity: JavaInt {
 }
 
 @MainActor
-public class AVPlayerLayer: JNIObject {
+public class AVPlayerLayer: CALayer {
+    public var kotlinAVPlayerLayer: KotlinAVPlayerLayer!
+
+    public convenience init(player: AVPlayer) {
+        self.init()
+        kotlinAVPlayerLayer = KotlinAVPlayerLayer(player: player)
+    }
+
+    public var videoGravity: AVLayerVideoGravity = .resizeAspect {
+        didSet { kotlinAVPlayerLayer.videoGravity = videoGravity }
+    }
+
+    override public var frame: CGRect {
+        didSet {
+            if kotlinAVPlayerLayer != nil { kotlinAVPlayerLayer.frame = frame }
+        }
+    }
+
+    public var zIndex: Int {
+        get { kotlinAVPlayerLayer.zIndex }
+        set { kotlinAVPlayerLayer.zIndex = newValue }
+    }
+}
+
+@MainActor
+public class KotlinAVPlayerLayer: JNIObject {
     override public static var className: String { "org.uikit.AVPlayerLayer" }
 
     public convenience init(player: AVPlayer) {
@@ -30,11 +55,10 @@ public class AVPlayerLayer: JNIObject {
         }
     }
 
-    public var frame: CGRect {
-        get { return .zero } // FIXME: This would require returning a JavaObject with the various params
-        set {
+    public var frame: CGRect = .zero {
+        didSet {
             guard let scale = UIScreen.main?.scale else { return }
-            let scaledFrame = (newValue * scale)
+            let scaledFrame = frame * scale
             try! call("setFrame", arguments: [
                 JavaInt(scaledFrame.origin.x.rounded()),
                 JavaInt(scaledFrame.origin.y.rounded()),
@@ -44,10 +68,9 @@ public class AVPlayerLayer: JNIObject {
         }
     }
 
-    public var zIndex: Int {
-        get { return .zero } // FIXME: This would require returning a JavaObject with the various params
-        set {
-            try! call("setZIndex", arguments: [JavaInt(newValue)])
+    public var zIndex: Int = 0 {
+        didSet {
+            try! call("setZIndex", arguments: [JavaInt(zIndex - 10)])
         }
     }
 
