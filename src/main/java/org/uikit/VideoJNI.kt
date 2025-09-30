@@ -174,7 +174,18 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
         }
     }
 
-    fun setZIndex(newValue: Int) {
+    fun setAlpha(newValue: Float) {
+        exoPlayerView.alpha = newValue
+    }
+
+    fun setIsHidden(newValue: Boolean) {
+        // `newValue` is the HIDDEN state, whereas we're setting the _VISIBILITY_ here:
+        exoPlayerView.visibility = if (!newValue) { View.VISIBLE } else { View.INVISIBLE }
+        // Note: there is another visibility state, `View.GONE`, which also removes the view
+        // from layout (similar to `display: none`), but we want to match iOS behaviour here.
+    }
+
+    fun setElevation(newValue: Double) {
         exoPlayerView.elevation = newValue.toFloat()
     }
 

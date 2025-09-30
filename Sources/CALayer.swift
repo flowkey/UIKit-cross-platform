@@ -182,7 +182,10 @@ open class CALayer {
     public required init() {}
 
     public required init(layer: Any) {
-        guard let layer = layer as? CALayer else { fatalError() }
+        guard let layer = layer as? CALayer else {
+            fatalError("Copy of CALayer must be initialized from another CALayer")
+        }
+
         bounds = layer.bounds
         delegate = layer.delegate
         transform = layer.transform
@@ -208,8 +211,8 @@ open class CALayer {
         contentsGravity = layer.contentsGravity
     }
 
-    open func copy() -> Any {
-        return CALayer(layer: self)
+    open func copy() -> Self {
+        return Self(layer: self)
     }
 
     open func action(forKey event: String) -> CAAction? {
@@ -221,7 +224,11 @@ open class CALayer {
 
     /// returns a non animating copy of the layer
     func createPresentation() -> CALayer {
-        let copy = CALayer(layer: self)
+        // XXX: Should we just return _presentation if it already exists??
+        // This seems to break animations, but why?
+        // if let _presentation { return _presentation }
+
+        let copy = self.copy()
         copy.isPresentationForAnotherLayer = true
         return copy
     }

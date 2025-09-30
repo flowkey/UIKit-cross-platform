@@ -10,7 +10,7 @@ internal import SDL
 
 extension UIView {
     final func sdlDrawAndLayoutTreeIfNeeded(parentAlpha: CGFloat = 1.0) {
-        let visibleLayer = (layer._presentation ?? layer)
+        let visibleLayer = (layer.presentation() ?? layer)
 
         let alpha = CGFloat(visibleLayer.opacity) * parentAlpha
         if visibleLayer.isHidden || alpha < 0.01 { return }

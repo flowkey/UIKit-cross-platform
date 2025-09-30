@@ -16,7 +16,7 @@ public enum AVLayerVideoGravity: JavaInt {
 }
 
 @MainActor
-public class AVPlayerLayer: CALayer {
+final public class AVPlayerLayer: CALayer {
     public var kotlinAVPlayerLayer: KotlinAVPlayerLayer!
 
     public convenience init(player: AVPlayer) {
@@ -25,23 +25,43 @@ public class AVPlayerLayer: CALayer {
     }
 
     public var videoGravity: AVLayerVideoGravity = .resizeAspect {
-        didSet { kotlinAVPlayerLayer.videoGravity = videoGravity }
+        didSet { kotlinAVPlayerLayer?.setVideoGravity(videoGravity) }
     }
 
-    override public var frame: CGRect {
-        didSet {
-            if kotlinAVPlayerLayer != nil { kotlinAVPlayerLayer.frame = frame }
-        }
+    override public var opacity: Float {
+        didSet { kotlinAVPlayerLayer?.setAlpha(opacity) }
     }
 
-    public var zIndex: Int {
-        get { kotlinAVPlayerLayer.zIndex }
-        set { kotlinAVPlayerLayer.zIndex = newValue }
+    override public var isHidden: Bool {
+        didSet { kotlinAVPlayerLayer?.setIsHidden(isHidden) }
     }
+
+    override public func copy() -> AVPlayerLayer {
+        let copy = super.copy()
+        print("[AVPlayerLayer] Copying and setting kotlinAVPlayerLayer")
+        // Allow the presentation layer's frame to be animated:
+        copy.kotlinAVPlayerLayer = kotlinAVPlayerLayer
+        return copy
+    }
+
+    override public var zPosition: CGFloat {
+        didSet { kotlinAVPlayerLayer?.setElevation(zPosition) }
+    }
+
+    // [Frame Animations]
+    // `frame` is a computed property, so `position` and `bounds` are what actually gets animated
+    override public var bounds: CGRect {
+        didSet { kotlinAVPlayerLayer?.setFrame(frame) }
+    }
+
+    override public var position: CGPoint {
+        didSet { kotlinAVPlayerLayer?.setFrame(frame) }
+    }
+    // [/Frame Animations]
 }
 
 @MainActor
-public class KotlinAVPlayerLayer: JNIObject {
+public final class KotlinAVPlayerLayer: JNIObject {
     override public static var className: String { "org.uikit.AVPlayerLayer" }
 
     public convenience init(player: AVPlayer) {
@@ -49,29 +69,31 @@ public class KotlinAVPlayerLayer: JNIObject {
         try! self.init(arguments: parentView, player)
     }
 
-    public var videoGravity: AVLayerVideoGravity = .resizeAspect {
-        didSet {
-            try! call("setResizeMode", arguments: [videoGravity.rawValue])
-        }
+    public func setVideoGravity(_ newValue: AVLayerVideoGravity) {
+        try! call("setResizeMode", arguments: [newValue.rawValue])
     }
 
-    public var frame: CGRect = .zero {
-        didSet {
-            guard let scale = UIScreen.main?.scale else { return }
-            let scaledFrame = frame * scale
-            try! call("setFrame", arguments: [
-                JavaInt(scaledFrame.origin.x.rounded()),
-                JavaInt(scaledFrame.origin.y.rounded()),
-                JavaInt(scaledFrame.size.width.rounded()),
-                JavaInt(scaledFrame.size.height.rounded())
-            ])
-        }
+    public func setAlpha(_ newValue: Float) {
+        try! call("setAlpha", arguments: [newValue])
     }
 
-    public var zIndex: Int = 0 {
-        didSet {
-            try! call("setZIndex", arguments: [JavaInt(zIndex - 10)])
-        }
+    public func setFrame(_ newValue: CGRect) {
+        guard let scale = UIScreen.main?.scale else { return }
+        let scaledFrame = newValue * scale
+        try! call("setFrame", arguments: [
+            JavaInt(scaledFrame.origin.x.rounded()),
+            JavaInt(scaledFrame.origin.y.rounded()),
+            JavaInt(scaledFrame.size.width.rounded()),
+            JavaInt(scaledFrame.size.height.rounded())
+        ])
+    }
+
+    public func setIsHidden(_ newValue: Bool) {
+        try! call("setIsHidden", arguments: [newValue])
+    }
+
+    public func setElevation(_ newValue: Double) {
+        try! call("setElevation", arguments: [newValue])
     }
 
     deinit {
