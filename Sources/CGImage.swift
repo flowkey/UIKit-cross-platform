@@ -43,12 +43,34 @@ public class CGImage {
         var data = sourceData
 
         guard let gpuImagePtr = data.withUnsafeMutableBytes({ buffer -> UnsafeMutablePointer<GPU_Image>? in
-            guard let ptr = buffer.baseAddress?.assumingMemoryBound(to: Int8.self) else {
-                return nil
-            }
+            var width: Int32 = 0
+            var height: Int32 = 0
+            var channels: Int32 = 4
 
-            let rw = SDL_RWFromMem(ptr, Int32(buffer.count))
-            return GPU_LoadImage_RW(rw, true)
+            #if os(Android)
+            // Android natively supports 2-channel textures. Use them to save 50% (GPU) RAM.
+            let data = stbi_load_from_memory(buffer.baseAddress, Int32(buffer.count), &width, &height, &channels, 0)
+
+            let format: GPU_FormatEnum = switch channels {
+            case 1: GPU_FORMAT_ALPHA
+            case 2: GPU_FORMAT_LUMINANCE_ALPHA
+            case 3: GPU_FORMAT_RGB
+            case 4: GPU_FORMAT_RGBA
+            default: fatalError()
+            }
+            #elseif os(macOS)
+            // OpenGL on macOS does not natively support 2-channel textures (`unit 0 GLD_TEXTURE_INDEX_2D is unloadable`).
+            // Instead, force `stb_image` to load all images as if they had 4 channels.
+            // This is more compatible, but requires more memory.
+            let data = stbi_load_from_memory(buffer.baseAddress, Int32(buffer.count), &width, &height, nil, channels)
+            let format = GPU_FORMAT_RGBA
+            #endif
+
+            let img = GPU_CreateImage(UInt16(width), UInt16(height), format)
+            GPU_UpdateImageBytes(img, nil, data, width * channels)
+            data?.deallocate()
+
+            return img
         }) else { return nil }
 
         self.init(gpuImagePtr, sourceData: data)
