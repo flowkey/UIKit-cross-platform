@@ -69,7 +69,7 @@ public final class AVPlayerLayer: CALayer {
         player?.currentItem?.remove(playerOutput)
 
         let aspectRatio = presentationSize.width / presentationSize.height
-        
+
         let width = (size.width * self.contentsScale).rounded()
         let widthAlignedTo4PixelPadding = (width.remainder(dividingBy: 8) == 0) ?
             width : // <-- no padding required
