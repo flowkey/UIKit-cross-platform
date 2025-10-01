@@ -124,4 +124,4 @@ public final class AVPlayerLayer: CALayer {
         contents?.replacePixels(with: pixelBytes, bytesPerPixel: 4)
     }
 }
-#endif
+#endif // os(macOS)

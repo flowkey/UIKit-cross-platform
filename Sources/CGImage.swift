@@ -42,8 +42,6 @@ public class CGImage {
     internal convenience init?(_ sourceData: Data) {
         var data = sourceData
 
-        // SDL_SaveBMP(surface, "check.bmp")
-
         guard let gpuImagePtr = data.withUnsafeMutableBytes({ buffer -> UnsafeMutablePointer<GPU_Image>? in
             guard let ptr = buffer.baseAddress?.assumingMemoryBound(to: Int8.self) else {
                 return nil
