@@ -1,12 +1,4 @@
 #if os(Android)
-//
-//  JNIVideo.swift
-//  UIKit
-//
-//  Created by Chris on 13.09.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
 import JNI
 
 public enum AVLayerVideoGravity: JavaInt {
@@ -17,7 +9,7 @@ public enum AVLayerVideoGravity: JavaInt {
 
 @MainActor
 final public class AVPlayerLayer: CALayer {
-    public var kotlinAVPlayerLayer: KotlinAVPlayerLayer!
+    public var kotlinAVPlayerLayer: KotlinAVPlayerLayer?
 
     public convenience init(player: AVPlayer) {
         self.init()
@@ -38,10 +30,13 @@ final public class AVPlayerLayer: CALayer {
 
     override public func copy() -> AVPlayerLayer {
         let copy = super.copy()
-        print("[AVPlayerLayer] Copying and setting kotlinAVPlayerLayer")
         // Allow the presentation layer's frame to be animated:
         copy.kotlinAVPlayerLayer = kotlinAVPlayerLayer
         return copy
+    }
+
+    override public var cornerRadius: CGFloat {
+        didSet { kotlinAVPlayerLayer?.setCornerRadius(Float(cornerRadius)) }
     }
 
     override public var zPosition: CGFloat {
@@ -70,7 +65,7 @@ public final class KotlinAVPlayerLayer: JNIObject {
     }
 
     public func setVideoGravity(_ newValue: AVLayerVideoGravity) {
-        try! call("setResizeMode", arguments: [newValue.rawValue])
+        // Not implemented because we no longer user ExoPlayer's PlayerView
     }
 
     public func setAlpha(_ newValue: Float) {
@@ -88,12 +83,16 @@ public final class KotlinAVPlayerLayer: JNIObject {
         ])
     }
 
+    public func setCornerRadius(_ newValue: Float) {
+        try! call("setCornerRadius", arguments: [newValue])
+    }
+
     public func setIsHidden(_ newValue: Bool) {
         try! call("setIsHidden", arguments: [newValue])
     }
 
     public func setElevation(_ newValue: Double) {
-        try! call("setElevation", arguments: [newValue])
+        try! call("setElevation", arguments: [Float(newValue)])
     }
 
     deinit {

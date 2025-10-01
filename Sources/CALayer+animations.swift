@@ -8,7 +8,6 @@
 
 extension CALayer {
     public func add(_ animation: CABasicAnimation, forKey keyPath: String) {
-        print("\(self): add \(animation) for \(keyPath)")
         let copy = CABasicAnimation(from: animation)
         copy.creationTime = Timer()
 
@@ -93,7 +92,6 @@ extension CALayer {
             presentation.anchorPoint = start + (end - start) * progress
 
         case .bounds:
-            print(self)
             guard let startBounds = animation.fromValue as? CGRect else { return }
             let endBounds = animation.toValue as? CGRect ?? self.bounds
             presentation.bounds = (startBounds + (endBounds - startBounds) * progress)

@@ -1,13 +1,18 @@
 package org.uikit
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Outline
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.widget.RelativeLayout
 import android.util.Log
+import android.util.TypedValue
 import android.view.TextureView
 import android.view.View
+import android.view.ViewOutlineProvider
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
@@ -158,44 +163,44 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
 }
 
 @Suppress("unused")
-class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
-    private val exoPlayerView: TextureView = TextureView(parent.context).apply {
+class AVPlayerLayer constructor(
+    private val parent: SDLActivity,
+    player: AVPlayer
+) : TextureView(parent.context, null, 0) {
+    init {
         tag = "ExoPlayer"
         player.exoPlayer.setVideoTextureView(this)
+        parent.addView(this, 0)
     }
 
-    init {
-        parent.addView(exoPlayerView, 0)
+    fun setCornerRadius(newValue: Float) {
+        val radiusPx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, newValue, resources.displayMetrics
+        )
+
+        clipToOutline = true
+        outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(v: View, outline: Outline) {
+                // Ensure the outline matches the current size
+                outline.setRoundRect(0, 0, v.width, v.height, radiusPx)
+            }
+        }
     }
 
     fun setFrame(x: Int, y: Int, width: Int, height: Int) {
-        exoPlayerView.layoutParams = RelativeLayout.LayoutParams(width, height).also {
+        layoutParams = RelativeLayout.LayoutParams(width, height).also {
             it.setMargins(x, y, 0, 0)
         }
     }
 
-    fun setAlpha(newValue: Float) {
-        exoPlayerView.alpha = newValue
-    }
-
     fun setIsHidden(newValue: Boolean) {
         // `newValue` is the HIDDEN state, whereas we're setting the _VISIBILITY_ here:
-        exoPlayerView.visibility = if (!newValue) { View.VISIBLE } else { View.INVISIBLE }
+        visibility = if (!newValue) { View.VISIBLE } else { View.INVISIBLE }
         // Note: there is another visibility state, `View.GONE`, which also removes the view
         // from layout (similar to `display: none`), but we want to match iOS behaviour here.
     }
 
-    fun setElevation(newValue: Double) {
-        exoPlayerView.elevation = newValue.toFloat()
-    }
-
-    fun setResizeMode(resizeMode: Int) {
-        (exoPlayerView as? PlayerView)?.apply {
-            this.resizeMode = resizeMode
-        }
-    }
-
-    fun removeFromParent() = parent.removeViewInLayout(exoPlayerView)
+    fun removeFromParent() = parent.removeViewInLayout(this)
 }
 
 /**

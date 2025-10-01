@@ -242,6 +242,14 @@ open class CALayer {
         didSet { onDidSetAnimations(wasEmpty: oldValue.isEmpty) }
     }
 
+    open func animationKeys() -> [String]? {
+        return animations.keys.isEmpty ? nil : animations.keys.map { $0 }
+    }
+
+    open func animation(forKey key: String) -> CABasicAnimation? {
+        return animations[key]
+    }
+
     /// We disable animation on parameters of views / layers that haven't been rendered yet.
     /// This is both a performance optimization (avoids lots of animations at the start)
     /// as well as a correctness fix (matches iOS behaviour). Maybe there's a better way though?

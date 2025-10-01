@@ -1,12 +1,4 @@
 #if os(Android)
-//
-//  AVPlayerItem+Android.swift
-//  UIKit
-//
-//  Created by Geordie Jay on 24.05.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
 import JNI
 
 public class AVPlayerItem {
@@ -16,7 +8,7 @@ public class AVPlayerItem {
     }
 }
 
-public class AVURLAsset: JNIObject {
+public final class AVURLAsset: JNIObject {
     public override static var className: String { "org.uikit.AVURLAsset" }
 
     @MainActor
