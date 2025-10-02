@@ -164,13 +164,13 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
 
 @Suppress("unused")
 class AVPlayerLayer constructor(
-    private val parent: SDLActivity,
+    private val sdlView: SDLActivity,
     player: AVPlayer
-) : TextureView(parent.context, null, 0) {
+) : TextureView(sdlView.context, null, 0) {
     init {
         tag = "ExoPlayer"
         player.exoPlayer.setVideoTextureView(this)
-        parent.addView(this, 0)
+        sdlView.addView(this, 0)
     }
 
     fun setCornerRadius(newValue: Float) {
@@ -178,7 +178,7 @@ class AVPlayerLayer constructor(
             TypedValue.COMPLEX_UNIT_DIP, newValue, resources.displayMetrics
         )
 
-        clipToOutline = true
+        clipToOutline = newValue > 0
         outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(v: View, outline: Outline) {
                 // Ensure the outline matches the current size
@@ -200,7 +200,7 @@ class AVPlayerLayer constructor(
         // from layout (similar to `display: none`), but we want to match iOS behaviour here.
     }
 
-    fun removeFromParent() = parent.removeViewInLayout(this)
+    fun removeFromParent() = sdlView.removeViewInLayout(this)
 }
 
 /**
@@ -227,12 +227,8 @@ internal class CacheDataSourceFactory(private val maxFileSize: Long): DataSource
  */
 object Media3Singleton {
     private var initialized = false
-
-    lateinit var okHttpClient: OkHttpClient
-        private set
-
-    lateinit var simpleCache: SimpleCache
-        private set
+    lateinit var okHttpClient: OkHttpClient private set
+    lateinit var simpleCache: SimpleCache private set
 
     /**
      * Initialize once with application context and cache sizes.
