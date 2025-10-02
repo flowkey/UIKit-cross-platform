@@ -29,18 +29,13 @@ public extension UIApplicationDelegate {
     func applicationWillResignActive(_ application: UIApplication) {}
     func applicationDidEnterBackground(_ application: UIApplication) {}
 
-    // Note: this is not used on Android, because there we have a library, so no `main` function will be called.
     @MainActor
     static func main() async throws {
-        #if os(macOS)
-        // On Mac (like on iOS), the main thread blocks here via RunLoop.current.run().
-        defer { setupRenderAndRunLoop() }
-        #else
-        // Android is handled differently: we don't want to block the main thread because the system needs it.
-        // Instead, we call render periodically from Kotlin via the Android Choreographer API (see UIApplication).
-        // That said, this function won't even be called on platforms like Android where the app is built as a library, not an executable.
-        #endif
-
+        #if !os(Android) // Unused on Android: we build a library, so no `main` function gets called.
         _ = UIApplicationMain(UIApplication.self, Self.self)
+
+        // On Mac (like on iOS), the main thread blocks here via RunLoop.current.run().
+        setupRenderAndRunLoop()
+        #endif // !os(Android)
     }
 }
