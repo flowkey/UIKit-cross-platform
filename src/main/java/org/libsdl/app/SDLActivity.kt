@@ -293,29 +293,6 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
             return
         }
 
-        // Keep your orientation guards as-is (they still apply).
-        if (context is Activity) {
-            val activity = context as Activity
-            when (activity.requestedOrientation) {
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE -> {
-                    if (width < height) return
-                }
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT -> {
-                    if (height < width) return
-                }
-            }
-        }
-
-        if (mIsSurfaceReady && mWidth.toInt() == width && mHeight.toInt() == height) {
-            return
-        }
-
         mWidth = width.toFloat()
         mHeight = height.toFloat()
 
