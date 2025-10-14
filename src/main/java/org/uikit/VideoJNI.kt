@@ -20,10 +20,6 @@ import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
-import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter
-import androidx.media3.ui.PlayerView
 import org.libsdl.app.SDLActivity
 import okhttp3.Cache as OkHttpCache
 import okhttp3.OkHttpClient
@@ -33,7 +29,17 @@ import kotlin.math.absoluteValue
 
 @Suppress("unused")
 class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
-    internal val exoPlayer: ExoPlayer
+    private val mediaSourceFactory =
+        androidx.media3.exoplayer.source.DefaultMediaSourceFactory(parent.context)
+            .setDataSourceFactory(CacheDataSourceFactory(maxFileSize = 256L * 1024 * 1024))
+
+    internal val exoPlayer: ExoPlayer = ExoPlayer.Builder(parent.context)
+        .setMediaSourceFactory(mediaSourceFactory)
+        .build().apply {
+            setMediaItem(asset.mediaItem)
+            prepare()
+        }
+
     private val listener: Player.Listener
     private var swiftAVPlayerInstancePtr: Long? = null
 
@@ -46,24 +52,13 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     external fun nativeOnVideoError(type: Int, message: String, swiftAVPlayerInstancePtr: Long)
 
     init {
-        val bandwidthMeter = DefaultBandwidthMeter.Builder(parent.context).build()
-        val trackSelector = DefaultTrackSelector(parent.context)
-
-        exoPlayer = ExoPlayer.Builder(parent.context)
-            .setBandwidthMeter(bandwidthMeter)
-            .setTrackSelector(trackSelector)
-            .build().apply {
-                setMediaSource(asset.mediaSource)
-                prepare()
-            }
-
         listener = object : Player.Listener {
-            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                this@AVPlayer.swiftAVPlayerInstancePtr?.let { userContext ->
-                    when (playbackState) {
-                        Player.STATE_READY -> nativeOnVideoReady(userContext)
-                        Player.STATE_ENDED -> nativeOnVideoEnded(userContext)
-                        Player.STATE_BUFFERING -> nativeOnVideoBuffering(userContext)
+            override fun onPlaybackStateChanged(state: Int) {
+                this@AVPlayer.swiftAVPlayerInstancePtr?.let { context ->
+                    when (state) {
+                        Player.STATE_READY     -> nativeOnVideoReady(context)
+                        Player.STATE_BUFFERING -> nativeOnVideoBuffering(context)
+                        Player.STATE_ENDED     -> nativeOnVideoEnded(context)
                         else -> {}
                     }
                 }
@@ -91,6 +86,7 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
                 this@AVPlayer.swiftAVPlayerInstancePtr?.let { swiftAVPlayerInstancePtr ->
                     Log.e("SDL", "ExoPlaybackException occurred")
                     val message = error.message ?: "unknown"
+                    Log.e("SDL", message)
                     nativeOnVideoError(error.errorCode, message, swiftAVPlayerInstancePtr)
                 }
             }
@@ -118,7 +114,7 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
     fun getCurrentTimeInMilliseconds(): Long = exoPlayer.currentPosition
     fun getPlaybackRate(): Float = exoPlayer.playbackParameters.speed
     fun setPlaybackRate(rate: Float) {
-        exoPlayer.setPlaybackParameters(PlaybackParameters(rate, 1.0f))
+        exoPlayer.playbackParameters = PlaybackParameters(rate, 1.0f)
     }
 
     private var isSeeking = false
@@ -235,26 +231,19 @@ object Media3Singleton {
 
 @Suppress("unused")
 class AVURLAsset(parent: SDLActivity, url: String) {
-    internal val mediaSource: ProgressiveMediaSource
+    internal val mediaItem: MediaItem
     private val context: Context = parent.context
 
     init {
         Media3Singleton.init(
             context = context,
-
-            // the http cache holds HTTP responses/validators (ETags, headers, small bodies), 
-            // so we get fast 304s and header compression.
             httpCacheSize = 20L * 1024 * 1024,
-
-            // this cache actually holds the raw MP4 bytes
             mediaCacheSize = 512L * 1024 * 1024
         )
 
-        val mediaItem = MediaItem.fromUri(Uri.parse(url))
-        val cacheFactory = CacheDataSourceFactory(
-            maxFileSize = 256L * 1024 * 1024
-        )
-        mediaSource = ProgressiveMediaSource.Factory(cacheFactory)
-            .createMediaSource(mediaItem)
+        mediaItem = MediaItem.Builder()
+            .setUri(Uri.parse(url))
+            // .setMimeType("video/mp4") // optional; omit unless you're sure every URL is MP4
+            .build()
     }
 }
