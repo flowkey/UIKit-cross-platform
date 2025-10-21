@@ -23,6 +23,7 @@ import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
 import org.libsdl.app.SDLActivity
@@ -30,15 +31,22 @@ import okhttp3.Cache as OkHttpCache
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import java.io.File
+import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.absoluteValue
 
 @Suppress("unused")
 class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
+    private val renderersFactory = DefaultRenderersFactory(parent.context)
+        .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF)
+        .setEnableDecoderFallback(true);
+      //  .forceEnableMediaCodecAsynchronousQueueing(); Doesn't seem recommended on OS versions older than Android 12
+
     private val mediaSourceFactory =
         androidx.media3.exoplayer.source.DefaultMediaSourceFactory(parent.context)
             .setDataSourceFactory(CacheDataSourceFactory(maxFileSize = 256L * 1024 * 1024))
 
     internal val exoPlayer: ExoPlayer = ExoPlayer.Builder(parent.context)
+        .setRenderersFactory(renderersFactory)
         .setMediaSourceFactory(mediaSourceFactory)
         .build().apply {
             setMediaItem(asset.mediaItem)
@@ -61,9 +69,12 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
             override fun onPlaybackStateChanged(state: Int) {
                 this@AVPlayer.swiftAVPlayerInstancePtr?.let { context ->
                     when (state) {
-                        Player.STATE_READY     -> nativeOnVideoReady(context)
+                        Player.STATE_READY -> {
+                            nativeOnVideoReady(context)
+                            resetRetryState()
+                        }
                         Player.STATE_BUFFERING -> nativeOnVideoBuffering(context)
-                        Player.STATE_ENDED     -> nativeOnVideoEnded(context)
+                        Player.STATE_ENDED -> nativeOnVideoEnded(context)
                         else -> {}
                     }
                 }
@@ -93,6 +104,18 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
                     val message = error.message ?: "unknown"
                     Log.e("SDL", message)
                     nativeOnVideoError(error.errorCode, message, swiftAVPlayerInstancePtr)
+
+                    val isCodecError = when (error.errorCode) {
+                        PlaybackException.ERROR_CODE_DECODER_INIT_FAILED,
+                        PlaybackException.ERROR_CODE_DECODER_QUERY_FAILED,
+                        PlaybackException.ERROR_CODE_DECODING_FAILED -> true
+                        else -> false
+                    }
+
+                    if (isCodecError && retryAttempts < maxRetryAttempts) {
+                        scheduleRetryWithBackoff()
+                        return
+                    }
                 }
             }
         }
@@ -149,10 +172,44 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
         lastSeekedToTime = timeMs
     }
 
+    private var retryAttempts = 0
+    private val maxRetryAttempts = 3
+    private val baseDelayMs = 1_000L // 1s, then 2s, 4s, 8s...
+    private val maxDelayMs = 16_000L
+    private val jitterMs = 250L // adds 0..250ms to avoid thundering herds
+    private var pendingRetry: Runnable? = null
+
+    private fun scheduleRetryWithBackoff() {
+        if (retryAttempts >= maxRetryAttempts) return
+
+        val nextAttempt = retryAttempts + 1
+        val backoff = (baseDelayMs shl (nextAttempt - 1)).coerceAtMost(maxDelayMs)
+        val delay = backoff + ThreadLocalRandom.current().nextLong(0, jitterMs + 1)
+
+        // Only one scheduled retry at a time
+        pendingRetry?.let { mainHandler.removeCallbacks(it) }
+
+        val task = Runnable {
+            retryAttempts = nextAttempt
+
+            exoPlayer.prepare()
+            if (exoPlayer.playWhenReady) exoPlayer.play()
+        }
+        pendingRetry = task
+        mainHandler.postDelayed(task, delay)
+    }
+
+    private fun resetRetryState() {
+        retryAttempts = 0
+        pendingRetry?.let { mainHandler.removeCallbacks(it) }
+        pendingRetry = null
+    }
+
     fun cleanup() {
         pendingSeek?.let { mainHandler.removeCallbacks(it) }
         exoPlayer.removeListener(listener)
         exoPlayer.release()
+        resetRetryState()
     }
 }
 
@@ -260,7 +317,6 @@ class AVURLAsset(parent: SDLActivity, url: String) {
 
         mediaItem = MediaItem.Builder()
             .setUri(Uri.parse(url))
-            // .setMimeType("video/mp4") // optional; omit unless you're sure every URL is MP4
             .build()
     }
 }
