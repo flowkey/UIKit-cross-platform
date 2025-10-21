@@ -264,6 +264,14 @@ class AVPlayerLayer constructor(
             return
         }
 
+        val aspectTolerance = 0.01f // 1% difference
+        val viewAspectRatio = viewWidth / viewHeight
+        val videoAspectRatio = videoWidth / videoHeight
+
+        if (kotlin.math.abs(viewAspectRatio - videoAspectRatio) <= aspectTolerance) {
+            return
+        }
+
         // The video is stretched by default, when setting a frame which has different aspect ration than the video.
         // The scale unstretches back to the correct aspect ratio.
         val scaleY = viewWidth / videoWidth
@@ -272,8 +280,6 @@ class AVPlayerLayer constructor(
         val matrix = Matrix()
         matrix.setScale(maxOf(scaleX, 1f), maxOf(scaleY, 1f), viewWidth / 2f, viewHeight / 2f)
 
-        Log.d("SDL", "videoSize.pixelWidthHeightRatio ${this.player.exoPlayer.videoSize.pixelWidthHeightRatio}")
-        Log.d("SDL", "setTransformMatrix: $matrix")
         this.setTransform(matrix)
         this.invalidate()
     }
