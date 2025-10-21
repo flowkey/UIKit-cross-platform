@@ -1,20 +1,22 @@
 package org.uikit
 
 import android.content.Context
+import android.graphics.Matrix
 import android.graphics.Outline
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.widget.RelativeLayout
 import android.util.Log
 import android.util.TypedValue
 import android.view.TextureView
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.widget.RelativeLayout
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
+import androidx.media3.common.VideoSize
 import androidx.media3.database.ExoDatabaseProvider
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.FileDataSource
@@ -23,22 +25,30 @@ import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
-import org.libsdl.app.SDLActivity
-import okhttp3.Cache as OkHttpCache
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
+import org.libsdl.app.SDLActivity
 import java.io.File
+import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.absoluteValue
+import okhttp3.Cache as OkHttpCache
 
 @Suppress("unused")
 class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
+    private val renderersFactory = DefaultRenderersFactory(parent.context)
+        .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF)
+        .setEnableDecoderFallback(true);
+      //  .forceEnableMediaCodecAsynchronousQueueing(); Doesn't seem recommended on OS versions older than Android 12
+
     private val mediaSourceFactory =
         androidx.media3.exoplayer.source.DefaultMediaSourceFactory(parent.context)
             .setDataSourceFactory(CacheDataSourceFactory(maxFileSize = 256L * 1024 * 1024))
 
     internal val exoPlayer: ExoPlayer = ExoPlayer.Builder(parent.context)
+        .setRenderersFactory(renderersFactory)
         .setMediaSourceFactory(mediaSourceFactory)
         .build().apply {
             setMediaItem(asset.mediaItem)
@@ -61,9 +71,12 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
             override fun onPlaybackStateChanged(state: Int) {
                 this@AVPlayer.swiftAVPlayerInstancePtr?.let { context ->
                     when (state) {
-                        Player.STATE_READY     -> nativeOnVideoReady(context)
+                        Player.STATE_READY -> {
+                            nativeOnVideoReady(context)
+                            resetRetryState()
+                        }
                         Player.STATE_BUFFERING -> nativeOnVideoBuffering(context)
-                        Player.STATE_ENDED     -> nativeOnVideoEnded(context)
+                        Player.STATE_ENDED -> nativeOnVideoEnded(context)
                         else -> {}
                     }
                 }
@@ -93,6 +106,18 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
                     val message = error.message ?: "unknown"
                     Log.e("SDL", message)
                     nativeOnVideoError(error.errorCode, message, swiftAVPlayerInstancePtr)
+
+                    val isCodecError = when (error.errorCode) {
+                        PlaybackException.ERROR_CODE_DECODER_INIT_FAILED,
+                        PlaybackException.ERROR_CODE_DECODER_QUERY_FAILED,
+                        PlaybackException.ERROR_CODE_DECODING_FAILED -> true
+                        else -> false
+                    }
+
+                    if (isCodecError && retryAttempts < maxRetryAttempts) {
+                        scheduleRetryWithBackoff()
+                        return
+                    }
                 }
             }
         }
@@ -149,22 +174,62 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
         lastSeekedToTime = timeMs
     }
 
+    private var retryAttempts = 0
+    private val maxRetryAttempts = 3
+    private val baseDelayMs = 1_000L // 1s, then 2s, 4s, 8s...
+    private val maxDelayMs = 10_000L
+    private val jitterMs = 250L // adds 0..250ms to avoid thundering herds
+    private var pendingRetry: Runnable? = null
+
+    private fun scheduleRetryWithBackoff() {
+        if (retryAttempts >= maxRetryAttempts) return
+
+        val nextAttempt = retryAttempts + 1
+        val backoff = (baseDelayMs shl (nextAttempt - 1)).coerceAtMost(maxDelayMs)
+        val delay = backoff + ThreadLocalRandom.current().nextLong(0, jitterMs + 1)
+
+        // Only one scheduled retry at a time
+        pendingRetry?.let { mainHandler.removeCallbacks(it) }
+
+        val task = Runnable {
+            retryAttempts = nextAttempt
+
+            exoPlayer.prepare()
+            if (exoPlayer.playWhenReady) exoPlayer.play()
+        }
+        pendingRetry = task
+        mainHandler.postDelayed(task, delay)
+    }
+
+    private fun resetRetryState() {
+        retryAttempts = 0
+        pendingRetry?.let { mainHandler.removeCallbacks(it) }
+        pendingRetry = null
+    }
+
     fun cleanup() {
         pendingSeek?.let { mainHandler.removeCallbacks(it) }
         exoPlayer.removeListener(listener)
         exoPlayer.release()
+        resetRetryState()
     }
 }
 
 @Suppress("unused")
 class AVPlayerLayer constructor(
     private val sdlView: SDLActivity,
-    player: AVPlayer
+    private val player: AVPlayer
 ) : TextureView(sdlView.context, null, 0) {
     init {
         tag = "ExoPlayer"
         player.exoPlayer.setVideoTextureView(this)
         sdlView.addView(this, 0)
+
+        player.exoPlayer.addListener(object : Player.Listener {
+            override fun onVideoSizeChanged(videoSize: VideoSize) {
+                this@AVPlayerLayer.setTransformMatrix()
+            }
+        })
     }
 
     fun setCornerRadius(newValue: Float) {
@@ -185,6 +250,32 @@ class AVPlayerLayer constructor(
         layoutParams = RelativeLayout.LayoutParams(width, height).also {
             it.setMargins(x, y, 0, 0)
         }
+
+        this.setTransformMatrix()
+    }
+
+    private fun setTransformMatrix() {
+        val viewHeight = this.layoutParams.height.toFloat()
+        val viewWidth = this.layoutParams.width.toFloat()
+        val videoHeight = this.player.exoPlayer.videoSize.height.toFloat()
+        val videoWidth = this.player.exoPlayer.videoSize.width.toFloat()
+
+        if (viewHeight <= 0 || viewWidth <= 0 || videoHeight <= 0 || videoWidth <= 0) {
+            return
+        }
+
+        // The video is stretched by default, when setting a frame which has different aspect ration than the video.
+        // The scale unstretches back to the correct aspect ratio.
+        val scaleY = viewWidth / videoWidth
+        val scaleX = viewHeight / videoHeight
+
+        val matrix = Matrix()
+        matrix.setScale(maxOf(scaleX, 1f), maxOf(scaleY, 1f), viewWidth / 2f, viewHeight / 2f)
+
+        Log.d("SDL", "videoSize.pixelWidthHeightRatio ${this.player.exoPlayer.videoSize.pixelWidthHeightRatio}")
+        Log.d("SDL", "setTransformMatrix: $matrix")
+        this.setTransform(matrix)
+        this.invalidate()
     }
 
     fun setIsHidden(newValue: Boolean) {
@@ -260,7 +351,6 @@ class AVURLAsset(parent: SDLActivity, url: String) {
 
         mediaItem = MediaItem.Builder()
             .setUri(Uri.parse(url))
-            // .setMimeType("video/mp4") // optional; omit unless you're sure every URL is MP4
             .build()
     }
 }
