@@ -257,31 +257,37 @@ class AVPlayerLayer constructor(
     private fun setTransformMatrix() {
         val viewHeight = this.layoutParams.height.toFloat()
         val viewWidth = this.layoutParams.width.toFloat()
-        val videoHeight = this.player.exoPlayer.videoSize.height.toFloat()
-        val videoWidth = this.player.exoPlayer.videoSize.width.toFloat()
+
+        val videoSize = this.player.exoPlayer.videoSize
+        val videoHeight = videoSize.height.toFloat()
+        val videoWidth = videoSize.width.toFloat()
 
         if (viewHeight <= 0 || viewWidth <= 0 || videoHeight <= 0 || videoWidth <= 0) {
             return
         }
 
-        val aspectTolerance = 0.01f // 1% difference
+        val sar = if (videoSize.pixelWidthHeightRatio > 0f) videoSize.pixelWidthHeightRatio else 1f
+
         val viewAspectRatio = viewWidth / viewHeight
-        val videoAspectRatio = videoWidth / videoHeight
+        val videoAspectRatio = (videoWidth * sar) / videoHeight // display aspect ratio
+        val diffAspectRatio = videoAspectRatio / viewAspectRatio // >1 => video "wider" than view
 
-        if (kotlin.math.abs(viewAspectRatio - videoAspectRatio) <= aspectTolerance) {
-            return
+        // FILL (center-crop): ensure min(scaleX, scaleY) >= 1 and scaleX/scaleY == r
+        val (scaleX, scaleY) = if (diffAspectRatio > 1f) {
+            // wider: expand X, crop sides
+            diffAspectRatio to 1f
+        } else {
+            // taller/narrower: expand Y, crop top/bottom
+            1f to (1f / diffAspectRatio)
         }
-
-        // The video is stretched by default, when setting a frame which has different aspect ration than the video.
-        // The scale unstretches back to the correct aspect ratio.
-        val scaleY = viewWidth / videoWidth
-        val scaleX = viewHeight / videoHeight
 
         val matrix = Matrix()
         matrix.setScale(maxOf(scaleX, 1f), maxOf(scaleY, 1f), viewWidth / 2f, viewHeight / 2f)
 
-        this.setTransform(matrix)
-        this.invalidate()
+        if (matrix != this.matrix) {
+            this.setTransform(matrix)
+            this.invalidate()
+        }
     }
 
     fun setIsHidden(newValue: Boolean) {
