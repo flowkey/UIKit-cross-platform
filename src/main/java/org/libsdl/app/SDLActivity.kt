@@ -52,6 +52,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     private external fun onNativeResize(x: Int, y: Int, format: Int, rate: Float)
     private external fun onNativeSurfaceChanged()
     private external fun onNativeSurfaceDestroyed()
+    private external fun onNativeShouldRelayout()
 
     // SDLOnKeyListener conformance
     external override fun onNativeKeyDown(keycode: Int)
@@ -106,12 +107,56 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         val zeroRect = RectF(0f, 0f, 0f, 0f)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val activity = context as Activity
             val typeMask =
-                if (activity.window.navigationBarColor == Color.TRANSPARENT) WindowInsets.Type.displayCutout() or WindowInsets.Type.navigationBars()
-                else WindowInsets.Type.displayCutout()
+                WindowInsets.Type.displayCutout() or WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars()
 
             val insets = rootWindowInsets?.getInsets(typeMask) ?: return zeroRect
+            val density = getDeviceDensity()
+
+            return RectF(
+                insets.left.toFloat() / density,
+                insets.top.toFloat() / density,
+                insets.right.toFloat() / density,
+                insets.bottom.toFloat() / density
+            )
+        }
+
+        return zeroRect
+    }
+
+    @Suppress("unused")
+    fun getNavigationBarInsets(): RectF {
+        val zeroRect = RectF(0f, 0f, 0f, 0f)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val typeMask = WindowInsets.Type.navigationBars()
+
+            val insets = rootWindowInsets?.getInsets(typeMask) ?: return zeroRect
+            val density = getDeviceDensity()
+
+            Log.d("SDL", "navigation insets $insets")
+
+            return RectF(
+                insets.left.toFloat() / density,
+                insets.top.toFloat() / density,
+                insets.right.toFloat() / density,
+                insets.bottom.toFloat() / density
+            )
+        }
+
+        return zeroRect
+    }
+
+    @Suppress("unused")
+    fun getGestureInsets(): RectF {
+        val zeroRect = RectF(0f, 0f, 0f, 0f)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val typeMask = WindowInsets.Type.mandatorySystemGestures()
+            val insets = rootWindowInsets?.getInsets(typeMask) ?: return zeroRect
+
+            Log.d("SDL", "gesture insets $insets")
+
             val density = getDeviceDensity()
             return RectF(
                 insets.left.toFloat() / density,
@@ -345,6 +390,24 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         mSurface.setOnTouchListener(null)
         mSurface.holder?.removeCallback(this) // should only happen on SDL_Quit
         nativeSurface.release()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return
+        setOnApplyWindowInsetsListener { v, insets ->
+            this.onNativeShouldRelayout()
+            insets
+        }
+
+        requestApplyInsets()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return
+        setOnApplyWindowInsetsListener(null)
     }
 }
 
