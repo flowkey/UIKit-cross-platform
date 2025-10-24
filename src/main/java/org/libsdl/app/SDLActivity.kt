@@ -124,51 +124,6 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         return zeroRect
     }
 
-    @Suppress("unused")
-    fun getNavigationBarInsets(): RectF {
-        val zeroRect = RectF(0f, 0f, 0f, 0f)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val typeMask = WindowInsets.Type.navigationBars()
-
-            val insets = rootWindowInsets?.getInsets(typeMask) ?: return zeroRect
-            val density = getDeviceDensity()
-
-            Log.d("SDL", "navigation insets $insets")
-
-            return RectF(
-                insets.left.toFloat() / density,
-                insets.top.toFloat() / density,
-                insets.right.toFloat() / density,
-                insets.bottom.toFloat() / density
-            )
-        }
-
-        return zeroRect
-    }
-
-    @Suppress("unused")
-    fun getGestureInsets(): RectF {
-        val zeroRect = RectF(0f, 0f, 0f, 0f)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val typeMask = WindowInsets.Type.mandatorySystemGestures()
-            val insets = rootWindowInsets?.getInsets(typeMask) ?: return zeroRect
-
-            Log.d("SDL", "gesture insets $insets")
-
-            val density = getDeviceDensity()
-            return RectF(
-                insets.left.toFloat() / density,
-                insets.top.toFloat() / density,
-                insets.right.toFloat() / density,
-                insets.bottom.toFloat() / density
-            )
-        }
-
-        return zeroRect
-    }
-
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         Log.v(TAG, "onWindowFocusChanged(): " + hasFocus)
