@@ -44,4 +44,10 @@ public func nativeDestroyScreen(env: UnsafeMutablePointer<JNIEnv>, view: JavaObj
     UIApplication.onWillEnterBackground()
     UIApplication.onDidEnterBackground()
 }
+
+@MainActor
+@_cdecl("Java_org_libsdl_app_SDLActivity_onNativeShouldRelayout")
+public func onNativeShouldRelayout(env: UnsafeMutablePointer<JNIEnv>, view: JavaObject) {
+    UIApplication.shared?.keyWindow?.setNeedsLayout()
+}
 #endif
