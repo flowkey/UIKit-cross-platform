@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:6.0
 import PackageDescription
 
 let package = Package(
@@ -23,5 +23,6 @@ let package = Package(
             exclude: ["Mac-Info.plist"]
         ),
         .target(name: "UIKit_C_API", path: "UIKit_C_API"),
-    ]
+    ],
+    swiftLanguageModes: [.v5]
 )
