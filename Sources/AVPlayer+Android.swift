@@ -1,15 +1,7 @@
 #if os(Android)
-//
-//  JNIVideo.swift
-//  UIKit
-//
-//  Created by Chris on 13.09.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
 import JNI
 
-public class AVPlayer: JNIObject {
+public final class AVPlayer: JNIObject {
     public override static var className: String { "org.uikit.AVPlayer" }
 
     public var onError: ((ExoPlaybackError) -> Void)?

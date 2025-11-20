@@ -59,7 +59,7 @@ extension CALayer {
         // If a mask exists, take it into account when rendering by combining absoluteFrame with the mask's frame
         if let mask = mask {
             // XXX: we're probably not doing exactly what iOS does if there is a transform on here somewhere
-            let maskFrame = (mask._presentation ?? mask).frame
+            let maskFrame = (mask.presentation() ?? mask).frame
             let maskAbsoluteFrame = maskFrame.offsetBy(absoluteFrame.origin)
 
             // Don't intersect with previousClippingRect: in a case where both `masksToBounds` and `mask` are
@@ -143,7 +143,7 @@ extension CALayer {
             transformAtSelfOrigin.setAsSDLgpuMatrix()
 
             for sublayer in sublayers {
-                (sublayer._presentation ?? sublayer).sdlRender(parentAbsoluteOpacity: opacity)
+                (sublayer.presentation() ?? sublayer).sdlRender(parentAbsoluteOpacity: opacity)
             }
         }
 

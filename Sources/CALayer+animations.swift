@@ -13,7 +13,7 @@ extension CALayer {
 
         // animation.fromValue is optional, set it to currently visible state if nil
         if copy.fromValue == nil, let keyPath = copy.keyPath {
-            copy.fromValue = (_presentation ?? self).value(forKeyPath: keyPath)
+            copy.fromValue = (presentation() ?? self).value(forKeyPath: keyPath)
         }
 
         copy.animationGroup?.queuedAnimations += 1

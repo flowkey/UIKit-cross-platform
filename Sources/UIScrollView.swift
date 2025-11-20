@@ -52,7 +52,7 @@ open class UIScrollView: UIView {
     /// The contentOffset that is currently shown on the screen
     /// We won't need this once we implement animations via DisplayLink instead of with UIView.animate
     var visibleContentOffset: CGPoint {
-        return (layer._presentation ?? layer).bounds.origin
+        return (layer.presentation() ?? layer).bounds.origin
     }
 
     /// prevent `newContentOffset` being out of bounds

@@ -23,7 +23,7 @@ private const val TAG = "SDLActivity"
 open class SDLActivity internal constructor (context: Context?) : RelativeLayout(context),
                                             SDLOnKeyListener,
                                             SDLOnTouchListener,
-                                            SurfaceHolder.Callback,
+                                            TextureView.SurfaceTextureListener,
                                             Choreographer.FrameCallback,
                                             APKExtensionInputStreamOpener {
 
@@ -39,8 +39,9 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         internal var mSeparateMouseAndTouch = false
     }
 
-    private var mSurface: SurfaceView
+    private var mSurface: TextureView
     private var mIsSurfaceReady = false
+    private var renderingSurface: Surface? = null // cache a Surface from SurfaceTexture
     override var mHasFocus = false
     override var sessionStartTime: Long = SystemClock.uptimeMillis()
 
@@ -52,6 +53,7 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     private external fun onNativeResize(x: Int, y: Int, format: Int, rate: Float)
     private external fun onNativeSurfaceChanged()
     private external fun onNativeSurfaceDestroyed()
+    private external fun onNativeShouldRelayout()
 
     // SDLOnKeyListener conformance
     external override fun onNativeKeyDown(keycode: Int)
@@ -78,20 +80,19 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         Log.v(TAG, "Model: " + android.os.Build.MODEL)
 
         // Set up the surface
-        mSurface = SurfaceView(context)
-        mSurface.setZOrderMediaOverlay(true) // so we can cover the video (fixes Android 8 bug)
+        mSurface = TextureView(this.context).apply {
+            // For alpha blending with content behind:
+            isOpaque = false // == semi-transparent
 
-        // Enables the alpha value for colors on the SDLSurface
-        // which makes the VideoJNI SurfaceView behind it visible
-        mSurface.holder?.setFormat(PixelFormat.RGBA_8888)
-        mSurface.isFocusable = true
-        mSurface.isFocusableInTouchMode = true
-        mSurface.requestFocus()
+            isFocusable = true
+            isFocusableInTouchMode = true
+            requestFocus()
 
-        mSurface.holder?.addCallback(this)
-        mSurface.setOnTouchListener(this)
-
-        this.addView(mSurface)
+            setSurfaceTextureListener(this@SDLActivity)
+            setOnTouchListener(this@SDLActivity)
+        }
+        addView(mSurface)
+        setBackgroundColor(Color.BLACK)
     }
 
     private fun getDeviceDensity(): Float = context.resources.displayMetrics.density
@@ -106,13 +107,12 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         val zeroRect = RectF(0f, 0f, 0f, 0f)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val activity = context as Activity
             val typeMask =
-                if (activity.window.navigationBarColor == Color.TRANSPARENT) WindowInsets.Type.displayCutout() or WindowInsets.Type.navigationBars()
-                else WindowInsets.Type.displayCutout()
+                WindowInsets.Type.displayCutout() or WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars()
 
             val insets = rootWindowInsets?.getInsets(typeMask) ?: return zeroRect
             val density = getDeviceDensity()
+
             return RectF(
                 insets.left.toFloat() / density,
                 insets.top.toFloat() / density,
@@ -228,7 +228,9 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
     /** Called by SDL using JNI. */
     @Suppress("unused")
-    val nativeSurface: Surface get() = this.mSurface.holder.surface
+    val nativeSurface: Surface
+        get() = renderingSurface
+            ?: throw IllegalStateException("Surface not ready yet")
 
 
     // Input
@@ -271,99 +273,65 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         mSurface.setOnTouchListener(this)
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder) {
-        Log.v(TAG, "surfaceCreated()")
+    override fun onSurfaceTextureAvailable(st: SurfaceTexture, width: Int, height: Int) {
+        Log.v(TAG, "onSurfaceTextureAvailable() $width x $height")
+        renderingSurface = Surface(st)
         mHasFocus = hasFocus()
-
+        handleTextureSizeOrChange(width, height, isFirst = true)
         handleResume()
     }
 
     // Called when the surface is resized, e.g. orientation change or activity creation
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        Log.v(TAG, "surfaceChanged()")
+    override fun onSurfaceTextureSizeChanged(st: SurfaceTexture, width: Int, height: Int) {
+        Log.v(TAG, "onSurfaceTextureSizeChanged() $width x $height")
+        handleTextureSizeOrChange(width, height, isFirst = false)
+    }
 
-        var sdlFormat = 0x15151002 // SDL_PIXELFORMAT_RGB565 by default
-        when (format) {
-            PixelFormat.RGBA_8888 -> {
-                Log.v(TAG, "pixel format RGBA_8888")
-                sdlFormat = 0x16462004 // SDL_PIXELFORMAT_RGBA8888
-            }
-            PixelFormat.RGBX_8888 -> {
-                Log.v(TAG, "pixel format RGBX_8888")
-                sdlFormat = 0x16261804 // SDL_PIXELFORMAT_RGBX8888
-            }
-            PixelFormat.RGB_565 -> {
-                Log.v(TAG, "pixel format RGB_565")
-                sdlFormat = 0x15151002 // SDL_PIXELFORMAT_RGB565
-            }
-            PixelFormat.RGB_888 -> {
-                Log.v(TAG, "pixel format RGB_888")
-                // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
-                sdlFormat = 0x16161804 // SDL_PIXELFORMAT_RGB888
-            }
-            else -> Log.w("SDL", "pixel format unknown " + format)
-        }
-
+    private fun handleTextureSizeOrChange(width: Int, height: Int, isFirst: Boolean) {
         if (width == 0 || height == 0) {
             Log.v(TAG, "skipping due to invalid surface dimensions: $width x $height")
-            return
-        }
-
-        if (context is Activity) {
-            val activity = context as Activity
-            when (activity.requestedOrientation) {
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE -> {
-                    if (width < height) {
-                        Log.v(TAG, "skipping: orientation is landscape, but width < height")
-                        return
-                    }
-                }
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT -> {
-                    if (height < width) {
-                        Log.v(TAG, "skipping: orientation is portrait, but height < width")
-                        return
-                    }
-                }
-            }
-        }
-
-        if (mIsSurfaceReady && mWidth.toInt() == width && mHeight.toInt() == height) {
             return
         }
 
         mWidth = width.toFloat()
         mHeight = height.toFloat()
 
+        // With TextureView you can’t read a holder format; assume 8888 which SDL expects on Android.
+        val sdlFormat = 0x16462004 // SDL_PIXELFORMAT_RGBA8888
         this.onNativeResize(mWidth.toInt(), mHeight.toInt(), sdlFormat, display.refreshRate)
-        Log.v(TAG, "Window size: " + mWidth + "x" + mHeight)
+        Log.v(TAG, "Window size: ${mWidth}x${mHeight}")
 
-        // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         mIsSurfaceReady = true
         onNativeSurfaceChanged()
 
-        doNativeInitAndPostFrameCallbackIfNotRunning()
+        if (isFirst) {
+            doNativeInitAndPostFrameCallbackIfNotRunning()
+        } else if (!isRunning) {
+            postFrameCallbackIfNotRunning()
+        }
 
         if (mHasFocus) {
             handleSurfaceResume()
         }
     }
 
+    override fun onSurfaceTextureUpdated(p0: SurfaceTexture) {}
+
     // Called when we lose the surface
-    override fun surfaceDestroyed(holder: SurfaceHolder) {
-        Log.v(TAG, "surfaceDestroyed()")
+    override fun onSurfaceTextureDestroyed(st: SurfaceTexture): Boolean {
+        Log.v(TAG, "onSurfaceTextureDestroyed()")
         mIsSurfaceReady = false
         onNativeSurfaceDestroyed()
         nativeDestroyScreen()
         removeFrameCallback()
+        nativeProcessEventsAndRender()
 
-        // renderer should now be destroyed but we need to process events once more to clean up
-        this.nativeProcessEventsAndRender()
+        // Release the Surface we created
+        renderingSurface?.release()
+        renderingSurface = null
+
+        // Return true to let the system release the SurfaceTexture as well
+        return true
     }
 
     /** Called by SDL using JNI. */
@@ -371,8 +339,25 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
     fun removeCallbacks() {
         Log.v(TAG, "removeCallbacks()")
         mSurface.setOnTouchListener(null)
-        mSurface.holder?.removeCallback(this) // should only happen on SDL_Quit
-        nativeSurface.release()
+        mSurface.setSurfaceTextureListener(null)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return
+        setOnApplyWindowInsetsListener { v, insets ->
+            this.onNativeShouldRelayout()
+            insets
+        }
+
+        requestApplyInsets()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return
+        setOnApplyWindowInsetsListener(null)
     }
 }
 
