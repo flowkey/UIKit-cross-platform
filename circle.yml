@@ -31,7 +31,7 @@ jobs:
                       CODE_SIGN_IDENTITY=""
                       PROVISIONING_PROFILE=""
                       -sdk "iphonesimulator"
-                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 16'
+                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 17'
                       -scheme "UIKit iOSTestTarget"
                       test |
                       xcpretty --color --report junit
@@ -44,7 +44,7 @@ jobs:
                       CODE_SIGN_IDENTITY=""
                       PROVISIONING_PROFILE=""
                       -sdk "iphonesimulator"
-                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 16'
+                      -destination 'platform=iOS Simulator,OS=latest,name=iPhone 17'
                       -scheme "DemoApp"
                       build |
                       xcpretty --color --report junit
