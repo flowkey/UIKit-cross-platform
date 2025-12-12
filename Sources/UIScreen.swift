@@ -22,19 +22,19 @@ public extension UIScreen {
 public final class UIScreen {
     // If we could use `private` members from an extension this would be private
     // Keep that in mind when using it: i.e. if possible, don't ;)
-    internal var renderTarget: RenderTarget
+    internal var renderTarget: RenderTarget?
 
     public var bounds: CGRect {
         didSet {
             let newWidth = UInt16(bounds.width.rounded())
             let newHeight = UInt16(bounds.height.rounded())
             GPU_SetWindowResolution(newWidth, newHeight)
-            renderTarget.setVirtualResolution(w: newWidth, h: newHeight)
+            renderTarget?.setVirtualResolution(w: newWidth, h: newHeight)
         }
     }
     nonisolated public let scale: CGFloat
 
-    private init(renderTarget: RenderTarget, bounds: CGRect, scale: CGFloat) {
+    private init(renderTarget: RenderTarget?, bounds: CGRect, scale: CGFloat) {
         self.renderTarget = renderTarget
         self.bounds = bounds
         self.scale = scale
@@ -130,7 +130,7 @@ public final class UIScreen {
             FontRenderer.cleanupSession()
 
             defer { GPU_Quit() }
-            guard let gpuContext = renderTarget.rawPointer.pointee.context else {
+            guard let gpuContext = renderTarget?.rawPointer.pointee.context else {
                 assertionFailure("glRenderer gpuContext not found")
                 return
             }
@@ -159,7 +159,10 @@ extension UIScreen {
 import class AppKit.NSWindow
 extension UIScreen {
     var nsWindow: NSWindow {
-        let sdlWindowID = renderTarget.rawPointer.pointee.context.pointee.windowID
+        guard let sdlWindowID = renderTarget?.rawPointer.pointee.context.pointee.windowID else {
+            return NSWindow()
+        }
+
         let sdlWindow = SDL_GetWindowFromID(sdlWindowID)
         var info = SDL_SysWMinfo()
 
@@ -202,9 +205,8 @@ extension UIScreen {
         bounds: CGRect = CGRect(origin: .zero, size: .samsungGalaxyTab10),
         scale: CGFloat
     ) -> UIScreen {
-        let img = GPU_CreateImage(UInt16(bounds.width), UInt16(bounds.height), GPU_FORMAT_RGBA)!
         return UIScreen(
-            renderTarget: RenderTarget(image: img),
+            renderTarget: nil,
             bounds: bounds,
             scale: scale
         )

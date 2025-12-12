@@ -24,7 +24,7 @@ extension UIScreen {
 
         guard
             CALayer.layerTreeIsDirty,
-            let mainRenderTarget = UIScreen.main?.renderTarget
+            let renderTarget
         else {
             // Nothing changed, so we can leave the existing image on the screen.
             return
@@ -39,7 +39,7 @@ extension UIScreen {
         GPU_LoadIdentity()
 
         renderTarget.clippingRect = window.bounds
-        window.layer.sdlRender(renderTarget: mainRenderTarget)
+        window.layer.sdlRender(renderTarget: renderTarget)
 
         do {
             try renderTarget.flip()
