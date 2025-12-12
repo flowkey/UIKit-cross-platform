@@ -19,7 +19,6 @@ jobs:
                       CODE_SIGN_IDENTITY=""
                       PROVISIONING_PROFILE=""
                       -sdk "macosx"
-                      -arch "x86_64"
                       -scheme "UIKit"
                       build test |
                       xcpretty --color --report junit
