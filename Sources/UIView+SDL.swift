@@ -25,9 +25,13 @@ extension UIView {
             needsDisplay = false
         }
 
+        if visibleLayer.mask?.needsDisplay() == true {
+            visibleLayer.mask?.display()
+            visibleLayer.mask?._needsDisplay = false
+        }
+
         layoutIfNeeded()
 
         subviews.forEach { $0.sdlDrawAndLayoutTreeIfNeeded(parentAlpha: alpha) }
     }
 }
-

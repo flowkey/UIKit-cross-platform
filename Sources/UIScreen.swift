@@ -22,20 +22,20 @@ public extension UIScreen {
 public final class UIScreen {
     // If we could use `private` members from an extension this would be private
     // Keep that in mind when using it: i.e. if possible, don't ;)
-    internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
+    internal var renderTarget: RenderTarget
 
     public var bounds: CGRect {
         didSet {
             let newWidth = UInt16(bounds.width.rounded())
             let newHeight = UInt16(bounds.height.rounded())
             GPU_SetWindowResolution(newWidth, newHeight)
-            GPU_SetVirtualResolution(rawPointer, newWidth, newHeight)
+            renderTarget.setVirtualResolution(w: newWidth, h: newHeight)
         }
     }
     nonisolated public let scale: CGFloat
 
-    private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
-        self.rawPointer = renderTarget
+    private init(renderTarget: RenderTarget, bounds: CGRect, scale: CGFloat) {
+        self.renderTarget = renderTarget
         self.bounds = bounds
         self.scale = scale
     }
@@ -58,7 +58,7 @@ public final class UIScreen {
         var size = CGSize.zero
         let options: SDLWindowFlags = SDL_WINDOW_FULLSCREEN
         #else
-        var size = CGSize.samsungGalaxyJ5.landscape
+        var size = CGSize.samsungGalaxyS5.landscape
 
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
@@ -104,18 +104,21 @@ public final class UIScreen {
             preconditionFailure("You need window dimensions to run")
         }
 
+        let renderTarget = RenderTarget(gpuTarget)
+        renderTarget.scale = scale
+
         self.init(
-            renderTarget: gpuTarget,
+            renderTarget: renderTarget,
             bounds: CGRect(origin: .zero, size: size),
             scale: scale
         )
 
         // Fixes video surface visibility with transparent & opaque views in SDLSurface above
         // by changing the alpha blend function to: src-alpha * (1 - dst-alpha) + dst-alpha
-        setShapeBlending(true)
-        setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
+        renderTarget.setShapeBlending(true)
+        renderTarget.setShapeBlendMode(GPU_BLEND_NORMAL_FACTOR_ALPHA)
 
-        clearErrors() // by now we have handled any errors we might have wanted to
+        renderTarget.clearErrors() // by now we have handled any errors we might have wanted to
     }
 
     deinit {
@@ -125,26 +128,17 @@ public final class UIScreen {
             UIView.currentAnimationPrototype = nil
             UIEvent.activeEvents.removeAll()
             FontRenderer.cleanupSession()
+
+            defer { GPU_Quit() }
+            guard let gpuContext = renderTarget.rawPointer.pointee.context else {
+                assertionFailure("glRenderer gpuContext not found")
+                return
+            }
+
+            let existingWindowID = gpuContext.pointee.windowID
+            let existingWindow = SDL_GetWindowFromID(existingWindowID)
+            SDL_DestroyWindow(existingWindow)
         }
-
-        guard let rawPointer = self.rawPointer else {
-            return
-        }
-
-        defer { GPU_Quit() }
-        guard let gpuContext = rawPointer.pointee.context else {
-            assertionFailure("glRenderer gpuContext not found")
-            return
-        }
-
-        let existingWindowID = gpuContext.pointee.windowID
-        let existingWindow = SDL_GetWindowFromID(existingWindowID)
-        SDL_DestroyWindow(existingWindow)
-    }
-
-    // Should be in UIScreen+render.swift but you can't store properties in an extension..
-    var clippingRect: CGRect? {
-        didSet { didSetClippingRect() }
     }
 }
 
@@ -165,7 +159,7 @@ extension UIScreen {
 import class AppKit.NSWindow
 extension UIScreen {
     var nsWindow: NSWindow {
-        let sdlWindowID = rawPointer.pointee.context.pointee.windowID
+        let sdlWindowID = renderTarget.rawPointer.pointee.context.pointee.windowID
         let sdlWindow = SDL_GetWindowFromID(sdlWindowID)
         var info = SDL_SysWMinfo()
 
@@ -208,8 +202,9 @@ extension UIScreen {
         bounds: CGRect = CGRect(origin: .zero, size: .samsungGalaxyTab10),
         scale: CGFloat
     ) -> UIScreen {
+        let img = GPU_CreateImage(UInt16(bounds.width), UInt16(bounds.height), GPU_FORMAT_RGBA)!
         return UIScreen(
-            renderTarget: nil,
+            renderTarget: RenderTarget(image: img),
             bounds: bounds,
             scale: scale
         )

@@ -8,7 +8,7 @@
 
 internal import SDL_gpu
 
-class VertexShader: Shader {
+final class VertexShader: Shader {
     // Some keywords have changed since the earlier shader language versions available on Android:
     #if os(Android) // GLES/GLSL:
     static let `in` = "attribute"
@@ -23,7 +23,7 @@ class VertexShader: Shader {
     }
 }
 
-class FragmentShader: Shader {
+final class FragmentShader: Shader {
     // Some keywords have changed since the earlier shader language versions available on Android:
     #if os(Android) // GLES/GLSL:
     static let `in` = "varying"
@@ -51,19 +51,6 @@ class Shader {
         case unknownRendererShaderLanguage
         case compilationFailed(reason: String)
     }
-
-    // To be overriden in subclasses
-    // e.g. We need to do different overrides depending on whether we're in a vertex / fragment shader
-//    static func transformedSource(_ source: String) -> String {
-//        if self is VertexShader {
-//            return source
-//                .replacingOccurrences(of: "(^|\n)in", with: "\nattribute", options: .regularExpression)
-//                .replacingOccurrences(of: "(^|\n)out", with: "\nvarying", options: .regularExpression)
-//                .replacingOccurrences(of: "(^|\n)texture", with: "\ntexture2D", options: .regularExpression)
-//        } else {
-//            return source
-//        }
-//    }
 
     // Some hardware (from ATI/AMD) does not let you put non-#version preprocessing at the top of the file. Adds the
     // appropriate header before compiling, allowing us to use the same shader across different OPENGL(ES) versions..
