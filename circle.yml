@@ -5,7 +5,7 @@ orbs:
 jobs:
     build:
         macos:
-            xcode: "16.1.0"
+            xcode: "26.2.0"
         steps:
             - macos/install-rosetta
             - checkout
