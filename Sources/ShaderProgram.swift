@@ -69,8 +69,30 @@ extension ShaderProgram {
             assert(location != -1, "Couldn't find location of UniformVariable \(name)")
         }
 
+        func set(_ newValue: Int32) {
+            GPU_SetUniformi(location, newValue)
+        }
+
         func set(_ newValue: Float) {
             GPU_SetUniformf(location, newValue)
+        }
+
+        func set(_ newValue: consuming ArraySlice<Float>) {
+            newValue.withUnsafeMutableBufferPointer({ self.set($0) })
+        }
+
+        func set(_ newValue: UnsafeMutableBufferPointer<Float>) {
+            GPU_SetUniformfv(location, Int32(newValue.count), 1, newValue.baseAddress)
+        }
+
+        func set(_ newValue: CGPoint) {
+            var vals = [Float(newValue.x), Float(newValue.y)]
+            GPU_SetUniformfv(location, 2, 1, &vals)
+        }
+
+        func set(_ newValue: CGSize) {
+            var vals = [Float(newValue.width), Float(newValue.height)]
+            GPU_SetUniformfv(location, 2, 1, &vals)
         }
 
         func set(_ newValue: CGRect) {

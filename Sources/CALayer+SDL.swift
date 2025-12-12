@@ -1,17 +1,9 @@
-//
-//  CALayer+SDL.swift
-//  UIKit
-//
-//  Created by Chris on 27.06.17.
-//  Copyright © 2017 flowkey. All rights reserved.
-//
-
 internal import SDL_gpu
 
 extension CALayer {
     @MainActor
-    final func sdlRender(parentAbsoluteOpacity: Float = 1) {
-        guard let renderer = UIScreen.main else { return }
+    final func sdlRender(parentAbsoluteOpacity: Float = 1, renderTarget: RenderTarget) {
+        let renderTarget = self.renderTarget ?? renderTarget
         let opacity = self.opacity * parentAbsoluteOpacity
         if isHidden || opacity < 0.01 { return }
 
@@ -20,8 +12,13 @@ extension CALayer {
         // – which may in turn be affected by its parents, and so on) to `position`, and then render rectangles
         // which may (and often do) start at a negative `origin` based on our (bounds) `size` and `anchorPoint`:
         let parentOriginTransform = CATransform3D(unsafePointer: GPU_GetCurrentMatrix())
+
         let translationToPosition = CATransform3DMakeTranslation(position.x, position.y, zPosition)
-        let transformAtPositionInParentCoordinates = parentOriginTransform * translationToPosition
+        let transformAtPositionInParentCoordinates = (
+            self.renderTarget == nil ?
+            parentOriginTransform :
+            CATransform3DMakeTranslation(0, 0, 0) // start from (0,0) TODO: should this be based on layer.bounds?
+        ) * translationToPosition
 
         let modelViewTransform = transformAtPositionInParentCoordinates * self.transform
 
@@ -37,7 +34,7 @@ extension CALayer {
 
         // Big performance optimization. Don't render anything that's entirely offscreen:
         let absoluteFrame = renderedBoundsRelativeToAnchorPoint.applying(modelViewTransform)
-        guard absoluteFrame.intersects(renderer.bounds) else {
+        guard absoluteFrame.intersects(renderTarget.bounds) else {
             return
         }
 
@@ -49,33 +46,33 @@ extension CALayer {
 
         // MARK: Masking / clipping rect
 
-        let previousClippingRect = renderer.clippingRect
+        let previousClippingRect = renderTarget.clippingRect
 
         if masksToBounds {
             // If a previous clippingRect exists restrict it further, otherwise just set it:
-            renderer.clippingRect = previousClippingRect?.intersection(absoluteFrame) ?? absoluteFrame
+            renderTarget.clippingRect = previousClippingRect?.intersection(absoluteFrame) ?? absoluteFrame
         }
 
         // If a mask exists, take it into account when rendering by combining absoluteFrame with the mask's frame
-        if let mask = mask {
-            // XXX: we're probably not doing exactly what iOS does if there is a transform on here somewhere
+        if let mask {
             let maskFrame = (mask.presentation() ?? mask).frame
             let maskAbsoluteFrame = maskFrame.offsetBy(absoluteFrame.origin)
 
             // Don't intersect with previousClippingRect: in a case where both `masksToBounds` and `mask` are
             // present, using previousClippingRect would not constrain the area as much as it might otherwise
-            renderer.clippingRect =
-                renderer.clippingRect?.intersection(maskAbsoluteFrame) ?? maskAbsoluteFrame
+            renderTarget.clippingRect =
+            renderTarget.clippingRect?.intersection(maskAbsoluteFrame) ?? maskAbsoluteFrame
 
-            if let maskContents = mask.contents {
-                ShaderProgram.mask.activate() // must activate before setting parameters (below)!
-                ShaderProgram.mask.set(maskImage: maskContents, frame: mask.bounds)
+            if mask.needsDisplay() {
+                mask.display()
+                mask._needsDisplay = false
             }
+            // the actual mask contents get applied separately during compositing
         }
 
-        if let backgroundColor = backgroundColor {
+        if let backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alphaValue.toNormalisedFloat()
-            renderer.fill(
+            renderTarget.fill(
                 renderedBoundsRelativeToAnchorPoint,
                 with: backgroundColor.withAlphaComponent(CGFloat(backgroundColorOpacity)),
                 cornerRadius: cornerRadius
@@ -83,7 +80,7 @@ extension CALayer {
         }
 
         if borderWidth > 0 {
-            renderer.outline(
+            renderTarget.outline(
                 renderedBoundsRelativeToAnchorPoint,
                 lineColor: borderColor.withAlphaComponent(CGFloat(opacity)),
                 lineThickness: borderWidth,
@@ -95,7 +92,7 @@ extension CALayer {
             let absoluteShadowOpacity = shadowOpacity * opacity * 0.5 // for "shadow" effect ;)
 
             if absoluteShadowOpacity > 0.01 {
-                renderer.fill(
+                renderTarget.fill(
                     shadowPath.offsetBy(deltaFromAnchorPointToOrigin),
                     with: shadowColor.withAlphaComponent(CGFloat(absoluteShadowOpacity)),
                     cornerRadius: 2
@@ -103,14 +100,20 @@ extension CALayer {
             }
         }
 
-        if let contents = contents {
+        if needsDisplay() {
+            display()
+            _needsDisplay = false
+        }
+
+        if let contents {
             do {
-                try renderer.blit(
+                try renderTarget.blit(
                     contents,
                     anchorPoint: anchorPoint,
                     contentsScale: contentsScale,
                     contentsGravity: ContentsGravityTransformation(for: self),
-                    opacity: opacity
+                    // if we have a render target, opacity is applied on blit below
+                    opacity: self.renderTarget == nil ? opacity : 1
                 )
             } catch {
                 // Try to recreate contents from source data if it exists
@@ -122,11 +125,7 @@ extension CALayer {
             }
         }
 
-        if mask != nil {
-            ShaderProgram.deactivateAll()
-        }
-
-        if let sublayers = sublayers {
+        if let sublayers {
             // `position` is always relative from the parent's origin, but the global GPU matrix is currently
             // focused on `self.position` rather than the `origin` we calculated to render rectangles.
             // We need to be at `origin` here though so we can translate to the next `position` in each sublayer.
@@ -143,14 +142,38 @@ extension CALayer {
             transformAtSelfOrigin.setAsSDLgpuMatrix()
 
             for sublayer in sublayers {
-                (sublayer.presentation() ?? sublayer).sdlRender(parentAbsoluteOpacity: opacity)
+                let layer = sublayer.presentation() ?? sublayer
+                layer.sdlRender(parentAbsoluteOpacity: opacity, renderTarget: renderTarget)
+
+                // A layer will render its subtree to a separate target if
+                // it e.g. contains a mask or has a non-zero opacity.
+                // This allows us to render the entire subtree and then apply
+                // the opacity / mask to everything and not just the base layer.
+                if let subtreeRenderTarget = layer.renderTarget {
+                    if let mask = layer.mask, let maskContents = mask.contents {
+                        ShaderProgram.maskCompositor.activate() // must activate before setting parameters
+                        ShaderProgram.maskCompositor.set(maskImage: maskContents)
+                    }
+                    do {
+                        try renderTarget.blit(
+                            renderTarget: subtreeRenderTarget,
+                            opacity: layer.opacity
+                        )
+                        subtreeRenderTarget.clear()
+                    } catch {
+                        print(error)
+                    }
+
+                    if layer.mask?.contents != nil {
+                        ShaderProgram.deactivateAll()
+                    }
+                }
             }
         }
 
         // We're done rendering this part of the tree
         // To render further siblings we need to return to our parent's transform (at its `origin`).
         parentOriginTransform.setAsSDLgpuMatrix()
-
-        renderer.clippingRect = previousClippingRect
+        renderTarget.clippingRect = previousClippingRect
     }
 }

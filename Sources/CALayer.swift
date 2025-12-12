@@ -8,6 +8,12 @@ open class CALayer {
         didSet { CALayer.layerTreeIsDirty = true }
     }
 
+    // The default RenderTarget is UIScreen.main.
+    // Some subtrees (e.g. with masking or opacity) need to be rendered separately
+    // and then composited onto the screen. The render target is created and managed
+    // by our implementation when needed.
+    internal var renderTarget: RenderTarget?
+
     /// Defaults to 1.0 but if the layer is associated with a view,
     /// the view sets this value to match the screen.
     open var contentsScale: CGFloat = 1.0
@@ -129,6 +135,7 @@ open class CALayer {
             if !isPresentationForAnotherLayer && bounds.size != newBounds.size {
                 // It seems weird to access the superview here but it matches the iOS behaviour
                 (self.superlayer?.delegate as? UIView)?.setNeedsLayout()
+                self.setNeedsDisplay()
             }
 
         }
@@ -174,6 +181,7 @@ open class CALayer {
     public var mask: CALayer? {
         didSet {
             mask?.superlayer = self
+            setRenderTargetIfNeeded()
         }
     }
 

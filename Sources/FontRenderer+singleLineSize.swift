@@ -114,7 +114,7 @@ extension FontRenderer {
             let spaceCharacterCode = 32
             let newLineCharacterCode = 10
             if characterCode != spaceCharacterCode, characterCode != newLineCharacterCode, glyph.maxx - glyph.minx <= 0 {
-                assertionFailure("Glyph \(characterCode) ('\(Character(UnicodeScalar(characterCode)!))') has no width")
+//                assertionFailure("Glyph \(characterCode) ('\(Character(UnicodeScalar(characterCode)!))') has no width")
                 return nil
             }
 

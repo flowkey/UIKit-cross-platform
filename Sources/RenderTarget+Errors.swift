@@ -8,7 +8,7 @@
 
 internal import SDL_gpu
 
-extension UIScreen {
+extension RenderTarget {
     func clearErrors() {
         let lastError = GPU_PopErrorCode()
         if lastError.error != GPU_ERROR_NONE {
