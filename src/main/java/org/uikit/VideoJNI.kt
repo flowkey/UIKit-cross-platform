@@ -28,12 +28,12 @@ import java.io.File
 import kotlin.math.absoluteValue
 
 @Suppress("unused")
-class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
+class AVPlayer(sdlView: SDLActivity, asset: AVURLAsset) {
     private val mediaSourceFactory =
-        androidx.media3.exoplayer.source.DefaultMediaSourceFactory(parent.context)
+        androidx.media3.exoplayer.source.DefaultMediaSourceFactory(sdlView.context)
             .setDataSourceFactory(CacheDataSourceFactory(maxFileSize = 256L * 1024 * 1024))
 
-    internal val exoPlayer: ExoPlayer = ExoPlayer.Builder(parent.context)
+    internal val exoPlayer: ExoPlayer = ExoPlayer.Builder(sdlView.context)
         .setMediaSourceFactory(mediaSourceFactory)
         .build().apply {
             setMediaItem(asset.mediaItem)
@@ -152,15 +152,15 @@ class AVPlayer(parent: SDLActivity, asset: AVURLAsset) {
 }
 
 @Suppress("unused")
-class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
-    private val exoPlayerView: PlayerView = PlayerView(parent.context).apply {
+class AVPlayerLayer(private val sdlView: SDLActivity, player: AVPlayer) {
+    private val exoPlayerView: PlayerView = PlayerView(sdlView.context).apply {
         useController = false
         tag = "ExoPlayer"
         this.player = player.exoPlayer
     }
 
     init {
-        parent.addView(exoPlayerView, 0)
+        sdlView.addView(exoPlayerView, 0)
     }
 
     fun setFrame(x: Int, y: Int, width: Int, height: Int) {
@@ -173,7 +173,7 @@ class AVPlayerLayer(private val parent: SDLActivity, player: AVPlayer) {
         exoPlayerView.resizeMode = resizeMode
     }
 
-    fun removeFromParent() = parent.removeViewInLayout(exoPlayerView)
+    fun removeFromsdlView() = sdlView.removeViewInLayout(exoPlayerView)
 }
 
 /**
@@ -200,12 +200,8 @@ internal class CacheDataSourceFactory(private val maxFileSize: Long): DataSource
  */
 object Media3Singleton {
     private var initialized = false
-
-    lateinit var okHttpClient: OkHttpClient
-        private set
-
-    lateinit var simpleCache: SimpleCache
-        private set
+    lateinit var okHttpClient: OkHttpClient private set
+    lateinit var simpleCache: SimpleCache private set
 
     /**
      * Initialize once with application context and cache sizes.
@@ -230,9 +226,9 @@ object Media3Singleton {
 }
 
 @Suppress("unused")
-class AVURLAsset(parent: SDLActivity, url: String) {
+class AVURLAsset(sdlView: SDLActivity, url: String) {
     internal val mediaItem: MediaItem
-    private val context: Context = parent.context
+    private val context: Context = sdlView.context
 
     init {
         Media3Singleton.init(
