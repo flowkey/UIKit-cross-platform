@@ -8,7 +8,7 @@
 //
 
 import AVFoundation
-internal import var SDL_gpu.GPU_FORMAT_RGBA
+internal import var SDL_gpu.GPU_FORMAT_BGRA
 
 public typealias AVPlayer = AVFoundation.AVPlayer
 
@@ -69,7 +69,7 @@ public final class AVPlayerLayer: CALayer {
         player?.currentItem?.remove(playerOutput)
 
         let aspectRatio = presentationSize.width / presentationSize.height
-        
+
         let width = (size.width * self.contentsScale).rounded()
         let widthAlignedTo4PixelPadding = (width.remainder(dividingBy: 8) == 0) ?
             width : // <-- no padding required
@@ -88,7 +88,6 @@ public final class AVPlayerLayer: CALayer {
         currentPlayerOutputSize = size
     }
 
-    @_optimize(speed)
     func updateVideoFrame() {
         updatePlayerOutput(size: frame.size)
         guard
@@ -109,19 +108,10 @@ public final class AVPlayerLayer: CALayer {
 
         if contents?.width != width || contents?.height != height {
             contentsScale = 1.0 // this doesn't work on init because we set contentsScale in UIView.init afterwards
-            contents = VideoTexture(width: width, height: height, format: GPU_FORMAT_RGBA)
-        }
-
-        // Swap R and B values to get RGBA pixels instead of BGRA:
-        let bufferSize = CVPixelBufferGetDataSize(pixelBuffer)
-        for i in stride(from: 0, to: bufferSize, by: 16) {
-            swap(&pixelBytes[i], &pixelBytes[i + 2])
-            swap(&pixelBytes[i+4], &pixelBytes[i + 6])
-            swap(&pixelBytes[i+8], &pixelBytes[i + 10])
-            swap(&pixelBytes[i+12], &pixelBytes[i + 14])
+            contents = VideoTexture(width: width, height: height, format: GPU_FORMAT_BGRA)
         }
 
         contents?.replacePixels(with: pixelBytes, bytesPerPixel: 4)
     }
 }
-#endif
+#endif // os(macOS)

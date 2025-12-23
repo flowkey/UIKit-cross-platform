@@ -20,6 +20,7 @@ import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
+import androidx.media3.ui.PlayerView
 import org.libsdl.app.SDLActivity
 import okhttp3.Cache as OkHttpCache
 import okhttp3.OkHttpClient

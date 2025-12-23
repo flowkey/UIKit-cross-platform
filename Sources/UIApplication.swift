@@ -99,6 +99,29 @@ public func nativeProcessEventsAndRender(env: UnsafeMutablePointer<JNIEnv?>?, vi
     let frameTime = Timer()
     UIApplication.shared?.handleEventsIfNeeded()
     UIScreen.main?.render(window: UIApplication.shared?.keyWindow, atTime: frameTime)
-    dispatchMainQueueCallback(nil)
+
+    // <Service the main queue / thread / actor>
+    // Note: this would be more efficiently and effectively
+    // served by the newer Swift executor APIs
+
+    // Arbitrary, but designed to get "a lot" of work done if needed
+    // without boosting baseline CPU usage noticeably above 0%:
+    let N = 64
+
+    for _ in 0 ..< N {
+        // This loop is designed to ensure the main queue is serviced
+        // thoroughly, especially on shutdown where the frame callback is no
+        // longer called regularly but there might still be cleanup work to
+        // do on the Main Actor e.g. upon deinit.
+        dispatchMainQueueCallback(nil)
+        if frameTime.elapsedTimeInMilliseconds > 8 {
+            // Process the main queue at least once per frame, up to N times
+            // provided that processing doesn't take us beyond 50% of the
+            // frame budget @60fps.
+            break
+        }
+    }
+
+    // </Service the main queue / thread / actor>
 }
 #endif

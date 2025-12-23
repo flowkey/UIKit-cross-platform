@@ -334,8 +334,10 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         nativeDestroyScreen()
         removeFrameCallback()
 
-        // renderer should now be destroyed but we need to process events once more to clean up
-        this.nativeProcessEventsAndRender()
+        repeat(10) {
+            // renderer should now be destroyed but we need to process events once more to clean up
+            this.nativeProcessEventsAndRender()
+        }
     }
 
     /** Called by SDL using JNI. */
