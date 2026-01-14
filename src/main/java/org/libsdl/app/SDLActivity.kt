@@ -11,6 +11,8 @@ import android.view.KeyEvent.*
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import main.java.org.libsdl.app.*
 
@@ -195,6 +197,13 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
 
         // renderer should now be destroyed but we need to process events once more to clean up
         this.nativeProcessEventsAndRender()
+
+        // TODO: This is a hack that increases the likelihood that async tasks scheduled from 
+        // RootViewController deinit are executed
+        Handler(Looper.getMainLooper()).postDelayed({
+            nativeProcessEventsAndRender()
+            nativeProcessEventsAndRender()
+        }, 100L)
     }
 
     fun removeFrameCallback() {
