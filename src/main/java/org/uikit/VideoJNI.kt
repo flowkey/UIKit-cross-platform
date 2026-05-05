@@ -174,7 +174,7 @@ class AVPlayerLayer(private val sdlView: SDLActivity, player: AVPlayer) {
         exoPlayerView.resizeMode = resizeMode
     }
 
-    fun removeFromsdlView() = sdlView.removeViewInLayout(exoPlayerView)
+    fun removeFromParent() = sdlView.removeViewInLayout(exoPlayerView)
 }
 
 /**
