@@ -81,6 +81,15 @@ public class CGImage {
         self.init(pointer, sourceData: nil)
     }
 
+    /// Allocates an empty `GPU_Image` of the given size and pixel format. Pixels are
+    /// uninitialized — callers should follow up with `replacePixels(with:bytesPerPixel:)`.
+    /// Used for cases like rlottie where we render fresh pixels every frame.
+    internal convenience init?(width: Int, height: Int, format: GPU_FormatEnum) {
+        guard width > 0, height > 0 else { return nil }
+        guard let pointer = GPU_CreateImage(UInt16(width), UInt16(height), format) else { return nil }
+        self.init(pointer, sourceData: nil)
+    }
+
     internal func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
         var rect = GPU_Rect(x: 0, y: 0, w: Float(rawPointer.pointee.w), h: Float(rawPointer.pointee.h))
         GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * Int32(bytesPerPixel))
