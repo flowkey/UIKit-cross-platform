@@ -16,7 +16,6 @@
 		5B4A7830285C799C0066E48C /* UIWindow+getSafeAreaInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4A782F285C799C0066E48C /* UIWindow+getSafeAreaInsets.swift */; };
 		5B4F43CF1F39C45900FB4AB9 /* CASpringAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F43CE1F39C45900FB4AB9 /* CASpringAnimation.swift */; };
 		5B520DB5208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B520DB4208A0AD5007F5075 /* FontRenderer+renderAttributedString.swift */; };
-		5B5EAA392FBF96CC0010167D /* Crlottie in Frameworks */ = {isa = PBXBuildFile; productRef = 5B5EAA382FBF96CC0010167D /* Crlottie */; };
 		5B6AC4571F2F73A90029AC0C /* CALayer+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AC4561F2F73A90029AC0C /* CALayer+animations.swift */; };
 		5B71D7472292B68E008CEC66 /* UIAccessibilityIdentification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B71D7462292B68E008CEC66 /* UIAccessibilityIdentification.swift */; };
 		5B8053DF1F39EE0E00BAF074 /* UIViewAnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8053DE1F39EE0E00BAF074 /* UIViewAnimationGroup.swift */; };
@@ -199,7 +198,6 @@
 		83F02DE11F18F18500347AA8 /* roboto-thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F02DC51F17D84000347AA8 /* roboto-thin.ttf */; };
 		83F02DE21F18F18500347AA8 /* roboto-thinitalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F02DC61F17D84000347AA8 /* roboto-thinitalic.ttf */; };
 		83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */; };
-		BF9A3CC08EAE6E44EE935955 /* LottieAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9D2CC1AAE4CF4C8C97C75C /* LottieAnimationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -387,7 +385,6 @@
 		83F02DC91F17D84000347AA8 /* roboto-italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "roboto-italic.ttf"; sourceTree = "<group>"; };
 		83F02DCA1F17D84000347AA8 /* roboto-mediumitalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "roboto-mediumitalic.ttf"; sourceTree = "<group>"; };
 		83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+SDL.swift"; sourceTree = "<group>"; };
-		BF9D2CC1AAE4CF4C8C97C75C /* LottieAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LottieAnimationView.swift; path = Sources/LottieAnimationView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -401,7 +398,6 @@
 				5C27E7DE1ECB2F9100F5020D /* ForceFeedback.framework in Frameworks */,
 				5C27E7DF1ECB2F9100F5020D /* Carbon.framework in Frameworks */,
 				5C27E7E01ECB2F9100F5020D /* CoreFoundation.framework in Frameworks */,
-				5B5EAA392FBF96CC0010167D /* Crlottie in Frameworks */,
 				5CF33D692CE5561B00BCAC3C /* SDL in Frameworks */,
 				5C27E7E11ECB2F9100F5020D /* IOKit.framework in Frameworks */,
 				5C27E7E21ECB2F9100F5020D /* CoreVideo.framework in Frameworks */,
@@ -508,7 +504,6 @@
 				5CB6E1C22033460C001FEAC9 /* CATransform3D+SDL_gpu.swift */,
 				83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */,
 				83E5F7EA1EF8156400279C59 /* CGImage.swift */,
-				BF9D2CC1AAE4CF4C8C97C75C /* LottieAnimationView.swift */,
 				5C6AB77B1ED70F97006F90AC /* DisplayLink.swift */,
 				83E5F7FF1EF826CC00279C59 /* Geometry */,
 				5BD476341F4D94F40055EE27 /* Logging.swift */,
@@ -846,7 +841,6 @@
 			mainGroup = 5C27E7A41ECB2F6500F5020D;
 			packageReferences = (
 				5C204B932CE5456600428CC7 /* XCLocalSwiftPackageReference "SDL" */,
-				5B5EAA372FBF96CC0010167D /* XCRemoteSwiftPackageReference "rlottie" */,
 			);
 			productRefGroup = 5C27E7AF1ECB2F6500F5020D /* Products */;
 			projectDirPath = "";
@@ -988,7 +982,6 @@
 				5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */,
 				5CBEB3E229149DD900D0CC3F /* AffineTransform.swift in Sources */,
 				83E5F7EB1EF8156400279C59 /* CGImage.swift in Sources */,
-				BF9A3CC08EAE6E44EE935955 /* LottieAnimationView.swift in Sources */,
 				61EE7A2E21B18940003A5FFD /* UIApplication+Notifications.swift in Sources */,
 				5C6AB75F1ED575CF006F90AC /* UIScrollView.swift in Sources */,
 				5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */,
@@ -1413,23 +1406,7 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		5B5EAA372FBF96CC0010167D /* XCRemoteSwiftPackageReference "rlottie" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/michaelknoch/rlottie";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		5B5EAA382FBF96CC0010167D /* Crlottie */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5B5EAA372FBF96CC0010167D /* XCRemoteSwiftPackageReference "rlottie" */;
-			productName = Crlottie;
-		};
 		5CF33D682CE5561B00BCAC3C /* SDL */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C204B932CE5456600428CC7 /* XCLocalSwiftPackageReference "SDL" */;
