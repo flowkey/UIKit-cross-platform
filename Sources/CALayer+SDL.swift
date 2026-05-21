@@ -103,6 +103,11 @@ extension CALayer {
             }
         }
 
+        if needsDisplay() {
+            display()
+            _needsDisplay = false
+        }
+
         if let contents = contents {
             do {
                 try renderer.blit(

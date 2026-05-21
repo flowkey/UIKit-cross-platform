@@ -1,14 +1,14 @@
-// swift-tools-version:5.7
+// swift-tools-version:6.0
 import PackageDescription
 
 let package = Package(
     name: "UIKit",
-    platforms: [.macOS(.v10_15)],
+    platforms: [.macOS(.v13)],
     products: [
         .library(name: "UIKit", targets: ["UIKit"])
     ],
     dependencies: [
-        .package(path: "./swift-jni"),
+        .package(url: "https://github.com/SwiftAndroid/swift-jni", branch: "devel"),
         .package(path: "./SDL"),
     ],
     targets: [
@@ -23,5 +23,6 @@ let package = Package(
             exclude: ["Mac-Info.plist"]
         ),
         .target(name: "UIKit_C_API", path: "UIKit_C_API"),
-    ]
+    ],
+    swiftLanguageModes: [.v5]
 )

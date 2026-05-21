@@ -129,6 +129,7 @@ open class CALayer {
             if !isPresentationForAnotherLayer && bounds.size != newBounds.size {
                 // It seems weird to access the superview here but it matches the iOS behaviour
                 (self.superlayer?.delegate as? UIView)?.setNeedsLayout()
+                self.setNeedsDisplay()
             }
 
         }
