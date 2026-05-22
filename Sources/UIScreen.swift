@@ -91,10 +91,16 @@ public final class UIScreen {
         }
 
         #if os(Android)
-        let scale = androidScreenDimension.scale
-        GPU_SetVirtualResolution(gpuTarget, UInt16(size.width / scale), UInt16(size.height / scale))
-        size.width /= scale
-        size.height /= scale
+        // Snap bounds to the rounded virtual resolution and back-derive `scale` so
+        // `bounds.width * scale == physical_width` exactly — otherwise a fractional
+        // density (e.g. 2.125) leaves the rightmost physical column un-rasterised.
+        let densityScale = androidScreenDimension.scale
+        let virtualWidth = UInt16((size.width / densityScale).rounded())
+        let virtualHeight = UInt16((size.height / densityScale).rounded())
+        GPU_SetVirtualResolution(gpuTarget, virtualWidth, virtualHeight)
+        let scale = size.width / CGFloat(virtualWidth)
+        size.width = CGFloat(virtualWidth)
+        size.height = CGFloat(virtualHeight)
         #else
         // Mac:
         let scale = CGFloat(gpuTarget.pointee.base_h) / CGFloat(gpuTarget.pointee.h)
