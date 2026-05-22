@@ -84,9 +84,9 @@ extension UIScreen {
 
     func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
         if cornerRadius >= 1 {
-            GPU_RectangleRoundFilled(rawPointer, rect.gpuRect(scale: scale), cornerRadius: Float(cornerRadius), color: color.sdlColor)
+            GPU_RectangleRoundFilled(rawPointer, rect.gpuRect(target: rawPointer), cornerRadius: Float(cornerRadius), color: color.sdlColor)
         } else {
-            GPU_RectangleFilled(rawPointer, rect.gpuRect(scale: scale), color: color.sdlColor)
+            GPU_RectangleFilled(rawPointer, rect.gpuRect(target: rawPointer), color: color.sdlColor)
         }
     }
 
@@ -99,7 +99,7 @@ extension UIScreen {
             y: rect.origin.y + offset,
             width: rect.size.width - offset,
             height: rect.size.height - offset
-        ).gpuRect(scale: scale)
+        ).gpuRect(target: rawPointer)
 
         GPU_SetLineThickness(Float(lineThickness))
         GPU_Rectangle(rawPointer, scaledGpuRect, color: lineColor.sdlColor)
@@ -115,7 +115,7 @@ extension UIScreen {
                 y: rect.origin.y + offset,
                 width: rect.size.width - offset,
                 height: rect.size.height - offset
-            ).gpuRect(scale: scale)
+            ).gpuRect(target: rawPointer)
 
             GPU_SetLineThickness(Float(lineThickness))
             GPU_RectangleRound(rawPointer, scaledGpuRect, cornerRadius: Float(cornerRadius), color: lineColor.sdlColor)
@@ -136,17 +136,22 @@ extension UIScreen {
             return GPU_UnsetClip(rawPointer)
         }
 
-        GPU_SetClipRect(rawPointer, clippingRect.gpuRect(scale: scale))
+        GPU_SetClipRect(rawPointer, clippingRect.gpuRect(target: rawPointer))
     }
 }
 
 private extension CGRect {
-    func gpuRect(scale: CGFloat) -> GPU_Rect {
+    // Snap to physical pixel boundaries using the GPU target's per-axis ratios —
+    // a single `UIScreen.scale` is wrong when drawable_w/target_w ≠ drawable_h/target_h
+    // (any fractional density rounds the two axes by different amounts).
+    func gpuRect(target: UnsafeMutablePointer<GPU_Target>!) -> GPU_Rect {
+        let scaleX = CGFloat(target.pointee.context.pointee.drawable_w) / CGFloat(target.pointee.w)
+        let scaleY = CGFloat(target.pointee.context.pointee.drawable_h) / CGFloat(target.pointee.h)
         return GPU_Rect(
-            x: Float((self.origin.x * scale).rounded() / scale),
-            y: Float((self.origin.y * scale).rounded() / scale),
-            w: Float((self.size.width * scale).rounded() / scale),
-            h: Float((self.size.height * scale).rounded() / scale)
+            x: Float((self.origin.x * scaleX).rounded() / scaleX),
+            y: Float((self.origin.y * scaleY).rounded() / scaleY),
+            w: Float((self.size.width * scaleX).rounded() / scaleX),
+            h: Float((self.size.height * scaleY).rounded() / scaleY)
         )
     }
 }
