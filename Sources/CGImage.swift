@@ -82,36 +82,22 @@ public class CGImage {
     }
 
     /// Allocates an empty GPU-backed image of the given size. Pixels are uninitialized —
-    /// callers must follow up with `replacePixels(with:bytesPerPixel:)`. Used when the
-    /// pixel content is produced per-frame by code outside UIKit (e.g. video decoders,
-    /// vector animation renderers).
-    public convenience init?(width: Int, height: Int, format: PixelFormat) {
+    /// callers must follow up with `replacePixels(with:)`. Used when the pixel content is
+    /// produced per-frame by code outside UIKit (e.g. video decoders, vector animation
+    /// renderers). Format is RGBA8 (byte order R,G,B,A in memory).
+    public convenience init?(width: Int, height: Int) {
         guard width > 0, height > 0 else { return nil }
-        guard let pointer = GPU_CreateImage(UInt16(width), UInt16(height), format.gpuFormat) else { return nil }
+        guard let pointer = GPU_CreateImage(UInt16(width), UInt16(height), GPU_FORMAT_RGBA) else { return nil }
         self.init(pointer, sourceData: nil)
     }
 
-    /// Mutates the GPU texture in place. Callers updating a CGImage that's currently
-    /// attached to a `CALayer.contents` must set `CALayer.layerTreeIsDirty = true`
-    /// themselves — `UIScreen.render` short-circuits when the layer tree isn't dirty.
-    public func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
+    /// Mutates the GPU texture in place. Bytes must be RGBA8 (4 bytes per pixel, byte
+    /// order R,G,B,A). Callers updating a CGImage that's currently attached to a
+    /// `CALayer.contents` must set `CALayer.layerTreeIsDirty = true` themselves —
+    /// `UIScreen.render` short-circuits when the layer tree isn't dirty.
+    public func replacePixels(with bytes: UnsafePointer<UInt8>) {
         var rect = GPU_Rect(x: 0, y: 0, w: Float(rawPointer.pointee.w), h: Float(rawPointer.pointee.h))
-        GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * Int32(bytesPerPixel))
-    }
-
-    public enum PixelFormat {
-        /// 32-bit per pixel, byte order R,G,B,A. Reliably supported on all backends.
-        case rgba
-        /// 32-bit per pixel, byte order B,G,R,A. Not supported on Android GLES — falling
-        /// back to `.rgba` and swizzling client-side is safer.
-        case bgra
-
-        fileprivate var gpuFormat: GPU_FormatEnum {
-            switch self {
-            case .rgba: return GPU_FORMAT_RGBA
-            case .bgra: return GPU_FORMAT_BGRA
-            }
-        }
+        GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * 4)
     }
 
     /// Recreate the underlying `GPU_Image` (`self.rawPointer`) from this `CGImage`'s source data if possible.
