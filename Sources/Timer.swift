@@ -12,9 +12,9 @@ import Bionic
 import Darwin.C
 #endif
 
-public struct Timer {
+struct Timer {
     let startTime: timeval
-    public init(startingAt startingTimeInMilliseconds: Double = 0.0) {
+    init(startingAt startingTimeInMilliseconds: Double = 0.0) {
         var startTime = timeval()
         gettimeofday(&startTime, nil)
 
@@ -26,17 +26,17 @@ public struct Timer {
         self.startTime = startTime
     }
 
-    public var startTimeInMilliseconds: Double {
+    var startTimeInMilliseconds: Double {
         startTime.inMilliseconds
     }
 
-    public var elapsedTimeInMilliseconds: Double {
+    var elapsedTimeInMilliseconds: Double {
         var currentTime = timeval(tv_sec: 0, tv_usec: 0)
         gettimeofday(&currentTime, nil)
         return max(0.001, currentTime.inMilliseconds - startTime.inMilliseconds)
     }
 
-    public var elapsedTimeInSeconds: Double {
+    var elapsedTimeInSeconds: Double {
         var currentTime = timeval(tv_sec: 0, tv_usec: 0)
         gettimeofday(&currentTime, nil)
         return max(0.000001, currentTime.inSeconds - startTime.inSeconds)
