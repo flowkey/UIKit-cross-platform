@@ -123,8 +123,7 @@ open class CAGradientLayer: CALayer {
             contents.height != Int(bounds.height)
         {
             contents.replacePixels(
-                with: surface.pointee.pixels.assumingMemoryBound(to: UInt8.self),
-                bytesPerPixel: Int(surface.pointee.format.pointee.BytesPerPixel)
+                with: surface.pointee.pixels.assumingMemoryBound(to: UInt8.self)
             )
         } else {
             contents = CGImage(surface: surface)
