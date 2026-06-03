@@ -84,7 +84,11 @@ extension UIScreen {
 
     func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
         if cornerRadius >= 1 {
-            GPU_RectangleRoundFilled(rawPointer, gpuRect(rect), cornerRadius: Float(cornerRadius), color: color.sdlColor)
+            let previousProgram = ShaderProgram.currentlyActive
+            ShaderProgram.roundedRect.activate()
+            ShaderProgram.roundedRect.setFill(rect: rect, cornerRadius: cornerRadius)
+            GPU_RectangleFilled(rawPointer, gpuRect(rect), color: color.sdlColor)
+            restoreShaderProgram(previousProgram)
         } else {
             GPU_RectangleFilled(rawPointer, gpuRect(rect), color: color.sdlColor)
         }
@@ -107,20 +111,23 @@ extension UIScreen {
 
     func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat, cornerRadius: CGFloat) {
         if cornerRadius > 1 {
-            // we want to render the outline 'inside' the rect rather
-            // than exceeding the bounds when lineThickness is bigger than 1
-            let offset = lineThickness / 2
-            let scaledGpuRect = gpuRect(CGRect(
-                x: rect.origin.x + offset,
-                y: rect.origin.y + offset,
-                width: rect.size.width - offset,
-                height: rect.size.height - offset
-            ))
-
-            GPU_SetLineThickness(Float(lineThickness))
-            GPU_RectangleRound(rawPointer, scaledGpuRect, cornerRadius: Float(cornerRadius), color: lineColor.sdlColor)
+            // SDF ring: stroke is drawn from the rect boundary inward by `lineThickness`,
+            // which matches CSS/iOS "border" semantics.
+            let previousProgram = ShaderProgram.currentlyActive
+            ShaderProgram.roundedRect.activate()
+            ShaderProgram.roundedRect.setStroke(rect: rect, cornerRadius: cornerRadius, borderWidth: lineThickness)
+            GPU_RectangleFilled(rawPointer, gpuRect(rect), color: lineColor.sdlColor)
+            restoreShaderProgram(previousProgram)
         } else {
             outline(rect, lineColor: lineColor, lineThickness: lineThickness)
+        }
+    }
+
+    private func restoreShaderProgram(_ program: ShaderProgram?) {
+        if let program = program {
+            program.activate()
+        } else {
+            ShaderProgram.deactivateAll()
         }
     }
 

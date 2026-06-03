@@ -77,7 +77,9 @@ class Shader {
         case GPU_LANGUAGE_GLSL:
             header = "#version \(renderer.pointee.max_shader_version)"
         case GPU_LANGUAGE_GLSLES:
+            // `fwidth` lives behind this extension on ES2 (used by the rounded-rect SDF shader).
             header = """
+            #extension GL_OES_standard_derivatives : enable
             precision highp int;
             precision highp float;
             """
