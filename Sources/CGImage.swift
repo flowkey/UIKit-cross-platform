@@ -81,19 +81,12 @@ public class CGImage {
         self.init(pointer, sourceData: nil)
     }
 
-    /// Allocates an empty GPU-backed image of the given size. Pixels are uninitialized —
-    /// callers must follow up with `replacePixels(with:bytesPerPixel:)`. Used when the
-    /// pixel content is produced per-frame by code outside UIKit (e.g. video decoders,
-    /// vector animation renderers). Format is RGBA8 (byte order R,G,B,A in memory).
     public convenience init?(width: Int, height: Int) {
         guard width > 0, height > 0 else { return nil }
         guard let pointer = GPU_CreateImage(UInt16(width), UInt16(height), GPU_FORMAT_RGBA) else { return nil }
         self.init(pointer, sourceData: nil)
     }
 
-    /// Mutates the GPU texture in place. Callers updating a CGImage that's currently
-    /// attached to a `CALayer.contents` must set `CALayer.layerTreeIsDirty = true`
-    /// themselves — `UIScreen.render` short-circuits when the layer tree isn't dirty.
     public func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
         var rect = GPU_Rect(x: 0, y: 0, w: Float(rawPointer.pointee.w), h: Float(rawPointer.pointee.h))
         GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * Int32(bytesPerPixel))
