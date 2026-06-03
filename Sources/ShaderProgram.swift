@@ -46,6 +46,7 @@ class ShaderProgram {
     }
 
     func activate() {
+        ShaderProgram.currentlyActive = self
         GPU_ActivateShaderProgram(programRef, &shaderBlock)
     }
 
@@ -56,7 +57,10 @@ class ShaderProgram {
 
 
 extension ShaderProgram {
+    static weak var currentlyActive: ShaderProgram?
+
     static func deactivateAll() {
+        ShaderProgram.currentlyActive = nil
         GPU_ActivateShaderProgram(0, nil)
     }
 }
