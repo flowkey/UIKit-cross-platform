@@ -49,4 +49,41 @@ extension FragmentShader {
         }
         """
     )
+
+    // SDF rounded-rect with analytic anti-aliasing.
+    // `rectFrame` is laid out the same way as `maskFrame` above (x, y, height, width) so it lines
+    // up with `ShaderProgram.UniformVariable.set(_: CGRect)`. `borderWidth` >= half of the smaller
+    // dimension collapses the inner edge and produces a solid fill.
+    static let roundedRect = try! FragmentShader(source: """
+        \(`in`) vec4 originalColour;
+        \(`in`) vec2 absolutePixelPos;
+
+        \(fragColorDefinition)
+
+        uniform vec4 rectFrame;
+        uniform float cornerRadius;
+        uniform float borderWidth;
+
+        float sdRoundedBox(vec2 p, vec2 b, float r) {
+            vec2 q = abs(p) - b + r;
+            return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
+        }
+
+        void main(void)
+        {
+            vec2 halfSize = vec2(rectFrame.w, rectFrame.z) * 0.5;
+            vec2 center = vec2(rectFrame.x, rectFrame.y) + halfSize;
+            float r = min(cornerRadius, min(halfSize.x, halfSize.y));
+
+            float d = sdRoundedBox(absolutePixelPos - center, halfSize, r);
+            float aa = max(fwidth(d), 1e-5) * 0.5;
+
+            float outer = 1.0 - smoothstep(-aa, aa, d);
+            float inner = 1.0 - smoothstep(-aa, aa, d + borderWidth);
+            float alpha = outer - inner;
+
+            \(fragColor) = vec4(originalColour.rgb, originalColour.a * alpha);
+        }
+        """
+    )
 }
