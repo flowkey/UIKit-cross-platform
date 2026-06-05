@@ -27,7 +27,53 @@ extension FontRenderer {
 @MainActor
 public class FontRenderer {
     let rawPointer: UnsafeMutablePointer<TTF_Font>
-    deinit { TTF_CloseFont(rawPointer) }
+    private let fontSize: Int32
+    private var _fallbackFonts: [UnsafeMutablePointer<TTF_Font>]?
+
+    #if os(Android)
+    private static let fallbackPaths = [
+        "/system/fonts/NotoSansSymbols-Regular-Subsetted.ttf",
+        "/system/fonts/NotoSansSymbols-Regular-Subsetted2.ttf",
+        "/system/fonts/Roboto-Regular.ttf",
+        "/system/fonts/DroidSans.ttf",
+    ]
+    #endif
+
+    var fallbackFonts: [UnsafeMutablePointer<TTF_Font>] {
+        if let cached = _fallbackFonts { return cached }
+        var fonts: [UnsafeMutablePointer<TTF_Font>] = []
+        #if os(Android)
+        for path in Self.fallbackPaths {
+            if let rwOp = SDL_RWFromFile(path, "rb"),
+               let font = TTF_OpenFontRW(rwOp, 1, fontSize) {
+                TTF_SetFontHinting(font, TTF_HINTING_LIGHT)
+                fonts.append(font)
+            }
+        }
+        #endif
+        _fallbackFonts = fonts
+        return fonts
+    }
+
+    func fontForGlyph(_ code: UInt32) -> UnsafeMutablePointer<TTF_Font>? {
+        if code <= 0xFFFF && TTF_GlyphIsProvided(rawPointer, UInt16(code)) != 0 {
+            return rawPointer
+        }
+        for fb in fallbackFonts {
+            if code <= 0xFFFF && TTF_GlyphIsProvided(fb, UInt16(code)) != 0 {
+                return fb
+            }
+            if code > 0xFFFF && Find_Glyph(fb, code, CACHED_METRICS) == 0 {
+                return fb
+            }
+        }
+        return nil
+    }
+
+    deinit {
+        _fallbackFonts?.forEach { TTF_CloseFont($0) }
+        TTF_CloseFont(rawPointer)
+    }
 
     init?(_ source: CGDataProvider, size: Int32) {
         if !FontRenderer.initialize() { return nil }
@@ -37,6 +83,7 @@ public class FontRenderer {
 
         TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality
         rawPointer = font
+        self.fontSize = size
     }
 
     func getLineHeight() -> Int {
@@ -53,8 +100,23 @@ public class FontRenderer {
         return String(cString: cStringFamilyName)
     }
 
+    private func needsFallback(_ text: String) -> Bool {
+        if fallbackFonts.isEmpty { return false }
+        for scalar in text.unicodeScalars {
+            let code = scalar.value
+            if code > 0xFFFF || TTF_GlyphIsProvided(rawPointer, UInt16(code)) == 0 {
+                return true
+            }
+        }
+        return false
+    }
+
     func render(_ text: String?, color: UIColor, wrapLength: Int = 0) -> CGImage? {
         guard let text = text else { return nil }
+
+        if wrapLength <= 0 && needsFallback(text) {
+            return renderWithFallback(text, color: color)
+        }
 
         guard
             let surface = (wrapLength > 0) ?
@@ -64,6 +126,46 @@ public class FontRenderer {
 
         defer { SDL_FreeSurface(surface) }
         return CGImage(surface: surface)
+    }
+
+    private func renderWithFallback(_ text: String, color: UIColor) -> CGImage? {
+        var runs: [(font: UnsafeMutablePointer<TTF_Font>, text: String)] = []
+        for scalar in text.unicodeScalars {
+            let font = fontForGlyph(scalar.value) ?? rawPointer
+
+            if let last = runs.last, last.font == font {
+                runs[runs.count - 1].text.append(String(scalar))
+            } else {
+                runs.append((font: font, text: String(scalar)))
+            }
+        }
+
+        if runs.count == 1 {
+            guard let surface = TTF_RenderUTF8_Blended(runs[0].font, runs[0].text, color.sdlColor) else { return nil }
+            defer { SDL_FreeSurface(surface) }
+            return CGImage(surface: surface)
+        }
+
+        let (totalWidth, totalHeight) = size(text)
+        guard totalWidth > 0, totalHeight > 0 else { return nil }
+
+        guard let target = SDL_CreateRGBSurfaceWithFormat(
+            0, totalWidth, totalHeight, 32, UInt32(SDL_PIXELFORMAT_ARGB8888)
+        ) else { return nil }
+        defer { SDL_FreeSurface(target) }
+
+        var x: Int32 = 0
+        for run in runs {
+            guard let surface = TTF_RenderUTF8_Blended(run.font, run.text, color.sdlColor) else { continue }
+            defer { SDL_FreeSurface(surface) }
+
+            SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE)
+            var dstRect = SDLRect(x: x, y: 0, w: surface.pointee.w, h: surface.pointee.h)
+            SDL_UpperBlit(surface, nil, target, &dstRect)
+            x += surface.pointee.w
+        }
+
+        return CGImage(surface: target)
     }
 }
 

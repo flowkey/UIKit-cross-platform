@@ -104,17 +104,16 @@ extension FontRenderer {
                 }
             }
 
-            guard Find_Glyph(self.rawPointer, characterCode, CACHED_METRICS) == 0 else {
-                assertionFailure("Glyph \(characterCode) ('\(Character(UnicodeScalar(characterCode)!))') could not be found")
+            guard let fontToUse = self.fontForGlyph(characterCode),
+                  Find_Glyph(fontToUse, characterCode, CACHED_METRICS) == 0 else {
                 return nil
             }
 
-            let glyph = self.rawPointer.pointee.current.pointee
+            let glyph = fontToUse.pointee.current.pointee
 
-            let spaceCharacterCode = 32
-            let newLineCharacterCode = 10
+            let spaceCharacterCode: UInt32 = 32
+            let newLineCharacterCode: UInt32 = 10
             if characterCode != spaceCharacterCode, characterCode != newLineCharacterCode, glyph.maxx - glyph.minx <= 0 {
-                assertionFailure("Glyph \(characterCode) ('\(Character(UnicodeScalar(characterCode)!))') has no width")
                 return nil
             }
 
