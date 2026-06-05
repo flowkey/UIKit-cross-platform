@@ -57,10 +57,16 @@ open class UINavigationBarAndroid: UINavigationBar {
         super.layoutSubviews()
 
         let buttonSize = CGSize(width: barHeight / 2, height: barHeight / 2)
-        backButton.imageView?.bounds.size = buttonSize // change bounds.size to keep centred
+        backButton.imageView?.bounds.size = buttonSize
         backButton.frame.size = CGSize(width: buttonSize.width * 1.25, height: buttonSize.height * 1.25)
         backButton.center.y = bounds.midY
         backButton.layer.cornerRadius = (backButton.frame.width / 2)
+
+        let minTapSize = barHeight
+        rightButton.frame.size.width = max(rightButton.frame.width, minTapSize)
+        rightButton.frame.size.height = max(rightButton.frame.height, minTapSize)
+        rightButton.frame.maxX = bounds.maxX - UIWindow.getSafeAreaInsets().right
+        rightButton.center.y = bounds.midY
 
         titleLabel.frame.origin.x = horizontalMargin
         if backButton.isHidden == false {
