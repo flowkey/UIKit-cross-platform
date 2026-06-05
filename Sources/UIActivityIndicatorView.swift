@@ -51,6 +51,7 @@ open class UIActivityIndicatorView: UIView {
     }
 
     public func startAnimating() {
+        isHidden = false
         startTimer()
     }
 
@@ -91,6 +92,7 @@ open class UIActivityIndicatorView: UIView {
     public func stopAnimating() {
         timerTask?.cancel()
         timerTask = nil
+        isHidden = true
     }
 }
 

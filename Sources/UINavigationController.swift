@@ -94,8 +94,18 @@ open class UINavigationController: UIViewController {
 
         super.viewWillAppear(animated)
         navigationBar.platformSpecificSetup()
+
+        let safeTop = view.safeAreaInsets.top
         navigationBar.frame.size.width = view.bounds.width
-        transitionView.frame = view.bounds
+        navigationBar.frame.origin.y = safeTop
+
+        let contentTop = navigationBar.frame.maxY
+        transitionView.frame = CGRect(
+            x: 0,
+            y: contentTop,
+            width: view.bounds.width,
+            height: view.bounds.height - contentTop
+        )
 
         // This `animated` bool is unrelated to the one passed into viewWillAppear:
         updateUIFromViewControllerStack(animated: false)
@@ -104,8 +114,21 @@ open class UINavigationController: UIViewController {
     open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
 
-        navigationBar.frame.size.width = view.bounds.width
-        transitionView.frame = view.bounds
+        let safeTop = view.safeAreaInsets.top
+        navigationBar.frame = CGRect(
+            x: 0,
+            y: safeTop,
+            width: view.bounds.width,
+            height: navigationBar.frame.height
+        )
+
+        let contentTop = navigationBar.frame.maxY
+        transitionView.frame = CGRect(
+            x: 0,
+            y: contentTop,
+            width: view.bounds.width,
+            height: view.bounds.height - contentTop
+        )
     }
 
     open override func handleHardwareBackButtonPress() -> Bool {
