@@ -76,7 +76,11 @@ extension FragmentShader {
             float r = min(cornerRadius, min(halfSize.x, halfSize.y));
 
             float d = sdRoundedBox(absolutePixelPos - center, halfSize, r);
+            #ifdef GL_OES_standard_derivatives
             float aa = max(fwidth(d), 1e-5) * 0.5;
+            #else
+            float aa = 0.5;
+            #endif
 
             float outer = 1.0 - smoothstep(-aa, aa, d);
             float inner = 1.0 - smoothstep(-aa, aa, d + borderWidth);
