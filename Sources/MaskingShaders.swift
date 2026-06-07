@@ -7,7 +7,17 @@
 //
 
 extension VertexShader {
-    static let common = try! VertexShader(source:
+    private static var _common: VertexShader?
+    static var common: VertexShader {
+        if let existing = _common { return existing }
+        let shader = try! VertexShader(source: commonSource)
+        _common = shader
+        return shader
+    }
+
+    static func invalidateAll() { _common = nil }
+
+    private static let commonSource =
         """
         \(`in`) vec3 gpu_Vertex;
         \(`in`) vec2 gpu_TexCoord;
@@ -24,11 +34,31 @@ extension VertexShader {
             gl_Position = gpu_ModelViewProjectionMatrix * vec4(gpu_Vertex, 1.0);
         }
         """
-    )
 }
 
 extension FragmentShader {
-    static let maskColourWithImage = try! FragmentShader(source: """
+    private static var _maskColourWithImage: FragmentShader?
+    static var maskColourWithImage: FragmentShader {
+        if let existing = _maskColourWithImage { return existing }
+        let shader = try! FragmentShader(source: maskColourWithImageSource)
+        _maskColourWithImage = shader
+        return shader
+    }
+
+    private static var _roundedRect: FragmentShader?
+    static var roundedRect: FragmentShader {
+        if let existing = _roundedRect { return existing }
+        let shader = try! FragmentShader(source: roundedRectSource)
+        _roundedRect = shader
+        return shader
+    }
+
+    static func invalidateAll() {
+        _maskColourWithImage = nil
+        _roundedRect = nil
+    }
+
+    private static let maskColourWithImageSource = """
         \(`in`) vec4 originalColour;
         \(`in`) vec2 absolutePixelPos;
 
@@ -48,13 +78,12 @@ extension FragmentShader {
             \(fragColor) = vec4(originalColour.rgb, originalColour.a * maskColour.a);
         }
         """
-    )
 
     // SDF rounded-rect with analytic anti-aliasing.
     // `rectFrame` is laid out the same way as `maskFrame` above (x, y, height, width) so it lines
     // up with `ShaderProgram.UniformVariable.set(_: CGRect)`. `borderWidth` >= half of the smaller
     // dimension collapses the inner edge and produces a solid fill.
-    static let roundedRect = try! FragmentShader(source: """
+    private static let roundedRectSource = """
         \(`in`) vec4 originalColour;
         \(`in`) vec2 absolutePixelPos;
 
@@ -85,5 +114,4 @@ extension FragmentShader {
             \(fragColor) = vec4(originalColour.rgb, originalColour.a * alpha);
         }
         """
-    )
 }

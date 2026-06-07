@@ -131,6 +131,11 @@ public final class UIScreen {
             UIView.currentAnimationPrototype = nil
             UIEvent.activeEvents.removeAll()
             FontRenderer.cleanupSession()
+
+            ShaderProgram.invalidateRoundedRect()
+            ShaderProgram.invalidateMask()
+            FragmentShader.invalidateAll()
+            VertexShader.invalidateAll()
         }
 
         guard let rawPointer = self.rawPointer else {

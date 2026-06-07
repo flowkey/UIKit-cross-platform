@@ -6,7 +6,14 @@
 internal import SDL_gpu
 
 extension ShaderProgram {
-    static let roundedRect = try! RoundedRectShaderProgram()
+    private static var _roundedRect: RoundedRectShaderProgram?
+    static var roundedRect: RoundedRectShaderProgram {
+        if let existing = _roundedRect { return existing }
+        let program = try! RoundedRectShaderProgram()
+        _roundedRect = program
+        return program
+    }
+    static func invalidateRoundedRect() { _roundedRect = nil }
 }
 
 class RoundedRectShaderProgram: ShaderProgram {
