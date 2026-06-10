@@ -81,7 +81,13 @@ public class CGImage {
         self.init(pointer, sourceData: nil)
     }
 
-    internal func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
+    public convenience init?(width: Int, height: Int) {
+        guard width > 0, height > 0 else { return nil }
+        guard let pointer = GPU_CreateImage(UInt16(width), UInt16(height), GPU_FORMAT_RGBA) else { return nil }
+        self.init(pointer, sourceData: nil)
+    }
+
+    public func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
         var rect = GPU_Rect(x: 0, y: 0, w: Float(rawPointer.pointee.w), h: Float(rawPointer.pointee.h))
         GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * Int32(bytesPerPixel))
     }

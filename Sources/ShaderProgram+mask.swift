@@ -9,7 +9,14 @@
 internal import SDL_gpu
 
 extension ShaderProgram {
-    static let mask = try! MaskShaderProgram()
+    private static var _mask: MaskShaderProgram?
+    static var mask: MaskShaderProgram {
+        if let existing = _mask { return existing }
+        let program = try! MaskShaderProgram()
+        _mask = program
+        return program
+    }
+    static func invalidateMask() { _mask = nil }
 }
 
 class MaskShaderProgram: ShaderProgram {

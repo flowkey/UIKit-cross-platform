@@ -9,14 +9,8 @@
 internal import SDL_gpu
 
 class VertexShader: Shader {
-    // Some keywords have changed since the earlier shader language versions available on Android:
-    #if os(Android) // GLES/GLSL:
-    static let `in` = "attribute"
-    static let `out` = "varying"
-    #else // OpenGL:
     static let `in` = "in"
     static let `out` = "out"
-    #endif
 
     init(source: String) throws {
         try super.init(source, type: GPU_VERTEX_SHADER)
@@ -24,18 +18,10 @@ class VertexShader: Shader {
 }
 
 class FragmentShader: Shader {
-    // Some keywords have changed since the earlier shader language versions available on Android:
-    #if os(Android) // GLES/GLSL:
-    static let `in` = "varying"
-    static let texture = "texture2D"
-    static let fragColor = "gl_FragColor"
-    static let fragColorDefinition = "" // magically predefined by the driver
-    #else // OpenGL:
     static let `in` = "in"
     static let texture = "texture"
     static let fragColor = "fragColor"
     static let fragColorDefinition = "out vec4 \(fragColor);"
-    #endif
 
     init(source: String) throws {
         try super.init(source, type: GPU_FRAGMENT_SHADER)
@@ -77,9 +63,8 @@ class Shader {
         case GPU_LANGUAGE_GLSL:
             header = "#version \(renderer.pointee.max_shader_version)"
         case GPU_LANGUAGE_GLSLES:
-            // `fwidth` lives behind this extension on ES2 (used by the rounded-rect SDF shader).
             header = """
-            #extension GL_OES_standard_derivatives : enable
+            #version 300 es
             precision highp int;
             precision highp float;
             """
