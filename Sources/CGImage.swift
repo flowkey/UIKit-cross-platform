@@ -112,7 +112,14 @@ public class CGImage {
     }
 
     deinit {
-        GPU_FreeImage(rawPointer)
+        // `GPU_FreeImage` makes GL calls that are only valid on the main (GL) thread, and only
+        // while a context exists. `CGImage` isn't `@MainActor`, so it can be released off-main or
+        // after teardown — hop to the main actor and skip the free if the screen is already gone.
+        let pointer = rawPointer
+        Task { @MainActor in
+            guard UIScreen.main != nil else { return }
+            GPU_FreeImage(pointer)
+        }
     }
 
     public func pngData() -> Data? {
