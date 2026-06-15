@@ -27,7 +27,7 @@ open class UIFont {
 
     public init?(name: String, size: CGFloat) {
         let name = name.lowercased()
-        let size = Int32(size * UIScreen.main.scale)
+        let size = Int32(size * (UIScreen.main?.scale ?? 2))
 
         self.fontName = name
         self.pointSize = CGFloat(size)
