@@ -70,7 +70,7 @@ class AVPlayer(sdlView: SDLActivity, asset: AVURLAsset) {
                 newPosition: Player.PositionInfo,
                 reason: Int
             ) {
-                if (reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT) {
+                if (reason == Player.DISCONTINUITY_REASON_SEEK || reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT) {
                     isSeeking = false
                     val delta = (newPosition.positionMs - desiredSeekPosition).absoluteValue
                     if (delta > 50) {
