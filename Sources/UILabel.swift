@@ -21,8 +21,6 @@ public enum NSTextAlignment: Int {
 }
 
 public enum NSLineBreakMode: Int {
-    // Only the modes the polyfill actually implements are declared — using an unsupported mode
-    // should be a compile error, not a silent no-op. Add cases here as they gain real support.
     case byTruncatingTail
 }
 
@@ -50,7 +48,6 @@ open class UILabel: UIView {
         didSet { updateLayerContentsGravityFromTextAlignment() }
     }
 
-    /// Matches UIKit's default: single-line labels get a trailing ellipsis to fit their width.
     open var lineBreakMode: NSLineBreakMode = .byTruncatingTail {
         didSet { if lineBreakMode != oldValue { setNeedsDisplay() } }
     }
@@ -67,17 +64,21 @@ open class UILabel: UIView {
         didSet { if oldValue.size != frame.size { setNeedsDisplay() } }
     }
 
+    /// Wrap width in device pixels for the attributed-text path (0 = single line = no wrapping).
+    private var attributedWrapLength: Int {
+        Int((numberOfLines != 1 ? bounds.width : 0) * (UIScreen.main?.scale ?? 2))
+    }
+
     open override func draw() {
         super.draw()
         if let attributedText = attributedText {
-            let wrapLength = Int((numberOfLines != 1 ? bounds.width : 0) * UIScreen.main.scale)
-            layer.contents = FontRenderer.renderAttributedString(attributedText, color: textColor, wrapLength: wrapLength, alignment: textAlignment)
+            layer.contents = FontRenderer.renderAttributedString(attributedText, color: textColor, wrapLength: attributedWrapLength, alignment: textAlignment)
             return
         }
         // Single-line, tail-truncating labels get a trailing ellipsis to fit their width, matching
         // UIKit's default behaviour instead of overflowing/clipping.
         if numberOfLines == 1, lineBreakMode == .byTruncatingTail, let text = text, bounds.width > 0, let renderer = font.fontRenderer {
-            let truncated = renderer.truncatedText(text, wrapLength: Int(bounds.width * UIScreen.main.scale))
+            let truncated = renderer.truncatedText(text, wrapLength: Int(bounds.width * (UIScreen.main?.scale ?? 2)))
             layer.contents = font.render(truncated, color: textColor, wrapLength: 0, alignment: textAlignment)
             return
         }
@@ -98,8 +99,7 @@ open class UILabel: UIView {
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         if let attributedText = attributedText {
-            let wrapLength = Int((numberOfLines != 1 ? bounds.width : 0) * UIScreen.main.scale)
-            return FontRenderer.attributedStringSize(attributedText, wrapLength: wrapLength) / UIScreen.main.scale
+            return FontRenderer.getAttributedStringSize(attributedText, wrapLength: attributedWrapLength) / (UIScreen.main?.scale ?? 2)
         }
 
         guard let text = self.text else { return .zero }
