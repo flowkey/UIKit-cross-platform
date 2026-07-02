@@ -134,15 +134,15 @@ public class FontRenderer {
         return CGImage(surface: surface)
     }
 
-    /// Returns `text` truncated with a trailing ellipsis so it fits within `maxWidth` (pixels).
-    /// Returns `text` unchanged when it already fits (or `maxWidth <= 0`).
-    func truncatedText(_ text: String, toWidth maxWidth: Int) -> String {
-        guard maxWidth > 0 else { return text }
+    /// Returns `text` truncated with a trailing ellipsis so it fits within `wrapLength` (pixels).
+    /// Returns `text` unchanged when it already fits (or `wrapLength <= 0`).
+    func truncatedText(_ text: String, wrapLength: Int) -> String {
+        guard wrapLength > 0 else { return text }
 
         var width: Int32 = 0
         var height: Int32 = 0
         TTF_SizeUTF8(rawPointer, text, &width, &height)
-        if Int(width) <= maxWidth { return text }
+        if Int(width) <= wrapLength { return text }
 
         let ellipsis = "…"
         var characters = Array(text)
@@ -150,7 +150,7 @@ public class FontRenderer {
             characters.removeLast()
             let candidate = String(characters) + ellipsis
             TTF_SizeUTF8(rawPointer, candidate, &width, &height)
-            if Int(width) <= maxWidth { return candidate }
+            if Int(width) <= wrapLength { return candidate }
         }
         return ellipsis
     }
@@ -200,12 +200,7 @@ public class FontRenderer {
 
             SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE)
             let lineWidth = surface.pointee.w
-            let x: Int32
-            switch alignment {
-            case .center: x = (Int32(wrapLength) - lineWidth) / 2
-            case .right: x = Int32(wrapLength) - lineWidth
-            case .left: x = 0
-            }
+            let x = alignmentStartX(surfaceWidth: Int32(wrapLength), contentWidth: lineWidth, alignment: alignment)
             var dstRect = SDLRect(x: max(0, x), y: Int32(index) * (lineHeight + lineSpacing), w: lineWidth, h: surface.pointee.h)
             SDL_UpperBlit(surface, nil, target, &dstRect)
         }
@@ -265,6 +260,15 @@ extension FontRenderer {
 }
 
 // Optimise perf
+/// Horizontal start offset for content of `contentWidth` within `surfaceWidth`, per `alignment`.
+private func alignmentStartX(surfaceWidth: Int32, contentWidth: Int32, alignment: NSTextAlignment) -> Int32 {
+    switch alignment {
+    case .center: return (surfaceWidth - contentWidth) / 2
+    case .right: return surfaceWidth - contentWidth
+    case .left: return 0
+    }
+}
+
 private let newLineR = Int32("\r".utf8.first!)
 private let newLineN = Int32("\n".utf8.first!)
 
@@ -347,19 +351,41 @@ extension FontRenderer {
     }
 }
 
-// MARK: Multi-font (styled-run) text
+// MARK: Attributed text
 
-/// Lightweight multi-font text: a sequence of (text, font) runs rendered inline with word
-/// wrapping and alignment. Fills the gap left by not having NSAttributedString in this polyfill,
-/// e.g. a bold label followed by a regular value on the same wrapping line.
+/// A minimal, Foundation-free stand-in for the slice of `NSAttributedString` we use: text split
+/// into runs that each carry a `.font`. Foundation (and thus the real type) isn't available on
+/// Android/Linux, so we define only the parts we implement, matching Apple's API shape — call
+/// sites are then identical on iOS (real UIKit) and here.
 @MainActor
-public struct StyledTextRun {
-    public let text: String
-    public let font: UIFont
+public class NSAttributedString {
+    public struct Key: Hashable {
+        public let rawValue: String
+        public init(rawValue: String) { self.rawValue = rawValue }
 
-    public init(_ text: String, font: UIFont) {
-        self.text = text
-        self.font = font
+        public static let font = Key(rawValue: "NSFont")
+    }
+
+    struct Run {
+        let text: String
+        let font: UIFont
+    }
+
+    var runs: [Run]
+    public var string: String { runs.map(\.text).joined() }
+
+    public init(string: String, attributes: [Key: Any] = [:]) {
+        let font = attributes[.font] as? UIFont ?? .systemFont(ofSize: 16)
+        runs = [Run(text: string, font: font)]
+    }
+
+    init(runs: [Run]) { self.runs = runs }
+}
+
+@MainActor
+public final class NSMutableAttributedString: NSAttributedString {
+    public func append(_ attributedString: NSAttributedString) {
+        runs.append(contentsOf: attributedString.runs)
     }
 }
 
@@ -375,10 +401,10 @@ extension FontRenderer {
 
     private static let styledLineSpacing: Int32 = 2
 
-    /// Splits runs into space-separated words, each tagged with its own font renderer/metrics.
-    private static func tokenize(_ runs: [StyledTextRun]) -> [WordToken] {
+    /// Splits an attributed string into space-separated words, each tagged with its run's font.
+    private static func tokenize(_ attributedString: NSAttributedString) -> [WordToken] {
         var tokens: [WordToken] = []
-        for run in runs {
+        for run in attributedString.runs {
             guard let renderer = run.font.fontRenderer else { continue }
 
             var spaceWidth: Int32 = 0
@@ -423,8 +449,8 @@ extension FontRenderer {
         }
     }
 
-    static func styledRunsSize(_ runs: [StyledTextRun], wrapLength: Int) -> CGSize {
-        let tokens = tokenize(runs)
+    static func attributedStringSize(_ attributedString: NSAttributedString, wrapLength: Int) -> CGSize {
+        let tokens = tokenize(attributedString)
         guard !tokens.isEmpty else { return .zero }
 
         let lineHeight = tokens.map { $0.height }.max() ?? 0
@@ -438,8 +464,8 @@ extension FontRenderer {
         return CGSize(width: wrapLength, height: height)
     }
 
-    static func renderStyledRuns(_ runs: [StyledTextRun], color: UIColor, wrapLength: Int, alignment: NSTextAlignment) -> CGImage? {
-        let tokens = tokenize(runs)
+    static func renderAttributedString(_ attributedString: NSAttributedString, color: UIColor, wrapLength: Int, alignment: NSTextAlignment) -> CGImage? {
+        let tokens = tokenize(attributedString)
         guard !tokens.isEmpty else { return nil }
 
         let lineHeight = tokens.map { $0.height }.max() ?? 0
@@ -454,12 +480,7 @@ extension FontRenderer {
         defer { SDL_FreeSurface(target) }
 
         for (lineIndex, line) in lines.enumerated() {
-            var x: Int32
-            switch alignment {
-            case .center: x = (surfaceWidth - lineWidth(line)) / 2
-            case .right: x = surfaceWidth - lineWidth(line)
-            case .left: x = 0
-            }
+            var x = alignmentStartX(surfaceWidth: surfaceWidth, contentWidth: lineWidth(line), alignment: alignment)
             let y = Int32(lineIndex) * (lineHeight + styledLineSpacing)
 
             for (index, token) in line.enumerated() {
