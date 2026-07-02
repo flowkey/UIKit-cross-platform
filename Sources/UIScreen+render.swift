@@ -87,7 +87,10 @@ extension UIScreen {
             let previousProgram = ShaderProgram.currentlyActive
             ShaderProgram.roundedRect.activate()
             ShaderProgram.roundedRect.setFill(rect: rect, cornerRadius: cornerRadius)
-            GPU_RectangleFilled(rawPointer, gpuRect(rect), color: color.sdlColor)
+            // Draw into a quad 1px larger on every side so the SDF's antialiased edge isn't
+            // clipped at the shape's cardinal points (most visible on perfect circles). The
+            // extra ring is effectively zero-alpha for the shape itself.
+            GPU_RectangleFilled(rawPointer, gpuRect(rect.insetBy(dx: -1, dy: -1)), color: color.sdlColor)
             restoreShaderProgram(previousProgram)
         } else {
             GPU_RectangleFilled(rawPointer, gpuRect(rect), color: color.sdlColor)
