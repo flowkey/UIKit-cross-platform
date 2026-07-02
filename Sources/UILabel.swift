@@ -30,6 +30,12 @@ open class UILabel: UIView {
         didSet { if text != oldValue { setNeedsDisplay() } }
     }
 
+    /// Multi-font inline text (e.g. a bold label + regular value). When set, takes precedence
+    /// over `text`/`font` for both sizing and drawing.
+    open var styledRuns: [StyledTextRun]? {
+        didSet { setNeedsDisplay() }
+    }
+
     open var textColor: UIColor = .black {
         didSet { if textColor != oldValue { setNeedsDisplay() } }
     }
@@ -52,8 +58,21 @@ open class UILabel: UIView {
 
     open override func draw() {
         super.draw()
+        if let styledRuns = styledRuns {
+            let wrapLength = Int((numberOfLines != 1 ? bounds.width : 0) * UIScreen.main.scale)
+            layer.contents = FontRenderer.renderStyledRuns(styledRuns, color: textColor, wrapLength: wrapLength, alignment: textAlignment)
+            return
+        }
+        // Single-line labels truncate with a trailing ellipsis to fit their width (like iOS'
+        // default `.byTruncatingTail`), instead of overflowing/clipping.
+        if numberOfLines == 1, let text = text, bounds.width > 0, let renderer = font.fontRenderer {
+            let truncated = renderer.truncatedText(text, toWidth: Int(bounds.width * UIScreen.main.scale))
+            layer.contents = font.render(truncated, color: textColor, wrapLength: 0, alignment: textAlignment)
+            return
+        }
+
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
-        layer.contents = font.render(text, color: textColor, wrapLength: wrapLength)
+        layer.contents = font.render(text, color: textColor, wrapLength: wrapLength, alignment: textAlignment)
     }
 
     override open func display(_ layer: CALayer) {
@@ -67,6 +86,11 @@ open class UILabel: UIView {
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        if let styledRuns = styledRuns {
+            let wrapLength = Int((numberOfLines != 1 ? bounds.width : 0) * UIScreen.main.scale)
+            return FontRenderer.styledRunsSize(styledRuns, wrapLength: wrapLength) / UIScreen.main.scale
+        }
+
         guard let text = self.text else { return .zero }
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
 

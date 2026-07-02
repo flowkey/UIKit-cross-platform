@@ -58,7 +58,7 @@ public final class UIScreen {
         var size = CGSize.zero
         let options: SDLWindowFlags = SDL_WINDOW_FULLSCREEN
         #else
-        var size = CGSize.samsungGalaxyJ5.landscape
+        var size = CGSize.pixel7Pro.landscape
 
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
@@ -234,6 +234,7 @@ extension CGSize {
     nonisolated static let samsungGalaxyS5 = CGSize(width: 1920 / 3.0, height: 1080 / 3.0)
     nonisolated static let samsungGalaxyS7 = CGSize(width: 2560 / 4.0, height: 1440 / 4.0) // 1080p 1.5x Retina
     nonisolated static let samsungGalaxyS8 = CGSize(width: 2960 / 4.0, height: 1440 / 4.0)
+    nonisolated static let pixel7Pro = CGSize(width: 3120 / 3.5, height: 1440 / 3.5)
 
     // tablets:
     nonisolated static let nexus9 = CGSize(width: 2048 / 2.0, height: 1536 / 2.0)

@@ -58,9 +58,12 @@ open class UIFont {
         return newlyLoadedRenderer
     }
 
-    internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
-        return renderer?.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.main.scale))
+    internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0, alignment: NSTextAlignment = .left) -> CGImage? {
+        return renderer?.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.main.scale), alignment: alignment)
     }
+
+    /// The rendering backend for this font, exposed for multi-font (styled-run) rendering.
+    internal var fontRenderer: FontRenderer? { renderer }
 }
 
 // MARK: Caches
