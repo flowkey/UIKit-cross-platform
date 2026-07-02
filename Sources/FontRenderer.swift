@@ -136,7 +136,7 @@ public class FontRenderer {
 
     /// Returns `text` truncated with a trailing ellipsis so it fits within `wrapLength` (pixels).
     /// Returns `text` unchanged when it already fits (or `wrapLength <= 0`).
-    func truncatedText(_ text: String, wrapLength: Int) -> String {
+    func truncateTextIfNeeded(_ text: String, wrapLength: Int) -> String {
         guard wrapLength > 0 else { return text }
 
         var width: Int32 = 0

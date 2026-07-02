@@ -68,21 +68,21 @@ class TextRenderingTests: XCTestCase {
     func testTruncatedTextIsUnchangedWhenItFits() {
         let text = "Short"
         let wideEnough = Int(renderer.singleLineSize(of: text).width) + 100
-        XCTAssertEqual(renderer.truncatedText(text, wrapLength: wideEnough), text)
+        XCTAssertEqual(renderer.truncateTextIfNeeded(text, wrapLength: wideEnough), text)
     }
 
     func testTruncatedTextAddsEllipsisAndFitsWithinWidth() {
         let text = "A line long enough that it must be truncated to fit"
         let half = Int(renderer.singleLineSize(of: text).width / 2)
 
-        let result = renderer.truncatedText(text, wrapLength: half)
+        let result = renderer.truncateTextIfNeeded(text, wrapLength: half)
         XCTAssertNotEqual(result, text)
         XCTAssertTrue(result.hasSuffix("…"))
         XCTAssertLessThanOrEqual(Int(renderer.singleLineSize(of: result).width), half)
     }
 
     func testTruncatedTextReturnsInputForNonPositiveWidth() {
-        XCTAssertEqual(renderer.truncatedText("Hello", wrapLength: 0), "Hello")
+        XCTAssertEqual(renderer.truncateTextIfNeeded("Hello", wrapLength: 0), "Hello")
     }
 
     // MARK: Word wrapping

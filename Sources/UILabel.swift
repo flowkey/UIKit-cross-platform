@@ -78,7 +78,7 @@ open class UILabel: UIView {
         // Single-line, tail-truncating labels get a trailing ellipsis to fit their width, matching
         // UIKit's default behaviour instead of overflowing/clipping.
         if numberOfLines == 1, lineBreakMode == .byTruncatingTail, let text = text, bounds.width > 0, let renderer = font.fontRenderer {
-            let truncated = renderer.truncatedText(text, wrapLength: Int(bounds.width * (UIScreen.main?.scale ?? 2)))
+            let truncated = renderer.truncateTextIfNeeded(text, wrapLength: Int(bounds.width * (UIScreen.main?.scale ?? 2)))
             layer.contents = font.render(truncated, color: textColor, wrapLength: 0, alignment: textAlignment)
             return
         }
