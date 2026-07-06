@@ -107,8 +107,10 @@ extension FragmentShader {
             float d = sdRoundedBox(absolutePixelPos - center, halfSize, r);
             float aa = max(fwidth(d), 1e-5) * 0.5;
 
-            float outer = 1.0 - smoothstep(-aa, aa, d);
-            float inner = 1.0 - smoothstep(-aa, aa, d + borderWidth);
+            // Antialias inward (the fade sits at d in [-2aa, 0], entirely inside the shape) so the
+            // edge never bleeds past the shape boundary and gets clipped by the draw quad.
+            float outer = 1.0 - smoothstep(-2.0 * aa, 0.0, d);
+            float inner = 1.0 - smoothstep(-2.0 * aa, 0.0, d + borderWidth);
             float alpha = outer - inner;
 
             \(fragColor) = vec4(originalColour.rgb, originalColour.a * alpha);

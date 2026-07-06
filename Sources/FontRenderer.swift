@@ -352,7 +352,9 @@ extension FontRenderer {
     }
 }
 
-@MainActor
+// Not `@MainActor` — Foundation's `NSAttributedString` isn't isolated. The stored `UIFont` is only
+// *used* (via `fontRenderer`) in `tokenize`, which runs on the main actor; holding the reference here
+// needs no isolation. The default font is resolved lazily there to avoid a `@MainActor` call in init.
 public class NSAttributedString {
     public struct Key: Hashable {
         public let rawValue: String
@@ -363,21 +365,19 @@ public class NSAttributedString {
 
     struct Run {
         let text: String
-        let font: UIFont
+        let font: UIFont?
     }
 
     var runs: [Run]
     public var string: String { runs.map(\.text).joined() }
 
     public init(string: String, attributes: [Key: Any] = [:]) {
-        let font = attributes[.font] as? UIFont ?? .systemFont(ofSize: 16)
-        runs = [Run(text: string, font: font)]
+        runs = [Run(text: string, font: attributes[.font] as? UIFont)]
     }
 
     init(runs: [Run]) { self.runs = runs }
 }
 
-@MainActor
 public final class NSMutableAttributedString: NSAttributedString {
     public func append(_ attributedString: NSAttributedString) {
         runs.append(contentsOf: attributedString.runs)
@@ -395,10 +395,11 @@ extension FontRenderer {
     }
 
     /// Splits an attributed string into space-separated words, each tagged with its run's font.
-    private static func tokenize(_ attributedString: NSAttributedString) -> [WordToken] {
+    private static func tokenize(_ attributedString: NSAttributedString, defaultFont: UIFont) -> [WordToken] {
         var tokens: [WordToken] = []
         for run in attributedString.runs {
-            guard let renderer = run.font.fontRenderer else { continue }
+            let font = run.font ?? defaultFont
+            guard let renderer = font.fontRenderer else { continue }
 
             var spaceWidth: Int32 = 0
             var spaceHeight: Int32 = 0
@@ -444,8 +445,8 @@ extension FontRenderer {
 
     /// Tokenizes and wraps `attributedString` (wrapLength 0 = a single unwrapped line). Returns the
     /// laid-out lines, their shared height, and the resulting surface width — or nil if empty.
-    private static func layoutLines(_ attributedString: NSAttributedString, wrapLength: Int) -> (lines: [[WordToken]], lineHeight: Int32, width: Int32)? {
-        let tokens = tokenize(attributedString)
+    private static func layoutLines(_ attributedString: NSAttributedString, wrapLength: Int, defaultFont: UIFont) -> (lines: [[WordToken]], lineHeight: Int32, width: Int32)? {
+        let tokens = tokenize(attributedString, defaultFont: defaultFont)
         guard !tokens.isEmpty else { return nil }
 
         let lineHeight = tokens.map(\.height).max() ?? 0
@@ -458,13 +459,13 @@ extension FontRenderer {
         lineHeight * Int32(lineCount) + lineSpacing * Int32(max(0, lineCount - 1))
     }
 
-    static func getAttributedStringSize(_ attributedString: NSAttributedString, wrapLength: Int) -> CGSize {
-        guard let layout = layoutLines(attributedString, wrapLength: wrapLength) else { return .zero }
+    static func getAttributedStringSize(_ attributedString: NSAttributedString, wrapLength: Int, defaultFont: UIFont) -> CGSize {
+        guard let layout = layoutLines(attributedString, wrapLength: wrapLength, defaultFont: defaultFont) else { return .zero }
         return CGSize(width: Int(layout.width), height: Int(totalHeight(lineCount: layout.lines.count, lineHeight: layout.lineHeight)))
     }
 
-    static func renderAttributedString(_ attributedString: NSAttributedString, color: UIColor, wrapLength: Int, alignment: NSTextAlignment) -> CGImage? {
-        guard let layout = layoutLines(attributedString, wrapLength: wrapLength) else { return nil }
+    static func renderAttributedString(_ attributedString: NSAttributedString, color: UIColor, wrapLength: Int, alignment: NSTextAlignment, defaultFont: UIFont) -> CGImage? {
+        guard let layout = layoutLines(attributedString, wrapLength: wrapLength, defaultFont: defaultFont) else { return nil }
         let height = totalHeight(lineCount: layout.lines.count, lineHeight: layout.lineHeight)
 
         return composeImage(width: layout.width, height: height) { target in

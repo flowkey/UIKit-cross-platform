@@ -16,6 +16,11 @@ public extension UIScreen {
     internal(set) static var main: UIScreen! {
         didSet { CALayer.layerTreeIsDirty = true }
     }
+
+    /// The scale of the most recently initialized screen, used as the fallback when there is no
+    /// active `UIScreen.main` (e.g. during teardown/reinit). Defaults to 2 before any screen exists.
+    @MainActor
+    internal(set) static var lastKnownScreenScale: CGFloat = 2
 }
 
 @MainActor
@@ -38,6 +43,7 @@ public final class UIScreen {
         self.rawPointer = renderTarget
         self.bounds = bounds
         self.scale = scale
+        UIScreen.lastKnownScreenScale = scale
     }
 
     convenience init() {

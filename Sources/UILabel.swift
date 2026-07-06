@@ -66,19 +66,19 @@ open class UILabel: UIView {
 
     /// Wrap width in device pixels for the attributed-text path (0 = single line = no wrapping).
     private var attributedWrapLength: Int {
-        Int((numberOfLines != 1 ? bounds.width : 0) * (UIScreen.main?.scale ?? 2))
+        Int((numberOfLines != 1 ? bounds.width : 0) * UIScreen.lastKnownScreenScale)
     }
 
     open override func draw() {
         super.draw()
         if let attributedText = attributedText {
-            layer.contents = FontRenderer.renderAttributedString(attributedText, color: textColor, wrapLength: attributedWrapLength, alignment: textAlignment)
+            layer.contents = FontRenderer.renderAttributedString(attributedText, color: textColor, wrapLength: attributedWrapLength, alignment: textAlignment, defaultFont: font)
             return
         }
         // Single-line, tail-truncating labels get a trailing ellipsis to fit their width, matching
         // UIKit's default behaviour instead of overflowing/clipping.
         if numberOfLines == 1, lineBreakMode == .byTruncatingTail, let text = text, bounds.width > 0, let renderer = font.fontRenderer {
-            let truncated = renderer.truncateTextIfNeeded(text, wrapLength: Int(bounds.width * (UIScreen.main?.scale ?? 2)))
+            let truncated = renderer.truncateTextIfNeeded(text, wrapLength: Int(bounds.width * UIScreen.lastKnownScreenScale))
             layer.contents = font.render(truncated, color: textColor, wrapLength: 0, alignment: textAlignment)
             return
         }
@@ -99,7 +99,7 @@ open class UILabel: UIView {
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         if let attributedText = attributedText {
-            return FontRenderer.getAttributedStringSize(attributedText, wrapLength: attributedWrapLength) / (UIScreen.main?.scale ?? 2)
+            return FontRenderer.getAttributedStringSize(attributedText, wrapLength: attributedWrapLength, defaultFont: font) / UIScreen.lastKnownScreenScale
         }
 
         guard let text = self.text else { return .zero }

@@ -117,24 +117,24 @@ class TextRenderingTests: XCTestCase {
 
     func testAttributedStringSizeHasPositiveDimensions() {
         let string = NSAttributedString(string: "Hello world", attributes: [.font: UIFont.systemFont(ofSize: 16)])
-        let size = FontRenderer.getAttributedStringSize(string, wrapLength: 0)
+        let size = FontRenderer.getAttributedStringSize(string, wrapLength: 0, defaultFont: .systemFont(ofSize: 16))
         XCTAssertGreaterThan(size.width, 0)
         XCTAssertGreaterThan(size.height, 0)
     }
 
     func testAttributedStringSizeWrapsToWrapLengthAndGrowsTaller() {
         let string = NSAttributedString(string: "one two three four five six seven eight", attributes: [.font: UIFont.systemFont(ofSize: 16)])
-        let unwrapped = FontRenderer.getAttributedStringSize(string, wrapLength: 0)
+        let unwrapped = FontRenderer.getAttributedStringSize(string, wrapLength: 0, defaultFont: .systemFont(ofSize: 16))
         let wrapLength = Int(unwrapped.width / 3)
 
-        let wrapped = FontRenderer.getAttributedStringSize(string, wrapLength: wrapLength)
+        let wrapped = FontRenderer.getAttributedStringSize(string, wrapLength: wrapLength, defaultFont: .systemFont(ofSize: 16))
         XCTAssertEqual(wrapped.width, CGFloat(wrapLength))
         XCTAssertGreaterThan(wrapped.height, unwrapped.height)
     }
 
     func testEmptyAttributedStringHasZeroSize() {
         let string = NSAttributedString(string: "", attributes: [.font: UIFont.systemFont(ofSize: 16)])
-        XCTAssertEqual(FontRenderer.getAttributedStringSize(string, wrapLength: 0), .zero)
+        XCTAssertEqual(FontRenderer.getAttributedStringSize(string, wrapLength: 0, defaultFont: .systemFont(ofSize: 16)), .zero)
     }
 }
 #endif
