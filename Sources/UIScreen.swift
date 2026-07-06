@@ -14,8 +14,18 @@ extension SDLWindowFlags: @retroactive OptionSet {}
 public extension UIScreen {
     @MainActor
     internal(set) static var main: UIScreen! {
-        didSet { CALayer.layerTreeIsDirty = true }
+        didSet {
+            CALayer.layerTreeIsDirty = true
+            if let scale = main?.scale {
+                lastKnownScreenScale = scale
+            }
+        }
     }
+
+    /// The last active screen's scale, kept so callers can fall back to it while `UIScreen.main` is
+    /// briefly nil (teardown/reinit). `nil` only before any screen has ever existed.
+    @MainActor
+    internal(set) static var lastKnownScreenScale: CGFloat?
 }
 
 @MainActor
@@ -58,7 +68,7 @@ public final class UIScreen {
         var size = CGSize.zero
         let options: SDLWindowFlags = SDL_WINDOW_FULLSCREEN
         #else
-        var size = CGSize.samsungGalaxyJ5.landscape
+        var size = CGSize.pixel7Pro.landscape
 
         let options: SDLWindowFlags = [
             SDL_WINDOW_ALLOW_HIGHDPI,
@@ -234,6 +244,9 @@ extension CGSize {
     nonisolated static let samsungGalaxyS5 = CGSize(width: 1920 / 3.0, height: 1080 / 3.0)
     nonisolated static let samsungGalaxyS7 = CGSize(width: 2560 / 4.0, height: 1440 / 4.0) // 1080p 1.5x Retina
     nonisolated static let samsungGalaxyS8 = CGSize(width: 2960 / 4.0, height: 1440 / 4.0)
+    // Roughly the Pixel 7 Pro logical viewport, but as clean 8-aligned integers: a fractional/odd
+    // render-target width misaligns the video texture pitch (diagonal-stripe artefacts).
+    nonisolated static let pixel7Pro = CGSize(width: 896, height: 416)
 
     // tablets:
     nonisolated static let nexus9 = CGSize(width: 2048 / 2.0, height: 1536 / 2.0)

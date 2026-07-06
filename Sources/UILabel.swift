@@ -20,6 +20,10 @@ public enum NSTextAlignment: Int {
     }
 }
 
+public enum NSLineBreakMode: Int {
+    case byTruncatingTail
+}
+
 @MainActor
 open class UILabel: UIView {
     open var numberOfLines: Int = 1 {
@@ -30,12 +34,22 @@ open class UILabel: UIView {
         didSet { if text != oldValue { setNeedsDisplay() } }
     }
 
+    /// Multi-font inline text (e.g. a bold label + regular value). When set, takes precedence
+    /// over `text`/`font` for both sizing and drawing. Only the `.font` attribute is honoured.
+    open var attributedText: NSAttributedString? {
+        didSet { setNeedsDisplay() }
+    }
+
     open var textColor: UIColor = .black {
         didSet { if textColor != oldValue { setNeedsDisplay() } }
     }
 
     open var textAlignment: NSTextAlignment = .left {
         didSet { updateLayerContentsGravityFromTextAlignment() }
+    }
+
+    open var lineBreakMode: NSLineBreakMode = .byTruncatingTail {
+        didSet { if lineBreakMode != oldValue { setNeedsDisplay() } }
     }
 
     private func updateLayerContentsGravityFromTextAlignment() {
@@ -50,10 +64,26 @@ open class UILabel: UIView {
         didSet { if oldValue.size != frame.size { setNeedsDisplay() } }
     }
 
+    /// Wrap width in device pixels for the attributed-text path (0 = single line = no wrapping).
+    private var attributedWrapLength: Int {
+        Int((numberOfLines != 1 ? bounds.width : 0) * (UIScreen.lastKnownScreenScale ?? 2))
+    }
+
     open override func draw() {
         super.draw()
+        if let attributedText = attributedText {
+            layer.contents = FontRenderer.renderAttributedString(attributedText, color: textColor, wrapLength: attributedWrapLength, alignment: textAlignment, defaultFont: font)
+            return
+        }
+        // Single-line, tail-truncating labels get a trailing ellipsis to fit their width, matching
+        // UIKit's default behaviour instead of overflowing/clipping.
+        var textToRender = text
+        if numberOfLines == 1, lineBreakMode == .byTruncatingTail, let text = text, bounds.width > 0, let renderer = font.fontRenderer {
+            textToRender = renderer.truncateTextIfNeeded(text, wrapLength: Int(bounds.width * (UIScreen.lastKnownScreenScale ?? 2)))
+        }
+
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
-        layer.contents = font.render(text, color: textColor, wrapLength: wrapLength)
+        layer.contents = font.render(textToRender, color: textColor, wrapLength: wrapLength, alignment: textAlignment)
     }
 
     override open func display(_ layer: CALayer) {
@@ -67,6 +97,10 @@ open class UILabel: UIView {
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        if let attributedText = attributedText {
+            return FontRenderer.getAttributedStringSize(attributedText, wrapLength: attributedWrapLength, defaultFont: font) / (UIScreen.lastKnownScreenScale ?? 2)
+        }
+
         guard let text = self.text else { return .zero }
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
 

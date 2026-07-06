@@ -6,7 +6,7 @@ open class UIFont {
     }
     public var pointSize: CGFloat
     public var lineHeight: CGFloat {
-        return CGFloat(renderer?.getLineHeight() ?? 0) / UIScreen.main.scale
+        return CGFloat(renderer?.getLineHeight() ?? 0) / (UIScreen.lastKnownScreenScale ?? 2)
     }
 
     /**
@@ -27,7 +27,7 @@ open class UIFont {
 
     public init?(name: String, size: CGFloat) {
         let name = name.lowercased()
-        let size = Int32(size * (UIScreen.main?.scale ?? 2))
+        let size = Int32(size * (UIScreen.lastKnownScreenScale ?? 2))
 
         self.fontName = name
         self.pointSize = CGFloat(size)
@@ -58,9 +58,12 @@ open class UIFont {
         return newlyLoadedRenderer
     }
 
-    internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0) -> CGImage? {
-        return renderer?.render(text, color: color, wrapLength: Int(wrapLength * UIScreen.main.scale))
+    internal func render(_ text: String?, color: UIColor, wrapLength: CGFloat = 0, alignment: NSTextAlignment = .left) -> CGImage? {
+        return renderer?.render(text, color: color, wrapLength: Int(wrapLength * (UIScreen.lastKnownScreenScale ?? 2)), alignment: alignment)
     }
+
+    /// The rendering backend for this font, exposed for multi-font (styled-run) rendering.
+    internal var fontRenderer: FontRenderer? { renderer }
 }
 
 // MARK: Caches

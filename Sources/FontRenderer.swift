@@ -111,11 +111,17 @@ public class FontRenderer {
         return false
     }
 
-    func render(_ text: String?, color: UIColor, wrapLength: Int = 0) -> CGImage? {
+    func render(_ text: String?, color: UIColor, wrapLength: Int = 0, alignment: NSTextAlignment = .left) -> CGImage? {
         guard let text = text else { return nil }
 
         if wrapLength <= 0 && needsFallback(text) {
             return renderWithFallback(text, color: color)
+        }
+
+        // SDL_ttf renders wrapped lines left-aligned only. For centered/right text we compose the
+        // lines ourselves so each line is aligned within the wrap width.
+        if wrapLength > 0 && alignment != .left {
+            return renderWrapped(wrapLines(of: text, wrapLength: wrapLength), color: color, wrapLength: wrapLength, alignment: alignment)
         }
 
         guard
@@ -126,6 +132,70 @@ public class FontRenderer {
 
         defer { SDL_FreeSurface(surface) }
         return CGImage(surface: surface)
+    }
+
+    /// Returns `text` truncated with a trailing ellipsis so it fits within `wrapLength` (pixels).
+    /// Returns `text` unchanged when it already fits (or `wrapLength <= 0`).
+    func truncateTextIfNeeded(_ text: String, wrapLength: Int) -> String {
+        guard wrapLength > 0 else { return text }
+
+        var width: Int32 = 0
+        var height: Int32 = 0
+        TTF_SizeUTF8(rawPointer, text, &width, &height)
+        if Int(width) <= wrapLength { return text }
+
+        let ellipsis = "…"
+        var characters = Array(text)
+        while !characters.isEmpty {
+            characters.removeLast()
+            let candidate = String(characters) + ellipsis
+            TTF_SizeUTF8(rawPointer, candidate, &width, &height)
+            if Int(width) <= wrapLength { return candidate }
+        }
+        return ellipsis
+    }
+
+    /// Greedily wraps `text` into lines that each fit within `wrapLength` (pixels), breaking on
+    /// spaces and honouring explicit newlines. Matches the line breaking counted by `multilineSize`.
+    func wrapLines(of text: String, wrapLength: Int) -> [String] {
+        guard wrapLength > 0 else { return [text] }
+
+        var lines: [String] = []
+        for paragraph in text.components(separatedBy: "\n") {
+            var currentLine = ""
+            for word in paragraph.split(separator: " ", omittingEmptySubsequences: false).map(String.init) {
+                let candidate = currentLine.isEmpty ? word : currentLine + " " + word
+                var candidateWidth: Int32 = 0
+                var candidateHeight: Int32 = 0
+                TTF_SizeUTF8(rawPointer, candidate, &candidateWidth, &candidateHeight)
+
+                if currentLine.isEmpty || Int(candidateWidth) <= wrapLength {
+                    currentLine = candidate
+                } else {
+                    lines.append(currentLine)
+                    currentLine = word
+                }
+            }
+            lines.append(currentLine)
+        }
+        return lines
+    }
+
+    /// Composes pre-wrapped `lines` into a single surface of `wrapLength` width, positioning each
+    /// line according to `alignment`.
+    private func renderWrapped(_ lines: [String], color: UIColor, wrapLength: Int, alignment: NSTextAlignment) -> CGImage? {
+        let lineHeight = TTF_FontHeight(rawPointer)
+        let height = Self.totalHeight(lineCount: lines.count, lineHeight: lineHeight)
+
+        return composeImage(width: Int32(wrapLength), height: height) { target in
+            for (index, line) in lines.enumerated() {
+                guard !line.isEmpty, let surface = TTF_RenderUTF8_Blended(rawPointer, line, color.sdlColor) else { continue }
+                defer { SDL_FreeSurface(surface) }
+
+                let x = alignmentStartX(surfaceWidth: Int32(wrapLength), contentWidth: surface.pointee.w, alignment: alignment)
+                blit(surface, onto: target, x: max(0, x), y: Int32(index) * (lineHeight + lineSpacing))
+            }
+        }
     }
 
     private func renderWithFallback(_ text: String, color: UIColor) -> CGImage? {
@@ -147,25 +217,16 @@ public class FontRenderer {
         }
 
         let (totalWidth, totalHeight) = size(text)
-        guard totalWidth > 0, totalHeight > 0 else { return nil }
+        return composeImage(width: totalWidth, height: totalHeight) { target in
+            var x: Int32 = 0
+            for run in runs {
+                guard let surface = TTF_RenderUTF8_Blended(run.font, run.text, color.sdlColor) else { continue }
+                defer { SDL_FreeSurface(surface) }
 
-        guard let target = SDL_CreateRGBSurfaceWithFormat(
-            0, totalWidth, totalHeight, 32, UInt32(SDL_PIXELFORMAT_ARGB8888)
-        ) else { return nil }
-        defer { SDL_FreeSurface(target) }
-
-        var x: Int32 = 0
-        for run in runs {
-            guard let surface = TTF_RenderUTF8_Blended(run.font, run.text, color.sdlColor) else { continue }
-            defer { SDL_FreeSurface(surface) }
-
-            SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE)
-            var dstRect = SDLRect(x: x, y: 0, w: surface.pointee.w, h: surface.pointee.h)
-            SDL_UpperBlit(surface, nil, target, &dstRect)
-            x += surface.pointee.w
+                blit(surface, onto: target, x: x, y: 0)
+                x += surface.pointee.w
+            }
         }
-
-        return CGImage(surface: target)
     }
 }
 
@@ -178,6 +239,35 @@ extension FontRenderer {
         return CGSize(width: CGFloat(width), height: CGFloat(height))
     }
 }
+
+/// Horizontal start offset for content of `contentWidth` within `surfaceWidth`, per `alignment`.
+private func alignmentStartX(surfaceWidth: Int32, contentWidth: Int32, alignment: NSTextAlignment) -> Int32 {
+    switch alignment {
+    case .center: return (surfaceWidth - contentWidth) / 2
+    case .right: return surfaceWidth - contentWidth
+    case .left: return 0
+    }
+}
+
+/// Creates an ARGB target surface of `width`×`height`, lets `draw` composite glyph surfaces onto
+/// it, and returns a `CGImage` copy. Returns nil for empty dimensions; the target is always freed.
+private func composeImage(width: Int32, height: Int32, draw: (UnsafeMutablePointer<SDLSurface>) -> Void) -> CGImage? {
+    guard width > 0, height > 0 else { return nil }
+    guard let target = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, UInt32(SDL_PIXELFORMAT_ARGB8888)) else { return nil }
+    defer { SDL_FreeSurface(target) }
+    draw(target)
+    return CGImage(surface: target)
+}
+
+/// Blits an already-rendered glyph `surface` onto `target` at (x, y) with no alpha blending.
+private func blit(_ surface: UnsafeMutablePointer<SDLSurface>, onto target: UnsafeMutablePointer<SDLSurface>, x: Int32, y: Int32) {
+    SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE)
+    var destination = SDLRect(x: x, y: y, w: surface.pointee.w, h: surface.pointee.h)
+    SDL_UpperBlit(surface, nil, target, &destination)
+}
+
+/// Extra vertical padding between wrapped lines, matching SDL_ttf's own 2px inter-line gap.
+private let lineSpacing: Int32 = 2
 
 // Optimise perf
 private let newLineR = Int32("\r".utf8.first!)
@@ -195,7 +285,7 @@ extension FontRenderer {
 
     private func multilineSize(of text: UnsafePointer<CChar>, wrapLength: Int) -> CGSize {
         guard wrapLength > 0 else { return .zero }
-        let lineSpace = 2
+        let lineSpace = Int(lineSpacing)
 
         var textLineHeight: Int32 = 0
 
@@ -259,5 +349,137 @@ extension FontRenderer {
         let combinedLineSpacing = lineSpace * (linesCount - 1)
 
         return CGSize(width: wrapLength, height: combinedTextHeight + combinedLineSpacing)
+    }
+}
+
+// Not `@MainActor` — Foundation's `NSAttributedString` isn't isolated. The stored `UIFont` is only
+// *used* (via `fontRenderer`) in `tokenize`, which runs on the main actor; holding the reference here
+// needs no isolation. The default font is resolved lazily there to avoid a `@MainActor` call in init.
+public class NSAttributedString {
+    public struct Key: Hashable {
+        public let rawValue: String
+        public init(rawValue: String) { self.rawValue = rawValue }
+
+        public static let font = Key(rawValue: "NSFont")
+    }
+
+    struct Run {
+        let text: String
+        let font: UIFont?
+    }
+
+    var runs: [Run]
+    public var string: String { runs.map(\.text).joined() }
+
+    public init(string: String, attributes: [Key: Any] = [:]) {
+        runs = [Run(text: string, font: attributes[.font] as? UIFont)]
+    }
+}
+
+public final class NSMutableAttributedString: NSAttributedString {
+    public func append(_ attributedString: NSAttributedString) {
+        runs.append(contentsOf: attributedString.runs)
+    }
+}
+
+@MainActor
+extension FontRenderer {
+    private struct WordToken {
+        let text: String
+        let renderer: FontRenderer
+        let width: Int32
+        let spaceWidth: Int32
+        let height: Int32
+    }
+
+    /// Splits an attributed string into space-separated words, each tagged with its run's font.
+    private static func tokenize(_ attributedString: NSAttributedString, defaultFont: UIFont) -> [WordToken] {
+        var tokens: [WordToken] = []
+        for run in attributedString.runs {
+            let font = run.font ?? defaultFont
+            guard let renderer = font.fontRenderer else { continue }
+
+            var spaceWidth: Int32 = 0
+            var spaceHeight: Int32 = 0
+            TTF_SizeUTF8(renderer.rawPointer, " ", &spaceWidth, &spaceHeight)
+
+            for word in run.text.split(separator: " ", omittingEmptySubsequences: true).map(String.init) {
+                var width: Int32 = 0
+                var height: Int32 = 0
+                TTF_SizeUTF8(renderer.rawPointer, word, &width, &height)
+                tokens.append(WordToken(text: word, renderer: renderer, width: width, spaceWidth: spaceWidth, height: height))
+            }
+        }
+        return tokens
+    }
+
+    private static func wrap(_ tokens: [WordToken], wrapLength: Int) -> [[WordToken]] {
+        guard wrapLength > 0 else { return tokens.isEmpty ? [] : [tokens] }
+
+        var lines: [[WordToken]] = []
+        var currentLine: [WordToken] = []
+        var currentWidth: Int32 = 0
+
+        for token in tokens {
+            let addedWidth = currentLine.isEmpty ? token.width : token.spaceWidth + token.width
+            if !currentLine.isEmpty && Int(currentWidth + addedWidth) > wrapLength {
+                lines.append(currentLine)
+                currentLine = [token]
+                currentWidth = token.width
+            } else {
+                currentLine.append(token)
+                currentWidth += addedWidth
+            }
+        }
+        if !currentLine.isEmpty { lines.append(currentLine) }
+        return lines
+    }
+
+    private static func getLineWidth(_ line: [WordToken]) -> Int32 {
+        line.enumerated().reduce(0) { result, item in
+            result + (item.offset == 0 ? 0 : item.element.spaceWidth) + item.element.width
+        }
+    }
+
+    /// Tokenizes and wraps `attributedString` (wrapLength 0 = a single unwrapped line). Returns the
+    /// laid-out lines, their shared height, and the resulting surface width — or nil if empty.
+    private static func layoutLines(_ attributedString: NSAttributedString, wrapLength: Int, defaultFont: UIFont) -> (lines: [[WordToken]], lineHeight: Int32, width: Int32)? {
+        let tokens = tokenize(attributedString, defaultFont: defaultFont)
+        guard !tokens.isEmpty else { return nil }
+
+        let lineHeight = tokens.map(\.height).max() ?? 0
+        let lines = wrapLength > 0 ? wrap(tokens, wrapLength: wrapLength) : [tokens]
+        let width = wrapLength > 0 ? Int32(wrapLength) : getLineWidth(tokens)
+        return (lines, lineHeight, width)
+    }
+
+    private static func totalHeight(lineCount: Int, lineHeight: Int32) -> Int32 {
+        lineHeight * Int32(lineCount) + lineSpacing * Int32(max(0, lineCount - 1))
+    }
+
+    static func getAttributedStringSize(_ attributedString: NSAttributedString, wrapLength: Int, defaultFont: UIFont) -> CGSize {
+        guard let layout = layoutLines(attributedString, wrapLength: wrapLength, defaultFont: defaultFont) else { return .zero }
+        return CGSize(width: Int(layout.width), height: Int(totalHeight(lineCount: layout.lines.count, lineHeight: layout.lineHeight)))
+    }
+
+    static func renderAttributedString(_ attributedString: NSAttributedString, color: UIColor, wrapLength: Int, alignment: NSTextAlignment, defaultFont: UIFont) -> CGImage? {
+        guard let layout = layoutLines(attributedString, wrapLength: wrapLength, defaultFont: defaultFont) else { return nil }
+        let height = totalHeight(lineCount: layout.lines.count, lineHeight: layout.lineHeight)
+
+        return composeImage(width: layout.width, height: height) { target in
+            for (lineIndex, line) in layout.lines.enumerated() {
+                var x = alignmentStartX(surfaceWidth: layout.width, contentWidth: getLineWidth(line), alignment: alignment)
+                let y = Int32(lineIndex) * (layout.lineHeight + lineSpacing)
+
+                for (index, token) in line.enumerated() {
+                    if index > 0 { x += token.spaceWidth }
+                    if let surface = TTF_RenderUTF8_Blended(token.renderer.rawPointer, token.text, color.sdlColor) {
+                        defer { SDL_FreeSurface(surface) }
+                        blit(surface, onto: target, x: max(0, x), y: y)
+                    }
+                    x += token.width
+                }
+            }
+        }
     }
 }
