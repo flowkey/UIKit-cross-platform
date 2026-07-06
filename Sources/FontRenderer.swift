@@ -185,7 +185,7 @@ public class FontRenderer {
     /// line according to `alignment`.
     private func renderWrapped(_ lines: [String], color: UIColor, wrapLength: Int, alignment: NSTextAlignment) -> CGImage? {
         let lineHeight = TTF_FontHeight(rawPointer)
-        let height = Int32(lines.count) * lineHeight + Int32(max(0, lines.count - 1)) * lineSpacing
+        let height = Self.totalHeight(lineCount: lines.count, lineHeight: lineHeight)
 
         return composeImage(width: Int32(wrapLength), height: height) { target in
             for (index, line) in lines.enumerated() {
@@ -285,7 +285,7 @@ extension FontRenderer {
 
     private func multilineSize(of text: UnsafePointer<CChar>, wrapLength: Int) -> CGSize {
         guard wrapLength > 0 else { return .zero }
-        let lineSpace = 2
+        let lineSpace = Int(lineSpacing)
 
         var textLineHeight: Int32 = 0
 
@@ -374,8 +374,6 @@ public class NSAttributedString {
     public init(string: String, attributes: [Key: Any] = [:]) {
         runs = [Run(text: string, font: attributes[.font] as? UIFont)]
     }
-
-    init(runs: [Run]) { self.runs = runs }
 }
 
 public final class NSMutableAttributedString: NSAttributedString {
