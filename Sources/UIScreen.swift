@@ -16,7 +16,9 @@ public extension UIScreen {
     internal(set) static var main: UIScreen! {
         didSet {
             CALayer.layerTreeIsDirty = true
-            if let scale = main?.scale { lastKnownScreenScale = scale }
+            if let scale = main?.scale {
+                lastKnownScreenScale = scale
+            }
         }
     }
 
