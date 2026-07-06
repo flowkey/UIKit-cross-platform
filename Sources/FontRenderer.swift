@@ -161,7 +161,7 @@ public class FontRenderer {
         guard wrapLength > 0 else { return [text] }
 
         var lines: [String] = []
-        for paragraph in text.components(separatedBy: "\n") {
+        for paragraph in text.split(separator: "\n", omittingEmptySubsequences: false).map(String.init) {
             var currentLine = ""
             for word in paragraph.split(separator: " ", omittingEmptySubsequences: false).map(String.init) {
                 let candidate = currentLine.isEmpty ? word : currentLine + " " + word
