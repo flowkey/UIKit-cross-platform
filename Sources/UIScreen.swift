@@ -14,13 +14,16 @@ extension SDLWindowFlags: @retroactive OptionSet {}
 public extension UIScreen {
     @MainActor
     internal(set) static var main: UIScreen! {
-        didSet { CALayer.layerTreeIsDirty = true }
+        didSet {
+            CALayer.layerTreeIsDirty = true
+            if let scale = main?.scale { lastKnownScreenScale = scale }
+        }
     }
 
-    /// The scale of the most recently initialized screen, used as the fallback when there is no
-    /// active `UIScreen.main` (e.g. during teardown/reinit). Defaults to 2 before any screen exists.
+    /// The last active screen's scale, kept so callers can fall back to it while `UIScreen.main` is
+    /// briefly nil (teardown/reinit). `nil` only before any screen has ever existed.
     @MainActor
-    internal(set) static var lastKnownScreenScale: CGFloat = 2
+    internal(set) static var lastKnownScreenScale: CGFloat?
 }
 
 @MainActor
@@ -43,7 +46,6 @@ public final class UIScreen {
         self.rawPointer = renderTarget
         self.bounds = bounds
         self.scale = scale
-        UIScreen.lastKnownScreenScale = scale
     }
 
     convenience init() {
