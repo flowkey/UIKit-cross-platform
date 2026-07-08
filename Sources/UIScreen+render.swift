@@ -82,12 +82,23 @@ extension UIScreen {
         GPU_Clear(rawPointer)
     }
 
+    /// Snap only a transform's translation (m41/m42) to whole device pixels, leaving scale/rotation
+    /// untouched. Used for solid fills so abutting fills land on the same physical pixel (no seam);
+    /// animating/scrolling content keeps its exact sub-pixel transform so motion stays smooth.
+    func pixelSnappingTranslation(of transform: CATransform3D) -> CATransform3D {
+        let scale = deviceScale
+        var snapped = transform
+        snapped.m41 = Float(snapToPixel(CGFloat(transform.m41), scale: scale.x))
+        snapped.m42 = Float(snapToPixel(CGFloat(transform.m42), scale: scale.y))
+        return snapped
+    }
+
     func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
         if cornerRadius >= 1 {
             let previousProgram = ShaderProgram.currentlyActive
             ShaderProgram.roundedRect.activate()
             ShaderProgram.roundedRect.setFill(rect: rect, cornerRadius: cornerRadius)
-            GPU_RectangleFilled(rawPointer, gpuRect(rect), color: color.sdlColor)
+            GPU_RectangleFilled(rawPointer, roundedShaderQuad(for: rect), color: color.sdlColor)
             restoreShaderProgram(previousProgram)
         } else {
             GPU_RectangleFilled(rawPointer, gpuRect(rect), color: color.sdlColor)
@@ -116,7 +127,7 @@ extension UIScreen {
             let previousProgram = ShaderProgram.currentlyActive
             ShaderProgram.roundedRect.activate()
             ShaderProgram.roundedRect.setStroke(rect: rect, cornerRadius: cornerRadius, borderWidth: lineThickness)
-            GPU_RectangleFilled(rawPointer, gpuRect(rect), color: lineColor.sdlColor)
+            GPU_RectangleFilled(rawPointer, roundedShaderQuad(for: rect), color: lineColor.sdlColor)
             restoreShaderProgram(previousProgram)
         } else {
             outline(rect, lineColor: lineColor, lineThickness: lineThickness)
@@ -148,17 +159,44 @@ extension UIScreen {
 }
 
 private extension UIScreen {
-    // Snap to physical pixel boundaries using the GPU target's per-axis ratios —
-    // a single `UIScreen.scale` is wrong when drawable_w/target_w ≠ drawable_h/target_h
-    // (any fractional density rounds the two axes by different amounts).
+    /// The GPU target's device-pixel ratio per axis (drawable / target). Per-axis because a single
+    /// `UIScreen.scale` is wrong when the two axes round differently at fractional densities.
+    var deviceScale: (x: CGFloat, y: CGFloat) {
+        (CGFloat(rawPointer.pointee.context.pointee.drawable_w) / CGFloat(rawPointer.pointee.w),
+         CGFloat(rawPointer.pointee.context.pointee.drawable_h) / CGFloat(rawPointer.pointee.h))
+    }
+
+    func snapToPixel(_ value: CGFloat, scale: CGFloat) -> CGFloat {
+        (value * scale).rounded() / scale
+    }
+
+    // The rounded-rect shader anti-aliases just *outside* the shape, over a band up to ~2 device
+    // pixels wide at a corner (`fwidth`), so the quad we draw must extend past `rect` by that band
+    // or the fade gets clipped. Pad by 2 device pixels per side (converted to points via the scale);
+    // the SDF still uses the original `rect`, so these extra fragments simply shade to zero.
+    func roundedShaderQuad(for rect: CGRect) -> GPU_Rect {
+        let scale = deviceScale
+        let padX = 2 / scale.x
+        let padY = 2 / scale.y
+        return gpuRect(CGRect(
+            x: rect.minX - padX,
+            y: rect.minY - padY,
+            width: rect.width + 2 * padX,
+            height: rect.height + 2 * padY
+        ))
+    }
+
+    // Snap the *edges* to physical pixels rather than origin + size independently: rounding size on
+    // its own can render a view up to 1px shorter than its frame, opening a gap that shows the dark
+    // area behind the background-less PlayerView on Android as a thin line (e.g. above the progress
+    // bar). Rounding edges instead lands a rect's far edge on the same physical pixel as an abutting
+    // rect's near edge.
     func gpuRect(_ rect: CGRect) -> GPU_Rect {
-        let scaleX = CGFloat(rawPointer.pointee.context.pointee.drawable_w) / CGFloat(rawPointer.pointee.w)
-        let scaleY = CGFloat(rawPointer.pointee.context.pointee.drawable_h) / CGFloat(rawPointer.pointee.h)
-        return GPU_Rect(
-            x: Float((rect.origin.x * scaleX).rounded() / scaleX),
-            y: Float((rect.origin.y * scaleY).rounded() / scaleY),
-            w: Float((rect.size.width * scaleX).rounded() / scaleX),
-            h: Float((rect.size.height * scaleY).rounded() / scaleY)
-        )
+        let scale = deviceScale
+        let left = snapToPixel(rect.minX, scale: scale.x)
+        let top = snapToPixel(rect.minY, scale: scale.y)
+        let right = snapToPixel(rect.maxX, scale: scale.x)
+        let bottom = snapToPixel(rect.maxY, scale: scale.y)
+        return GPU_Rect(x: Float(left), y: Float(top), w: Float(right - left), h: Float(bottom - top))
     }
 }
