@@ -28,9 +28,8 @@ class ShadowShaderProgram: ShaderProgram {
         blurRadius = UniformVariable("blurRadius", in: programRef)
     }
 
-    /// Configure a feathered rounded-rect drop shadow: solid inside `rect`, fading to
-    /// zero over `blur` pixels outside it. Draw a quad expanded by `blur` on every side
-    /// so the feathered edge isn't clipped by the draw rectangle.
+    /// Set the rounded-rect shadow uniforms. (The caller — `UIScreen.shadow` — expands the draw
+    /// quad by `blur` so the feathered edge isn't clipped.)
     func setShadow(rect: CGRect, cornerRadius radius: CGFloat, blurRadius blur: CGFloat) {
         rectFrame.set(rect)
         cornerRadius.set(Float(radius))

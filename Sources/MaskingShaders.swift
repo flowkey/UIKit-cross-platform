@@ -156,8 +156,8 @@ extension FragmentShader {
             // Soft, symmetric falloff centred on the shape edge (approximates a Gaussian):
             // it reads as a blurred shadow rather than a hard offset band. The edge sits at
             // 50% and fades to 0 by `blurRadius` outside / to 1 by `blurRadius` inside.
-            float halfBlur = max(blurRadius, 1e-5);
-            float alpha = 1.0 - smoothstep(-halfBlur, halfBlur, d);
+            float blur = max(blurRadius, 1e-5);
+            float alpha = 1.0 - smoothstep(-blur, blur, d);
 
             \(fragColor) = vec4(originalColour.rgb, originalColour.a * alpha);
         }

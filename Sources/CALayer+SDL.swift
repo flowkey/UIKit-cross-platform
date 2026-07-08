@@ -45,13 +45,18 @@ extension CALayer {
 
         // We only actually set the transform here to avoid unneccesary work if the guard above fails.
         //
-        // Draw this layer's fills (shadow / background / border) with the translation snapped to whole
-        // device pixels, so abutting solid fills meet with no sub-pixel gap — which on Android shows the
-        // dark area behind the background-less PlayerView as a thin black line. Content and sublayers
-        // below restore the exact transform, so blitted images (e.g. the scrolling sheet) stay smooth.
-        // (This closes fill-to-fill seams like the sheet/progress-bar; an image edge meeting a fill edge
-        // isn't aligned this way.)
-        renderer.pixelSnappingTranslation(of: modelViewTransform).setAsSDLgpuMatrix()
+        // Layers that draw a solid fill (background / border / shadow) snap their translation to whole
+        // device pixels so abutting fills meet with no sub-pixel gap (see `pixelSnappingTranslation`);
+        // that closes fill-to-fill seams like the sheet/progress-bar. Everything else — plain containers,
+        // image/content layers — keeps the exact transform, so blitted images stay smooth and we avoid an
+        // extra matrix set + blit-buffer flush per layer.
+        let shadowAlpha = shadowColor == nil ? 0 : shadowOpacity * opacity
+        let drawsFill = backgroundColor != nil || borderWidth > 0 || shadowAlpha > 0.01
+        if drawsFill {
+            renderer.pixelSnappingTranslation(of: modelViewTransform).setAsSDLgpuMatrix()
+        } else {
+            modelViewTransform.setAsSDLgpuMatrix()
+        }
 
 
         // MARK: Masking / clipping rect
@@ -82,24 +87,17 @@ extension CALayer {
 
         // MARK: Drop shadow
         //
-        // Core Animation draws a layer's shadow automatically on iOS; the SDL
-        // renderer doesn't, so we render one here — a feathered fill drawn
-        // *behind* the layer's own background, honouring shadowColor / Offset /
-        // Radius / Opacity. When no explicit `shadowPath` is set we fall back to
-        // the layer bounds (iOS shadows the layer's shape by default, and
-        // `shadowPath` is only set under `#if os(iOS)` in our code).
-        if let shadowColor = shadowColor, shadowOpacity > 0.01 {
-            let shadowAlpha = shadowOpacity * opacity
-            if shadowAlpha > 0.01 {
-                let shadowShapeInRenderSpace = shadowPath?.offsetBy(deltaFromAnchorPointToOrigin)
-                    ?? renderedBoundsRelativeToAnchorPoint
-                renderer.shadow(
-                    shadowShapeInRenderSpace.offsetBy(CGPoint(x: shadowOffset.width, y: shadowOffset.height)),
-                    color: shadowColor.withAlphaComponent(CGFloat(shadowAlpha)),
-                    cornerRadius: cornerRadius,
-                    blurRadius: shadowRadius
-                )
-            }
+        // Core Animation draws a layer's shadow automatically on iOS; the SDL renderer doesn't, so we
+        // render a feathered fill *behind* the layer's own background, honouring shadowColor / Offset /
+        // Radius / Opacity. `shadowPath` is only ever set under `#if os(iOS)`, so this renderer always
+        // shadows the layer bounds.
+        if let shadowColor, shadowAlpha > 0.01 {
+            renderer.shadow(
+                renderedBoundsRelativeToAnchorPoint.offsetBy(CGPoint(x: shadowOffset.width, y: shadowOffset.height)),
+                color: shadowColor.withAlphaComponent(CGFloat(shadowAlpha)),
+                cornerRadius: cornerRadius,
+                blurRadius: shadowRadius
+            )
         }
 
         if let backgroundColor = backgroundColor {
@@ -120,9 +118,10 @@ extension CALayer {
             )
         }
 
-        // Restore the exact (un-snapped) transform for this layer's content and its sublayers, so
-        // blitted images and scrolling stay smooth (only the solid fills above are pixel-snapped).
-        modelViewTransform.setAsSDLgpuMatrix()
+        // Back to the exact (un-snapped) transform for content + sublayers (only fills were snapped).
+        if drawsFill {
+            modelViewTransform.setAsSDLgpuMatrix()
+        }
 
         if needsDisplay() {
             display()
