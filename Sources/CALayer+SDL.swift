@@ -47,7 +47,7 @@ extension CALayer {
         //
         // Layers that draw a solid fill (background / border) snap their translation to whole device
         // pixels so abutting fills meet with no sub-pixel gap (see `pixelSnappingTranslation`) — that
-        // closes fill-to-fill seams like the thin dark line above the progress bar on Android.
+        // closes fill-to-fill seams that would otherwise show the backdrop through as a thin line.
         // Everything else (plain containers, image/content layers) keeps the exact transform, so
         // blitted images stay smooth and we skip an extra matrix set + blit-buffer flush per layer.
         let drawsFill = backgroundColor != nil || borderWidth > 0

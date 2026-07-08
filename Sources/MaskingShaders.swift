@@ -109,10 +109,10 @@ extension FragmentShader {
 
             // Antialias outward: the fill is fully opaque up to its boundary (d <= 0) and the fade
             // sits just outside (d in [0, 2aa]). We can't blend at the boundary itself: these shapes
-            // are composited straight over the background-less (dark) PlayerView on Android, so a
-            // partially-covered edge pixel — whether transparent (inward AA) or 50% (centered AA) —
-            // reads as a thin dark ring around the shape. Opaque-to-edge avoids that; the outward
-            // fade needs room, so `fill`/`outline` enlarge the draw quad.
+            // may be composited straight over a dark backdrop, so a partially-covered edge pixel —
+            // whether transparent (inward AA) or 50% (centered AA) — reads as a thin dark ring around
+            // the shape. Opaque-to-edge avoids that; the outward fade needs room, so `fill`/`outline`
+            // enlarge the draw quad.
             float outer = 1.0 - smoothstep(0.0, 2.0 * aa, d);
             float inner = 1.0 - smoothstep(0.0, 2.0 * aa, d + borderWidth);
             float alpha = outer - inner;

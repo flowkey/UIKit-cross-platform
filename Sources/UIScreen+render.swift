@@ -187,10 +187,9 @@ private extension UIScreen {
     }
 
     // Snap the *edges* to physical pixels rather than origin + size independently: rounding size on
-    // its own can render a view up to 1px shorter than its frame, opening a gap that shows the dark
-    // area behind the background-less PlayerView on Android as a thin line (e.g. above the progress
-    // bar). Rounding edges instead lands a rect's far edge on the same physical pixel as an abutting
-    // rect's near edge.
+    // its own can render a view up to 1px shorter than its frame, opening a gap between abutting
+    // fills that shows the backdrop through as a thin line. Rounding edges instead lands a rect's
+    // far edge on the same physical pixel as an abutting rect's near edge.
     func gpuRect(_ rect: CGRect) -> GPU_Rect {
         let scale = deviceScale
         let left = snapToPixel(rect.minX, scale: scale.x)
