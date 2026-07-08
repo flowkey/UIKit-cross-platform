@@ -139,18 +139,16 @@ public class FontRenderer {
     func truncateTextIfNeeded(_ text: String, wrapLength: Int) -> String {
         guard wrapLength > 0 else { return text }
 
-        var width: Int32 = 0
-        var height: Int32 = 0
-        TTF_SizeUTF8(rawPointer, text, &width, &height)
-        if Int(width) <= wrapLength { return text }
+        // Measure with `size(_:)`, the same ruler that sized the label. `TTF_SizeUTF8` measures
+        // subtly differently, so a label sized to just fit could still be truncated here.
+        if Int(size(text).width) <= wrapLength { return text }
 
         let ellipsis = "…"
         var characters = Array(text)
         while !characters.isEmpty {
             characters.removeLast()
             let candidate = String(characters) + ellipsis
-            TTF_SizeUTF8(rawPointer, candidate, &width, &height)
-            if Int(width) <= wrapLength { return candidate }
+            if Int(size(candidate).width) <= wrapLength { return candidate }
         }
         return ellipsis
     }

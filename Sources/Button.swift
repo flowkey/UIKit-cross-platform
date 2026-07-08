@@ -141,6 +141,13 @@ open class Button: UIControl {
 
         titleLabel.setNeedsLayout()
 
+        // Size the title to its current text/font (as UIButton does) so its bounds match what's
+        // rendered — otherwise a label sized in another weight is a hair too narrow and our
+        // tail-truncation crops it. Hugs the text, so centered titles don't shift.
+        if titleLabelIsVisible {
+            titleLabel.sizeToFit()
+        }
+
         let imageWidth = imageView.frame.width
         let labelWidth = titleLabel.frame.width
 
