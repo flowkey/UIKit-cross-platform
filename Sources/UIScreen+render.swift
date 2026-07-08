@@ -82,6 +82,19 @@ extension UIScreen {
         GPU_Clear(rawPointer)
     }
 
+    /// A copy of `transform` with its translation snapped to whole device pixels. Solid fills
+    /// (background / border / shadow) drawn with this land on exact pixel boundaries, so abutting
+    /// fills meet with no sub-pixel gap — such a gap shows through as a dark seam over the
+    /// background-less PlayerView on Android. Scale and rotation are left untouched.
+    func pixelSnappingTranslation(of transform: CATransform3D) -> CATransform3D {
+        let scaleX = CGFloat(rawPointer.pointee.context.pointee.drawable_w) / CGFloat(rawPointer.pointee.w)
+        let scaleY = CGFloat(rawPointer.pointee.context.pointee.drawable_h) / CGFloat(rawPointer.pointee.h)
+        var snapped = transform
+        snapped.m41 = Float((CGFloat(transform.m41) * scaleX).rounded() / scaleX)
+        snapped.m42 = Float((CGFloat(transform.m42) * scaleY).rounded() / scaleY)
+        return snapped
+    }
+
     func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
         if cornerRadius >= 1 {
             let previousProgram = ShaderProgram.currentlyActive
@@ -92,6 +105,17 @@ extension UIScreen {
         } else {
             GPU_RectangleFilled(rawPointer, gpuRect(rect), color: color.sdlColor)
         }
+    }
+
+    /// Draw a feathered drop shadow for a rounded rect: solid inside `shapeRect`, fading to
+    /// zero over `blurRadius` pixels outside it. The draw quad is expanded by `blurRadius` on
+    /// every side so the feathered edge isn't clipped.
+    func shadow(_ shapeRect: CGRect, color: UIColor, cornerRadius: CGFloat, blurRadius: CGFloat) {
+        let previousProgram = ShaderProgram.currentlyActive
+        ShaderProgram.shadow.activate()
+        ShaderProgram.shadow.setShadow(rect: shapeRect, cornerRadius: cornerRadius, blurRadius: blurRadius)
+        GPU_RectangleFilled(rawPointer, gpuRect(shapeRect.insetBy(dx: -blurRadius, dy: -blurRadius)), color: color.sdlColor)
+        restoreShaderProgram(previousProgram)
     }
 
     func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat) {
@@ -154,11 +178,21 @@ private extension UIScreen {
     func gpuRect(_ rect: CGRect) -> GPU_Rect {
         let scaleX = CGFloat(rawPointer.pointee.context.pointee.drawable_w) / CGFloat(rawPointer.pointee.w)
         let scaleY = CGFloat(rawPointer.pointee.context.pointee.drawable_h) / CGFloat(rawPointer.pointee.h)
+
+        // Snap the *edges* to physical pixels rather than origin + size independently.
+        // Rounding size on its own can render a view up to 1px shorter than its frame,
+        // opening a gap at its edge — which on Android shows the dark area behind the
+        // (background-less) PlayerView as a thin black line. Rounding edges instead means
+        // a rect's far edge lands on the same physical pixel as an abutting rect's near edge.
+        let left = (rect.minX * scaleX).rounded() / scaleX
+        let top = (rect.minY * scaleY).rounded() / scaleY
+        let right = (rect.maxX * scaleX).rounded() / scaleX
+        let bottom = (rect.maxY * scaleY).rounded() / scaleY
         return GPU_Rect(
-            x: Float((rect.origin.x * scaleX).rounded() / scaleX),
-            y: Float((rect.origin.y * scaleY).rounded() / scaleY),
-            w: Float((rect.size.width * scaleX).rounded() / scaleX),
-            h: Float((rect.size.height * scaleY).rounded() / scaleY)
+            x: Float(left),
+            y: Float(top),
+            w: Float(right - left),
+            h: Float(bottom - top)
         )
     }
 }

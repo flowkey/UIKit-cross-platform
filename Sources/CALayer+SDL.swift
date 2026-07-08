@@ -43,8 +43,15 @@ extension CALayer {
 
         self.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
 
-        // We only actually set the transform here to avoid unneccesary work if the guard above fails
-        modelViewTransform.setAsSDLgpuMatrix()
+        // We only actually set the transform here to avoid unneccesary work if the guard above fails.
+        //
+        // Draw this layer's fills (shadow / background / border) with the translation snapped to whole
+        // device pixels, so abutting solid fills meet with no sub-pixel gap — which on Android shows the
+        // dark area behind the background-less PlayerView as a thin black line. Content and sublayers
+        // below restore the exact transform, so blitted images (e.g. the scrolling sheet) stay smooth.
+        // (This closes fill-to-fill seams like the sheet/progress-bar; an image edge meeting a fill edge
+        // isn't aligned this way.)
+        renderer.pixelSnappingTranslation(of: modelViewTransform).setAsSDLgpuMatrix()
 
 
         // MARK: Masking / clipping rect
@@ -73,6 +80,28 @@ extension CALayer {
             }
         }
 
+        // MARK: Drop shadow
+        //
+        // Core Animation draws a layer's shadow automatically on iOS; the SDL
+        // renderer doesn't, so we render one here — a feathered fill drawn
+        // *behind* the layer's own background, honouring shadowColor / Offset /
+        // Radius / Opacity. When no explicit `shadowPath` is set we fall back to
+        // the layer bounds (iOS shadows the layer's shape by default, and
+        // `shadowPath` is only set under `#if os(iOS)` in our code).
+        if let shadowColor = shadowColor, shadowOpacity > 0.01 {
+            let shadowAlpha = shadowOpacity * opacity
+            if shadowAlpha > 0.01 {
+                let shadowShapeInRenderSpace = shadowPath?.offsetBy(deltaFromAnchorPointToOrigin)
+                    ?? renderedBoundsRelativeToAnchorPoint
+                renderer.shadow(
+                    shadowShapeInRenderSpace.offsetBy(CGPoint(x: shadowOffset.width, y: shadowOffset.height)),
+                    color: shadowColor.withAlphaComponent(CGFloat(shadowAlpha)),
+                    cornerRadius: cornerRadius,
+                    blurRadius: shadowRadius
+                )
+            }
+        }
+
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alphaValue.toNormalisedFloat()
             renderer.fill(
@@ -91,17 +120,9 @@ extension CALayer {
             )
         }
 
-        if let shadowPath = shadowPath, let shadowColor = shadowColor {
-            let absoluteShadowOpacity = shadowOpacity * opacity * 0.5 // for "shadow" effect ;)
-
-            if absoluteShadowOpacity > 0.01 {
-                renderer.fill(
-                    shadowPath.offsetBy(deltaFromAnchorPointToOrigin),
-                    with: shadowColor.withAlphaComponent(CGFloat(absoluteShadowOpacity)),
-                    cornerRadius: 2
-                )
-            }
-        }
+        // Restore the exact (un-snapped) transform for this layer's content and its sublayers, so
+        // blitted images and scrolling stay smooth (only the solid fills above are pixel-snapped).
+        modelViewTransform.setAsSDLgpuMatrix()
 
         if needsDisplay() {
             display()
