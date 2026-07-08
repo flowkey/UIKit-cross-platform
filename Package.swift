@@ -8,7 +8,7 @@ let package = Package(
         .library(name: "UIKit", targets: ["UIKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/SwiftAndroid/swift-jni", branch: "devel"),
+        .package(url: "https://github.com/SwiftAndroid/swift-jni", from: "3.0.0"),
         .package(path: "./SDL"),
     ],
     targets: [
@@ -20,7 +20,8 @@ let package = Package(
                 .target(name: "UIKit_C_API", condition: .when(platforms: [.android])),
             ],
             path: "Sources",
-            exclude: ["Mac-Info.plist"]
+            exclude: ["Mac-Info.plist"],
+            swiftSettings: [.interoperabilityMode(.Cxx, .when(platforms: [.android]))]
         ),
         .target(name: "UIKit_C_API", path: "UIKit_C_API"),
     ],

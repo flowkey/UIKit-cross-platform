@@ -95,7 +95,7 @@ public func dispatchMainQueueCallback(_ msg: UnsafeMutableRawPointer?) -> Void
 
 @MainActor
 @_cdecl("Java_org_libsdl_app_SDLActivity_nativeProcessEventsAndRender")
-public func nativeProcessEventsAndRender(env: UnsafeMutablePointer<JNIEnv?>?, view: JavaObject?) {
+public func nativeProcessEventsAndRender(env: UnsafeMutablePointer<JNIEnv>?, view: JavaObject?) {
     let frameTime = Timer()
     UIApplication.shared?.handleEventsIfNeeded()
     UIScreen.main?.render(window: UIApplication.shared?.keyWindow, atTime: frameTime)

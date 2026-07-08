@@ -261,7 +261,7 @@ import JNI
 
 @_cdecl("Java_org_libsdl_app_SDLActivity_onNativeTouchUIKit")
 public func onNativeTouch(
-    env: UnsafeMutablePointer<JNIEnv?>?,
+    env: UnsafeMutablePointer<JNIEnv>?,
     view: JavaObject?,
     touchParameters: JavaObject
 ) {
