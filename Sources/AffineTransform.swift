@@ -282,7 +282,7 @@ extension AffineTransform {
 
         // We compare to ulp of 0 instead of doing determinant != 0,
         // to catch floating-point rounding errors.
-        if abs(determinant) <= CGFloat.zero.ulp {
+        if determinant.magnitude <= CGFloat.zero.ulp {
             return nil
         }
 
