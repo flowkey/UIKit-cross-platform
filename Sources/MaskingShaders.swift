@@ -107,10 +107,13 @@ extension FragmentShader {
             float d = sdRoundedBox(absolutePixelPos - center, halfSize, r);
             float aa = max(fwidth(d), 1e-5) * 0.5;
 
-            // Antialias inward (the fade sits at d in [-2aa, 0], entirely inside the shape) so the
-            // edge never bleeds past the shape boundary and gets clipped by the draw quad.
-            float outer = 1.0 - smoothstep(-2.0 * aa, 0.0, d);
-            float inner = 1.0 - smoothstep(-2.0 * aa, 0.0, d + borderWidth);
+            // Centred anti-aliasing: the fade straddles the true boundary (d in [-aa, aa]), so the
+            // 50%-coverage contour lands exactly on the geometric edge and the shape keeps its real
+            // size. The caller snaps this rect's edges to the pixel grid, so on straight runs no pixel
+            // centre falls in the fade band (crisp, seam-free edges); the corner arcs still cross pixel
+            // centres, so that's effectively the only place the fade is visible.
+            float outer = 1.0 - smoothstep(-aa, aa, d);
+            float inner = 1.0 - smoothstep(-aa, aa, d + borderWidth);
             float alpha = outer - inner;
 
             \(fragColor) = vec4(originalColour.rgb, originalColour.a * alpha);
