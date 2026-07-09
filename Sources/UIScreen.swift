@@ -143,6 +143,7 @@ public final class UIScreen {
             FontRenderer.cleanupSession()
 
             ShaderProgram.invalidateRoundedRect()
+            ShaderProgram.invalidateShadow()
             ShaderProgram.invalidateMask()
             FragmentShader.invalidateAll()
             VertexShader.invalidateAll()

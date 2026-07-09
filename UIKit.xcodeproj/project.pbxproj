@@ -122,6 +122,8 @@
 		5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDB31B61F1CE8050081A605 /* Bundle.swift */; };
 		5CDC14CC1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */; };
 		FF0000010000000000000001 /* ShaderProgram+roundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000002 /* ShaderProgram+roundedRect.swift */; };
+		FF0000010000000000000003 /* ShaderProgram+shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000004 /* ShaderProgram+shadow.swift */; };
+		FF0000010000000000000005 /* UIBezierPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000006 /* UIBezierPath.swift */; };
 		5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */; };
 		5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */; };
 		5CE5C5731EDD7C3400680154 /* UIWindow+TouchHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */; };
@@ -329,6 +331,8 @@
 		5CDB31B61F1CE8050081A605 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+mask.swift"; sourceTree = "<group>"; };
 		FF0000010000000000000002 /* ShaderProgram+roundedRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+roundedRect.swift"; sourceTree = "<group>"; };
+		FF0000010000000000000004 /* ShaderProgram+shadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+shadow.swift"; sourceTree = "<group>"; };
+		FF0000010000000000000006 /* UIBezierPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBezierPath.swift"; sourceTree = "<group>"; };
 		5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIPanGestureRecognizer.swift; path = Sources/UIPanGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITapGestureRecognizer.swift; path = Sources/UITapGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIWindow+TouchHandling.swift"; sourceTree = "<group>"; };
@@ -645,6 +649,8 @@
 				5C664CD71FA0E640008F41D6 /* ShaderProgram.swift */,
 				5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */,
 				FF0000010000000000000002 /* ShaderProgram+roundedRect.swift */,
+				FF0000010000000000000004 /* ShaderProgram+shadow.swift */,
+				FF0000010000000000000006 /* UIBezierPath.swift */,
 			);
 			name = Shaders;
 			path = Sources;
@@ -949,6 +955,8 @@
 				5B71D7472292B68E008CEC66 /* UIAccessibilityIdentification.swift in Sources */,
 				5CDC14CC1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift in Sources */,
 				FF0000010000000000000001 /* ShaderProgram+roundedRect.swift in Sources */,
+				FF0000010000000000000003 /* ShaderProgram+shadow.swift in Sources */,
+				FF0000010000000000000005 /* UIBezierPath.swift in Sources */,
 				5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */,
 				5BB2C09B2F1140870033F0AD /* CAGradientLayer.swift in Sources */,
 				83AB7B5C1F2B6A2000C7997D /* UIGestureRecognizerDelegate.swift in Sources */,

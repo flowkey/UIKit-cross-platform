@@ -73,6 +73,21 @@ extension CALayer {
             }
         }
 
+        // Core Animation draws a layer's shadow automatically on iOS; the SDL renderer doesn't, so we
+        // render a feathered fill *behind* the layer's own background, honouring shadowColor / Offset /
+        // Radius / Opacity and shadowPath. The shadow follows `shadowPath` if set (its own rect and
+        // corner radius, given in the layer's coordinate space), otherwise the layer's rounded bounds.
+        let shadowAlpha = shadowColor == nil ? 0 : shadowOpacity * opacity
+        if let shadowColor, shadowAlpha > 0.01 {
+            let shadowShape = shadowPath?.boundingBox.offsetBy(deltaFromAnchorPointToOrigin) ?? renderedBoundsRelativeToAnchorPoint
+            renderer.shadow(
+                shadowShape.offsetBy(CGPoint(x: shadowOffset.width, y: shadowOffset.height)),
+                color: shadowColor.withAlphaComponent(CGFloat(shadowAlpha)),
+                cornerRadius: shadowPath?.cornerRadius ?? cornerRadius,
+                blurRadius: shadowRadius
+            )
+        }
+
         if let backgroundColor = backgroundColor {
             let backgroundColorOpacity = opacity * backgroundColor.alphaValue.toNormalisedFloat()
             renderer.fill(
@@ -89,18 +104,6 @@ extension CALayer {
                 lineThickness: borderWidth,
                 cornerRadius: cornerRadius
             )
-        }
-
-        if let shadowPath = shadowPath, let shadowColor = shadowColor {
-            let absoluteShadowOpacity = shadowOpacity * opacity * 0.5 // for "shadow" effect ;)
-
-            if absoluteShadowOpacity > 0.01 {
-                renderer.fill(
-                    shadowPath.offsetBy(deltaFromAnchorPointToOrigin),
-                    with: shadowColor.withAlphaComponent(CGFloat(absoluteShadowOpacity)),
-                    cornerRadius: 2
-                )
-            }
         }
 
         if needsDisplay() {

@@ -166,7 +166,7 @@ open class CALayer {
     // TODO: Implement these!
     public var borderWidth: CGFloat = 0
     public var borderColor: CGColor = UIColor.black.cgColor
-    public var shadowPath: CGRect?
+    public var shadowPath: CGPath?
     public var shadowColor: CGColor?
     public var shadowOpacity: Float = 0
     public var shadowOffset: CGSize = .zero
