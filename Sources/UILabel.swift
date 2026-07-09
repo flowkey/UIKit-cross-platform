@@ -79,7 +79,12 @@ open class UILabel: UIView {
         // UIKit's default behaviour instead of overflowing/clipping.
         var textToRender = text
         if numberOfLines == 1, lineBreakMode == .byTruncatingTail, let text = text, bounds.width > 0, let renderer = font.fontRenderer {
-            textToRender = renderer.truncateTextIfNeeded(text, wrapLength: Int(bounds.width * (UIScreen.lastKnownScreenScale ?? 2)))
+            // Available width in device pixels, rounded up to a whole pixel. A label sized to exactly
+            // fit stores its width as `textPixels / scale`; multiplying back by scale can land a hair
+            // below `textPixels` at fractional scales, so rounding up recovers the whole pixel and text
+            // that fits isn't clipped.
+            let availableWidthInPixels = (bounds.width * (UIScreen.lastKnownScreenScale ?? 2)).rounded(.up)
+            textToRender = renderer.truncateTextIfNeeded(text, wrapLength: availableWidthInPixels)
         }
 
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
