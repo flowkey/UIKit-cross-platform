@@ -43,19 +43,8 @@ extension CALayer {
 
         self.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
 
-        // We only actually set the transform here to avoid unneccesary work if the guard above fails.
-        //
-        // Layers that draw a solid fill (background / border) snap their translation to whole device
-        // pixels so abutting fills meet with no sub-pixel gap (see `pixelSnappingTranslation`) — that
-        // closes fill-to-fill seams that would otherwise show the backdrop through as a thin line.
-        // Everything else (plain containers, image/content layers) keeps the exact transform, so
-        // blitted images stay smooth and we skip an extra matrix set + blit-buffer flush per layer.
-        let drawsFill = backgroundColor != nil || borderWidth > 0
-        if drawsFill {
-            renderer.pixelSnappingTranslation(of: modelViewTransform).setAsSDLgpuMatrix()
-        } else {
-            modelViewTransform.setAsSDLgpuMatrix()
-        }
+        // We only actually set the transform here to avoid unneccesary work if the guard above fails
+        modelViewTransform.setAsSDLgpuMatrix()
 
 
         // MARK: Masking / clipping rect
@@ -112,11 +101,6 @@ extension CALayer {
                     cornerRadius: 2
                 )
             }
-        }
-
-        // Back to the exact (un-snapped) transform for content + sublayers (only fills were snapped).
-        if drawsFill {
-            modelViewTransform.setAsSDLgpuMatrix()
         }
 
         if needsDisplay() {

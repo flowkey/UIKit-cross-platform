@@ -107,14 +107,13 @@ extension FragmentShader {
             float d = sdRoundedBox(absolutePixelPos - center, halfSize, r);
             float aa = max(fwidth(d), 1e-5) * 0.5;
 
-            // Antialias outward: the fill is fully opaque up to its boundary (d <= 0) and the fade
-            // sits just outside (d in [0, 2aa]). We can't blend at the boundary itself: these shapes
-            // may be composited straight over a dark backdrop, so a partially-covered edge pixel —
-            // whether transparent (inward AA) or 50% (centered AA) — reads as a thin dark ring around
-            // the shape. Opaque-to-edge avoids that; the outward fade needs room, so `fill`/`outline`
-            // enlarge the draw quad.
-            float outer = 1.0 - smoothstep(0.0, 2.0 * aa, d);
-            float inner = 1.0 - smoothstep(0.0, 2.0 * aa, d + borderWidth);
+            // Centred anti-aliasing: the fade straddles the true boundary (d in [-aa, aa]), so the
+            // 50%-coverage contour lands exactly on the geometric edge and the shape keeps its real
+            // size. The caller snaps this rect's edges to the pixel grid, so on straight runs no pixel
+            // centre falls in the fade band (crisp, seam-free edges); the corner arcs still cross pixel
+            // centres, so that's effectively the only place the fade is visible.
+            float outer = 1.0 - smoothstep(-aa, aa, d);
+            float inner = 1.0 - smoothstep(-aa, aa, d + borderWidth);
             float alpha = outer - inner;
 
             \(fragColor) = vec4(originalColour.rgb, originalColour.a * alpha);

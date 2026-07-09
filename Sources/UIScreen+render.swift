@@ -82,23 +82,13 @@ extension UIScreen {
         GPU_Clear(rawPointer)
     }
 
-    /// Snap only a transform's translation (m41/m42) to whole device pixels, leaving scale/rotation
-    /// untouched. Used for solid fills so abutting fills land on the same physical pixel (no seam);
-    /// animating/scrolling content keeps its exact sub-pixel transform so motion stays smooth.
-    func pixelSnappingTranslation(of transform: CATransform3D) -> CATransform3D {
-        let scale = deviceScale
-        var snapped = transform
-        snapped.m41 = Float(snapToPixel(CGFloat(transform.m41), scale: scale.x))
-        snapped.m42 = Float(snapToPixel(CGFloat(transform.m42), scale: scale.y))
-        return snapped
-    }
-
     func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
         if cornerRadius >= 1 {
+            let snappedRect = pixelSnapped(rect)
             let previousProgram = ShaderProgram.currentlyActive
             ShaderProgram.roundedRect.activate()
-            ShaderProgram.roundedRect.setFill(rect: rect, cornerRadius: cornerRadius)
-            GPU_RectangleFilled(rawPointer, roundedShaderQuad(for: rect), color: color.sdlColor)
+            ShaderProgram.roundedRect.setFill(rect: snappedRect, cornerRadius: cornerRadius)
+            GPU_RectangleFilled(rawPointer, roundedShaderQuad(for: snappedRect), color: color.sdlColor)
             restoreShaderProgram(previousProgram)
         } else {
             GPU_RectangleFilled(rawPointer, gpuRect(rect), color: color.sdlColor)
@@ -124,10 +114,11 @@ extension UIScreen {
         if cornerRadius > 1 {
             // SDF ring: stroke is drawn from the rect boundary inward by `lineThickness`,
             // which matches CSS/iOS "border" semantics.
+            let snappedRect = pixelSnapped(rect)
             let previousProgram = ShaderProgram.currentlyActive
             ShaderProgram.roundedRect.activate()
-            ShaderProgram.roundedRect.setStroke(rect: rect, cornerRadius: cornerRadius, borderWidth: lineThickness)
-            GPU_RectangleFilled(rawPointer, roundedShaderQuad(for: rect), color: lineColor.sdlColor)
+            ShaderProgram.roundedRect.setStroke(rect: snappedRect, cornerRadius: cornerRadius, borderWidth: lineThickness)
+            GPU_RectangleFilled(rawPointer, roundedShaderQuad(for: snappedRect), color: lineColor.sdlColor)
             restoreShaderProgram(previousProgram)
         } else {
             outline(rect, lineColor: lineColor, lineThickness: lineThickness)
@@ -170,32 +161,39 @@ private extension UIScreen {
         (value * scale).rounded() / scale
     }
 
-    // The rounded-rect shader anti-aliases just *outside* the shape, over a band up to ~2 device
-    // pixels wide at a corner (`fwidth`), so the quad we draw must extend past `rect` by that band
-    // or the fade gets clipped. Pad by 2 device pixels per side (converted to points via the scale);
-    // the SDF still uses the original `rect`, so these extra fragments simply shade to zero.
-    func roundedShaderQuad(for rect: CGRect) -> GPU_Rect {
+    // Snap a rounded-rect's *edges* to physical pixels (only the SDF path uses this). The edges are
+    // snapped in *screen* space — the shape's on-screen position is `rect` plus the current model-view
+    // translation, and the sub-pixel part usually lives in that translation, so we fold it in, snap,
+    // then subtract it back to return a local rect. With the shader's centred anti-aliasing, a straight
+    // edge landing on a physical pixel line keeps every pixel centre out of the fade band, so the edge
+    // stays crisp and two abutting fills land on the same line with no backdrop seam — and identically
+    // regardless of where the menu sits. The corner arcs still cross pixel centres and get the fade.
+    // Nothing else is snapped: plain fills, clip rects and content/animation keep their exact positions.
+    func pixelSnapped(_ rect: CGRect) -> CGRect {
+        let modelViewTransform = CATransform3D(unsafePointer: GPU_GetCurrentMatrix())
+        let translationX = CGFloat(modelViewTransform.m41)
+        let translationY = CGFloat(modelViewTransform.m42)
         let scale = deviceScale
-        let padX = 2 / scale.x
-        let padY = 2 / scale.y
-        return gpuRect(CGRect(
-            x: rect.minX - padX,
-            y: rect.minY - padY,
-            width: rect.width + 2 * padX,
-            height: rect.height + 2 * padY
-        ))
+
+        let left = snapToPixel(rect.minX + translationX, scale: scale.x) - translationX
+        let top = snapToPixel(rect.minY + translationY, scale: scale.y) - translationY
+        let right = snapToPixel(rect.maxX + translationX, scale: scale.x) - translationX
+        let bottom = snapToPixel(rect.maxY + translationY, scale: scale.y) - translationY
+        return CGRect(x: left, y: top, width: right - left, height: bottom - top)
     }
 
-    // Snap the *edges* to physical pixels rather than origin + size independently: rounding size on
-    // its own can render a view up to 1px shorter than its frame, opening a gap between abutting
-    // fills that shows the backdrop through as a thin line. Rounding edges instead lands a rect's
-    // far edge on the same physical pixel as an abutting rect's near edge.
-    func gpuRect(_ rect: CGRect) -> GPU_Rect {
+    // The rounded-rect shader's centred anti-aliasing straddles the boundary, so the fade extends ~half
+    // a device pixel *outside* `rect`. Grow the draw quad by one device pixel per side so that outer
+    // half of the fade has fragments to shade; the SDF still uses the original `rect`, so the extra
+    // fragments shade to zero and the shape isn't enlarged.
+    func roundedShaderQuad(for rect: CGRect) -> GPU_Rect {
         let scale = deviceScale
-        let left = snapToPixel(rect.minX, scale: scale.x)
-        let top = snapToPixel(rect.minY, scale: scale.y)
-        let right = snapToPixel(rect.maxX, scale: scale.x)
-        let bottom = snapToPixel(rect.maxY, scale: scale.y)
-        return GPU_Rect(x: Float(left), y: Float(top), w: Float(right - left), h: Float(bottom - top))
+        return gpuRect(rect.insetBy(dx: -1 / scale.x, dy: -1 / scale.y))
+    }
+
+    // Straight conversion into GPU (point) coordinates — no pixel snapping. Coordinates pass through
+    // exactly so abutting fills share the same edge and animating/scrolling content stays smooth.
+    func gpuRect(_ rect: CGRect) -> GPU_Rect {
+        GPU_Rect(x: Float(rect.minX), y: Float(rect.minY), w: Float(rect.width), h: Float(rect.height))
     }
 }
