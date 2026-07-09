@@ -53,9 +53,18 @@ extension FragmentShader {
         return shader
     }
 
+    private static var _roundedRectShadow: FragmentShader?
+    static var roundedRectShadow: FragmentShader {
+        if let existing = _roundedRectShadow { return existing }
+        let shader = try! FragmentShader(source: roundedRectShadowSource)
+        _roundedRectShadow = shader
+        return shader
+    }
+
     static func invalidateAll() {
         _maskColourWithImage = nil
         _roundedRect = nil
+        _roundedRectShadow = nil
     }
 
     private static let maskColourWithImageSource = """
@@ -115,6 +124,43 @@ extension FragmentShader {
             float outer = 1.0 - smoothstep(-aa, aa, d);
             float inner = 1.0 - smoothstep(-aa, aa, d + borderWidth);
             float alpha = outer - inner;
+
+            \(fragColor) = vec4(originalColour.rgb, originalColour.a * alpha);
+        }
+        """
+
+    // SDF rounded-rect drop shadow: like the rounded-rect fill but with a soft, symmetric edge
+    // falloff (`blurRadius`) instead of a 1px AA — the SDL renderer has no automatic layer shadow,
+    // so this draws a blurred rounded rect to mimic Core Animation's `shadow*` (the caller passes
+    // the shape rect — the layer bounds or its shadowPath).
+    private static let roundedRectShadowSource = """
+        \(`in`) vec4 originalColour;
+        \(`in`) vec2 absolutePixelPos;
+
+        \(fragColorDefinition)
+
+        uniform vec4 rectFrame;
+        uniform float cornerRadius;
+        uniform float blurRadius;
+
+        float sdRoundedBox(vec2 p, vec2 b, float r) {
+            vec2 q = abs(p) - b + r;
+            return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
+        }
+
+        void main(void)
+        {
+            vec2 halfSize = vec2(rectFrame.w, rectFrame.z) * 0.5;
+            vec2 center = vec2(rectFrame.x, rectFrame.y) + halfSize;
+            float r = min(cornerRadius, min(halfSize.x, halfSize.y));
+
+            float d = sdRoundedBox(absolutePixelPos - center, halfSize, r);
+
+            // Soft, symmetric falloff centred on the shape edge (approximates a Gaussian):
+            // it reads as a blurred shadow rather than a hard offset band. The edge sits at
+            // 50% and fades to 0 by `blurRadius` outside / to 1 by `blurRadius` inside.
+            float blur = max(blurRadius, 1e-5);
+            float alpha = 1.0 - smoothstep(-blur, blur, d);
 
             \(fragColor) = vec4(originalColour.rgb, originalColour.a * alpha);
         }

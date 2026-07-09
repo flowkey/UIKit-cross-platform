@@ -95,6 +95,17 @@ extension UIScreen {
         }
     }
 
+    /// Draw a feathered drop shadow: opaque inside `shapeRect`, fading to zero over `blurRadius`
+    /// pixels outside it (and up over the same distance inside). The draw quad is expanded by
+    /// `blurRadius` so the feathered edge isn't clipped.
+    func shadow(_ shapeRect: CGRect, color: UIColor, cornerRadius: CGFloat, blurRadius: CGFloat) {
+        let previousProgram = ShaderProgram.currentlyActive
+        ShaderProgram.shadow.activate()
+        ShaderProgram.shadow.setShadow(rect: shapeRect, cornerRadius: cornerRadius, blurRadius: blurRadius)
+        GPU_RectangleFilled(rawPointer, gpuRect(shapeRect.insetBy(dx: -blurRadius, dy: -blurRadius)), color: color.sdlColor)
+        restoreShaderProgram(previousProgram)
+    }
+
     func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat) {
         // we want to render the outline 'inside' the rect rather
         // than exceeding the bounds when lineThickness is bigger than 1
