@@ -10,6 +10,7 @@
 import class Foundation.Bundle
 public typealias Bundle = Foundation.Bundle
 #elseif os(Android)
+import Foundation
 import JNI
 
 private func listFiles(inDirectory subpath: String) throws -> [String] {
@@ -38,6 +39,10 @@ public struct Bundle {
         } else {
             return filename + "." + ext
         }
+    }
+
+    public func url(forResource filename: String, withExtension ext: String?) -> URL? {
+        return path(forResource: filename, ofType: ext ?? "").flatMap(URL.init(string:))
     }
 }
 #endif

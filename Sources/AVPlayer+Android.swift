@@ -20,7 +20,7 @@ public class AVPlayer: JNIObject {
     public convenience init(playerItem: AVPlayerItem) {
         let parentView = JavaSDLView(getSDLView())
         try! self.init(arguments: parentView, playerItem.asset)
-        try! self.call("setSwiftAVPlayerInstancePtr", arguments: [self.swiftAVPlayerInstancePtr])
+        try! self.call("setSwiftAVPlayerInstancePtr", arguments: [self.swiftInstancePtr])
     }
 
     public func play() {
@@ -104,7 +104,7 @@ extension AVPlayer {
 }
 
 extension JNIObject {
-    var swiftAVPlayerInstancePtr: JavaLong {
+    var swiftInstancePtr: JavaLong {
         let ptr = Unmanaged.passUnretained(self).toOpaque()
         return JavaLong(Int(bitPattern: ptr))
     }
