@@ -61,10 +61,19 @@ extension FragmentShader {
         return shader
     }
 
+    private static var _gradient: FragmentShader?
+    static var gradient: FragmentShader {
+        if let existing = _gradient { return existing }
+        let shader = try! FragmentShader(source: gradientSource)
+        _gradient = shader
+        return shader
+    }
+
     static func invalidateAll() {
         _maskColourWithImage = nil
         _roundedRect = nil
         _roundedRectShadow = nil
+        _gradient = nil
     }
 
     private static let maskColourWithImageSource = """
@@ -163,6 +172,58 @@ extension FragmentShader {
             float alpha = 1.0 - smoothstep(-blur, blur, d);
 
             \(fragColor) = vec4(originalColour.rgb, originalColour.a * alpha);
+        }
+        """
+
+    // Axis-aligned / arbitrary-angle colour gradient, evaluated per-fragment on the GPU. This is the
+    // shader equivalent of `CAGradientLayer`'s former CPU pixel loop: `t` is the position along the
+    // gradient line (`startPoint` -> `endPoint`, both in unit coordinates) projected from the fragment's
+    // normalised position, then colours are interpolated between the surrounding stops. Straight
+    // (non-premultiplied) RGBA is written so the result works both as a blitted layer and as a mask
+    // (whose alpha channel is what the mask shader samples). `MAX_GRADIENT_STOPS` bounds the arrays;
+    // keep it in sync with `GradientShaderProgram.maxStops`.
+    static let maxGradientStops = 16
+    private static let gradientSource = """
+        #define MAX_GRADIENT_STOPS \(maxGradientStops)
+
+        \(`in`) vec2 absolutePixelPos;
+
+        \(fragColorDefinition)
+
+        uniform vec2 gradientSize;
+        uniform vec2 startPoint;
+        uniform vec2 endPoint;
+        uniform int colorCount;
+        uniform vec4 colors[MAX_GRADIENT_STOPS];
+        uniform float locations[MAX_GRADIENT_STOPS];
+
+        void main(void)
+        {
+            vec2 p = absolutePixelPos / gradientSize;
+
+            vec2 dir = endPoint - startPoint;
+            float len2 = dot(dir, dir);
+            float t = len2 > 0.00001 ? dot(p - startPoint, dir) / len2 : 0.0;
+            t = clamp(t, 0.0, 1.0);
+
+            vec4 color = colors[0];
+            if (t <= locations[0]) {
+                color = colors[0];
+            } else if (t >= locations[colorCount - 1]) {
+                color = colors[colorCount - 1];
+            } else {
+                for (int i = 0; i < colorCount - 1; i++) {
+                    float loc0 = locations[i];
+                    float loc1 = locations[i + 1];
+                    if (t >= loc0 && t <= loc1) {
+                        float localT = (t - loc0) / max(loc1 - loc0, 0.000001);
+                        color = mix(colors[i], colors[i + 1], localT);
+                        break;
+                    }
+                }
+            }
+
+            \(fragColor) = color;
         }
         """
 }

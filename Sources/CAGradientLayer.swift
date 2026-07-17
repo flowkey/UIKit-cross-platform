@@ -5,18 +5,18 @@ open class CAGradientLayer: CALayer {
     public var colors: [CGColor] = [] {
         didSet {
             _colors = colors.map {
-                SIMD4<CGFloat>(
-                    x: CGFloat($0.redValue) / 255,
-                    y: CGFloat($0.greenValue) / 255,
-                    z: CGFloat($0.blueValue) / 255,
-                    w: CGFloat($0.alphaValue) / 255
+                SIMD4<Float>(
+                    x: Float($0.redValue) / 255,
+                    y: Float($0.greenValue) / 255,
+                    z: Float($0.blueValue) / 255,
+                    w: Float($0.alphaValue) / 255
                 )
             }
             setNeedsDisplay()
         }
     }
 
-    private var _colors: [SIMD4<CGFloat>] = []
+    private var _colors: [SIMD4<Float>] = []
 
     public var locations: [Float] = [] {
         didSet { setNeedsDisplay() }
@@ -38,6 +38,7 @@ open class CAGradientLayer: CALayer {
             return
         }
 
+        // Fill in implicit stop locations, and collapse the degenerate cases, exactly as before.
         if locations.count < colors.count {
             if colors.count == 1 {
                 backgroundColor = colors[0]
@@ -46,7 +47,6 @@ open class CAGradientLayer: CALayer {
             } else {
                 locations = colors.indices.map { Float($0) / Float(colors.count - 1) }
             }
-
         }
 
         if colors.isEmpty {
@@ -54,119 +54,132 @@ open class CAGradientLayer: CALayer {
             return
         }
 
-        let width: Int32
-        let height: Int32
+        // Rasterising on the GPU means we need a live renderer/context. `display()` only runs inside the
+        // render walk (`sdlRender`), where the context is current, but guard anyway so a stray call can't crash.
+        guard UIScreen.main != nil else { return }
 
-        if startPoint.x == endPoint.x {
-            width = 1
-            height = Int32(bounds.height * self.contentsScale)
-        } else if startPoint.y == endPoint.y {
-            width = Int32(bounds.width * self.contentsScale)
-            height = 1
+        let pixelWidth = Int(bounds.width * contentsScale)
+        let pixelHeight = Int(bounds.height * contentsScale)
+        guard pixelWidth > 0, pixelHeight > 0 else { return }
+
+        // Reuse the existing contents texture if it's already the right size, otherwise allocate one.
+        // We render *into* this texture, so both the visible-blit path and the mask-sampling path keep
+        // consuming `contents` exactly as they did with the old CPU surface.
+        let image: CGImage
+        if let existing = contents, existing.width == pixelWidth, existing.height == pixelHeight {
+            image = existing
         } else {
-            // pessimistic case where we need to fill the entire thing
-            width = Int32(bounds.width * self.contentsScale)
-            height = Int32(bounds.height * self.contentsScale)
+            guard let newImage = CGImage(width: pixelWidth, height: pixelHeight) else { return }
+            image = newImage
         }
 
-        guard let surface = SDL_CreateRGBSurfaceWithFormat(
-            0, // surface flags are always 0 in SDL2
-            width,
-            height,
-            32, // bit depth
-            UInt32(SDL_PIXELFORMAT_RGBA32)
-        ) else {
-            return
-        }
+        guard let target = GPU_GetTarget(image.rawPointer) else { return }
 
-        SDL_LockSurface(surface)
+        // `display()` runs mid-render-walk, where a clip rect may be active for masking. That clip is a
+        // global GL scissor set in *screen* coordinates — it would wrongly clip our offscreen draw (and
+        // silently blank it entirely when the texture's pixel space doesn't overlap the screen scissor).
+        // Disable it while we render into the texture, then restore it for the rest of the frame.
+        let savedClippingRect = UIScreen.main?.clippingRect
+        UIScreen.main?.clippingRect = nil
 
-        let startPoint = SIMD2(x: self.startPoint.x, y: self.startPoint.y)
-        let endPoint = SIMD2(x: self.endPoint.x, y: self.endPoint.y)
+        // SDL_gpu batches draws and reconfigures the render target lazily; flush the pending screen batch
+        // before switching to our offscreen target so the switch actually takes effect.
+        GPU_FlushBlitBuffer()
 
-        for y in 0 ..< Int(height) {
-            let pixelPosY = y * Int(surface.pointee.pitch)
+        // SDL_gpu already installs the right coordinate system for a target when we start rendering into
+        // it (a plain draw with the matrices left untouched fills the target correctly). Overriding the
+        // projection/modelview ourselves drew nothing, so we deliberately DON'T touch the matrix stacks —
+        // we just clear and draw. `gpu_Vertex` (→ the shader's `absolutePixelPos`) then spans 0..w / 0..h.
+        // Force this target's viewport to its full area. SDL_gpu doesn't reliably reconfigure the viewport
+        // when we render to a second offscreen target within a frame, leaving the previous target's (screen-
+        // or sheet-sized) viewport active — under which this target's shape draw maps outside the FBO and
+        // nothing lands (while `GPU_Clear`, which ignores the viewport, still works).
+        GPU_SetViewport(target, GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight)))
 
-            for x in 0 ..< Int(width) {
-                let pixel = surface.pointee.pixels.assumingMemoryBound(to: UInt8.self)
-                    .advanced(by: pixelPosY)
-                    .advanced(by: x * Int(surface.pointee.format.pointee.BytesPerPixel))
+        GPU_SetShapeBlending(false) // write the gradient's own straight alpha instead of blending it
+        GPU_Clear(target)
 
-                let p = SIMD2(x: CGFloat(x) / bounds.width, y: CGFloat(y) / bounds.height)
+        ShaderProgram.gradient.activate()
+        ShaderProgram.gradient.set(
+            size: CGSize(width: pixelWidth, height: pixelHeight),
+            startPoint: startPoint,
+            endPoint: endPoint,
+            colors: _colors,
+            locations: locations
+        )
+        GPU_RectangleFilled(
+            target,
+            GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight)),
+            color: UIColor.white.sdlColor
+        )
 
-                // Direction of gradient line
-                let dir = endPoint - startPoint
-                let len2 = dot(dir, dir)
+        ShaderProgram.deactivateAll()
+        // Flush our offscreen draw before the render walk resumes drawing to the screen target.
+        GPU_FlushBlitBuffer()
+        GPU_SetShapeBlending(true)
+        UIScreen.main?.clippingRect = savedClippingRect
 
-                var t: CGFloat = 0.0
-                if len2 > 0.00001 {
-                    // Project (p - startPoint) onto the gradient direction
-                    t = dot(p - startPoint, dir) / len2
-                }
-
-                t = max(0.0, min(t, 1.0))
-                let color = sampleGradient(t)
-
-                let normalized = color * 255
-                pixel[0] = UInt8(clamping: Int(normalized.x))
-                pixel[1] = UInt8(clamping: Int(normalized.y))
-                pixel[2] = UInt8(clamping: Int(normalized.z))
-                pixel[3] = UInt8(clamping: Int(normalized.w))
-            }
-        }
-
-        SDL_UnlockSurface(surface)
-
-        if
-            let contents,
-            contents.width != Int(bounds.width) ||
-            contents.height != Int(bounds.height)
-        {
-            contents.replacePixels(
-                with: surface.pointee.pixels.assumingMemoryBound(to: UInt8.self),
-                bytesPerPixel: Int(surface.pointee.format.pointee.BytesPerPixel)
-            )
-        } else {
-            contents = CGImage(surface: surface)
-        }
-    }
-
-    @_optimize(speed)
-    func sampleGradient(_ position: CGFloat) -> SIMD4<CGFloat> {
-        precondition(colors.count >= 2)
-        precondition(locations.count >= 2)
-
-        let t = Float(max(0.0, min(position, 1.0)))
-
-        if t <= locations.first! {
-            return _colors.first!
-        } else if t >= locations.last! {
-            return _colors.last!
-        }
-
-        // Find stops [i, i+1] containing t
-        for i in 0 ..< (colors.count - 1) {
-            let loc0 = locations[i]
-            let loc1 = locations[i + 1]
-
-            if t >= loc0 && t <= loc1 {
-                let localT = (t - loc0) / (loc1 - loc0)
-                return mix(_colors[i], _colors[i + 1], t: CGFloat(localT))
-            }
-        }
-
-        return _colors.last!
+        contents = image
     }
 }
 
 
-// GLSL-style mix for SIMD4
-@inline(__always)
-func mix(_ a: SIMD4<CGFloat>, _ b: SIMD4<CGFloat>, t: CGFloat) -> SIMD4<CGFloat> {
-    return a + (b - a) * t
+extension ShaderProgram {
+    private static var _gradient: GradientShaderProgram?
+    static var gradient: GradientShaderProgram {
+        if let existing = _gradient { return existing }
+        let program = try! GradientShaderProgram()
+        _gradient = program
+        return program
+    }
+    static func invalidateGradient() { _gradient = nil }
 }
 
-@inline(__always)
-func dot(_ a: SIMD2<CGFloat>, _ b: SIMD2<CGFloat>) -> CGFloat {
-    return a.x * b.x + a.y * b.y
+class GradientShaderProgram: ShaderProgram {
+    // Keep in sync with `FragmentShader.maxGradientStops` in the shader source.
+    static let maxStops = 16
+
+    private var gradientSize: ShaderVariableLocationID!
+    private var startPoint: ShaderVariableLocationID!
+    private var endPoint: ShaderVariableLocationID!
+    private var colorCount: ShaderVariableLocationID!
+    private var colors: ShaderVariableLocationID!
+    private var locations: ShaderVariableLocationID!
+
+    fileprivate init() throws {
+        try super.init(vertexShader: .common, fragmentShader: .gradient)
+        gradientSize = GPU_GetUniformLocation(programRef, "gradientSize")
+        startPoint = GPU_GetUniformLocation(programRef, "startPoint")
+        endPoint = GPU_GetUniformLocation(programRef, "endPoint")
+        colorCount = GPU_GetUniformLocation(programRef, "colorCount")
+        colors = GPU_GetUniformLocation(programRef, "colors")
+        locations = GPU_GetUniformLocation(programRef, "locations")
+    }
+
+    func set(
+        size: CGSize,
+        startPoint start: CGPoint,
+        endPoint end: CGPoint,
+        colors colorStops: [SIMD4<Float>],
+        locations locationStops: [Float]
+    ) {
+        let count = Int32(min(colorStops.count, locationStops.count, GradientShaderProgram.maxStops))
+
+        var sizeValues = [Float(size.width), Float(size.height)]
+        GPU_SetUniformfv(gradientSize, 2, 1, &sizeValues)
+
+        var startValues = [Float(start.x), Float(start.y)]
+        GPU_SetUniformfv(startPoint, 2, 1, &startValues)
+
+        var endValues = [Float(end.x), Float(end.y)]
+        GPU_SetUniformfv(endPoint, 2, 1, &endValues)
+
+        GPU_SetUniformi(colorCount, count)
+
+        var colorValues = colorStops.prefix(Int(count)).flatMap { [$0.x, $0.y, $0.z, $0.w] }
+        GPU_SetUniformfv(colors, 4, count, &colorValues)
+
+        var locationValues = Array(locationStops.prefix(Int(count)))
+        GPU_SetUniformfv(locations, 1, count, &locationValues)
+    }
 }
