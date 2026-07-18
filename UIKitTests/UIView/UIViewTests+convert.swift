@@ -290,24 +290,20 @@ class UIViewPointConversionTests: XCTestCase {
             return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
         }
     }
-
-    extension UIView {
-        // XXX: we shouldn't actually need this function. It should be the same as running
-        // `convert(self.bounds.origin, to: rootView)` or `to: touch.window)` etc.
-
-        /// Returns `self.frame.origin` in `window.bounds` coordinates
-        internal func absoluteOrigin() -> CGPoint {
-            let rootView = self.getRootView()
-            return convert(.zero, to: rootView)
-        }
-
-        func getRootView() -> UIView? {
-            var currentView: UIView = self
-            while let superview = currentView.superview {
-                currentView = superview
-            }
-
-            return currentView
-        }
-    }
 #endif
+
+// Test-only helper: the view's origin in its root's coordinates. It's just `convert(.zero, to: rootView)`,
+// so the tests using it also exercise `convert(_:to:)`.
+extension UIView {
+    func absoluteOrigin() -> CGPoint {
+        convert(.zero, to: getRootView())
+    }
+
+    func getRootView() -> UIView {
+        var currentView: UIView = self
+        while let superview = currentView.superview {
+            currentView = superview
+        }
+        return currentView
+    }
+}
