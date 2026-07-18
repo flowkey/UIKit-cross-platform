@@ -278,6 +278,25 @@ class UIViewPointConversionTests: XCTestCase {
         let convertedPoint = subview3.convert(CGPoint(x: 20, y: 10), to: window)
         XCTAssertEqual(convertedPoint, CGPoint(x: 116, y: 106))
     }
+
+    func testConvertIntoViewUnderAScaledAncestor() {
+        let root = UIView(frame: CGRect(x: 0, y: 0, width: 400, height: 400))
+
+        let scaledContainer = UIView()
+        scaledContainer.transform = CGAffineTransform(scaleX: 2, y: 2)
+        scaledContainer.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        root.addSubview(scaledContainer)
+
+        let middle = UIView(frame: CGRect(x: 10, y: 10, width: 80, height: 80))
+        scaledContainer.addSubview(middle)
+
+        let inner = UIView(frame: CGRect(x: 5, y: 5, width: 20, height: 20))
+        middle.addSubview(inner)
+
+        // The scale sits on inner's grandparent, so converting into inner has to undo the whole ancestor
+        // chain's transforms, not just the direct parent's — the off-by-zoom-factor bug this rewrite fixed.
+        XCTAssertEqual(root.convert(CGPoint(x: 100, y: 100), to: inner), CGPoint(x: 35, y: 35))
+    }
 }
 
 #if os(iOS)
