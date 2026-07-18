@@ -253,14 +253,39 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
             return convertToSuperview(point)
         }
 
-        // Slow path:
-        let selfAbsoluteOrigin = self.absoluteOrigin()
-        let otherAbsoluteOrigin = otherView.absoluteOrigin()
+        // General path: lift `point` up to the root (window) coordinate space applying every ancestor's
+        // transform, then push it back down into `otherView` undoing every ancestor's transform. Undoing the
+        // whole chain (not just one level) is what makes points convert correctly through a scaled ancestor,
+        // e.g. the zoomed sheet container.
+        let pointInRoot = pointInRootCoordinates(point)
+        return otherView.rootCoordinatesToLocal(pointInRoot)
+    }
 
-        let originDifference = (otherAbsoluteOrigin - selfAbsoluteOrigin)
+    /// Lifts a point from `self`'s coordinate space up into the root ancestor's (window) coordinate space.
+    private func pointInRootCoordinates(_ point: CGPoint) -> CGPoint {
+        var result = point
+        var view = self
+        while let superview = view.superview {
+            result = view.convertToSuperview(result)
+            view = superview
+        }
+        return result
+    }
 
-        // TODO: This is a hack. We don't properly incorporate all transforms up the tree.
-        return (point - originDifference).applying(otherView.superview?.transform.inverted() ?? .identity)
+    /// Pushes a point from the root ancestor's (window) coordinate space down into `self`'s coordinate space.
+    private func rootCoordinatesToLocal(_ point: CGPoint) -> CGPoint {
+        var chainToRoot: [UIView] = []
+        var view: UIView? = self
+        while let current = view {
+            chainToRoot.append(current)
+            view = current.superview
+        }
+        // chainToRoot is [self, parent, …, root]; descend root → self, one level per step.
+        var result = point
+        for index in stride(from: chainToRoot.count - 1, to: 0, by: -1) {
+            result = chainToRoot[index].convertToSubview(result, subview: chainToRoot[index - 1])
+        }
+        return result
     }
 
     private func convertToSuperview(_ point: CGPoint) -> CGPoint {
@@ -276,24 +301,6 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         }
 
         return (point - subview.frame.origin).applying(invertedSubviewTransform) + subview.bounds.origin
-    }
-
-    /// Returns `self.frame.origin` in `window.bounds` coordinates
-    internal func absoluteOrigin() -> CGPoint {
-        var result: CGPoint = .zero
-        var view = self
-        while let superview = view.superview {
-            let translatedFrameOrigin = view.convert(.zero, to: superview)
-
-            // This is the important step:
-            // We start deep in the hierarchy and at every level multiply the total result by the parent transform
-            // Without this, we would be ignoring the fact that a transform in (e.g.) the UIWindow affects ALL
-            // its subviews and their subviews, rather than just one level at a time.
-            result = (result + translatedFrameOrigin).applying(superview.transform)
-            view = superview
-        }
-
-        return result
     }
 
     public func convert(_ point: CGPoint, from view: UIView?) -> CGPoint {

@@ -21,7 +21,10 @@ extension UIApplication {
             #if os(Android)
             if let uievent = UIEvent.from(e) {
                 sendEvent(uievent)
-                break
+                // Drain the rest of the queue this frame too — otherwise a fast two-finger pinch produces
+                // events faster than one-per-frame and they back up, so the gesture keeps "playing" for
+                // seconds after the fingers lift.
+                continue
             }
             #endif
 
@@ -186,52 +189,49 @@ extension SDL_Event {
     }
 }
 
+// Touches (up to two fingers, for pinch) flow through the normal `UIWindow.sendEvent` → hit-test →
+// recognizer path, exactly like the first finger. All active fingers live in one shared `UIEvent`; each SDL
+// event marks which finger changed. No pinch-specific side channel — the pinch recognizer just reads
+// `event.allTouches` like it would on iOS.
 extension UIEvent {
     @MainActor
     static func from(_ event: SDL_Event) -> UIEvent? {
         switch SDL_EventType(event.type) {
         case SDL_FINGERDOWN:
-            // XXX: minimal implementation for single touch
-            guard UIEvent.activeEvents.isEmpty else {
-                return nil
-            }
-
-            let newTouch = UITouch(
-                touchId: 0,
-                at: CGPoint(
-                    x: CGFloat(event.tfinger.x),
-                    y: CGFloat(event.tfinger.y)
-                ),
+            let touch = UITouch(
+                touchId: Int(event.tfinger.fingerId),
+                at: CGPoint.from(event.tfinger),
                 timestamp: event.timestampInSeconds
             )
-
-            return UIEvent(touch: newTouch)
+            if let activeEvent = UIEvent.activeEvents.first {
+                activeEvent.allTouches?.insert(touch)
+                activeEvent.changedTouch = touch
+                return activeEvent
+            }
+            return UIEvent(touch: touch)
 
         case SDL_FINGERMOTION:
-            if
-                let firstExistingEvent = UIEvent.activeEvents.first,
-                let matchingTouch = firstExistingEvent.allTouches?.first(where: { $0.touchId == event.tfinger.fingerId })
-            {
+            guard
+                let activeEvent = UIEvent.activeEvents.first,
+                let touch = activeEvent.allTouches?.first(where: { $0.touchId == Int(event.tfinger.fingerId) })
+            else { return nil }
 
-                matchingTouch.timestamp = event.timestampInSeconds
-                matchingTouch.phase = .moved
-                matchingTouch.updateAbsoluteLocation(.from(event.tfinger))
-                return firstExistingEvent
-            } else {
-                return nil
-            }
+            touch.updateAbsoluteLocation(.from(event.tfinger))
+            touch.timestamp = event.timestampInSeconds
+            touch.phase = .moved
+            activeEvent.changedTouch = touch
+            return activeEvent
 
         case SDL_FINGERUP:
-            if
-                let firstExistingEvent = UIEvent.activeEvents.first,
-                let matchingTouch = firstExistingEvent.allTouches?.first(where: { $0.touchId == event.tfinger.fingerId })
-            {
-                matchingTouch.timestamp = event.timestampInSeconds
-                matchingTouch.phase = .ended
-                return firstExistingEvent
-            } else {
-                return nil
-            }
+            guard
+                let activeEvent = UIEvent.activeEvents.first,
+                let touch = activeEvent.allTouches?.first(where: { $0.touchId == Int(event.tfinger.fingerId) })
+            else { return nil }
+
+            touch.timestamp = event.timestampInSeconds
+            touch.phase = .ended
+            activeEvent.changedTouch = touch
+            return activeEvent
 
         default:
             return nil

@@ -33,10 +33,13 @@ public class UIWindow: UIView {
 
     public func sendEvent(_ event: UIEvent) {
         guard
-            let allTouches = event.allTouches,
-            let currentTouch = allTouches.first,
+            let currentTouch = event.changedTouch ?? event.allTouches?.first,
             let hitView = currentTouch.view ?? hitTest(currentTouch.location(in: nil), with: nil)
         else { return }
+
+        // Deliver only the touch that changed for this event; `event.allTouches` still exposes every finger
+        // down for multi-touch recognizers. For a single finger this is identical to before.
+        let phaseTouches: Set<UITouch> = [currentTouch]
 
         switch currentTouch.phase {
         case .began:
@@ -44,16 +47,16 @@ public class UIWindow: UIView {
             currentTouch.view = hitView
             currentTouch.gestureRecognizers = hitView.getRecognizerHierachy()
 
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(allTouches, with: event) }
+            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(phaseTouches, with: event) }
 
             if !currentTouch.hasBeenCancelledByAGestureRecognizer {
-                hitView.touchesBegan(allTouches, with: event)
+                hitView.touchesBegan(phaseTouches, with: event)
             }
 
         case .moved:
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(allTouches, with: event) }
+            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(phaseTouches, with: event) }
             if !currentTouch.hasBeenCancelledByAGestureRecognizer {
-                hitView.touchesMoved(allTouches, with: event)
+                hitView.touchesMoved(phaseTouches, with: event)
             }
 
         case .ended:
@@ -61,13 +64,16 @@ public class UIWindow: UIView {
             // otherwise `hasBeenCancelledByAGestureRecognizer` will be false because the state was reset already
             let hasBeenCancelledByAGestureRecognizer = currentTouch.hasBeenCancelledByAGestureRecognizer
 
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(allTouches, with: event) }
+            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(phaseTouches, with: event) }
 
             if !hasBeenCancelledByAGestureRecognizer {
-                hitView.touchesEnded(allTouches, with: event)
+                hitView.touchesEnded(phaseTouches, with: event)
             }
 
-            UIEvent.activeEvents.remove(event)
+            event.allTouches?.remove(currentTouch)
+            if event.allTouches?.isEmpty ?? true {
+                UIEvent.activeEvents.remove(event)
+            }
         }
     }
 }
