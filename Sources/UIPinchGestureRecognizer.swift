@@ -7,23 +7,19 @@
 //
 
 public class UIPinchGestureRecognizer: UIGestureRecognizer {
-    /// Incremental scale factor since the last `.changed` callback (iOS resets it in its action handler).
+    /// Incremental scale since the last `.changed`, matching iOS (which resets it in the action handler).
     public var scale: CGFloat = 1
 
     private var previousDistance: CGFloat?
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
-        // A pinch needs two fingers; begins only once the second one lands.
         guard let distance = Self.distance(between: event.allTouches) else { return }
-        // Track the finger that carries the recognizer hierarchy so simultaneous-recognition coordination
-        // can find the other recognizers (e.g. the scroll pan) on it.
+        // Track a finger that owns a recognizer hierarchy, so cancellation can reach the pan to cancel it.
         trackedTouch = event.allTouches?.first(where: { !$0.gestureRecognizers.isEmpty }) ?? touches.first
         previousDistance = distance
         scale = 1
         state = .began
-        // Recognizing runs the same simultaneous-recognition/cancellation coordination the other recognizers
-        // use, so the scroll view's pan is handled via its delegate (GestureOverlay) rather than by hand.
         cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
     }
 

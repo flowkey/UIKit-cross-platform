@@ -189,10 +189,6 @@ extension SDL_Event {
     }
 }
 
-// Touches (up to two fingers, for pinch) flow through the normal `UIWindow.sendEvent` → hit-test →
-// recognizer path, exactly like the first finger. All active fingers live in one shared `UIEvent`; each SDL
-// event marks which finger changed. No pinch-specific side channel — the pinch recognizer just reads
-// `event.allTouches` like it would on iOS.
 extension UIEvent {
     @MainActor
     static func from(_ event: SDL_Event) -> UIEvent? {
