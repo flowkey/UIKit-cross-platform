@@ -70,6 +70,24 @@ extension UIScreen {
         try throwOnErrors(ofType: [GPU_ERROR_USER_ERROR])
     }
 
+    /// Draw a colour gradient straight into `rect` on the GPU (no intermediate texture) using the gradient
+    /// shader. `rect` is in the layer's anchor-relative coordinate space (same as `fill`). The gradient's
+    /// own alpha blends over whatever is already on screen (shape blending is on), so a `paper → transparent`
+    /// gradient occludes on one side and crossfades into the content behind it on the other.
+    func gradientFill(
+        _ rect: CGRect,
+        startPoint: CGPoint,
+        endPoint: CGPoint,
+        colors: [SIMD4<Float>],
+        locations: [Float]
+    ) {
+        let previousProgram = ShaderProgram.currentlyActive
+        ShaderProgram.gradient.activate()
+        ShaderProgram.gradient.set(rect: rect, startPoint: startPoint, endPoint: endPoint, colors: colors, locations: locations)
+        GPU_RectangleFilled(rawPointer, gpuRect(rect), color: UIColor.white.sdlColor)
+        restoreShaderProgram(previousProgram)
+    }
+
     func setShapeBlending(_ newValue: Bool) {
         GPU_SetShapeBlending(newValue)
     }

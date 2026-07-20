@@ -190,7 +190,7 @@ extension FragmentShader {
 
         \(fragColorDefinition)
 
-        uniform vec2 gradientSize;
+        uniform vec4 rectFrame; // (x, y, height, width) — same packing as roundedRect/mask
         uniform vec2 startPoint;
         uniform vec2 endPoint;
         uniform int colorCount;
@@ -199,7 +199,9 @@ extension FragmentShader {
 
         void main(void)
         {
-            vec2 p = absolutePixelPos / gradientSize;
+            // Normalise the fragment's position within the drawn rect to [0,1] (drawn straight to screen,
+            // so `absolutePixelPos` is in the layer's anchor-relative space; `rectFrame` maps it back).
+            vec2 p = (absolutePixelPos - vec2(rectFrame.x, rectFrame.y)) / vec2(rectFrame.w, rectFrame.z);
 
             vec2 dir = endPoint - startPoint;
             float len2 = dot(dir, dir);

@@ -67,28 +67,9 @@ extension CALayer {
             renderer.clippingRect =
                 renderer.clippingRect?.intersection(maskAbsoluteFrame) ?? maskAbsoluteFrame
 
-            // A mask layer isn't part of the `sublayers` tree, so the render walk never renders it and thus
-            // never populates its `contents`. Drive its `display()` here (mirroring how a layer displays
-            // itself below) so masks that generate their own contents — e.g. `CAGradientLayer` — actually
-            // produce a texture to sample. Match our contentsScale so the mask is rendered at screen resolution.
-            if mask.contentsScale != contentsScale {
-                mask.contentsScale = contentsScale
-            }
-            if mask.needsDisplay() {
-                mask.display()
-                mask._needsDisplay = false
-            }
-
             if let maskContents = mask.contents {
-                // The mask shader maps `absolutePixelPos` (the vertex position of the content blit, which
-                // spans this layer's anchor-relative render rect — `[-anchor*size … (1-anchor)*size]`) into
-                // the mask's [0,1] texture space via `(pos - frame.origin) / frame.size`. So the frame must
-                // be given in that same anchor-relative space: the mask's own frame within the layer, shifted
-                // by the layer's anchor offset. (Passing `mask.bounds`, origin 0,0, sampled only half the
-                // mask for the default 0.5 anchor.)
-                let maskShaderFrame = maskFrame.offsetBy(deltaFromAnchorPointToOrigin)
                 ShaderProgram.mask.activate() // must activate before setting parameters (below)!
-                ShaderProgram.mask.set(maskImage: maskContents, frame: maskShaderFrame)
+                ShaderProgram.mask.set(maskImage: maskContents, frame: mask.bounds)
             }
         }
 
@@ -114,6 +95,12 @@ extension CALayer {
                 with: backgroundColor.withAlphaComponent(CGFloat(backgroundColorOpacity)),
                 cornerRadius: cornerRadius
             )
+        }
+
+        // A CAGradientLayer draws its gradient directly to the screen here (GPU-rasterised, no texture),
+        // on top of its own backgroundColor and beneath any sublayers.
+        if let gradientLayer = self as? CAGradientLayer {
+            gradientLayer.drawGradient(into: renderer, rect: renderedBoundsRelativeToAnchorPoint)
         }
 
         if borderWidth > 0 {
