@@ -1,5 +1,4 @@
 #if os(Android)
-import Foundation
 import JNI
 
 public protocol AVAudioPlayerDelegate: AnyObject {
@@ -16,13 +15,12 @@ public final class AVAudioPlayer: JNIObject {
     }
 
     @MainActor
-    public convenience init(contentsOf url: URL) throws {
-        let assetName = url.isFileURL ? url.path : url.absoluteString
-        try self.init(arguments: JavaSDLView(getSDLView()), assetName)
+    public convenience init(assetPath: String) throws {
+        try self.init(arguments: JavaSDLView(getSDLView()), assetPath)
         try? call("setSwiftInstancePtr", arguments: [swiftInstancePtr])
     }
 
-    public var deviceCurrentTime: TimeInterval {
+    public var deviceCurrentTime: Double {
         return (try? call("getDeviceCurrentTime")) ?? 0
     }
 
@@ -32,7 +30,7 @@ public final class AVAudioPlayer: JNIObject {
     }
 
     @discardableResult
-    public func play(atTime time: TimeInterval) -> Bool {
+    public func play(atTime time: Double) -> Bool {
         try? call("playAtTime", arguments: [time])
         return true
     }
