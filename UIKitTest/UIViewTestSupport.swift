@@ -27,15 +27,6 @@ extension UIView {
         firstDescendant { ($0 as? UILabel)?.text == text }
     }
 
-    /// First descendant `UILabel`'s text, for asserting on rendered copy.
-    var firstLabelText: String? {
-        if let label = self as? UILabel { return label.text }
-        for subview in subviews {
-            if let text = subview.firstLabelText { return text }
-        }
-        return nil
-    }
-
     func isSelfOrDescendant(of ancestor: UIView) -> Bool {
         var view: UIView? = self
         while let current = view {

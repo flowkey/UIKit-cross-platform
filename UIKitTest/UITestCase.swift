@@ -2,9 +2,9 @@ import UIKit
 import Dispatch
 
 #if canImport(Darwin)
-import Darwin // exit(), usleep()
+import Darwin // usleep()
 #elseif canImport(Bionic)
-import Bionic // exit(), usleep()
+import Bionic // usleep()
 #elseif canImport(Glibc)
 import Glibc
 #endif
@@ -79,10 +79,10 @@ public func XCTAssertGreaterThan<T: Comparable>(_ a: @autoclosure () -> T, _ b: 
 
 // MARK: - Runner
 
-/// Runs one named test of a suite (fresh `setUp`/`tearDown`), emits its FKUITEST marker, and returns
-/// nil on pass or the joined failure messages on failure. This is the unit a per-test-case host can
-/// drive individually — e.g. Android runs one `@Test` per name so each shows up separately (with its
-/// failure text) in the JUnit/Firebase report instead of a single opaque pass/fail.
+/// Runs one named test of a suite (fresh `setUp`/`tearDown`) and returns nil on pass or the joined
+/// failure messages on failure. This is the unit a per-test-case host can drive individually — e.g.
+/// Android runs one `@Test` per name so each shows up separately (with its failure text) in the
+/// JUnit/Firebase report instead of a single opaque pass/fail.
 public func runSingleTest<T: XCTestCase>(
     _ suiteName: String, _ tests: [(String, (T) -> () throws -> Void)], named name: String
 ) -> String? {
@@ -98,16 +98,10 @@ public func runSingleTest<T: XCTestCase>(
     } catch {
         currentFailures.append("\(error)")
     }
-    if currentFailures.isEmpty {
-        emit("FKUITEST PASS \(suiteName).\(name)")
-        return nil
-    }
-    let message = currentFailures.joined(separator: "; ")
-    emit("FKUITEST FAIL \(suiteName).\(name): \(message)")
-    return message
+    return currentFailures.isEmpty ? nil : currentFailures.joined(separator: "; ")
 }
 
-/// Runs every `testX` method of a suite, emitting one FKUITEST marker per test. Returns the failure count.
+/// Runs every `testX` method of a suite and returns the failure count.
 public func runSuite<T: XCTestCase>(_ suiteName: String, _ tests: [(String, (T) -> () throws -> Void)]) -> Int {
     var failures = 0
     for (name, _) in tests where runSingleTest(suiteName, tests, named: name) != nil {
@@ -116,27 +110,8 @@ public func runSuite<T: XCTestCase>(_ suiteName: String, _ tests: [(String, (T) 
     return failures
 }
 
-/// Run the given suites on the current (test) thread, report a DONE marker, and return the total
-/// failure count. The caller decides what to do with it (an XCTest bridge asserts on it; a
-/// standalone runner exits with a matching status) — this never exits, so it's safe under XCTest.
+/// Runs the given suites on the current (test) thread and returns the total failure count.
 @discardableResult
 public func runUITestSuites(_ suites: [() -> Int]) -> Int {
-    var failures = 0
-    for suite in suites {
-        failures += suite()
-    }
-    emit("FKUITEST DONE failures=\(failures)")
-    return failures
-}
-
-// MARK: - Marker output
-
-/// On Android go straight to logcat via UIKit's public bridge (the stdlib `print` doesn't reach
-/// logcat); on macOS stdout is captured by the run script.
-func emit(_ message: String) {
-    #if os(Android)
-    android_log_write(LogPriority.info.rawValue, "Swift", message)
-    #else
-    print(message)
-    #endif
+    suites.reduce(0) { $0 + $1() }
 }

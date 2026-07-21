@@ -3,12 +3,6 @@ import UIKit
 // XCUIApplication/XCUIElement façade over the live UIView tree, API-shaped like XCUITest so the same
 // test reads identically. Runs on the test thread; every UIKit access hops to the main actor.
 
-public struct TestFailure: Error, CustomStringConvertible {
-    public let message: String
-    public init(_ message: String) { self.message = message }
-    public var description: String { message }
-}
-
 public struct XCUIApplication {
     public init() {}
     public var buttons: XCUIElementQuery { XCUIElementQuery() }
@@ -31,8 +25,6 @@ public struct XCUIElement {
     }
 
     public var exists: Bool { onMain { resolvedView() != nil } }
-
-    public var label: String? { onMain { resolvedView()?.firstLabelText } }
 
     /// The element's frame in window coordinates (main-actor; call within `onMain`).
     @MainActor func windowFrame() -> CGRect? {
