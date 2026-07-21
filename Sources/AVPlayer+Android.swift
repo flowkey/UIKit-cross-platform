@@ -102,11 +102,4 @@ extension AVPlayer {
         return Unmanaged<AVPlayer>.fromOpaque(reference).takeUnretainedValue()
     }
 }
-
-extension JNIObject {
-    var swiftInstancePtr: JavaLong {
-        let ptr = Unmanaged.passUnretained(self).toOpaque()
-        return JavaLong(Int(bitPattern: ptr))
-    }
-}
 #endif
