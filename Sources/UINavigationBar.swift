@@ -54,6 +54,9 @@ open class UINavigationBar: UIView {
         rightButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
         rightButton.tintColor = tintColor
 
+        backButton.accessibilityIdentifier = "NavigationBackButton"
+        rightButton.accessibilityIdentifier = "NavigationRightButton"
+
         addSubview(titleLabel)
         addSubview(backButton)
         addSubview(rightButton)

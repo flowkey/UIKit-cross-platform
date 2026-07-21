@@ -11,6 +11,8 @@
 		0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */; };
 		03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03760AE51F67E73300F36283 /* UIScrollViewTests.swift */; };
 		03C4872A1F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */; };
+		0479C15ED55E1F70FEDE5380 /* UITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BFAAE4C6377D20C943B491 /* UITestCase.swift */; };
+		260ACF914A4423CB9F919E8C /* XCUIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9648E92933ACAFC847F75395 /* XCUIApplication.swift */; };
 		5B115C5E1F61DBF800AAB895 /* UIProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */; };
 		5B1F87051F4C889F0051A1A2 /* CAMediaTimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */; };
 		5B4A7830285C799C0066E48C /* UIWindow+getSafeAreaInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4A782F285C799C0066E48C /* UIWindow+getSafeAreaInsets.swift */; };
@@ -121,9 +123,6 @@
 		5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */; };
 		5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDB31B61F1CE8050081A605 /* Bundle.swift */; };
 		5CDC14CC1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */; };
-		FF0000010000000000000001 /* ShaderProgram+roundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000002 /* ShaderProgram+roundedRect.swift */; };
-		FF0000010000000000000003 /* ShaderProgram+shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000004 /* ShaderProgram+shadow.swift */; };
-		FF0000010000000000000005 /* UIBezierPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000006 /* UIBezierPath.swift */; };
 		5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */; };
 		5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */; };
 		5CE5C5731EDD7C3400680154 /* UIWindow+TouchHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */; };
@@ -201,9 +200,22 @@
 		83F02DE11F18F18500347AA8 /* roboto-thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F02DC51F17D84000347AA8 /* roboto-thin.ttf */; };
 		83F02DE21F18F18500347AA8 /* roboto-thinitalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F02DC61F17D84000347AA8 /* roboto-thinitalic.ttf */; };
 		83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */; };
+		9B303C1656A50B0A76995608 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7AE1ECB2F6500F5020D /* UIKit.framework */; };
+		E171287E9E7E57BD4F090687 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 982667B25994AFA290EEAF58 /* Cocoa.framework */; };
+		FCBBAB264B8284F985859955 /* UIViewTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A26469EF9AA6E2E69A4FBA /* UIViewTestSupport.swift */; };
+		FF0000010000000000000001 /* ShaderProgram+roundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000002 /* ShaderProgram+roundedRect.swift */; };
+		FF0000010000000000000003 /* ShaderProgram+shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000004 /* ShaderProgram+shadow.swift */; };
+		FF0000010000000000000005 /* UIBezierPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000006 /* UIBezierPath.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		48092E771EFA282AFE87A209 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5C27E7A51ECB2F6500F5020D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5C27E7AD1ECB2F6500F5020D;
+			remoteInfo = UIKit;
+		};
 		5C27E7B91ECB2F6500F5020D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5C27E7A51ECB2F6500F5020D /* Project object */;
@@ -214,10 +226,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		00A26469EF9AA6E2E69A4FBA /* UIViewTestSupport.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UIViewTestSupport.swift; sourceTree = "<group>"; };
 		0371D2281F793E5F005DDFED /* UIScrollView+velocity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIScrollView+velocity.swift"; path = "Sources/UIScrollView+velocity.swift"; sourceTree = SOURCE_ROOT; };
 		03760AE51F67E73300F36283 /* UIScrollViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewTests.swift; sourceTree = "<group>"; };
 		03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPanGestureRecognizerTests.swift; sourceTree = "<group>"; };
 		03CC73971FB5B2C6000A2C91 /* UITouchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITouchTests.swift; sourceTree = "<group>"; };
+		2CF2FCAFE1E9AD98C13DDF18 /* UIKitTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = UIKitTest.framework; path = UIKitTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIProgressView.swift; path = Sources/UIProgressView.swift; sourceTree = SOURCE_ROOT; };
 		5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CAMediaTimingFunction.swift; path = Sources/CAMediaTimingFunction.swift; sourceTree = SOURCE_ROOT; };
 		5B4A782F285C799C0066E48C /* UIWindow+getSafeAreaInsets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+getSafeAreaInsets.swift"; sourceTree = "<group>"; };
@@ -330,9 +344,6 @@
 		5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGDataProvider.swift; sourceTree = "<group>"; };
 		5CDB31B61F1CE8050081A605 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+mask.swift"; sourceTree = "<group>"; };
-		FF0000010000000000000002 /* ShaderProgram+roundedRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+roundedRect.swift"; sourceTree = "<group>"; };
-		FF0000010000000000000004 /* ShaderProgram+shadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+shadow.swift"; sourceTree = "<group>"; };
-		FF0000010000000000000006 /* UIBezierPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBezierPath.swift"; sourceTree = "<group>"; };
 		5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIPanGestureRecognizer.swift; path = Sources/UIPanGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITapGestureRecognizer.swift; path = Sources/UITapGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIWindow+TouchHandling.swift"; sourceTree = "<group>"; };
@@ -391,6 +402,12 @@
 		83F02DC91F17D84000347AA8 /* roboto-italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "roboto-italic.ttf"; sourceTree = "<group>"; };
 		83F02DCA1F17D84000347AA8 /* roboto-mediumitalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "roboto-mediumitalic.ttf"; sourceTree = "<group>"; };
 		83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+SDL.swift"; sourceTree = "<group>"; };
+		9648E92933ACAFC847F75395 /* XCUIApplication.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = XCUIApplication.swift; sourceTree = "<group>"; };
+		982667B25994AFA290EEAF58 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		B3BFAAE4C6377D20C943B491 /* UITestCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UITestCase.swift; sourceTree = "<group>"; };
+		FF0000010000000000000002 /* ShaderProgram+roundedRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+roundedRect.swift"; sourceTree = "<group>"; };
+		FF0000010000000000000004 /* ShaderProgram+shadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+shadow.swift"; sourceTree = "<group>"; };
+		FF0000010000000000000006 /* UIBezierPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBezierPath.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -428,6 +445,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B5A6F635B069000C0D2078DE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E171287E9E7E57BD4F090687 /* Cocoa.framework in Frameworks */,
+				9B303C1656A50B0A76995608 /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -440,6 +466,14 @@
 				5BAF8E49203DA89D00DA1EBF /* TouchHandlingTests.swift */,
 			);
 			path = Gestures;
+			sourceTree = "<group>";
+		};
+		1855BD568EE6C9B9748B6ED2 /* OS X */ = {
+			isa = PBXGroup;
+			children = (
+				982667B25994AFA290EEAF58 /* Cocoa.framework */,
+			);
+			name = "OS X";
 			sourceTree = "<group>";
 		};
 		5BA7B40D1F45A6C30040CB58 /* Animations */ = {
@@ -482,6 +516,7 @@
 				5C27E7B01ECB2F6500F5020D /* UIKit */,
 				5C27E7BB1ECB2F6500F5020D /* UIKitTests */,
 				83C18F391F0FB486008FEA07 /* Resources */,
+				DE14D101434EFC2F3FD3801A /* UIKitTest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -491,6 +526,7 @@
 				5C27E7AE1ECB2F6500F5020D /* UIKit.framework */,
 				5C27E7B71ECB2F6500F5020D /* UIKitTests.xctest */,
 				833860AC1F0D55B3004DD55E /* iOSTestTarget.xctest */,
+				2CF2FCAFE1E9AD98C13DDF18 /* UIKitTest.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -605,6 +641,7 @@
 				5C27E7D91ECB2F9100F5020D /* CoreAudio.framework */,
 				5C27E7DA1ECB2F9100F5020D /* ApplicationServices.framework */,
 				5C27E7DB1ECB2F9100F5020D /* Foundation.framework */,
+				1855BD568EE6C9B9748B6ED2 /* OS X */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -745,6 +782,17 @@
 			path = Button;
 			sourceTree = "<group>";
 		};
+		DE14D101434EFC2F3FD3801A /* UIKitTest */ = {
+			isa = PBXGroup;
+			children = (
+				00A26469EF9AA6E2E69A4FBA /* UIViewTestSupport.swift */,
+				9648E92933ACAFC847F75395 /* XCUIApplication.swift */,
+				B3BFAAE4C6377D20C943B491 /* UITestCase.swift */,
+			);
+			name = UIKitTest;
+			path = UIKitTest;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -755,9 +803,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8788BA35C4525161CDB04F2B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		55B3D9F580B3BB24C59E5479 /* UIKitTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C780A3F4081DE90CF3C9B8C7 /* Build configuration list for PBXNativeTarget "UIKitTest" */;
+			buildPhases = (
+				8788BA35C4525161CDB04F2B /* Headers */,
+				A63D5388456CE2AC119D06FD /* Sources */,
+				B5A6F635B069000C0D2078DE /* Frameworks */,
+				E2575754B565ADA985B5CEC2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				289F966B0C6EF398740922FE /* PBXTargetDependency */,
+			);
+			name = UIKitTest;
+			productName = UIKitTest;
+			productReference = 2CF2FCAFE1E9AD98C13DDF18 /* UIKitTest.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		5C27E7AD1ECB2F6500F5020D /* UIKit */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5C27E7C21ECB2F6500F5020D /* Build configuration list for PBXNativeTarget "UIKit" */;
@@ -858,6 +932,7 @@
 				5C27E7AD1ECB2F6500F5020D /* UIKit */,
 				5C27E7B61ECB2F6500F5020D /* UIKitTests */,
 				833860AB1F0D55B3004DD55E /* iOSTestTarget */,
+				55B3D9F580B3BB24C59E5479 /* UIKitTest */,
 			);
 		};
 /* End PBXProject section */
@@ -909,6 +984,13 @@
 				83F02DCB1F18F17600347AA8 /* roboto-black.ttf in Resources */,
 				83F02DCE1F18F17600347AA8 /* roboto-bolditalic.ttf in Resources */,
 				83F02DCC1F18F17600347AA8 /* roboto-blackitalic.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E2575754B565ADA985B5CEC2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1089,9 +1171,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A63D5388456CE2AC119D06FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FCBBAB264B8284F985859955 /* UIViewTestSupport.swift in Sources */,
+				260ACF914A4423CB9F919E8C /* XCUIApplication.swift in Sources */,
+				0479C15ED55E1F70FEDE5380 /* UITestCase.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		289F966B0C6EF398740922FE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = UIKit;
+			target = 5C27E7AD1ECB2F6500F5020D /* UIKit */;
+			targetProxy = 48092E771EFA282AFE87A209 /* PBXContainerItemProxy */;
+		};
 		5C27E7BA1ECB2F6500F5020D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5C27E7AD1ECB2F6500F5020D /* UIKit */;
@@ -1370,6 +1468,64 @@
 			};
 			name = Release;
 		};
+		CEBD2BABDDC5928275128B1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKitTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		EB1C11213C3AED1A30A5EAE0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flowkey.UIKitTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1405,6 +1561,15 @@
 			buildConfigurations = (
 				833860B11F0D55B3004DD55E /* Debug */,
 				833860B21F0D55B3004DD55E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C780A3F4081DE90CF3C9B8C7 /* Build configuration list for PBXNativeTarget "UIKitTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEBD2BABDDC5928275128B1A /* Release */,
+				EB1C11213C3AED1A30A5EAE0 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
