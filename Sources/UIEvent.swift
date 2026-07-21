@@ -7,7 +7,7 @@ public class UIEvent {
 
     public init() {}
 
-    internal init(touch: UITouch) {
+    @_spi(UITest) public init(touch: UITouch) {
         allTouches = Set<UITouch>([touch])
     }
 }

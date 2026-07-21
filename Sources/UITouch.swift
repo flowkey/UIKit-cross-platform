@@ -7,7 +7,7 @@ public class UITouch {
         touchId = 0
     }
 
-    internal init(touchId: Int, at point: CGPoint, timestamp: Double) {
+    @_spi(UITest) public init(touchId: Int, at point: CGPoint, timestamp: Double) {
         absoluteLocation = point
         previousAbsoluteLocation = point
         self.touchId = touchId
@@ -25,7 +25,7 @@ public class UITouch {
     private var absoluteLocation: CGPoint
     private var previousAbsoluteLocation: CGPoint
 
-    func updateAbsoluteLocation(_ newLocation: CGPoint) {
+    @_spi(UITest) public func updateAbsoluteLocation(_ newLocation: CGPoint) {
         previousAbsoluteLocation = absoluteLocation
         absoluteLocation = newLocation
     }
