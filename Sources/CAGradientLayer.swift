@@ -1,3 +1,4 @@
+internal import SDL
 private import SDL_gpu
 
 open class CAGradientLayer: CALayer {
@@ -29,25 +30,91 @@ open class CAGradientLayer: CALayer {
         didSet { setNeedsDisplay() }
     }
 
-    /// Draw the gradient straight to the screen with the gradient shader — GPU-rasterised, with no
-    /// intermediate texture (the same mechanism `fill`/`shadow`/`roundedRect` use). Called by the render
-    /// walk (`CALayer+SDL`); `rect` is this layer's anchor-relative render rect.
+    // Rasterise the gradient once into `contents` on the GPU (render-to-texture), then the render walk
+    // blits that cached texture each frame like any image — recomputing only when the gradient changes
+    // (`setNeedsDisplay`). See the note in `display()` about disabling the render target's camera.
     @_optimize(speed)
-    func drawGradient(into renderer: UIScreen, rect: CGRect) {
-        guard !colors.isEmpty else { return }
+    override open func display() {
+        super.display()
 
-        // Implicit, evenly-spaced stop locations when none (or too few) are provided — matches CAGradientLayer.
-        let stops = locations.count >= colors.count
-            ? locations
-            : colors.indices.map { Float($0) / Float(max(colors.count - 1, 1)) }
+        if bounds.width.isZero || bounds.height.isZero { return }
 
-        renderer.gradientFill(
-            rect,
+        // Fill in implicit stop locations and collapse the degenerate cases.
+        if locations.count < colors.count {
+            if colors.count == 1 {
+                backgroundColor = colors[0]
+                colors = []
+                locations = []
+            } else {
+                locations = colors.indices.map { Float($0) / Float(colors.count - 1) }
+            }
+        }
+
+        if colors.isEmpty {
+            contents = nil
+            return
+        }
+
+        // Render-to-texture needs a live renderer/context. `display()` only runs inside the render walk
+        // (where the context is current), but guard so a stray call can't crash.
+        guard UIScreen.main != nil else { return }
+
+        let pixelWidth = Int(bounds.width * contentsScale)
+        let pixelHeight = Int(bounds.height * contentsScale)
+        guard pixelWidth > 0, pixelHeight > 0 else { return }
+
+        // Reuse the existing texture when it's already the right size, otherwise allocate one.
+        let image: CGImage
+        if let existing = contents, existing.width == pixelWidth, existing.height == pixelHeight {
+            image = existing
+        } else {
+            guard let newImage = CGImage(width: pixelWidth, height: pixelHeight) else { return }
+            image = newImage
+        }
+
+        guard let target = GPU_GetTarget(image.rawPointer) else { return }
+
+        // `display()` runs mid-render-walk, where a clip rect (screen-space GL scissor) may be active and
+        // the model-view holds the layer's on-screen transform — both would wrongly affect our offscreen
+        // draw. Disable them, and crucially disable the target's CAMERA: the shader's transform is
+        // camera × projection × modelview, and image targets default to `use_camera = true` (inverted),
+        // which otherwise pushes our rect off the target. With the camera off + a plain ortho + identity
+        // model-view, the rect (0,0,w,h) maps 1:1 onto the whole texture.
+        let savedClippingRect = UIScreen.main?.clippingRect
+        UIScreen.main?.clippingRect = nil
+        GPU_FlushBlitBuffer()
+
+        GPU_EnableCamera(target, false)
+        GPU_MatrixMode(GPU_PROJECTION); GPU_PushMatrix(); GPU_LoadIdentity()
+        GPU_Ortho(0, Float(pixelWidth), Float(pixelHeight), 0, -1, 1)
+        GPU_MatrixMode(GPU_MODELVIEW); GPU_PushMatrix(); GPU_LoadIdentity()
+
+        GPU_SetViewport(target, GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight)))
+        GPU_SetShapeBlending(false) // write the gradient's own straight alpha, don't blend into the cleared texture
+        GPU_Clear(target)
+
+        ShaderProgram.gradient.activate()
+        ShaderProgram.gradient.set(
+            rect: CGRect(x: 0, y: 0, width: pixelWidth, height: pixelHeight),
             startPoint: startPoint,
             endPoint: endPoint,
             colors: _colors,
-            locations: stops
+            locations: locations.count >= colors.count
+                ? locations
+                : colors.indices.map { Float($0) / Float(max(colors.count - 1, 1)) }
         )
+        GPU_RectangleFilled(target, GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight)), color: UIColor.white.sdlColor)
+
+        ShaderProgram.deactivateAll()
+        GPU_FlushBlitBuffer()
+
+        GPU_MatrixMode(GPU_MODELVIEW); GPU_PopMatrix()
+        GPU_MatrixMode(GPU_PROJECTION); GPU_PopMatrix()
+        GPU_MatrixMode(GPU_MODELVIEW)
+        GPU_SetShapeBlending(true)
+        UIScreen.main?.clippingRect = savedClippingRect
+
+        contents = image
     }
 }
 

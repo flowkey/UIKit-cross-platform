@@ -97,12 +97,6 @@ extension CALayer {
             )
         }
 
-        // A CAGradientLayer draws its gradient directly to the screen here (GPU-rasterised, no texture),
-        // on top of its own backgroundColor and beneath any sublayers.
-        if let gradientLayer = self as? CAGradientLayer {
-            gradientLayer.drawGradient(into: renderer, rect: renderedBoundsRelativeToAnchorPoint)
-        }
-
         if borderWidth > 0 {
             renderer.outline(
                 renderedBoundsRelativeToAnchorPoint,
