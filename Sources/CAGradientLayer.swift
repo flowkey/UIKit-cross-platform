@@ -30,16 +30,13 @@ open class CAGradientLayer: CALayer {
         didSet { setNeedsDisplay() }
     }
 
-    // Rasterise the gradient once into `contents` on the GPU (render-to-texture), then the render walk
-    // blits that cached texture each frame like any image — recomputing only when the gradient changes
-    // (`setNeedsDisplay`). See the note in `display()` about disabling the render target's camera.
+    // Rasterises the gradient into `contents` on the GPU, cached until the gradient changes.
     @_optimize(speed)
     override open func display() {
         super.display()
 
         if bounds.width.isZero || bounds.height.isZero { return }
 
-        // Fill in implicit stop locations and collapse the degenerate cases.
         if locations.count < colors.count {
             if colors.count == 1 {
                 backgroundColor = colors[0]
@@ -55,15 +52,12 @@ open class CAGradientLayer: CALayer {
             return
         }
 
-        // Render-to-texture needs a live renderer/context. `display()` only runs inside the render walk
-        // (where the context is current), but guard so a stray call can't crash.
         guard UIScreen.main != nil else { return }
 
         let pixelWidth = Int(bounds.width * contentsScale)
         let pixelHeight = Int(bounds.height * contentsScale)
         guard pixelWidth > 0, pixelHeight > 0 else { return }
 
-        // Reuse the existing texture when it's already the right size, otherwise allocate one.
         let image: CGImage
         if let existing = contents, existing.width == pixelWidth, existing.height == pixelHeight {
             image = existing
@@ -74,12 +68,8 @@ open class CAGradientLayer: CALayer {
 
         guard let target = GPU_GetTarget(image.rawPointer) else { return }
 
-        // `display()` runs mid-render-walk, where a clip rect (screen-space GL scissor) may be active and
-        // the model-view holds the layer's on-screen transform — both would wrongly affect our offscreen
-        // draw. Disable them, and crucially disable the target's CAMERA: the shader's transform is
-        // camera × projection × modelview, and image targets default to `use_camera = true` (inverted),
-        // which otherwise pushes our rect off the target. With the camera off + a plain ortho + identity
-        // model-view, the rect (0,0,w,h) maps 1:1 onto the whole texture.
+        // Disable the target's camera (inverted on image targets) so a plain ortho + identity maps our
+        // rect 1:1 onto the texture; otherwise the shader's camera × projection × modelview draws off-target.
         let savedClippingRect = UIScreen.main?.clippingRect
         UIScreen.main?.clippingRect = nil
         GPU_FlushBlitBuffer()
@@ -90,7 +80,7 @@ open class CAGradientLayer: CALayer {
         GPU_MatrixMode(GPU_MODELVIEW); GPU_PushMatrix(); GPU_LoadIdentity()
 
         GPU_SetViewport(target, GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight)))
-        GPU_SetShapeBlending(false) // write the gradient's own straight alpha, don't blend into the cleared texture
+        GPU_SetShapeBlending(false)
         GPU_Clear(target)
 
         ShaderProgram.gradient.activate()
@@ -160,7 +150,7 @@ class GradientShaderProgram: ShaderProgram {
     ) {
         let count = Int32(min(colorStops.count, locationStops.count, GradientShaderProgram.maxStops))
 
-        // (minX, minY, height, width) — same packing the roundedRect/mask shaders expect.
+        // (minX, minY, height, width) — matches the roundedRect/mask uniform packing.
         var frameValues = [Float(rect.minX), Float(rect.minY), Float(rect.height), Float(rect.width)]
         GPU_SetUniformfv(rectFrame, 4, 1, &frameValues)
 

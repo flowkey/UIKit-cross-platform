@@ -175,13 +175,7 @@ extension FragmentShader {
         }
         """
 
-    // Axis-aligned / arbitrary-angle colour gradient, evaluated per-fragment on the GPU. This is the
-    // shader equivalent of `CAGradientLayer`'s former CPU pixel loop: `t` is the position along the
-    // gradient line (`startPoint` -> `endPoint`, both in unit coordinates) projected from the fragment's
-    // normalised position, then colours are interpolated between the surrounding stops. Straight
-    // (non-premultiplied) RGBA is written so the result works both as a blitted layer and as a mask
-    // (whose alpha channel is what the mask shader samples). `MAX_GRADIENT_STOPS` bounds the arrays;
-    // keep it in sync with `GradientShaderProgram.maxStops`.
+    // Per-fragment colour gradient (CAGradientLayer). Keep in sync with `GradientShaderProgram.maxStops`.
     static let maxGradientStops = 16
     private static let gradientSource = """
         #define MAX_GRADIENT_STOPS \(maxGradientStops)
