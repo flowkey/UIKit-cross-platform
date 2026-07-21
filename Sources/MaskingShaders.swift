@@ -193,8 +193,6 @@ extension FragmentShader {
 
         void main(void)
         {
-            // Normalise the fragment's position within the drawn rect to [0,1] (drawn straight to screen,
-            // so `absolutePixelPos` is in the layer's anchor-relative space; `rectFrame` maps it back).
             vec2 p = (absolutePixelPos - vec2(rectFrame.x, rectFrame.y)) / vec2(rectFrame.w, rectFrame.z);
 
             vec2 dir = endPoint - startPoint;
