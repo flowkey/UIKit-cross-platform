@@ -26,11 +26,13 @@ extension VertexShader {
 
         \(`out`) vec4 originalColour;
         \(`out`) vec2 absolutePixelPos;
+        \(`out`) vec2 texCoord;
 
         void main(void)
         {
             originalColour = gpu_Color;
             absolutePixelPos = vec2(gpu_Vertex.xy);
+            texCoord = gpu_TexCoord;
             gl_Position = gpu_ModelViewProjectionMatrix * vec4(gpu_Vertex, 1.0);
         }
         """
@@ -79,11 +81,13 @@ extension FragmentShader {
     private static let maskColourWithImageSource = """
         \(`in`) vec4 originalColour;
         \(`in`) vec2 absolutePixelPos;
+        \(`in`) vec2 texCoord;
 
         \(fragColorDefinition)
 
         uniform vec4 maskFrame;
         uniform sampler2D maskTexture;
+        uniform sampler2D tex; // the masked layer's own contents (blit image, texture unit 0)
 
         void main(void)
         {
@@ -93,7 +97,8 @@ extension FragmentShader {
             );
 
             vec4 maskColour = \(texture)(maskTexture, maskCoordinate);
-            \(fragColor) = vec4(originalColour.rgb, originalColour.a * maskColour.a);
+            vec4 base = \(texture)(tex, texCoord) * originalColour;
+            \(fragColor) = vec4(base.rgb, base.a * maskColour.a);
         }
         """
 

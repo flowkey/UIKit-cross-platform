@@ -67,9 +67,15 @@ extension CALayer {
             renderer.clippingRect =
                 renderer.clippingRect?.intersection(maskAbsoluteFrame) ?? maskAbsoluteFrame
 
+            // The mask isn't in the sublayer tree, so render it here to populate its `contents`.
+            if mask.contentsScale != contentsScale { mask.contentsScale = contentsScale }
+            if mask.needsDisplay() { mask.display(); mask._needsDisplay = false }
+
             if let maskContents = mask.contents {
+             
+                let maskShaderFrame = maskFrame.offsetBy(deltaFromAnchorPointToOrigin)
                 ShaderProgram.mask.activate() // must activate before setting parameters (below)!
-                ShaderProgram.mask.set(maskImage: maskContents, frame: mask.bounds)
+                ShaderProgram.mask.set(maskImage: maskContents, frame: maskShaderFrame)
             }
         }
 
