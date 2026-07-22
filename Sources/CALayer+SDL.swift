@@ -72,10 +72,12 @@ extension CALayer {
             if mask.needsDisplay() { mask.display(); mask._needsDisplay = false }
 
             if let maskContents = mask.contents {
-             
+                // Use the image-sampling mask shader only when this layer has its own texture to mask;
+                // otherwise the colour-masking shader (unchanged) handles solid-colour layers.
+                let maskProgram = contents != nil ? ShaderProgram.maskImage : ShaderProgram.mask
                 let maskShaderFrame = maskFrame.offsetBy(deltaFromAnchorPointToOrigin)
-                ShaderProgram.mask.activate() // must activate before setting parameters (below)!
-                ShaderProgram.mask.set(maskImage: maskContents, frame: maskShaderFrame)
+                maskProgram.activate() // must activate before setting parameters (below)!
+                maskProgram.set(maskImage: maskContents, frame: maskShaderFrame)
             }
         }
 

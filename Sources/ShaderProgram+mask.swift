@@ -8,24 +8,33 @@
 
 internal import SDL_gpu
 
-extension ShaderProgram {
+extension ShaderProgram { 
     private static var _mask: MaskShaderProgram?
     static var mask: MaskShaderProgram {
         if let existing = _mask { return existing }
-        let program = try! MaskShaderProgram()
+        let program = try! MaskShaderProgram(fragmentShader: .maskColourWithImage)
         _mask = program
         return program
     }
-    static func invalidateMask() { _mask = nil }
+
+    // Masks a textured layer (samples its own contents) by an image's alpha.
+    private static var _maskImage: MaskShaderProgram?
+    static var maskImage: MaskShaderProgram {
+        if let existing = _maskImage { return existing }
+        let program = try! MaskShaderProgram(fragmentShader: .maskImageWithImage)
+        _maskImage = program
+        return program
+    }
+
+    static func invalidateMask() { _mask = nil; _maskImage = nil }
 }
 
 class MaskShaderProgram: ShaderProgram {
     private var maskFrame: UniformVariable!
     private var maskTexture: UniformVariable!
 
-    // we only need one MaskShaderProgram, which we can / should treat as a singleton
-    fileprivate init() throws {
-        try super.init(vertexShader: .common, fragmentShader: .maskColourWithImage)
+    fileprivate init(fragmentShader: FragmentShader) throws {
+        try super.init(vertexShader: .common, fragmentShader: fragmentShader)
         maskFrame = UniformVariable("maskFrame", in: programRef)
         maskTexture = UniformVariable("maskTexture", in: programRef)
     }

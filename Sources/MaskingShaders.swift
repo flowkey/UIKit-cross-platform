@@ -47,6 +47,14 @@ extension FragmentShader {
         return shader
     }
 
+    private static var _maskImageWithImage: FragmentShader?
+    static var maskImageWithImage: FragmentShader {
+        if let existing = _maskImageWithImage { return existing }
+        let shader = try! FragmentShader(source: maskImageWithImageSource)
+        _maskImageWithImage = shader
+        return shader
+    }
+
     private static var _roundedRect: FragmentShader?
     static var roundedRect: FragmentShader {
         if let existing = _roundedRect { return existing }
@@ -73,12 +81,36 @@ extension FragmentShader {
 
     static func invalidateAll() {
         _maskColourWithImage = nil
+        _maskImageWithImage = nil
         _roundedRect = nil
         _roundedRectShadow = nil
         _gradient = nil
     }
 
+    // Masks a solid (per-vertex) colour by an image's alpha.
     private static let maskColourWithImageSource = """
+        \(`in`) vec4 originalColour;
+        \(`in`) vec2 absolutePixelPos;
+
+        \(fragColorDefinition)
+
+        uniform vec4 maskFrame;
+        uniform sampler2D maskTexture;
+
+        void main(void)
+        {
+            vec2 maskCoordinate = vec2(
+                ((absolutePixelPos.x - maskFrame.x) / maskFrame.w),
+                ((absolutePixelPos.y - maskFrame.y) / maskFrame.z) // z == height
+            );
+
+            vec4 maskColour = \(texture)(maskTexture, maskCoordinate);
+            \(fragColor) = vec4(originalColour.rgb, originalColour.a * maskColour.a);
+        }
+        """
+
+    // Masks a textured layer (samples its own contents `tex`, unit 0) by an image's alpha.
+    private static let maskImageWithImageSource = """
         \(`in`) vec4 originalColour;
         \(`in`) vec2 absolutePixelPos;
         \(`in`) vec2 texCoord;
@@ -87,7 +119,7 @@ extension FragmentShader {
 
         uniform vec4 maskFrame;
         uniform sampler2D maskTexture;
-        uniform sampler2D tex; // the masked layer's own contents (blit image, texture unit 0)
+        uniform sampler2D tex;
 
         void main(void)
         {
