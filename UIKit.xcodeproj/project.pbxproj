@@ -121,9 +121,6 @@
 		5CDB31B51F1CCA4F0081A605 /* CGDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */; };
 		5CDB31B71F1CE8050081A605 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDB31B61F1CE8050081A605 /* Bundle.swift */; };
 		5CDC14CC1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */; };
-		FF0000010000000000000001 /* ShaderProgram+roundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000002 /* ShaderProgram+roundedRect.swift */; };
-		FF0000010000000000000003 /* ShaderProgram+shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000004 /* ShaderProgram+shadow.swift */; };
-		FF0000010000000000000005 /* UIBezierPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000006 /* UIBezierPath.swift */; };
 		5CE5C56F1EDC39E100680154 /* UIPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */; };
 		5CE5C5711EDC6AA100680154 /* UITapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */; };
 		5CE5C5731EDD7C3400680154 /* UIWindow+TouchHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */; };
@@ -201,6 +198,10 @@
 		83F02DE11F18F18500347AA8 /* roboto-thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F02DC51F17D84000347AA8 /* roboto-thin.ttf */; };
 		83F02DE21F18F18500347AA8 /* roboto-thinitalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F02DC61F17D84000347AA8 /* roboto-thinitalic.ttf */; };
 		83F8D4A21F028E6B008D3262 /* CALayer+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */; };
+		B43AFED8FE9C31E0D5161073 /* AVAudioPlayer+Mac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265504EE5B8409B456C63B78 /* AVAudioPlayer+Mac.swift */; };
+		FF0000010000000000000001 /* ShaderProgram+roundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000002 /* ShaderProgram+roundedRect.swift */; };
+		FF0000010000000000000003 /* ShaderProgram+shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000004 /* ShaderProgram+shadow.swift */; };
+		FF0000010000000000000005 /* UIBezierPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0000010000000000000006 /* UIBezierPath.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -218,6 +219,7 @@
 		03760AE51F67E73300F36283 /* UIScrollViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewTests.swift; sourceTree = "<group>"; };
 		03C487291F750C8D004BAA0C /* UIPanGestureRecognizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPanGestureRecognizerTests.swift; sourceTree = "<group>"; };
 		03CC73971FB5B2C6000A2C91 /* UITouchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITouchTests.swift; sourceTree = "<group>"; };
+		265504EE5B8409B456C63B78 /* AVAudioPlayer+Mac.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "AVAudioPlayer+Mac.swift"; path = "Sources/AVAudioPlayer+Mac.swift"; sourceTree = SOURCE_ROOT; };
 		5B115C5C1F61DBF800AAB895 /* UIProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIProgressView.swift; path = Sources/UIProgressView.swift; sourceTree = SOURCE_ROOT; };
 		5B1F87041F4C889F0051A1A2 /* CAMediaTimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CAMediaTimingFunction.swift; path = Sources/CAMediaTimingFunction.swift; sourceTree = SOURCE_ROOT; };
 		5B4A782F285C799C0066E48C /* UIWindow+getSafeAreaInsets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+getSafeAreaInsets.swift"; sourceTree = "<group>"; };
@@ -330,9 +332,6 @@
 		5CDB31B41F1CCA4F0081A605 /* CGDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGDataProvider.swift; sourceTree = "<group>"; };
 		5CDB31B61F1CE8050081A605 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		5CDC14CB1FA0ED2E007CDCA3 /* ShaderProgram+mask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+mask.swift"; sourceTree = "<group>"; };
-		FF0000010000000000000002 /* ShaderProgram+roundedRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+roundedRect.swift"; sourceTree = "<group>"; };
-		FF0000010000000000000004 /* ShaderProgram+shadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+shadow.swift"; sourceTree = "<group>"; };
-		FF0000010000000000000006 /* UIBezierPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBezierPath.swift"; sourceTree = "<group>"; };
 		5CE5C56E1EDC39E100680154 /* UIPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIPanGestureRecognizer.swift; path = Sources/UIPanGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITapGestureRecognizer.swift; path = Sources/UITapGestureRecognizer.swift; sourceTree = SOURCE_ROOT; };
 		5CE5C5721EDD7C3400680154 /* UIWindow+TouchHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIWindow+TouchHandling.swift"; sourceTree = "<group>"; };
@@ -391,6 +390,10 @@
 		83F02DC91F17D84000347AA8 /* roboto-italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "roboto-italic.ttf"; sourceTree = "<group>"; };
 		83F02DCA1F17D84000347AA8 /* roboto-mediumitalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "roboto-mediumitalic.ttf"; sourceTree = "<group>"; };
 		83F8D4A11F028E6B008D3262 /* CALayer+SDL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+SDL.swift"; sourceTree = "<group>"; };
+		D5910A84544C186631DF699F /* AVAudioPlayer+Android.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "AVAudioPlayer+Android.swift"; path = "Sources/AVAudioPlayer+Android.swift"; sourceTree = SOURCE_ROOT; };
+		FF0000010000000000000002 /* ShaderProgram+roundedRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+roundedRect.swift"; sourceTree = "<group>"; };
+		FF0000010000000000000004 /* ShaderProgram+shadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShaderProgram+shadow.swift"; sourceTree = "<group>"; };
+		FF0000010000000000000006 /* UIBezierPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBezierPath.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -691,6 +694,8 @@
 				833075391F69768E002089AC /* AVPlayer+Android.swift */,
 				5C4AD7E6204EE45F0021DD4A /* AVPlayerLayer+Android.swift */,
 				83023EC71F9E31D400389F89 /* VideoTexture+Mac.swift */,
+				265504EE5B8409B456C63B78 /* AVAudioPlayer+Mac.swift */,
+				D5910A84544C186631DF699F /* AVAudioPlayer+Android.swift */,
 			);
 			name = Video;
 			sourceTree = "<group>";
@@ -1027,6 +1032,7 @@
 				0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */,
 				83AB7B5A1F2B679600C7997D /* UIPinchGestureRecognizer.swift in Sources */,
 				5C93AEA62088FB51005BE853 /* UINavigationBarAndroid.swift in Sources */,
+				B43AFED8FE9C31E0D5161073 /* AVAudioPlayer+Mac.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
