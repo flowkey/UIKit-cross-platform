@@ -15,8 +15,8 @@ public final class AVAudioPlayer: JNIObject {
     }
 
     @MainActor
-    public convenience init(assetPath: String) throws {
-        try self.init(arguments: JavaSDLView(getSDLView()), assetPath)
+    public convenience init(contentsOf url: URL) throws {
+        try self.init(arguments: JavaSDLView(getSDLView()), url)
         try? call("setSwiftInstancePtr", arguments: [swiftInstancePtr])
     }
 
