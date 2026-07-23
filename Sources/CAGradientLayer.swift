@@ -68,19 +68,31 @@ open class CAGradientLayer: CALayer {
 
         guard let target = GPU_GetTarget(image.rawPointer) else { return }
 
-        // Disable the target's camera (inverted on image targets) so a plain ortho + identity maps our
-        // rect 1:1 onto the texture; otherwise the shader's camera × projection × modelview draws off-target.
+        // This runs mid-parent-render-pass, so save every piece of shared GL state we touch and restore it
+        // via `defer` — that way any early return added below can't leak state into the outer pass.
         let savedClippingRect = UIScreen.main?.clippingRect
         UIScreen.main?.clippingRect = nil
         GPU_FlushBlitBuffer()
-
-        GPU_EnableCamera(target, false)
-        GPU_MatrixMode(GPU_PROJECTION); GPU_PushMatrix(); GPU_LoadIdentity()
-        GPU_Ortho(0, Float(pixelWidth), Float(pixelHeight), 0, -1, 1)
-        GPU_MatrixMode(GPU_MODELVIEW); GPU_PushMatrix(); GPU_LoadIdentity()
-
-        GPU_SetViewport(target, GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight)))
+        GPU_MatrixMode(GPU_PROJECTION); GPU_PushMatrix()
+        GPU_MatrixMode(GPU_MODELVIEW); GPU_PushMatrix()
         GPU_SetShapeBlending(false)
+        defer {
+            ShaderProgram.deactivateAll()
+            GPU_FlushBlitBuffer()
+            GPU_MatrixMode(GPU_MODELVIEW); GPU_PopMatrix()
+            GPU_MatrixMode(GPU_PROJECTION); GPU_PopMatrix()
+            GPU_MatrixMode(GPU_MODELVIEW) // leave mode as the outer render pass expects it
+            GPU_SetShapeBlending(true)
+            UIScreen.main?.clippingRect = savedClippingRect
+        }
+
+        // Disable the target's camera (inverted on image targets) so a plain ortho + identity maps our
+        // rect 1:1 onto the texture; otherwise the shader's camera × projection × modelview draws off-target.
+        GPU_EnableCamera(target, false)
+        GPU_MatrixMode(GPU_PROJECTION); GPU_LoadIdentity()
+        GPU_Ortho(0, Float(pixelWidth), Float(pixelHeight), 0, -1, 1)
+        GPU_MatrixMode(GPU_MODELVIEW); GPU_LoadIdentity()
+        GPU_SetViewport(target, GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight)))
         GPU_Clear(target)
 
         ShaderProgram.gradient.activate()
@@ -94,15 +106,6 @@ open class CAGradientLayer: CALayer {
                 : colors.indices.map { Float($0) / Float(max(colors.count - 1, 1)) }
         )
         GPU_RectangleFilled(target, GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight)), color: UIColor.white.sdlColor)
-
-        ShaderProgram.deactivateAll()
-        GPU_FlushBlitBuffer()
-
-        GPU_MatrixMode(GPU_MODELVIEW); GPU_PopMatrix()
-        GPU_MatrixMode(GPU_PROJECTION); GPU_PopMatrix()
-        GPU_MatrixMode(GPU_MODELVIEW)
-        GPU_SetShapeBlending(true)
-        UIScreen.main?.clippingRect = savedClippingRect
 
         contents = image
     }

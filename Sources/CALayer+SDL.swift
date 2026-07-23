@@ -67,7 +67,10 @@ extension CALayer {
             renderer.clippingRect =
                 renderer.clippingRect?.intersection(maskAbsoluteFrame) ?? maskAbsoluteFrame
 
-            // The mask isn't in the sublayer tree, so render it here to populate its `contents`.
+            // The mask isn't in the sublayer tree, so render it here to populate its `contents`. Only the
+            // mask's `contents` are honoured (it's `display()`d, not `sdlRender`d) — a mask relying on its own
+            // backgroundColor/border/sublayers is NOT applied. Fine for image/CAGradientLayer masks; this is
+            // not full-subtree masking.
             if mask.contentsScale != contentsScale { mask.contentsScale = contentsScale }
             if mask.needsDisplay() { mask.display(); mask._needsDisplay = false }
 

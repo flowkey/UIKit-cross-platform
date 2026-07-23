@@ -237,20 +237,18 @@ extension FragmentShader {
             float t = len2 > 0.00001 ? dot(p - startPoint, dir) / len2 : 0.0;
             t = clamp(t, 0.0, 1.0);
 
+            // Constant loop bound and loop-index-only array access (no uniform-derived indices) so this
+            // stays a valid constant-index-expression under GLSL ES 2.0. Each segment whose start `t` has
+            // passed overwrites `color`; later segments win, so after the loop `color` holds the right stop
+            // (colours[0] below the first stop, the last colour at/above the final stop).
             vec4 color = colors[0];
-            if (t <= locations[0]) {
-                color = colors[0];
-            } else if (t >= locations[colorCount - 1]) {
-                color = colors[colorCount - 1];
-            } else {
-                for (int i = 0; i < colorCount - 1; i++) {
-                    float loc0 = locations[i];
-                    float loc1 = locations[i + 1];
-                    if (t >= loc0 && t <= loc1) {
-                        float localT = (t - loc0) / max(loc1 - loc0, 0.000001);
-                        color = mix(colors[i], colors[i + 1], localT);
-                        break;
-                    }
+            for (int i = 0; i < MAX_GRADIENT_STOPS - 1; i++) {
+                if (i + 1 >= colorCount) break;
+                float loc0 = locations[i];
+                float loc1 = locations[i + 1];
+                if (t >= loc0) {
+                    float localT = clamp((t - loc0) / max(loc1 - loc0, 0.000001), 0.0, 1.0);
+                    color = mix(colors[i], colors[i + 1], localT);
                 }
             }
 
