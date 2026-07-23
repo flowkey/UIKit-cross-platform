@@ -57,7 +57,8 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
-        guard let trackedTouch = touches.first else { return }
+        // A pan follows a single finger; ignore additional fingers (e.g. the second finger of a pinch).
+        guard trackedTouch == nil, let trackedTouch = touches.first else { return }
         self.trackedTouch = trackedTouch
         initialTouchPoint = trackedTouch.location(in: nil)
         touchesMovedTimestamp = trackedTouch.timestamp
@@ -68,11 +69,10 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         super.touchesMoved(touches, with: event)
         guard
             let trackedTouch = trackedTouch,
-            touches.first == trackedTouch,
+            touches.contains(trackedTouch),
             let initialTouchPoint = initialTouchPoint
         else {
-            state = .failed
-            return
+            return // not our finger moving (e.g. the pinch's second finger); leave our state untouched
         }
 
         let location = trackedTouch.location(in: nil)

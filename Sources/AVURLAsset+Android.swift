@@ -20,10 +20,10 @@ public class AVURLAsset: JNIObject {
     public override static var className: String { "org.uikit.AVURLAsset" }
 
     @MainActor
-    public var url: String?
+    public var url: URL?
 
     @MainActor
-    convenience public init(url: String) {
+    convenience public init(url: URL) {
         try! self.init(arguments: JavaSDLView(getSDLView()), url)
         self.url = url
     }

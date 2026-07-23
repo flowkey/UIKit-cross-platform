@@ -18,6 +18,7 @@ class TouchHandlingTests: XCTestCase {
     private var subsubview = UIView()
 
     override func setUp() {
+        UIEvent.activeEvents.removeAll() // isolate from touches a prior test may not have ended
         event = UIEvent()
         window = UIWindow(frame: CGRect(origin: .zero, size: CGSize(width: 1000, height: 1000)))
 
@@ -92,6 +93,38 @@ class TouchHandlingTests: XCTestCase {
         XCTAssertTrue(anotherRecognizer.onActionWasCalled)
     }
 
+    func testSecondFingerJoinsTheSameEvent() {
+        touchDown(id: 0, CGPoint(x: 100, y: 100))
+        touchDown(id: 1, CGPoint(x: 200, y: 100))
+
+        XCTAssertEqual(UIEvent.activeEvents.count, 1)
+        XCTAssertEqual(UIEvent.activeEvents.first?.allTouches?.count, 2)
+    }
+
+    func testPinchBeginsOnSecondFingerAndReportsScale() {
+        let pinch = UIPinchGestureRecognizer()
+        view.addGestureRecognizer(pinch)
+
+        touchDown(id: 0, CGPoint(x: 100, y: 100))
+        touchDown(id: 1, CGPoint(x: 200, y: 100)) // fingers 100pt apart
+        XCTAssertEqual(pinch.state, .began)
+
+        touchMove(id: 1, CGPoint(x: 300, y: 100)) // now 200pt apart, so scale doubles
+        XCTAssertEqual(pinch.state, .changed)
+        XCTAssertEqual(pinch.scale, 2, accuracy: 0.0001)
+    }
+
+    func testSingleFingerDoesNotBeginPinch() {
+        let pinch = UIPinchGestureRecognizer()
+        view.addGestureRecognizer(pinch)
+
+        touchDown(id: 0, CGPoint(x: 100, y: 100))
+        touchMove(id: 0, CGPoint(x: 150, y: 100))
+
+        XCTAssertEqual(pinch.state, .possible)
+        XCTAssertEqual(pinch.scale, 1)
+    }
+
 }
 
 private extension TouchHandlingTests {
@@ -149,5 +182,29 @@ private extension TouchHandlingTests {
             touch.phase = .ended
             window.sendEvent(event)
         }
+    }
+
+    // Multi-finger variants: an extra finger joins the existing active event, matching the real SDL path.
+    func touchDown(id: Int, _ point: CGPoint) {
+        let touch = UITouch(touchId: id, at: point, timestamp: 0)
+        touch.window = window
+        if let event = UIEvent.activeEvents.first {
+            event.allTouches?.insert(touch)
+            event.changedTouch = touch
+            window.sendEvent(event)
+        } else {
+            window.sendEvent(UIEvent(touch: touch))
+        }
+    }
+
+    func touchMove(id: Int, _ point: CGPoint) {
+        guard
+            let event = UIEvent.activeEvents.first,
+            let touch = event.allTouches?.first(where: { $0.touchId == id })
+        else { return }
+        touch.updateAbsoluteLocation(point)
+        touch.phase = .moved
+        event.changedTouch = touch
+        window.sendEvent(event)
     }
 }

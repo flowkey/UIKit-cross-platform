@@ -80,16 +80,19 @@ extension UIGestureRecognizer {
             self.state != .cancelled && self.state != .failed
         else { return }
 
-        let otherRecognizersThatHaveBeganToRecogize = touch.gestureRecognizers.filter {
-            $0 != self && $0.state == .began
+        let otherActiveRecognizers = touch.gestureRecognizers.filter {
+            $0 != self && ($0.state == .began || $0.state == .changed)
         }
 
-        otherRecognizersThatHaveBeganToRecogize.forEach {
-            if $0.delegate?.gestureRecognizer($0, shouldRecognizeSimultaneouslyWith: self) == true {
-                return
-            }
+        otherActiveRecognizers.forEach { other in
+            // iOS lets two recognizers run together when *either* delegate opts in.
+            let recognizeSimultaneously =
+                other.delegate?.gestureRecognizer(other, shouldRecognizeSimultaneouslyWith: self) == true ||
+                self.delegate?.gestureRecognizer(self, shouldRecognizeSimultaneouslyWith: other) == true
 
-            $0.touchesCancelled([touch], with: UIEvent())
+            if recognizeSimultaneously { return }
+
+            other.touchesCancelled([touch], with: UIEvent())
         }
     }
 }
