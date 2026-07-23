@@ -101,9 +101,7 @@ open class CAGradientLayer: CALayer {
             startPoint: startPoint,
             endPoint: endPoint,
             colors: _colors,
-            locations: locations.count >= colors.count
-                ? locations
-                : colors.indices.map { Float($0) / Float(max(colors.count - 1, 1)) }
+            locations: locations // already normalised to colors.count above
         )
         GPU_RectangleFilled(target, GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight)), color: UIColor.white.sdlColor)
 
