@@ -67,9 +67,20 @@ extension CALayer {
             renderer.clippingRect =
                 renderer.clippingRect?.intersection(maskAbsoluteFrame) ?? maskAbsoluteFrame
 
+            // The mask isn't in the sublayer tree, so render it here to populate its `contents`. Only the
+            // mask's `contents` are honoured (it's `display()`d, not `sdlRender`d) — a mask relying on its own
+            // backgroundColor/border/sublayers is NOT applied. Fine for image/CAGradientLayer masks; this is
+            // not full-subtree masking.
+            if mask.contentsScale != contentsScale { mask.contentsScale = contentsScale }
+            if mask.needsDisplay() { mask.display(); mask._needsDisplay = false }
+
             if let maskContents = mask.contents {
-                ShaderProgram.mask.activate() // must activate before setting parameters (below)!
-                ShaderProgram.mask.set(maskImage: maskContents, frame: mask.bounds)
+                // Use the image-sampling mask shader only when this layer has its own texture to mask;
+                // otherwise the colour-masking shader (unchanged) handles solid-colour layers.
+                let maskProgram = contents != nil ? ShaderProgram.maskImage : ShaderProgram.mask
+                let maskShaderFrame = maskFrame.offsetBy(deltaFromAnchorPointToOrigin)
+                maskProgram.activate() // must activate before setting parameters (below)!
+                maskProgram.set(maskImage: maskContents, frame: maskShaderFrame)
             }
         }
 
