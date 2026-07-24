@@ -6,7 +6,7 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-public struct CGPoint {
+public struct CGPoint: Sendable {
     public var x: CGFloat = 0
     public var y: CGFloat = 0
     
