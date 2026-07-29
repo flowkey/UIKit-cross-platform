@@ -92,6 +92,18 @@ public class CGImage {
         GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * Int32(bytesPerPixel))
     }
 
+    /// Builds an image from premultiplied-RGBA bytes (R,G,B,A in memory, alpha-premultiplied), composited with
+    /// premultiplied blending. Mirrors the iOS CoreGraphics factory of the same name so callers have one path.
+    public static func premultipliedRGBA(_ bytes: UnsafePointer<UInt8>, width: Int, height: Int) -> CGImage? {
+        guard width > 0, height > 0,
+              let pointer = GPU_CreateImage(UInt16(width), UInt16(height), GPU_FORMAT_RGBA) else { return nil }
+        var rect = GPU_Rect(x: 0, y: 0, w: Float(width), h: Float(height))
+        GPU_UpdateImageBytes(pointer, &rect, bytes, Int32(width) * 4)
+        guard let image = CGImage(pointer, sourceData: nil) else { return nil }
+        GPU_SetBlendMode(image.rawPointer, GPU_BLEND_PREMULTIPLIED_ALPHA)
+        return image
+    }
+
     /// Recreate the underlying `GPU_Image` (`self.rawPointer`) from this `CGImage`'s source data if possible.
     /// - Returns: `true`, if it was possible to recreate the image. Or `false`, if there was no underlying source data, or when SDL_gpu could not decode that data.
     internal func reloadFromSourceData() -> Bool {

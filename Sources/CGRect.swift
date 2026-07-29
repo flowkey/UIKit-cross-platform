@@ -7,7 +7,7 @@
 //
 
 
-public struct CGRect {
+public struct CGRect: Sendable {
     public var origin: CGPoint
     public var size: CGSize
 
@@ -108,6 +108,16 @@ extension CGRect {
         } else {
             return .null
         }
+    }
+
+    public func union(_ other: CGRect) -> CGRect {
+        if isNull { return other }
+        if other.isNull { return self }
+        let minX = Swift.min(self.minX, other.minX)
+        let minY = Swift.min(self.minY, other.minY)
+        let maxX = Swift.max(self.maxX, other.maxX)
+        let maxY = Swift.max(self.maxY, other.maxY)
+        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
     }
 }
 
