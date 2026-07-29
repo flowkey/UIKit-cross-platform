@@ -82,6 +82,45 @@ extension UIScreen {
         GPU_Clear(rawPointer)
     }
 
+    /// Draws `body` into `image` as an offscreen render target, then restores all touched GL state.
+    /// Used to (re)build a layer's cached `contents` (e.g. `CAGradientLayer`).
+    ///
+    /// This runs *inside* the main render pass, where the projection/model-view and clip are configured
+    /// for the screen. Rendering into a texture needs its own coordinate system, so we install an ortho +
+    /// identity sized to the texture (and disable the target's camera, which is Y-inverted on image targets)
+    /// so `body`'s draw maps 1:1 onto it — then pop everything back so the outer pass is untouched. The
+    /// save/restore is `defer`-based so an early return in `body` can't leak state into the outer pass.
+    @MainActor
+    func drawIntoTexture(_ image: CGImage, _ body: (_ target: UnsafeMutablePointer<GPU_Target>) -> Void) {
+        guard let target = GPU_GetTarget(image.rawPointer) else { return }
+        let width = Float(image.width), height = Float(image.height)
+
+        let savedClippingRect = clippingRect
+        clippingRect = nil
+        GPU_FlushBlitBuffer()
+        GPU_MatrixMode(GPU_PROJECTION); GPU_PushMatrix()
+        GPU_MatrixMode(GPU_MODELVIEW); GPU_PushMatrix()
+        GPU_SetShapeBlending(false) // write the layer's own straight alpha, don't blend into the cleared texture
+        defer {
+            ShaderProgram.deactivateAll()
+            GPU_FlushBlitBuffer()
+            GPU_MatrixMode(GPU_MODELVIEW); GPU_PopMatrix()
+            GPU_MatrixMode(GPU_PROJECTION); GPU_PopMatrix()
+            GPU_MatrixMode(GPU_MODELVIEW) // leave the mode as the outer render pass expects it
+            GPU_SetShapeBlending(true)
+            clippingRect = savedClippingRect
+        }
+
+        GPU_EnableCamera(target, false)
+        GPU_MatrixMode(GPU_PROJECTION); GPU_LoadIdentity()
+        GPU_Ortho(0, width, height, 0, -1, 1)
+        GPU_MatrixMode(GPU_MODELVIEW); GPU_LoadIdentity()
+        GPU_SetViewport(target, GPU_Rect(x: 0, y: 0, w: width, h: height))
+        GPU_Clear(target)
+
+        body(target)
+    }
+
     func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
         if cornerRadius >= 1 {
             let snappedRect = pixelSnapped(rect)

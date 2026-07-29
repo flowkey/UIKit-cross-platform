@@ -52,7 +52,7 @@ open class CAGradientLayer: CALayer {
             return
         }
 
-        guard UIScreen.main != nil else { return }
+        guard let renderer = UIScreen.main else { return }
 
         let pixelWidth = Int(bounds.width * contentsScale)
         let pixelHeight = Int(bounds.height * contentsScale)
@@ -66,44 +66,18 @@ open class CAGradientLayer: CALayer {
             image = newImage
         }
 
-        guard let target = GPU_GetTarget(image.rawPointer) else { return }
-
-        // This runs mid-parent-render-pass, so save every piece of shared GL state we touch and restore it
-        // via `defer` — that way any early return added below can't leak state into the outer pass.
-        let savedClippingRect = UIScreen.main?.clippingRect
-        UIScreen.main?.clippingRect = nil
-        GPU_FlushBlitBuffer()
-        GPU_MatrixMode(GPU_PROJECTION); GPU_PushMatrix()
-        GPU_MatrixMode(GPU_MODELVIEW); GPU_PushMatrix()
-        GPU_SetShapeBlending(false)
-        defer {
-            ShaderProgram.deactivateAll()
-            GPU_FlushBlitBuffer()
-            GPU_MatrixMode(GPU_MODELVIEW); GPU_PopMatrix()
-            GPU_MatrixMode(GPU_PROJECTION); GPU_PopMatrix()
-            GPU_MatrixMode(GPU_MODELVIEW) // leave mode as the outer render pass expects it
-            GPU_SetShapeBlending(true)
-            UIScreen.main?.clippingRect = savedClippingRect
+        let rect = GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight))
+        renderer.drawIntoTexture(image) { target in
+            ShaderProgram.gradient.activate()
+            ShaderProgram.gradient.set(
+                rect: CGRect(x: 0, y: 0, width: pixelWidth, height: pixelHeight),
+                startPoint: startPoint,
+                endPoint: endPoint,
+                colors: _colors,
+                locations: locations // already normalised to colors.count above
+            )
+            GPU_RectangleFilled(target, rect, color: UIColor.white.sdlColor)
         }
-
-        // Disable the target's camera (inverted on image targets) so a plain ortho + identity maps our
-        // rect 1:1 onto the texture; otherwise the shader's camera × projection × modelview draws off-target.
-        GPU_EnableCamera(target, false)
-        GPU_MatrixMode(GPU_PROJECTION); GPU_LoadIdentity()
-        GPU_Ortho(0, Float(pixelWidth), Float(pixelHeight), 0, -1, 1)
-        GPU_MatrixMode(GPU_MODELVIEW); GPU_LoadIdentity()
-        GPU_SetViewport(target, GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight)))
-        GPU_Clear(target)
-
-        ShaderProgram.gradient.activate()
-        ShaderProgram.gradient.set(
-            rect: CGRect(x: 0, y: 0, width: pixelWidth, height: pixelHeight),
-            startPoint: startPoint,
-            endPoint: endPoint,
-            colors: _colors,
-            locations: locations // already normalised to colors.count above
-        )
-        GPU_RectangleFilled(target, GPU_Rect(x: 0, y: 0, w: Float(pixelWidth), h: Float(pixelHeight)), color: UIColor.white.sdlColor)
 
         contents = image
     }
