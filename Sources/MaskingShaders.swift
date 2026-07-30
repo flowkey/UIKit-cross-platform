@@ -26,11 +26,13 @@ extension VertexShader {
 
         \(`out`) vec4 originalColour;
         \(`out`) vec2 absolutePixelPos;
+        \(`out`) vec2 texCoord;
 
         void main(void)
         {
             originalColour = gpu_Color;
             absolutePixelPos = vec2(gpu_Vertex.xy);
+            texCoord = gpu_TexCoord;
             gl_Position = gpu_ModelViewProjectionMatrix * vec4(gpu_Vertex, 1.0);
         }
         """
@@ -42,6 +44,14 @@ extension FragmentShader {
         if let existing = _maskColourWithImage { return existing }
         let shader = try! FragmentShader(source: maskColourWithImageSource)
         _maskColourWithImage = shader
+        return shader
+    }
+
+    private static var _maskImageWithImage: FragmentShader?
+    static var maskImageWithImage: FragmentShader {
+        if let existing = _maskImageWithImage { return existing }
+        let shader = try! FragmentShader(source: maskImageWithImageSource)
+        _maskImageWithImage = shader
         return shader
     }
 
@@ -61,12 +71,23 @@ extension FragmentShader {
         return shader
     }
 
-    static func invalidateAll() {
-        _maskColourWithImage = nil
-        _roundedRect = nil
-        _roundedRectShadow = nil
+    private static var _gradient: FragmentShader?
+    static var gradient: FragmentShader {
+        if let existing = _gradient { return existing }
+        let shader = try! FragmentShader(source: gradientSource)
+        _gradient = shader
+        return shader
     }
 
+    static func invalidateAll() {
+        _maskColourWithImage = nil
+        _maskImageWithImage = nil
+        _roundedRect = nil
+        _roundedRectShadow = nil
+        _gradient = nil
+    }
+
+    // Masks a solid (per-vertex) colour by an image's alpha.
     private static let maskColourWithImageSource = """
         \(`in`) vec4 originalColour;
         \(`in`) vec2 absolutePixelPos;
@@ -85,6 +106,31 @@ extension FragmentShader {
 
             vec4 maskColour = \(texture)(maskTexture, maskCoordinate);
             \(fragColor) = vec4(originalColour.rgb, originalColour.a * maskColour.a);
+        }
+        """
+
+    // Masks a textured layer (samples its own contents `tex`, unit 0) by an image's alpha.
+    private static let maskImageWithImageSource = """
+        \(`in`) vec4 originalColour;
+        \(`in`) vec2 absolutePixelPos;
+        \(`in`) vec2 texCoord;
+
+        \(fragColorDefinition)
+
+        uniform vec4 maskFrame;
+        uniform sampler2D maskTexture;
+        uniform sampler2D tex;
+
+        void main(void)
+        {
+            vec2 maskCoordinate = vec2(
+                ((absolutePixelPos.x - maskFrame.x) / maskFrame.w),
+                ((absolutePixelPos.y - maskFrame.y) / maskFrame.z) // z == height
+            );
+
+            vec4 maskColour = \(texture)(maskTexture, maskCoordinate);
+            vec4 base = \(texture)(tex, texCoord) * originalColour;
+            \(fragColor) = vec4(base.rgb, base.a * maskColour.a);
         }
         """
 
@@ -163,6 +209,50 @@ extension FragmentShader {
             float alpha = 1.0 - smoothstep(-blur, blur, d);
 
             \(fragColor) = vec4(originalColour.rgb, originalColour.a * alpha);
+        }
+        """
+
+    // Per-fragment colour gradient (CAGradientLayer). Keep in sync with `GradientShaderProgram.maxStops`.
+    static let maxGradientStops = 16
+    private static let gradientSource = """
+        #define MAX_GRADIENT_STOPS \(maxGradientStops)
+
+        \(`in`) vec2 absolutePixelPos;
+
+        \(fragColorDefinition)
+
+        uniform vec4 rectFrame; // (x, y, height, width) — same packing as roundedRect/mask
+        uniform vec2 startPoint;
+        uniform vec2 endPoint;
+        uniform int colorCount;
+        uniform vec4 colors[MAX_GRADIENT_STOPS];
+        uniform float locations[MAX_GRADIENT_STOPS];
+
+        void main(void)
+        {
+            vec2 p = (absolutePixelPos - vec2(rectFrame.x, rectFrame.y)) / vec2(rectFrame.w, rectFrame.z);
+
+            vec2 dir = endPoint - startPoint;
+            float len2 = dot(dir, dir);
+            float t = len2 > 0.00001 ? dot(p - startPoint, dir) / len2 : 0.0;
+            t = clamp(t, 0.0, 1.0);
+
+            // Constant loop bound and loop-index-only array access (no uniform-derived indices) so this
+            // stays a valid constant-index-expression under GLSL ES 2.0. Each segment whose start `t` has
+            // passed overwrites `color`; later segments win, so after the loop `color` holds the right stop
+            // (colours[0] below the first stop, the last colour at/above the final stop).
+            vec4 color = colors[0];
+            for (int i = 0; i < MAX_GRADIENT_STOPS - 1; i++) {
+                if (i + 1 >= colorCount) break;
+                float loc0 = locations[i];
+                float loc1 = locations[i + 1];
+                if (t >= loc0) {
+                    float localT = clamp((t - loc0) / max(loc1 - loc0, 0.000001), 0.0, 1.0);
+                    color = mix(colors[i], colors[i + 1], localT);
+                }
+            }
+
+            \(fragColor) = color;
         }
         """
 }

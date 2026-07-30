@@ -145,6 +145,7 @@ public final class UIScreen {
             ShaderProgram.invalidateRoundedRect()
             ShaderProgram.invalidateShadow()
             ShaderProgram.invalidateMask()
+            ShaderProgram.invalidateGradient()
             FragmentShader.invalidateAll()
             VertexShader.invalidateAll()
         }
