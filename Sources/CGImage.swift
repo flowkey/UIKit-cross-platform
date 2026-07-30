@@ -12,6 +12,11 @@ public class CGImage {
     /// This allows us to recreate the image if our OpenGL Context gets killed (esp. relevant for Android)
     private let sourceData: Data?
 
+    /// The `UIScreen.contextGeneration` under which `rawPointer`'s `GPU_Image` was created.
+    /// Used by `deinit` / `reloadFromSourceData()` to avoid freeing a texture whose GL
+    /// context has since been destroyed (which would crash with `SIGSEGV`).
+    private var contextGeneration: UInt64
+
     public let width: Int
     public let height: Int
 
@@ -29,6 +34,7 @@ public class CGImage {
         }
 
         self.sourceData = sourceData
+        self.contextGeneration = UIScreen.contextGeneration
         rawPointer = pointer
 
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
@@ -111,14 +117,20 @@ public class CGImage {
             return false
         }
 
-        // Free the old GPU_Image before replacing it (this may be our last chance)
-        GPU_FreeImage(rawPointer)
+        // Free the old GPU_Image before replacing it (this may be our last chance),
+        // but only if it still belongs to the live context. If its context was already
+        // destroyed (stale generation) the texture is gone with it, and freeing it here
+        // would crash against a dangling context (see `deinit`).
+        if contextGeneration == UIScreen.contextGeneration {
+            GPU_FreeImage(rawPointer)
+        }
 
         // If we don't increase the new image's refcount it will be deinited along
         // with the CGImageRef that goes out of scope at the end of this function.
         newImage.rawPointer.pointee.refcount += 1
 
         self.rawPointer = newImage.rawPointer
+        self.contextGeneration = newImage.contextGeneration
 
         return true
     }
@@ -128,8 +140,15 @@ public class CGImage {
         // while a context exists. `CGImage` isn't `@MainActor`, so it can be released off-main or
         // after teardown — hop to the main actor and skip the free if the screen is already gone.
         let pointer = rawPointer
+        let generation = contextGeneration
         Task { @MainActor in
-            guard UIScreen.main != nil else { return }
+            // Only free if this image's GL context is still the live one. After an
+            // Android background→foreground cycle a *new* context exists (so
+            // `UIScreen.main != nil` passes) but this image belongs to the old,
+            // destroyed one; freeing it makes GL calls against a dangling context
+            // and crashes (SIGSEGV in `GPU_FreeImage`). A stale image's texture was
+            // already freed with its context, so skipping the free leaks nothing.
+            guard UIScreen.main != nil, generation == UIScreen.contextGeneration else { return }
             GPU_FreeImage(pointer)
         }
     }

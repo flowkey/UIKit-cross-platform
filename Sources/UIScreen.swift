@@ -26,6 +26,19 @@ public extension UIScreen {
     /// briefly nil (teardown/reinit). `nil` only before any screen has ever existed.
     @MainActor
     internal(set) static var lastKnownScreenScale: CGFloat?
+
+    /// Incremented every time a new GL context (a new `UIScreen`) is created.
+    /// A `CGImage` records the generation it was created under so that, at
+    /// free-time, we can tell whether its owning context is still the live one.
+    /// Without this, an image created before an Android background→foreground
+    /// cycle would be freed against the *new* context and crash (`SIGSEGV` in
+    /// `GPU_FreeImage`). See `CGImage.deinit` / `CGImage.reloadFromSourceData()`.
+    ///
+    /// `nonisolated(unsafe)` so `CGImage` (which isn't `@MainActor`) can read it
+    /// when creating/freeing images. All real accesses happen on the main/GL
+    /// thread (creating or freeing a GPU_Image requires a current context), so
+    /// this is safe in practice.
+    nonisolated(unsafe) internal static var contextGeneration: UInt64 = 0
 }
 
 @MainActor
@@ -48,6 +61,11 @@ public final class UIScreen {
         self.rawPointer = renderTarget
         self.bounds = bounds
         self.scale = scale
+
+        // A new UIScreen owns a freshly-created GL context. Bump the generation
+        // so `CGImage`s created from here on are tagged with this context, and
+        // images from previous (now-destroyed) contexts can be identified as stale.
+        UIScreen.contextGeneration &+= 1
     }
 
     convenience init() {
