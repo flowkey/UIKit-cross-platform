@@ -119,8 +119,8 @@ public class CGImage {
 
         // Free the old GPU_Image before replacing it (this may be our last chance),
         // but only if it still belongs to the live context. If its context was already
-        // destroyed (stale generation) the texture is gone with it, and freeing it here
-        // would crash against a dangling context (see `deinit`).
+        // destroyed (stale generation), freeing it here would make GL calls against a
+        // dangling context and crash (see `deinit`).
         if contextGeneration == UIScreen.contextGeneration {
             GPU_FreeImage(rawPointer)
         }
@@ -146,8 +146,13 @@ public class CGImage {
             // Android background→foreground cycle a *new* context exists (so
             // `UIScreen.main != nil` passes) but this image belongs to the old,
             // destroyed one; freeing it makes GL calls against a dangling context
-            // and crashes (SIGSEGV in `GPU_FreeImage`). A stale image's texture was
-            // already freed with its context, so skipping the free leaks nothing.
+            // and crashes (SIGSEGV in `GPU_FreeImage`).
+            //
+            // Skipping the free doesn't leak texture memory — that went away with the
+            // context. It does leak the small CPU-side `GPU_Image`/`GPU_IMAGE_DATA`
+            // structs that `GPU_FreeImage` would also have `SDL_free`d (a few dozen
+            // bytes per image that was still alive at teardown), which is a much
+            // better trade than crashing.
             guard UIScreen.main != nil, generation == UIScreen.contextGeneration else { return }
             GPU_FreeImage(pointer)
         }

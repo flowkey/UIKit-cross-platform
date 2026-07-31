@@ -27,9 +27,10 @@ public extension UIScreen {
     @MainActor
     internal(set) static var lastKnownScreenScale: CGFloat?
 
-    /// Incremented every time a new GL context (a new `UIScreen`) is created.
-    /// A `CGImage` records the generation it was created under so that, at
-    /// free-time, we can tell whether its owning context is still the live one.
+    /// Incremented every time a GL context (a `UIScreen`) is created *or* destroyed.
+    /// A `CGImage` records the generation it was created under, so that at free-time
+    /// `generation == contextGeneration` means exactly "the context that owns this
+    /// image is still the live one".
     /// Without this, an image created before an Android background→foreground
     /// cycle would be freed against the *new* context and crash (`SIGSEGV` in
     /// `GPU_FreeImage`). See `CGImage.deinit` / `CGImage.reloadFromSourceData()`.
@@ -153,6 +154,11 @@ public final class UIScreen {
     }
 
     deinit {
+        // This context is going away: bump the generation so every `CGImage` created
+        // under it is immediately identifiable as stale, without relying on
+        // `UIScreen.main` being nil for the whole teardown→reinit window.
+        UIScreen.contextGeneration &+= 1
+
         MainActor.assumeIsolated {
             UIView.completePendingAnimations()
             UIView.layersWithAnimations.removeAll()
