@@ -58,7 +58,8 @@ extension CALayer {
 
         // If a mask exists, take it into account when rendering by combining absoluteFrame with the mask's frame
         if let mask = mask {
-   
+            // The mask's frame is in this layer's own (bounds) coordinate space, so it must go through the
+            // same transform as the layer's content to become an absolute clip rect.
             let maskFrame = (mask._presentation ?? mask).frame
             let maskAbsoluteFrame = maskFrame.offsetBy(deltaFromAnchorPointToOrigin).applying(modelViewTransform)
 
