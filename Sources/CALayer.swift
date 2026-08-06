@@ -212,7 +212,7 @@ open class CALayer {
         shadowOpacity = layer.shadowOpacity
         mask = layer.mask
         masksToBounds = layer.masksToBounds
-        minificationFilter = layer.minificationFilter // must precede `contents`, whose didSet applies it
+        minificationFilter = layer.minificationFilter
         contents = layer.contents // XXX: we should make a copy here
         contentsScale = layer.contentsScale
         superlayer = layer.superlayer
