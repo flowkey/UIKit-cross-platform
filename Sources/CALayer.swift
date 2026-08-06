@@ -11,9 +11,6 @@ open class CALayer {
         }
     }
 
-    /// How `contents` is sampled when drawn smaller than it was rendered. `.trilinear` builds a mip chain and
-    /// blends between levels, which is what keeps thin lines from breaking up and crawling under a changing
-    /// scale; it costs roughly 50% more texture memory, so it isn't the default.
     open var minificationFilter: CALayerContentsFilter = .linear {
         didSet {
             guard minificationFilter != oldValue else { return }
@@ -215,8 +212,7 @@ open class CALayer {
         shadowOpacity = layer.shadowOpacity
         mask = layer.mask
         masksToBounds = layer.masksToBounds
-        // Before `contents`: assigning that applies this filter to the texture, which both layers share.
-        minificationFilter = layer.minificationFilter
+        minificationFilter = layer.minificationFilter // must precede `contents`, whose didSet applies it
         contents = layer.contents // XXX: we should make a copy here
         contentsScale = layer.contentsScale
         superlayer = layer.superlayer

@@ -104,13 +104,10 @@ public class CGImage {
         return image
     }
 
-    /// Remembered so a texture rebuilt after GPU context loss (`reloadFromSourceData`) comes back filtered the
+    /// Persisted so a texture rebuilt after GPU context loss (`reloadFromSourceData`) comes back filtered the
     /// same way, rather than silently reverting to bilinear.
     private var minificationFilter: CALayerContentsFilter = .linear
 
-    /// Filtering lives on the texture, so an image shared by two layers takes the filter of whichever set its
-    /// `contents` last. Mipmaps also can't be un-generated: once `.trilinear` has been set, `.linear` samples
-    /// them with nearest level selection rather than going back to plain bilinear.
     internal func setMinificationFilter(_ filter: CALayerContentsFilter) {
         minificationFilter = filter
         switch filter {
