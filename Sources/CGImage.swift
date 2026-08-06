@@ -104,6 +104,25 @@ public class CGImage {
         return image
     }
 
+    /// Remembered so a texture rebuilt after GPU context loss (`reloadFromSourceData`) comes back filtered the
+    /// same way, rather than silently reverting to bilinear.
+    private var minificationFilter: CALayerContentsFilter = .linear
+
+    /// Filtering lives on the texture, so an image shared by two layers takes the filter of whichever set its
+    /// `contents` last. Mipmaps also can't be un-generated: once `.trilinear` has been set, `.linear` samples
+    /// them with nearest level selection rather than going back to plain bilinear.
+    internal func setMinificationFilter(_ filter: CALayerContentsFilter) {
+        minificationFilter = filter
+        switch filter {
+        case .linear:
+            GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR)
+        case .trilinear:
+            if !rawPointer.pointee.has_mipmaps { GPU_GenerateMipmaps(rawPointer) }
+            // Must follow the generate, which leaves a nearest-level filter behind.
+            GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR_MIPMAP)
+        }
+    }
+
     /// Recreate the underlying `GPU_Image` (`self.rawPointer`) from this `CGImage`'s source data if possible.
     /// - Returns: `true`, if it was possible to recreate the image. Or `false`, if there was no underlying source data, or when SDL_gpu could not decode that data.
     internal func reloadFromSourceData() -> Bool {
@@ -119,6 +138,7 @@ public class CGImage {
         newImage.rawPointer.pointee.refcount += 1
 
         self.rawPointer = newImage.rawPointer
+        setMinificationFilter(minificationFilter)
 
         return true
     }
