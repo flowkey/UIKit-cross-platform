@@ -44,10 +44,26 @@ public final class UIScreen {
     }
     nonisolated public let scale: CGFloat
 
+    /// The GPU's `GL_MAX_TEXTURE_SIZE`. Callers rastering their own images have to respect it themselves:
+    /// sdl-gpu never validates a size, so `GPU_CreateImage` hands back a non-nil but incomplete texture
+    /// above the limit, which renders as garbage with no error anywhere.
+    nonisolated public let maxTextureSize: CGFloat
+
     private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
         self.rawPointer = renderTarget
         self.bounds = bounds
         self.scale = scale
+        self.maxTextureSize = Self.getMaxTextureSize()
+    }
+
+    private static func getMaxTextureSize() -> CGFloat {
+        let GL_MAX_TEXTURE_SIZE: UInt32 = 0x0D33
+        typealias GetIntegerv = @convention(c) (UInt32, UnsafeMutablePointer<Int32>) -> Void
+        var value: Int32 = 0
+        unsafeBitCast(
+            SDL_GL_GetProcAddress("glGetIntegerv")!, to: GetIntegerv.self
+        )(GL_MAX_TEXTURE_SIZE, &value)
+        return CGFloat(value)
     }
 
     convenience init() {
