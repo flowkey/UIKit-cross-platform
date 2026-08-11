@@ -53,7 +53,8 @@ public final class UIScreen {
         self.rawPointer = renderTarget
         self.bounds = bounds
         self.scale = scale
-        self.maxTextureSize = Self.getMaxTextureSize()
+        // No render target (the test `dummyScreen`) means no GL context to query; 0 signals "no GPU".
+        self.maxTextureSize = renderTarget != nil ? Self.getMaxTextureSize() : 0
     }
 
     private static func getMaxTextureSize() -> CGFloat {

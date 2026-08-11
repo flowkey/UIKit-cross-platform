@@ -12,10 +12,7 @@ open class CALayer {
     }
 
     open var minificationFilter: CALayerContentsFilter = .linear {
-        didSet {
-            guard minificationFilter != oldValue else { return }
-            contents?.setMinificationFilter(minificationFilter)
-        }
+        didSet { contents?.setMinificationFilter(minificationFilter) }
     }
 
     /// Defaults to 1.0 but if the layer is associated with a view,
