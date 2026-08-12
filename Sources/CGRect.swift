@@ -28,6 +28,8 @@ public struct CGRect: Sendable {
 
     public var isNull: Bool { return self == .null }
 
+    public var isEmpty: Bool { return size.width <= 0 || size.height <= 0 }
+
     public static let null = CGRect(x: .infinity, y: .infinity, width: 0, height: 0)
     public static let zero = CGRect()
 }

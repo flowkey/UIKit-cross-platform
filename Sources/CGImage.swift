@@ -90,6 +90,8 @@ public class CGImage {
     public func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
         var rect = GPU_Rect(x: 0, y: 0, w: Float(rawPointer.pointee.w), h: Float(rawPointer.pointee.h))
         GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * Int32(bytesPerPixel))
+        // Otherwise the mip chain keeps serving the pixels we just replaced.
+        if rawPointer.pointee.has_mipmaps { GPU_GenerateMipmaps(rawPointer) }
     }
 
     /// Builds an image from premultiplied-RGBA bytes (R,G,B,A in memory, alpha-premultiplied), composited with
@@ -102,6 +104,25 @@ public class CGImage {
         guard let image = CGImage(pointer, sourceData: nil) else { return nil }
         GPU_SetBlendMode(image.rawPointer, GPU_BLEND_PREMULTIPLIED_ALPHA)
         return image
+    }
+
+    private var minificationFilter: CALayerContentsFilter = .linear
+
+    internal func setMinificationFilter(_ filter: CALayerContentsFilter) {
+        guard filter != minificationFilter else { return }
+        minificationFilter = filter
+        applyMinificationFilter()
+    }
+
+    private func applyMinificationFilter() {
+        switch minificationFilter {
+        case .linear:
+            GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR)
+        case .trilinear:
+            if !rawPointer.pointee.has_mipmaps { GPU_GenerateMipmaps(rawPointer) }
+            // Generating leaves the texture picking a single nearest mip level, so set the blending filter after.
+            GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR_MIPMAP)
+        }
     }
 
     /// Recreate the underlying `GPU_Image` (`self.rawPointer`) from this `CGImage`'s source data if possible.
@@ -119,6 +140,7 @@ public class CGImage {
         newImage.rawPointer.pointee.refcount += 1
 
         self.rawPointer = newImage.rawPointer
+        applyMinificationFilter()
 
         return true
     }

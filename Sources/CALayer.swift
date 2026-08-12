@@ -5,7 +5,14 @@ open class CALayer {
     open weak var delegate: CALayerDelegate?
 
     open var contents: CGImage? {
-        didSet { CALayer.layerTreeIsDirty = true }
+        didSet {
+            CALayer.layerTreeIsDirty = true
+            contents?.setMinificationFilter(minificationFilter)
+        }
+    }
+
+    open var minificationFilter: CALayerContentsFilter = .linear {
+        didSet { contents?.setMinificationFilter(minificationFilter) }
     }
 
     /// Defaults to 1.0 but if the layer is associated with a view,
@@ -202,6 +209,7 @@ open class CALayer {
         shadowOpacity = layer.shadowOpacity
         mask = layer.mask
         masksToBounds = layer.masksToBounds
+        minificationFilter = layer.minificationFilter
         contents = layer.contents // XXX: we should make a copy here
         contentsScale = layer.contentsScale
         superlayer = layer.superlayer
