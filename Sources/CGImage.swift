@@ -106,8 +106,6 @@ public class CGImage {
         return image
     }
 
-    /// Persisted so a texture rebuilt after GPU context loss (`reloadFromSourceData`) comes back filtered the
-    /// same way, rather than silently reverting to bilinear.
     private var minificationFilter: CALayerContentsFilter = .linear
 
     internal func setMinificationFilter(_ filter: CALayerContentsFilter) {
@@ -116,14 +114,13 @@ public class CGImage {
         applyMinificationFilter()
     }
 
-    /// Unconditional, unlike `setMinificationFilter`: used to restore the filter onto a fresh texture.
     private func applyMinificationFilter() {
         switch minificationFilter {
         case .linear:
             GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR)
         case .trilinear:
             if !rawPointer.pointee.has_mipmaps { GPU_GenerateMipmaps(rawPointer) }
-            // Must follow the generate, which leaves a nearest-level filter behind.
+            // Generating leaves the texture picking a single nearest mip level, so set the blending filter after.
             GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR_MIPMAP)
         }
     }
