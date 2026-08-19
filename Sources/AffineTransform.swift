@@ -110,7 +110,7 @@ extension AffineTransform {
     /// [ -sin α   cos α  0 ]
     /// [    0       0    1 ]
     /// ```
-    public init(rotationByRadians angle: CGFloat) {
+    public init(rotationAngle angle: CGFloat) {
         let sinα = sin(angle)
         let cosα = cos(angle)
 
@@ -131,7 +131,7 @@ extension AffineTransform {
     /// ```
     public init(rotationByDegrees angle: CGFloat) {
         let α = angle * .pi / 180
-        self.init(rotationByRadians: α)
+        self.init(rotationAngle: α)
     }
 }
 
@@ -207,7 +207,7 @@ extension AffineTransform {
     /// ```
     public mutating func rotate(byRadians angle: CGFloat) {
         self = concatenated(
-            AffineTransform(rotationByRadians: angle)
+            AffineTransform(rotationAngle: angle)
         )
     }
 
