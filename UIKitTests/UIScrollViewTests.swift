@@ -47,6 +47,42 @@ class UIScrollViewTests: XCTestCase {
         XCTAssertEqual(scrollView.contentInset, arbitraryContentInset)
     }
 
+    func testIndicatorsPositionInHierarchyWhenAddingSubviews() {
+        // subviews[0] is the back-most view, higher indexes are higher in layer hierarchy
+        // we want scroll indicators to always remain on top of 'normal' subviews
+        // and we want newer 'normal' subviews to be above older ones
+
+        // XXX: iOS does not allow explicit access to scroll indicators via subviews.
+        // We should remove that, too - but for now it's the easy way to go and helpful in testing
+
+        let mockView = UIView()
+        scrollView.addSubview(mockView)
+
+        XCTAssertGreaterThan(
+            scrollView.subviews.index(of: scrollView.horizontalScrollIndicator)!,
+            scrollView.subviews.index(of: mockView)!
+        )
+
+        XCTAssertGreaterThan(
+            scrollView.subviews.index(of: scrollView.verticalScrollIndicator)!,
+            scrollView.subviews.index(of: mockView)!
+        )
+    }
+
+    func testIndicatorsPositionInHierarchyWhenInsertingSubviewsAtAHighPosition() {
+        // If we try to insert at a position occupied by or above indicators,
+        // the inserted view should 'slide down' and assume the highest position below indicators
+
+        let mockViews = [UIView(), UIView(), UIView()]
+        for view in mockViews { scrollView.addSubview(view) }
+
+        let insertedMockView = UIView()
+        scrollView.insertSubview(insertedMockView, at: mockViews.count + 2)
+
+        XCTAssertEqual(scrollView.subviews.index(of: insertedMockView), mockViews.count)
+    }
+
+
     func testScrollIndicatorsVisibility() {
         //TODO: update to match iOS behaviour:
         //1. frame is always there, alpha changes from 0 to 1
@@ -97,10 +133,6 @@ class UIScrollViewTests: XCTestCase {
 //    }
 
     // TODO: test final position. [blocked by setting contentOffset programatically - test behaviour in iOS]
-
-    func testIfScrollIndicatorsAreAccurate() {
-        // TODO: how?
-    }
 
     func testIfScrollViewBouncesBackAferPullIfNeeded() {
         // TODO: test setting inset and bouncing after it's implented in ScrollView
@@ -158,11 +190,11 @@ class UIScrollViewTests: XCTestCase {
         wait(for: [beginDraggingExpectation, didScrollExpectation, didEndDraggingExpectation], timeout: 1.0)
     }
 
-    func mockTouch(toPoint: CGPoint, inScrollView scrollView: UIScrollView) {
+    func mockTouch(toPoint point: CGPoint, inScrollView scrollView: UIScrollView) {
         let mockTouch = UITouch(touchId: 0, at: CGPoint(x: 0, y: 0), timestamp: 0)
 
         scrollView.panGestureRecognizer.touchesBegan([mockTouch], with: UIEvent())
-        mockTouch.updateAbsoluteLocation(CGPoint(x: 100, y: 100))
+        mockTouch.updateAbsoluteLocation(point)
         scrollView.panGestureRecognizer.touchesMoved([mockTouch], with: UIEvent())
         scrollView.panGestureRecognizer.touchesEnded([mockTouch], with: UIEvent())
     }
