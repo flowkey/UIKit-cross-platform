@@ -58,18 +58,30 @@ extension CALayer {
 
         // If a mask exists, take it into account when rendering by combining absoluteFrame with the mask's frame
         if let mask = mask {
-            // XXX: we're probably not doing exactly what iOS does if there is a transform on here somewhere
+            // The mask's frame is in this layer's own (bounds) coordinate space, so it must go through the
+            // same transform as the layer's content to become an absolute clip rect.
             let maskFrame = (mask._presentation ?? mask).frame
-            let maskAbsoluteFrame = maskFrame.offsetBy(absoluteFrame.origin)
+            let maskAbsoluteFrame = maskFrame.offsetBy(deltaFromAnchorPointToOrigin).applying(modelViewTransform)
 
             // Don't intersect with previousClippingRect: in a case where both `masksToBounds` and `mask` are
             // present, using previousClippingRect would not constrain the area as much as it might otherwise
             renderer.clippingRect =
                 renderer.clippingRect?.intersection(maskAbsoluteFrame) ?? maskAbsoluteFrame
 
+            // The mask isn't in the sublayer tree, so render it here to populate its `contents`. Only the
+            // mask's `contents` are honoured (it's `display()`d, not `sdlRender`d) — a mask relying on its own
+            // backgroundColor/border/sublayers is NOT applied. Fine for image/CAGradientLayer masks; this is
+            // not full-subtree masking.
+            if mask.contentsScale != contentsScale { mask.contentsScale = contentsScale }
+            if mask.needsDisplay() { mask.display(); mask._needsDisplay = false }
+
             if let maskContents = mask.contents {
-                ShaderProgram.mask.activate() // must activate before setting parameters (below)!
-                ShaderProgram.mask.set(maskImage: maskContents, frame: mask.bounds)
+                // Use the image-sampling mask shader only when this layer has its own texture to mask;
+                // otherwise the colour-masking shader (unchanged) handles solid-colour layers.
+                let maskProgram = contents != nil ? ShaderProgram.maskImage : ShaderProgram.mask
+                let maskShaderFrame = maskFrame.offsetBy(deltaFromAnchorPointToOrigin)
+                maskProgram.activate() // must activate before setting parameters (below)!
+                maskProgram.set(maskImage: maskContents, frame: maskShaderFrame)
             }
         }
 

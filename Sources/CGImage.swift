@@ -12,9 +12,7 @@ public class CGImage {
     /// This allows us to recreate the image if our OpenGL Context gets killed (esp. relevant for Android)
     private let sourceData: Data?
 
-    /// The `UIScreen.contextGeneration` under which `rawPointer`'s `GPU_Image` was created.
-    /// Used by `deinit` / `reloadFromSourceData()` to avoid freeing a texture whose GL
-    /// context has since been destroyed (which would crash with `SIGSEGV`).
+    /// Which GL context this image was born into: "was I born into the context that's still alive?"
     private var contextGeneration: UInt64
 
     public let width: Int
@@ -96,6 +94,8 @@ public class CGImage {
     public func replacePixels(with bytes: UnsafePointer<UInt8>, bytesPerPixel: Int) {
         var rect = GPU_Rect(x: 0, y: 0, w: Float(rawPointer.pointee.w), h: Float(rawPointer.pointee.h))
         GPU_UpdateImageBytes(rawPointer, &rect, bytes, Int32(rawPointer.pointee.w) * Int32(bytesPerPixel))
+        // Otherwise the mip chain keeps serving the pixels we just replaced.
+        if rawPointer.pointee.has_mipmaps { GPU_GenerateMipmaps(rawPointer) }
     }
 
     /// Builds an image from premultiplied-RGBA bytes (R,G,B,A in memory, alpha-premultiplied), composited with
@@ -110,6 +110,25 @@ public class CGImage {
         return image
     }
 
+    private var minificationFilter: CALayerContentsFilter = .linear
+
+    internal func setMinificationFilter(_ filter: CALayerContentsFilter) {
+        guard filter != minificationFilter else { return }
+        minificationFilter = filter
+        applyMinificationFilter()
+    }
+
+    private func applyMinificationFilter() {
+        switch minificationFilter {
+        case .linear:
+            GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR)
+        case .trilinear:
+            if !rawPointer.pointee.has_mipmaps { GPU_GenerateMipmaps(rawPointer) }
+            // Generating leaves the texture picking a single nearest mip level, so set the blending filter after.
+            GPU_SetImageFilter(rawPointer, GPU_FILTER_LINEAR_MIPMAP)
+        }
+    }
+
     /// Recreate the underlying `GPU_Image` (`self.rawPointer`) from this `CGImage`'s source data if possible.
     /// - Returns: `true`, if it was possible to recreate the image. Or `false`, if there was no underlying source data, or when SDL_gpu could not decode that data.
     internal func reloadFromSourceData() -> Bool {
@@ -117,10 +136,7 @@ public class CGImage {
             return false
         }
 
-        // Free the old GPU_Image before replacing it (this may be our last chance),
-        // but only if it still belongs to the live context. If its context was already
-        // destroyed (stale generation), freeing it here would make GL calls against a
-        // dangling context and crash (see `deinit`).
+        // Free the old GPU_Image before replacing it (this may be our last chance)
         if contextGeneration == UIScreen.contextGeneration {
             GPU_FreeImage(rawPointer)
         }
@@ -131,6 +147,7 @@ public class CGImage {
 
         self.rawPointer = newImage.rawPointer
         self.contextGeneration = newImage.contextGeneration
+        applyMinificationFilter()
 
         return true
     }
@@ -142,17 +159,6 @@ public class CGImage {
         let pointer = rawPointer
         let generation = contextGeneration
         Task { @MainActor in
-            // Only free if this image's GL context is still the live one. After an
-            // Android background→foreground cycle a *new* context exists (so
-            // `UIScreen.main != nil` passes) but this image belongs to the old,
-            // destroyed one; freeing it makes GL calls against a dangling context
-            // and crashes (SIGSEGV in `GPU_FreeImage`).
-            //
-            // Skipping the free doesn't leak texture memory — that went away with the
-            // context. It does leak the small CPU-side `GPU_Image`/`GPU_IMAGE_DATA`
-            // structs that `GPU_FreeImage` would also have `SDL_free`d (a few dozen
-            // bytes per image that was still alive at teardown), which is a much
-            // better trade than crashing.
             guard UIScreen.main != nil, generation == UIScreen.contextGeneration else { return }
             GPU_FreeImage(pointer)
         }

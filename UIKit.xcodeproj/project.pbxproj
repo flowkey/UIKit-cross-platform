@@ -49,6 +49,7 @@
 		5C27E7E51ECB2F9100F5020D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C27E7DB1ECB2F9100F5020D /* Foundation.framework */; };
 		5C27E80F1ECB301900F5020D /* SDL2-Shims.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27E7FC1ECB301900F5020D /* SDL2-Shims.swift */; };
 		5C32F2C420A1C69C006D64C5 /* UIScreen+Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C32F2C320A1C69C006D64C5 /* UIScreen+Errors.swift */; };
+		FEDCBA040000000000000011 /* CALayer+ContentsFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDCBA040000000000000001 /* CALayer+ContentsFilter.swift */; };
 		5C361E231ECC348700B3F561 /* UIView+SDL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C361E221ECC348700B3F561 /* UIView+SDL.swift */; };
 		5C3716B61F10050600B2C366 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3716B51F10050600B2C366 /* Timer.swift */; };
 		5C3DCCEF2090F072001DEDAF /* UIAlertControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3DCCEE2090F072001DEDAF /* UIAlertControllerView.swift */; };
@@ -261,6 +262,7 @@
 		5C27E7DB1ECB2F9100F5020D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5C27E7FC1ECB301900F5020D /* SDL2-Shims.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SDL2-Shims.swift"; sourceTree = "<group>"; };
 		5C32F2C320A1C69C006D64C5 /* UIScreen+Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+Errors.swift"; sourceTree = "<group>"; };
+		FEDCBA040000000000000001 /* CALayer+ContentsFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+ContentsFilter.swift"; sourceTree = "<group>"; };
 		5C361E221ECC348700B3F561 /* UIView+SDL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SDL.swift"; sourceTree = "<group>"; };
 		5C3716B51F10050600B2C366 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		5C3DCCEE2090F072001DEDAF /* UIAlertControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertControllerView.swift; sourceTree = "<group>"; };
@@ -628,6 +630,7 @@
 				5C27E7FC1ECB301900F5020D /* SDL2-Shims.swift */,
 				5C3716B51F10050600B2C366 /* Timer.swift */,
 				5C32F2C320A1C69C006D64C5 /* UIScreen+Errors.swift */,
+				FEDCBA040000000000000001 /* CALayer+ContentsFilter.swift */,
 				5C361E221ECC348700B3F561 /* UIView+SDL.swift */,
 			);
 			name = SDL;
@@ -1029,6 +1032,7 @@
 				61C9D3BB21B052B30012018B /* NotificationCenter.swift in Sources */,
 				5CE5C5781EDDAD8200680154 /* CGRect.swift in Sources */,
 				5C32F2C420A1C69C006D64C5 /* UIScreen+Errors.swift in Sources */,
+				FEDCBA040000000000000011 /* CALayer+ContentsFilter.swift in Sources */,
 				0371D2291F793E5F005DDFED /* UIScrollView+velocity.swift in Sources */,
 				83AB7B5A1F2B679600C7997D /* UIPinchGestureRecognizer.swift in Sources */,
 				5C93AEA62088FB51005BE853 /* UINavigationBarAndroid.swift in Sources */,

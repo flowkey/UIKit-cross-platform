@@ -27,18 +27,8 @@ public extension UIScreen {
     @MainActor
     internal(set) static var lastKnownScreenScale: CGFloat?
 
-    /// Incremented every time a GL context (a `UIScreen`) is created *or* destroyed.
-    /// A `CGImage` records the generation it was created under, so that at free-time
-    /// `generation == contextGeneration` means exactly "the context that owns this
-    /// image is still the live one".
-    /// Without this, an image created before an Android background→foreground
-    /// cycle would be freed against the *new* context and crash (`SIGSEGV` in
-    /// `GPU_FreeImage`). See `CGImage.deinit` / `CGImage.reloadFromSourceData()`.
-    ///
-    /// `nonisolated(unsafe)` so `CGImage` (which isn't `@MainActor`) can read it
-    /// when creating/freeing images. All real accesses happen on the main/GL
-    /// thread (creating or freeing a GPU_Image requires a current context), so
-    /// this is safe in practice.
+    /// Which GL context the app is on right now. Bumped whenever one is created or destroyed.
+    /// `nonisolated(unsafe)` so `CGImage` can read it; all real accesses are on the main/GL thread.
     nonisolated(unsafe) internal static var contextGeneration: UInt64 = 0
 }
 
@@ -58,14 +48,17 @@ public final class UIScreen {
     }
     nonisolated public let scale: CGFloat
 
+    /// The GPU's `GL_MAX_TEXTURE_SIZE`, or 0 without a GPU context. Callers rastering their own images have
+    /// to respect it themselves: sdl-gpu never validates a size, so `GPU_CreateImage` hands back a non-nil
+    /// but incomplete texture above the limit, which renders as garbage with no error anywhere.
+    nonisolated public let maxTextureSize: CGFloat
+
     private init(renderTarget: UnsafeMutablePointer<GPU_Target>!, bounds: CGRect, scale: CGFloat) {
         self.rawPointer = renderTarget
         self.bounds = bounds
         self.scale = scale
+        self.maxTextureSize = CGFloat(GPU_GetMaxTextureSize())
 
-        // A new UIScreen owns a freshly-created GL context. Bump the generation
-        // so `CGImage`s created from here on are tagged with this context, and
-        // images from previous (now-destroyed) contexts can be identified as stale.
         UIScreen.contextGeneration &+= 1
     }
 
@@ -154,9 +147,7 @@ public final class UIScreen {
     }
 
     deinit {
-        // This context is going away: bump the generation so every `CGImage` created
-        // under it is immediately identifiable as stale, without relying on
-        // `UIScreen.main` being nil for the whole teardown→reinit window.
+        // This context is going away, so every `CGImage` created under it is now stale.
         UIScreen.contextGeneration &+= 1
 
         MainActor.assumeIsolated {
@@ -169,6 +160,7 @@ public final class UIScreen {
             ShaderProgram.invalidateRoundedRect()
             ShaderProgram.invalidateShadow()
             ShaderProgram.invalidateMask()
+            ShaderProgram.invalidateGradient()
             FragmentShader.invalidateAll()
             VertexShader.invalidateAll()
         }
