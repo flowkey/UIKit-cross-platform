@@ -17,8 +17,8 @@ extension UIScreen {
             return
         }
 
-        for displayLink in DisplayLink.activeDisplayLinks where displayLink.isActive {
-            displayLink.callback()
+        for displayLink in DisplayLink.activeDisplayLinks where !displayLink.isPaused {
+            displayLink.callback?()
         }
         UIView.animateIfNeeded(at: frameTimer)
         // XXX: It's possible for drawing to crash if the context is invalid:
