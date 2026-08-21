@@ -14,7 +14,7 @@ public class CGImage {
         didSet { Task { @MainActor in CALayer.layerTreeIsDirty = true } }
     }
 
-    /// Which GL context this image was born into: "was I born into the context that's still alive?"
+    /// Which GL context this image was created from
     private var contextGeneration = CGImage.currentContextGeneration
 
     /// Stores the compressed image `Data` this `CGImage` was inited with (if any).
