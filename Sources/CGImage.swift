@@ -12,6 +12,9 @@ public class CGImage {
     /// This allows us to recreate the image if our OpenGL Context gets killed (esp. relevant for Android)
     private let sourceData: Data?
 
+    /// Which GL context this image was born into: "was I born into the context that's still alive?"
+    private var contextGeneration: UInt64
+
     public let width: Int
     public let height: Int
 
@@ -29,6 +32,7 @@ public class CGImage {
         }
 
         self.sourceData = sourceData
+        self.contextGeneration = UIScreen.contextGeneration
         rawPointer = pointer
 
         GPU_SetSnapMode(rawPointer, GPU_SNAP_POSITION_AND_DIMENSIONS)
@@ -133,13 +137,16 @@ public class CGImage {
         }
 
         // Free the old GPU_Image before replacing it (this may be our last chance)
-        GPU_FreeImage(rawPointer)
+        if contextGeneration == UIScreen.contextGeneration {
+            GPU_FreeImage(rawPointer)
+        }
 
         // If we don't increase the new image's refcount it will be deinited along
         // with the CGImageRef that goes out of scope at the end of this function.
         newImage.rawPointer.pointee.refcount += 1
 
         self.rawPointer = newImage.rawPointer
+        self.contextGeneration = newImage.contextGeneration
         applyMinificationFilter()
 
         return true
@@ -150,8 +157,9 @@ public class CGImage {
         // while a context exists. `CGImage` isn't `@MainActor`, so it can be released off-main or
         // after teardown — hop to the main actor and skip the free if the screen is already gone.
         let pointer = rawPointer
+        let generation = contextGeneration
         Task { @MainActor in
-            guard UIScreen.main != nil else { return }
+            guard UIScreen.main != nil, generation == UIScreen.contextGeneration else { return }
             GPU_FreeImage(pointer)
         }
     }

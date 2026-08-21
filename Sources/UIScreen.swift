@@ -26,6 +26,10 @@ public extension UIScreen {
     /// briefly nil (teardown/reinit). `nil` only before any screen has ever existed.
     @MainActor
     internal(set) static var lastKnownScreenScale: CGFloat?
+
+    /// Which GL context the app is on right now. Bumped whenever one is created or destroyed.
+    /// `nonisolated(unsafe)` so `CGImage` can read it; all real accesses are on the main/GL thread.
+    nonisolated(unsafe) internal static var contextGeneration: UInt64 = 0
 }
 
 @MainActor
@@ -54,6 +58,8 @@ public final class UIScreen {
         self.bounds = bounds
         self.scale = scale
         self.maxTextureSize = CGFloat(GPU_GetMaxTextureSize())
+
+        UIScreen.contextGeneration &+= 1
     }
 
     convenience init() {
@@ -141,6 +147,9 @@ public final class UIScreen {
     }
 
     deinit {
+        // This context is going away, so every `CGImage` created under it is now stale.
+        UIScreen.contextGeneration &+= 1
+
         MainActor.assumeIsolated {
             UIView.completePendingAnimations()
             UIView.layersWithAnimations.removeAll()
