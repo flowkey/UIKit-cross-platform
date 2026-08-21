@@ -15,8 +15,7 @@ open class DisplayLink {
         didSet { updateActiveDisplayLinks() }
     }
 
-    // You'd have to call displayLink.callback() yourself to crash the program by this being nil
-    public var callback: (() -> Void)! {
+    public var callback: (() -> Void)? {
         didSet { updateActiveDisplayLinks() }
     }
 
