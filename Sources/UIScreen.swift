@@ -154,6 +154,7 @@ public final class UIScreen {
             ShaderProgram.invalidateGradient()
             FragmentShader.invalidateAll()
             VertexShader.invalidateAll()
+            CGImage.invalidateAll()
         }
 
         guard let rawPointer = self.rawPointer else {

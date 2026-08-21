@@ -2,11 +2,20 @@ internal import SDL
 internal import SDL_gpu
 
 public class CGImage {
+    /// Which GL context the app is on right now.
+    internal static var currentContextGeneration = 0
+
+    /// Called when the GL context is torn down: `GPU_Quit()` destroys every texture at once.
+    internal static func invalidateAll() { currentContextGeneration += 1 }
+
     /// Be careful using this pointer e.g. for another CGImage instance.
     /// You will have to manually adjust its pointee's reference count.
     var rawPointer: UnsafeMutablePointer<GPU_Image> {
         didSet { Task { @MainActor in CALayer.layerTreeIsDirty = true } }
     }
+
+    /// Which GL context this image was born into: "was I born into the context that's still alive?"
+    private var contextGeneration = CGImage.currentContextGeneration
 
     /// Stores the compressed image `Data` this `CGImage` was inited with (if any).
     /// This allows us to recreate the image if our OpenGL Context gets killed (esp. relevant for Android)
@@ -133,13 +142,16 @@ public class CGImage {
         }
 
         // Free the old GPU_Image before replacing it (this may be our last chance)
-        GPU_FreeImage(rawPointer)
+        if contextGeneration == CGImage.currentContextGeneration {
+            GPU_FreeImage(rawPointer)
+        }
 
         // If we don't increase the new image's refcount it will be deinited along
         // with the CGImageRef that goes out of scope at the end of this function.
         newImage.rawPointer.pointee.refcount += 1
 
         self.rawPointer = newImage.rawPointer
+        contextGeneration = CGImage.currentContextGeneration
         applyMinificationFilter()
 
         return true
@@ -149,9 +161,11 @@ public class CGImage {
         // `GPU_FreeImage` makes GL calls that are only valid on the main (GL) thread, and only
         // while a context exists. `CGImage` isn't `@MainActor`, so it can be released off-main or
         // after teardown — hop to the main actor and skip the free if the screen is already gone.
+        // Android rebuilds the screen on foregrounding, so that alone proves existence, not identity.
         let pointer = rawPointer
+        let generation = contextGeneration
         Task { @MainActor in
-            guard UIScreen.main != nil else { return }
+            guard UIScreen.main != nil, generation == CGImage.currentContextGeneration else { return }
             GPU_FreeImage(pointer)
         }
     }
