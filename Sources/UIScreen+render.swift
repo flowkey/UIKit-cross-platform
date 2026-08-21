@@ -17,7 +17,9 @@ extension UIScreen {
             return
         }
 
-        DisplayLink.activeDisplayLinks.forEach { $0.callback() }
+        for displayLink in DisplayLink.activeDisplayLinks where displayLink.isActive {
+            displayLink.callback()
+        }
         UIView.animateIfNeeded(at: frameTimer)
         // XXX: It's possible for drawing to crash if the context is invalid:
         window.sdlDrawAndLayoutTreeIfNeeded()

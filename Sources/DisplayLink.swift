@@ -15,16 +15,19 @@ open class DisplayLink {
         didSet { updateActiveDisplayLinks() }
     }
 
-    // You'd have to call displayLink.callback() yourself to crash the program by this being nil
     public var callback: (() -> Void)! {
         didSet { updateActiveDisplayLinks() }
     }
 
+    /// Whether this link should tick. Re-check it before each callback in a frame: a callback can
+    /// pause or invalidate *another* link, and `activeDisplayLinks` is iterated as a snapshot.
+    public var isActive: Bool { !isPaused && callback != nil }
+
     private func updateActiveDisplayLinks() {
-        if isPaused || callback == nil {
-            DisplayLink.activeDisplayLinks.remove(self)
-        } else {
+        if isActive {
             DisplayLink.activeDisplayLinks.insert(self)
+        } else {
+            DisplayLink.activeDisplayLinks.remove(self)
         }
     }
 
