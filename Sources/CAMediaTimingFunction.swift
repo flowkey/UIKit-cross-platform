@@ -13,8 +13,23 @@ public let kCAMediaTimingFunctionEaseInEaseOut = "easeInEaseOut"
 public let kCAMediaTimingFunctionDefault = "default"
 let kCAMediaTimingFunctionCustomEaseOut = "customEaseOut"
 
+public struct CAMediaTimingFunctionName: RawRepresentable, Hashable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+
+    public static let linear = CAMediaTimingFunctionName(rawValue: kCAMediaTimingFunctionLinear)
+    public static let easeIn = CAMediaTimingFunctionName(rawValue: kCAMediaTimingFunctionEaseIn)
+    public static let easeOut = CAMediaTimingFunctionName(rawValue: kCAMediaTimingFunctionEaseOut)
+    public static let easeInEaseOut = CAMediaTimingFunctionName(rawValue: kCAMediaTimingFunctionEaseInEaseOut)
+    public static let `default` = CAMediaTimingFunctionName(rawValue: kCAMediaTimingFunctionDefault)
+}
+
 public class CAMediaTimingFunction {
     private let timing: (CGFloat) -> CGFloat
+
+    public convenience init(name: CAMediaTimingFunctionName) {
+        self.init(name: name.rawValue)
+    }
 
     init(name: String) {
         switch name {
