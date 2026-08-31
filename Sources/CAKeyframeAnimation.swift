@@ -1,11 +1,3 @@
-//
-//  CAKeyframeAnimation.swift
-//  UIKit
-//
-//  Created by Michael Knoch on 31.08.26.
-//  Copyright © 2026 flowkey. All rights reserved.
-//
-
 public class CAKeyframeAnimation: CABasicAnimation {
     public var values: [CGFloat]?
     public var keyTimes: [CGFloat]?

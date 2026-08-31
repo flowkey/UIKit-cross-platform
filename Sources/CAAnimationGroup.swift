@@ -1,11 +1,3 @@
-//
-//  CAAnimationGroup.swift
-//  UIKit
-//
-//  Created by Michael Knoch on 31.08.26.
-//  Copyright © 2026 flowkey. All rights reserved.
-//
-
 public class CAAnimationGroup: CABasicAnimation {
     public var animations: [CABasicAnimation]?
 
@@ -26,6 +18,7 @@ public class CAAnimationGroup: CABasicAnimation {
         return (animations ?? []).map { animation in
             let copy = animation.copy()
             copy.delay += delay
+            copy.isRemovedOnCompletion = isRemovedOnCompletion
             if duration > 0 {
                 copy.duration = min(copy.duration, duration)
             }

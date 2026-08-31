@@ -31,6 +31,10 @@ extension CALayer {
 
     public func removeAnimation(forKey key: String) {
         animations.removeValue(forKey: key)
+
+        for groupedAnimationKey in animations.keys where groupedAnimationKey.hasPrefix(key + ".") {
+            animations.removeValue(forKey: groupedAnimationKey)
+        }
     }
 
     public func removeAllAnimations() {
