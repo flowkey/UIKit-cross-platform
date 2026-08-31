@@ -20,28 +20,32 @@ public class CAKeyframeAnimation: CABasicAnimation {
     }
 
     func value(at progress: CGFloat) -> CGFloat? {
-        guard let values, !values.isEmpty else { return nil }
-        guard values.count > 1 else { return values[0] }
-
-        let keyTimes = self.keyTimes ?? (0 ..< values.count).map {
-            CGFloat($0) / CGFloat(values.count - 1)
-        }
-        guard keyTimes.count == values.count else {
+        guard let values, let firstValue = values.first else { return nil }
+        guard values.count > 1 else { return firstValue }
+        if let keyTimes, keyTimes.count != values.count {
             assertionFailure("keyTimes and values must have the same number of elements")
             return nil
         }
 
         var segment = 0
-        while segment < values.count - 2, progress > keyTimes[segment + 1] { segment += 1 }
+        while segment < values.count - 2, progress > keyTime(segment + 1, of: values.count) {
+            segment += 1
+        }
 
-        let keyTimeSpan = keyTimes[segment + 1] - keyTimes[segment]
-        var segmentProgress = keyTimeSpan > 0
-            ? max(0, min(1, (progress - keyTimes[segment]) / keyTimeSpan))
+        let segmentStart = keyTime(segment, of: values.count)
+        let segmentSpan = keyTime(segment + 1, of: values.count) - segmentStart
+        var segmentProgress = segmentSpan > 0
+            ? max(0, min(1, (progress - segmentStart) / segmentSpan))
             : 1
         if let timingFunctions, timingFunctions.indices.contains(segment) {
             segmentProgress = timingFunctions[segment][at: segmentProgress]
         }
 
         return values[segment] + (values[segment + 1] - values[segment]) * segmentProgress
+    }
+
+    /// Keyframes are spaced evenly when `keyTimes` is not set, as on iOS.
+    private func keyTime(_ index: Int, of valueCount: Int) -> CGFloat {
+        return keyTimes?[index] ?? CGFloat(index) / CGFloat(valueCount - 1)
     }
 }
