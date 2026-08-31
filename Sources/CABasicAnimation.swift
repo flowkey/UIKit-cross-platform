@@ -10,6 +10,8 @@ public let kCAFillModeForwards = "kCAFillModeForwards"
 
 public class CABasicAnimation: CAAction {
 
+    public init() {}
+
     public init(keyPath: AnimationKeyPath) {
         self.keyPath = keyPath
     }
