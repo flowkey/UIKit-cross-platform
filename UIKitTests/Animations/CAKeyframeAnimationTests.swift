@@ -130,7 +130,6 @@ class CAKeyframeAnimationTests: XCTestCase {
         XCTAssertEqual(presentation.transform.m11, 3, accuracy: 0.01)
     }
 
-    /// The medal flip in the player: a scale.x flip-in running in parallel with a scale wiggle.
     func testParallelFlipAndWiggleEndsAtTheModelTransform() throws {
         let layer = CALayer()
 
