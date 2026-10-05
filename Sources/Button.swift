@@ -147,7 +147,7 @@ open class Button: UIControl {
         // rendered — otherwise a label sized in another weight is a hair too narrow and our
         // tail-truncation crops it. Hugs the text, so centered titles don't shift.
         if titleLabelIsVisible {
-            titleLabel.frame.size.width = bounds.width - imageWidth
+            titleLabel.frame.size.width = max(0, bounds.width - imageWidth)
             titleLabel.sizeToFit()
         }
 
