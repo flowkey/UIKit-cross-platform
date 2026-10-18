@@ -8,6 +8,15 @@ open class UIFont {
     public var lineHeight: CGFloat {
         return CGFloat(renderer?.getLineHeight() ?? 0) / (UIScreen.lastKnownScreenScale ?? 2)
     }
+    public var ascender: CGFloat {
+        CGFloat(renderer?.getAscent() ?? 0) / (UIScreen.lastKnownScreenScale ?? 2)
+    }
+    public var descender: CGFloat {
+        CGFloat(renderer?.getDescent() ?? 0) / (UIScreen.lastKnownScreenScale ?? 2)
+    }
+    public var capHeight: CGFloat {
+        CGFloat(renderer?.getCapHeight() ?? 0) / (UIScreen.lastKnownScreenScale ?? 2)
+    }
 
     /**
         Change this value after loading the desired system font via `UIFont.loadFont(fromPath: String)`.

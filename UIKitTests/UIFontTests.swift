@@ -55,6 +55,70 @@ private extension String {
 }
 
 #if !os(iOS)
+@MainActor
+class FontMetricsTests: XCTestCase {
+    func testCapHeightUsesCapitalHGlyphMetrics() throws {
+        try withTestRenderer(character: 72) { renderer in
+            XCTAssertEqual(renderer.getAscent(), 12)
+
+            XCTAssertEqual(renderer.getCapHeight(), 7)
+        }
+    }
+
+    func testCapHeightFallsBackToAscentWhenCapitalHIsMissing() throws {
+        try withTestRenderer(character: 65) { renderer in
+            XCTAssertEqual(renderer.getAscent(), 12)
+
+            XCTAssertEqual(renderer.getCapHeight(), 12)
+        }
+    }
+
+    private func withTestRenderer(character: Int, body: (FontRenderer) -> Void) throws {
+        // The fallback glyph is 7 pixels high, distinct from the 12-pixel ascent.
+        // Mapping it to A instead of H reproduces successful .notdef measurement.
+        let font = """
+            STARTFONT 2.1
+            FONT -UIKit-Metrics-Medium-R-Normal--16-160-75-75-C-80-ISO10646-1
+            SIZE 16 75 75
+            FONTBOUNDINGBOX 8 16 0 -4
+            STARTPROPERTIES 5
+            FONT_ASCENT 12
+            FONT_DESCENT 4
+            DEFAULT_CHAR \(character)
+            CHARSET_REGISTRY "ISO10646"
+            CHARSET_ENCODING "1"
+            ENDPROPERTIES
+            CHARS 1
+            STARTCHAR test
+            ENCODING \(character)
+            SWIDTH 500 0
+            DWIDTH 8 0
+            BBX 8 7 0 0
+            BITMAP
+            FF
+            81
+            81
+            FF
+            81
+            81
+            FF
+            ENDCHAR
+            ENDFONT
+
+            """
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("UIKitFontMetrics-\(UUID().uuidString).bdf")
+        try font.write(to: url, atomically: true, encoding: .utf8)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let provider = try XCTUnwrap(UIKit.CGDataProvider(filepath: url.path))
+        try withExtendedLifetime(provider) {
+            let renderer = try XCTUnwrap(FontRenderer(provider, size: 16))
+            body(renderer)
+        }
+    }
+}
+
 /// Tests for the text-rendering helpers this UIKit polyfill adds on top of SDL_ttf:
 /// single-line ellipsis truncation, greedy word wrapping, and attributed (multi-font) text.
 /// These only exercise measurement (`TTF_SizeUTF8`), so they need no GPU/render target.

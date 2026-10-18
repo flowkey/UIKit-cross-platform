@@ -90,6 +90,21 @@ public class FontRenderer {
         return Int(TTF_FontLineSkip(rawPointer))
     }
 
+    func getAscent() -> Int { Int(TTF_FontAscent(rawPointer)) }
+
+    func getDescent() -> Int { Int(TTF_FontDescent(rawPointer)) }
+
+    func getCapHeight() -> Int {
+        let capitalH: UInt16 = 0x48
+        var maxY: Int32 = 0
+        // A missing glyph can still return successful metrics for .notdef.
+        guard TTF_GlyphIsProvided(rawPointer, capitalH) != 0,
+              TTF_GlyphMetrics(rawPointer, capitalH, nil, nil, nil, &maxY, nil) == 0 else {
+            return getAscent()
+        }
+        return Int(maxY)
+    }
+
     func getFontStyleName() -> String? {
         guard let styleName = TTF_FontFaceStyleName(rawPointer) else { return nil }
         return String(cString: styleName)
