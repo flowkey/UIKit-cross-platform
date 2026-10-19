@@ -58,22 +58,21 @@ private extension String {
 @MainActor
 class FontMetricsTests: XCTestCase {
     func testCapHeightUsesCapitalHGlyphMetrics() throws {
-        try withTestRenderer(character: 72) { renderer in
+        try withTestRenderer(glyphEncoding: "H") { renderer in
             XCTAssertEqual(renderer.getAscent(), 12)
-
+            XCTAssertEqual(renderer.getDescent(), -4)
             XCTAssertEqual(renderer.getCapHeight(), 7)
         }
     }
 
     func testCapHeightFallsBackToAscentWhenCapitalHIsMissing() throws {
-        try withTestRenderer(character: 65) { renderer in
+        try withTestRenderer(glyphEncoding: "A") { renderer in
             XCTAssertEqual(renderer.getAscent(), 12)
-
             XCTAssertEqual(renderer.getCapHeight(), 12)
         }
     }
 
-    private func withTestRenderer(character: Int, body: (FontRenderer) -> Void) throws {
+    private func withTestRenderer(glyphEncoding: Unicode.Scalar, body: (FontRenderer) -> Void) throws {
         // The fallback glyph is 7 pixels high, distinct from the 12-pixel ascent.
         // Mapping it to A instead of H reproduces successful .notdef measurement.
         let font = """
@@ -84,13 +83,13 @@ class FontMetricsTests: XCTestCase {
             STARTPROPERTIES 5
             FONT_ASCENT 12
             FONT_DESCENT 4
-            DEFAULT_CHAR \(character)
+            DEFAULT_CHAR \(glyphEncoding.value)
             CHARSET_REGISTRY "ISO10646"
             CHARSET_ENCODING "1"
             ENDPROPERTIES
             CHARS 1
             STARTCHAR test
-            ENCODING \(character)
+            ENCODING \(glyphEncoding.value)
             SWIDTH 500 0
             DWIDTH 8 0
             BBX 8 7 0 0

@@ -95,7 +95,7 @@ public class FontRenderer {
     func getDescent() -> Int { Int(TTF_FontDescent(rawPointer)) }
 
     func getCapHeight() -> Int {
-        let capitalH: UInt16 = 0x48
+        let capitalH = UInt16(UInt8(ascii: "H"))
         var maxY: Int32 = 0
         // A missing glyph can still return successful metrics for .notdef.
         guard TTF_GlyphIsProvided(rawPointer, capitalH) != 0,
