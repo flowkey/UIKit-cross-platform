@@ -6,12 +6,6 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-private extension CGPoint {
-    var magnitude: CGFloat {
-        return (x * x + y * y).squareRoot()
-    }
-}
-
 extension UIScrollView {
     func startDeceleratingIfNecessary() {
         // Only animate if instantaneous velocity is large enough
@@ -23,7 +17,8 @@ extension UIScrollView {
         let targetOffset = getBoundsCheckedContentOffset(contentOffset - nonBoundsCheckedScrollAnimationDistance)
         let distanceToBoundsCheckedTarget = contentOffset - targetOffset
 
-        let willDecelerate = (velocityIsLargeEnoughToDecelerate && distanceToBoundsCheckedTarget.magnitude > 0.0)
+        // Under a point, `animationTime` below would be negative.
+        let willDecelerate = (velocityIsLargeEnoughToDecelerate && distanceToBoundsCheckedTarget.magnitude > 1)
         delegate?.scrollViewDidEndDragging(self, willDecelerate: willDecelerate)
         guard willDecelerate else { hideScrollIndicators(); return }
 
@@ -36,6 +31,7 @@ extension UIScrollView {
         // This calculation is a weird approximation but it's close enough for now...
         let animationTime = log(Double(distanceToBoundsCheckedTarget.magnitude)) * animationTimeConstant
 
+        decelerationDisplayLink.isPaused = false
         UIView.animate(
             withDuration: animationTime,
             options: [.beginFromCurrentState, .customEaseOut, .allowUserInteraction],
@@ -43,8 +39,10 @@ extension UIScrollView {
                 self.isDecelerating = true
                 self.contentOffset = targetOffset
             },
-            completion: { _ in
+            completion: { finished in
+                self.decelerationDisplayLink.isPaused = true
                 self.isDecelerating = false
+                if finished { self.delegate?.scrollViewDidEndDecelerating(self) }
             }
         )
     }
@@ -55,6 +53,7 @@ extension UIScrollView {
         // Get the presentation value from the current animation
         setContentOffset(visibleContentOffset, animated: false)
         cancelDecelerationAnimations()
+        decelerationDisplayLink.isPaused = true
         isDecelerating = false
     }
 
