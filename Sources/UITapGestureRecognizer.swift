@@ -8,43 +8,51 @@
 
 @MainActor
 open class UITapGestureRecognizer: UIGestureRecognizer {
-    var onTouchesBegan: (() -> Void)?
-    var onTouchesEnded: (() -> Void)?
-    var onPress: (@MainActor () -> Void)?
+    public var numberOfTouchesRequired = 1
 
-    public init(onPress: (@MainActor () -> Void)? = nil) {
-        self.onPress = onPress
-    }
+    /// How far a finger can move before it's no longer a tap, like iOS's.
+    private let allowableMovement: CGFloat = 10
+
+    /// Set by `Button`: like a `UIButton`, it fires on touch up within this distance of its bounds wherever the finger moved.
+    internal var touchUpInsideMargin: CGFloat?
+
+    internal var onTouchesBegan: (() -> Void)?
+    internal var onTouchesEnded: (() -> Void)?
+
+    private var startLocations: [UITouch: CGPoint] = [:]
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
-        trackedTouch = touches.first
-        self.state = .began
-        onTouchesBegan?()
+        for touch in touches { startLocations[touch] = touch.location(in: nil) }
+        if numberOfTouches > numberOfTouchesRequired { state = .failed; return }
+        if numberOfTouches == touches.count { onTouchesBegan?() }
+    }
 
-        // run potential cancellation of touches in view and other recognizers
-        // after `self.state` has been mutated
-        if cancelsTouchesInView {
-            trackedTouch?.hasBeenCancelledByAGestureRecognizer = true
+    open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+        super.touchesMoved(touches, with: event)
+        guard touchUpInsideMargin == nil else { return }
+        for touch in touches {
+            guard let start = startLocations[touch] else { continue }
+            if (touch.location(in: nil) - start).magnitude > allowableMovement { state = .failed; return }
         }
-        cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
     }
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesEnded(touches, with: event)
-        if let trackedTouch = trackedTouch, touches.first == trackedTouch {
-            let trackedTouchLocationInView = trackedTouch.location(in: view)
-            if
-                let view = self.view, view.point(inside: trackedTouchLocationInView, with: event),
-                self.state == .began
-            {
-                self.state = .recognized
-                onPress?()
-                self.state = .possible
-            } else {
-                self.state = .failed
-            }
+        guard activeTouches.isEmpty, state == .possible else { return }
+        guard numberOfTouches == numberOfTouchesRequired else { state = .failed; return }
+
+        if let touchUpInsideMargin, let view, let touch = touches.first {
+            let isInside = view.bounds.insetBy(dx: -touchUpInsideMargin, dy: -touchUpInsideMargin).contains(touch.location(in: view))
+            state = isInside ? .recognized : .failed
+        } else {
+            state = .recognized
         }
-        onTouchesEnded?()
+    }
+
+    open override func reset() {
+        super.reset()
+        if !startLocations.isEmpty { onTouchesEnded?() }
+        startLocations = [:]
     }
 }

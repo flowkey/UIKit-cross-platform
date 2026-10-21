@@ -19,6 +19,9 @@ open class UIScrollView: UIView {
     var verticalScrollIndicator = UIView()
     var horizontalScrollIndicator = UIView()
 
+    /// Tells the delegate about every frame of a deceleration, which animates `contentOffset`, as iOS does.
+    let decelerationDisplayLink = DisplayLink()
+
     // TODO: should getBoundsCheckedContentOffset also be applied here or in setContentOffset? check again with iOS
     open var contentOffset: CGPoint {
         get { return bounds.origin }
@@ -83,10 +86,15 @@ open class UIScrollView: UIView {
     var weightedAverageVelocity: CGPoint = .zero
 
     override public init(frame: CGRect) {
-        panGestureRecognizer = UIPanGestureRecognizer()
+        let panGestureRecognizer = UIScrollViewPanGestureRecognizer()
+        self.panGestureRecognizer = panGestureRecognizer
         super.init(frame: frame)
+        panGestureRecognizer.scrollView = self
         panGestureRecognizer.onAction = { [weak self] in self?.onPan() }
-        panGestureRecognizer.onStateChanged = { [weak self] in self?.onPanGestureStateChanged() }
+        decelerationDisplayLink.callback = { [weak self] in
+            guard let self else { return }
+            self.delegate?.scrollViewDidScroll(self)
+        }
         addGestureRecognizer(panGestureRecognizer)
         clipsToBounds = true
 
@@ -107,6 +115,27 @@ open class UIScrollView: UIView {
     }
 
     private func onPan() {
+        switch panGestureRecognizer.state {
+        case .began:
+            // Like iOS, the content doesn't jump by the distance the finger moved before the pan began.
+            panGestureRecognizer.setTranslation(.zero, in: self)
+            showScrollIndicators()
+            delegate?.scrollViewWillBeginDragging(self)
+        case .changed:
+            scrollByPanTranslation()
+        case .ended:
+            startDeceleratingIfNecessary()
+            weightedAverageVelocity = .zero
+        case .cancelled:
+            delegate?.scrollViewDidEndDragging(self, willDecelerate: false)
+            hideScrollIndicators()
+            weightedAverageVelocity = .zero
+        case .possible, .failed:
+            break
+        }
+    }
+
+    private func scrollByPanTranslation() {
         let translation = panGestureRecognizer.translation(in: self)
         panGestureRecognizer.setTranslation(.zero, in: self)
 
@@ -115,26 +144,6 @@ open class UIScrollView: UIView {
 
         let newOffset = getBoundsCheckedContentOffset(visibleContentOffset - translation)
         setContentOffset(newOffset, animated: false)
-    }
-
-    private func onPanGestureStateChanged() {
-        switch panGestureRecognizer.state {
-        case .began:
-            showScrollIndicators()
-            cancelDeceleratingIfNeccessary()
-        case .changed:
-            delegate?.scrollViewWillBeginDragging(self)
-        case .ended:
-            startDeceleratingIfNecessary()
-            weightedAverageVelocity = .zero
-
-            // XXX: Spring back with animation:
-            //case .ended, .cancelled:
-            //if contentOffset.x < contentInset.left {
-            //    setContentOffset(CGPoint(x: contentInset.left, y: contentOffset.y), animated: true)
-            //}
-        default: break
-        }
     }
 
     open var contentInset: UIEdgeInsets = .zero
@@ -166,6 +175,14 @@ public protocol UIScrollViewDelegate: AnyObject {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
     func scrollViewDidScroll(_ scrollView: UIScrollView)
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool)
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView)
+}
+
+public extension UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {}
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {}
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool) {}
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {}
 }
 
 public enum UIScrollViewIndicatorStyle {
@@ -182,5 +199,15 @@ public enum UIScrollViewIndicatorStyle {
         case .black: return UIColor.black
         case .white: return UIColor.white
         }
+    }
+}
+
+/// Like iOS's own scroll view pan, it stops a deceleration as soon as a finger lands.
+final class UIScrollViewPanGestureRecognizer: UIPanGestureRecognizer {
+    weak var scrollView: UIScrollView?
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        super.touchesBegan(touches, with: event)
+        scrollView?.cancelDeceleratingIfNeccessary()
     }
 }

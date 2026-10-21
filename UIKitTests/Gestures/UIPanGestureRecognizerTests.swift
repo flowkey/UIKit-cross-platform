@@ -10,21 +10,11 @@ import XCTest
 @testable import UIKit
 
 fileprivate class TestPanGestureRecognizer: UIPanGestureRecognizer {
-    let stateCancelledExpectation: XCTestExpectation?
-    let stateEndedExpectation: XCTestExpectation?
+    var actionStates: [UIGestureRecognizerState] = []
 
-    fileprivate init (cancelledExp: XCTestExpectation? = nil, endedExp: XCTestExpectation? = nil) {
-        stateCancelledExpectation = cancelledExp
-        stateEndedExpectation = endedExp
+    fileprivate init() {
         super.init()
-        self.onStateChanged = { [weak self] in
-            guard let state = self?.state else { return }
-            switch state {
-            case .ended: self?.stateEndedExpectation?.fulfill()
-            case .cancelled: self?.stateCancelledExpectation?.fulfill()
-            default: break
-            }
-        }
+        self.onAction = { [unowned self] in self.actionStates.append(self.state) }
     }
 }
 
@@ -39,74 +29,65 @@ class UIPanGestureRecognizerTests: XCTestCase {
     }
 
     func testPanGestureRecognizerStateEnded() {
-        let endedExpectation = expectation(description: "State was ended")
-        let recognizer = TestPanGestureRecognizer(endedExp: endedExpectation)
+        let recognizer = TestPanGestureRecognizer()
+        let touch = begin(recognizer, at: CGPoint(x: 42, y: 12))
+        XCTAssertEqual(recognizer.state, .possible)
 
-        let location0 = CGPoint(x: 42, y: 12)
-        let touch = UITouch(touchId: 0, at: location0, timestamp: 0)
-        touch.window = window
-        touch.view = mockView
-        recognizer.touchesBegan([touch], with: UIEvent())
-        XCTAssert(recognizer.state == .began)
+        move(touch, to: CGPoint(x: 34, y: 45), on: recognizer)
+        XCTAssertEqual(recognizer.state, .began)
 
-        let location1 = CGPoint(x: 34, y: 45)
-        touch.updateAbsoluteLocation(location1)
-        recognizer.touchesMoved([touch], with: UIEvent())
-        XCTAssert(recognizer.state == .changed)
+        move(touch, to: CGPoint(x: 30, y: 50), on: recognizer)
+        XCTAssertEqual(recognizer.state, .changed)
 
+        touch.phase = .ended
         recognizer.touchesEnded([touch], with: UIEvent())
 
-        // expect that state was .ended at some point
-        wait(for: [endedExpectation], timeout: 2)
-
-        // state should transition to .possible after being .ended
-        XCTAssert(recognizer.state == .possible)
+        XCTAssertEqual(recognizer.actionStates, [.began, .changed, .ended])
+        XCTAssertEqual(recognizer.state, .possible)
     }
 
     func testPanGestureRecognizerStateCancelled() {
-        let cancelledExpectation = expectation(description: "State was cancelled")
-        let recognizer = TestPanGestureRecognizer(cancelledExp: cancelledExpectation)
-
-        let location0 = CGPoint(x: 12, y: 42)
-        let touch = UITouch(touchId: 0, at: location0, timestamp: 0)
-        touch.window = window
-
-        recognizer.touchesBegan([touch], with: UIEvent())
-        XCTAssert(recognizer.state == .began)
-
-        let location1 = CGPoint(x: 23, y: 21)
-        touch.updateAbsoluteLocation(location1)
-        recognizer.touchesMoved([touch], with: UIEvent())
-        XCTAssert(recognizer.state == .changed)
-
+        let recognizer = TestPanGestureRecognizer()
+        let touch = begin(recognizer, at: CGPoint(x: 12, y: 42))
+        move(touch, to: CGPoint(x: 23, y: 21), on: recognizer)
+        XCTAssertEqual(recognizer.state, .began)
 
         recognizer.touchesCancelled([touch], with: UIEvent())
 
-        // expect that state was .cancelled at some point
-        wait(for: [cancelledExpectation], timeout: 1)
+        XCTAssertEqual(recognizer.actionStates, [.began, .cancelled])
+        XCTAssertEqual(recognizer.state, .possible)
+    }
 
-        XCTAssert(recognizer.state == .cancelled)
+    func testPanDoesNotBeginBeforeTheTouchMovedTenPoints() {
+        let recognizer = TestPanGestureRecognizer()
+        let touch = begin(recognizer, at: .zero)
 
-        // state should transition to .possible after ending
-        recognizer.touchesEnded([touch], with: UIEvent())
-        XCTAssert(recognizer.state == .possible)
+        move(touch, to: CGPoint(x: 6, y: 6), on: recognizer)
+        XCTAssertEqual(recognizer.state, .possible)
+
+        move(touch, to: CGPoint(x: 8, y: 8), on: recognizer)
+        XCTAssertEqual(recognizer.state, .began)
+    }
+
+    func testActionIsSentOnEveryChange() {
+        let recognizer = TestPanGestureRecognizer()
+        let touch = begin(recognizer, at: .zero)
+
+        for x in stride(from: 20, through: 60, by: 10) {
+            move(touch, to: CGPoint(x: CGFloat(x), y: 0), on: recognizer)
+        }
+
+        XCTAssertEqual(recognizer.actionStates, [.began, .changed, .changed, .changed, .changed])
     }
 
     func testVelocity() {
-        let touchPositionDiff: CGFloat = 50
-        let timeInterval = 1.0
-
         let recognizer = UIPanGestureRecognizer()
-        let touch = UITouch(touchId: 0, at: .zero, timestamp: 0)
-        touch.window = window
-        recognizer.touchesBegan([touch], with: UIEvent())
+        let touch = begin(recognizer, at: .zero)
 
-        touch.updateAbsoluteLocation(CGPoint(x: touchPositionDiff, y: 0))
-        recognizer.touchesMoved([touch], with: UIEvent())
+        touch.timestamp = 0.05
+        move(touch, to: CGPoint(x: 50, y: 0), on: recognizer)
 
-        let velocityX = recognizer.velocity(in: self.mockView, timeDiffSeconds: timeInterval).x
-        let expectedVelocityX: CGFloat = touchPositionDiff / CGFloat(timeInterval)
-        XCTAssertEqual(velocityX, expectedVelocityX, accuracy: 0.001)
+        XCTAssertEqual(recognizer.velocity(in: mockView).x, 1000, accuracy: 0.001)
     }
 
     func testTouchesMovedUpdatesTranslation() {
@@ -118,6 +99,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
         recognizer.view = mockView
 
         // begin touch, check initial translation
+        recognizer.add(touch)
         recognizer.touchesBegan([touch], with: UIEvent())
         XCTAssertEqual(recognizer.translation(in: mockView), .zero)
 
@@ -134,6 +116,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
         touch.window = window
 
         recognizer.view = mockView
+        recognizer.add(touch)
         recognizer.touchesBegan([touch], with: UIEvent())
         recognizer.setTranslation(newTranslation, in: mockView)
 
@@ -151,6 +134,7 @@ class UIPanGestureRecognizerTests: XCTestCase {
         let touch = UITouch(touchId: 0, at: CGPoint(x: 10, y: 10), timestamp: 0)
         touch.window = window
         touch.view = view
+        panGestureRecognizer.add(touch)
         panGestureRecognizer.touchesBegan([touch], with: UIEvent())
 
         touch.updateAbsoluteLocation(CGPoint(x: 20, y: 20))
@@ -162,5 +146,21 @@ class UIPanGestureRecognizerTests: XCTestCase {
         panGestureRecognizer.touchesMoved([touch], with: UIEvent())
 
         XCTAssertEqual(panGestureRecognizer.translation(in: view), CGPoint(x: 10, y: 10))
+    }
+
+    @discardableResult
+    private func begin(_ recognizer: UIPanGestureRecognizer, at point: CGPoint) -> UITouch {
+        let touch = UITouch(touchId: 0, at: point, timestamp: 0)
+        touch.window = window
+        touch.view = mockView
+        recognizer.add(touch)
+        recognizer.touchesBegan([touch], with: UIEvent())
+        return touch
+    }
+
+    private func move(_ touch: UITouch, to point: CGPoint, on recognizer: UIPanGestureRecognizer) {
+        touch.phase = .moved
+        touch.updateAbsoluteLocation(point)
+        recognizer.touchesMoved([touch], with: UIEvent())
     }
 }
