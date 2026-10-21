@@ -302,6 +302,7 @@ extension FontRenderer {
         let lineSpace = Int(lineSpacing)
 
         var textLineHeight: Int32 = 0
+        var widestLineWidth: Int32 = 0
 
         var tok = UnsafeMutablePointer(mutating: text)
         let end = tok + SDL_strlen(text)
@@ -330,6 +331,7 @@ extension FontRenderer {
                     if charIsDelimiter(searchIndex.pointee) {
                         searchIndex.pointee = CChar(0)
                     }
+                    widestLineWidth = Int32(wrapLength)
                     break
                 }
 
@@ -340,6 +342,7 @@ extension FontRenderer {
                 TTF_SizeUTF8(self.rawPointer, tok, &textLineWidth, &textLineHeight)
 
                 if (UInt32(textLineWidth) <= wrapLength) {
+                    widestLineWidth = max(widestLineWidth, textLineWidth)
                     break
                 } else {
                     /* Back up and try again... */
@@ -362,7 +365,7 @@ extension FontRenderer {
         let combinedTextHeight = Int(textLineHeight) * linesCount
         let combinedLineSpacing = lineSpace * (linesCount - 1)
 
-        return CGSize(width: wrapLength, height: combinedTextHeight + combinedLineSpacing)
+        return CGSize(width: Int(widestLineWidth), height: combinedTextHeight + combinedLineSpacing)
     }
 }
 

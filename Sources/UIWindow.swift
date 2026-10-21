@@ -11,8 +11,8 @@ public class UIWindow: UIView {
         didSet { rootViewController?.next = self }
     }
 
-    override open func layoutIfNeeded() {
-        super.layoutIfNeeded()
+    override open func layoutSubviews() {
+        super.layoutSubviews()
         subviews.forEach { subview in
             subview.frame = bounds
         }

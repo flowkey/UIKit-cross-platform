@@ -38,6 +38,11 @@ extension CALayer {
         // Big performance optimization. Don't render anything that's entirely offscreen:
         let absoluteFrame = renderedBoundsRelativeToAnchorPoint.applying(modelViewTransform)
         guard absoluteFrame.intersects(renderer.bounds) else {
+            // Like Core Animation, sublayers reaching outside a layer that doesn't clip still draw.
+            if !masksToBounds, mask == nil {
+                sdlRenderSublayers(modelViewTransform: modelViewTransform, deltaFromAnchorPointToOrigin: deltaFromAnchorPointToOrigin, opacity: opacity)
+                parentOriginTransform.setAsSDLgpuMatrix()
+            }
             return
         }
 
@@ -125,13 +130,23 @@ extension CALayer {
 
         if let contents = contents {
             do {
-                try renderer.blit(
-                    contents,
-                    anchorPoint: anchorPoint,
-                    contentsScale: contentsScale,
-                    contentsGravity: ContentsGravityTransformation(for: self),
-                    opacity: opacity
-                )
+                if contentsCenter != CGRect(x: 0, y: 0, width: 1, height: 1), contentsGravity == .resize {
+                    try renderer.blit(
+                        contents,
+                        in: renderedBoundsRelativeToAnchorPoint,
+                        contentsCenter: contentsCenter,
+                        contentsScale: contentsScale,
+                        opacity: opacity
+                    )
+                } else {
+                    try renderer.blit(
+                        contents,
+                        anchorPoint: anchorPoint,
+                        contentsScale: contentsScale,
+                        contentsGravity: ContentsGravityTransformation(for: self),
+                        opacity: opacity
+                    )
+                }
             } catch {
                 // Try to recreate contents from source data if it exists
                 if contents.reloadFromSourceData() == false {
@@ -146,6 +161,17 @@ extension CALayer {
             ShaderProgram.deactivateAll()
         }
 
+        sdlRenderSublayers(modelViewTransform: modelViewTransform, deltaFromAnchorPointToOrigin: deltaFromAnchorPointToOrigin, opacity: opacity)
+
+        // We're done rendering this part of the tree
+        // To render further siblings we need to return to our parent's transform (at its `origin`).
+        parentOriginTransform.setAsSDLgpuMatrix()
+
+        renderer.clippingRect = previousClippingRect
+    }
+
+    @MainActor
+    private func sdlRenderSublayers(modelViewTransform: CATransform3D, deltaFromAnchorPointToOrigin: CGPoint, opacity: Float) {
         if let sublayers = sublayers {
             // `position` is always relative from the parent's origin, but the global GPU matrix is currently
             // focused on `self.position` rather than the `origin` we calculated to render rectangles.
@@ -166,11 +192,5 @@ extension CALayer {
                 (sublayer._presentation ?? sublayer).sdlRender(parentAbsoluteOpacity: opacity)
             }
         }
-
-        // We're done rendering this part of the tree
-        // To render further siblings we need to return to our parent's transform (at its `origin`).
-        parentOriginTransform.setAsSDLgpuMatrix()
-
-        renderer.clippingRect = previousClippingRect
     }
 }

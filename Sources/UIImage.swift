@@ -8,7 +8,7 @@ import RegexBuilder
 import _StringProcessing
 #endif
 
-@MainActor // UIImage is MainActor but CGImage is not
+@preconcurrency @MainActor // UIImage is MainActor but CGImage is not
 public class UIImage {
     public let cgImage: CGImage
     public let size: CGSize
@@ -65,6 +65,45 @@ public class UIImage {
     
     public func resizableImage(withCapInsets capInsets: UIEdgeInsets) -> UIImage {
         return self
+    }
+
+    public enum RenderingMode {
+        case automatic, alwaysOriginal, alwaysTemplate
+    }
+
+    public func withTintColor(_ color: UIColor) -> UIImage {
+        withTintColor(color, renderingMode: .automatic)
+    }
+
+    public func withTintColor(_ color: UIColor, renderingMode: RenderingMode) -> UIImage {
+        guard let surface = GPU_CopySurfaceFromImage(cgImage.rawPointer) else { return self }
+        defer { SDL_FreeSurface(surface) }
+
+        let width = Int(surface.pointee.w)
+        let height = Int(surface.pointee.h)
+        let bytesPerPixel = Int(surface.pointee.format.pointee.BytesPerPixel)
+        let pitch = Int(surface.pointee.pitch)
+        guard let pixels = surface.pointee.pixels, bytesPerPixel == 4 else { return self }
+
+        var tinted = [UInt8](repeating: 0, count: width * height * 4)
+        for y in 0 ..< height {
+            for x in 0 ..< width {
+                let pixel = pixels.load(fromByteOffset: y * pitch + x * bytesPerPixel, as: UInt32.self)
+                var red: UInt8 = 0, green: UInt8 = 0, blue: UInt8 = 0, alpha: UInt8 = 0
+                SDL_GetRGBA(pixel, surface.pointee.format, &red, &green, &blue, &alpha)
+                let index = (y * width + x) * 4
+                tinted[index] = color.redValue
+                tinted[index + 1] = color.greenValue
+                tinted[index + 2] = color.blueValue
+                tinted[index + 3] = UInt8((UInt16(alpha) * UInt16(color.alphaValue) + 127) / 255)
+            }
+        }
+
+        guard
+            let image = CGImage(width: width, height: height)
+        else { return self }
+        tinted.withUnsafeBufferPointer { image.replacePixels(with: $0.baseAddress!, bytesPerPixel: 4) }
+        return UIImage(cgImage: image, scale: scale)
     }
 }
 

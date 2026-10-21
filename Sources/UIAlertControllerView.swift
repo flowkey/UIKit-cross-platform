@@ -93,7 +93,7 @@ class UIAlertControllerView: UIView {
 
     override func layoutSubviews() {
         header.frame.origin = CGPoint(x: horizontalPadding, y: verticalPadding)
-        header.bounds.width = subviewWidth
+        header.frame.size.width = subviewWidth
         header.textAlignment = .left
         header.sizeToFit()
 

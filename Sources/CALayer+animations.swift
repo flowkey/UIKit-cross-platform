@@ -22,8 +22,9 @@ extension CALayer {
         animations[keyPath] = copy
     }
 
+    /// Like Core Animation, a removed animation stops unfinished, which completes its `UIView.animate` block.
     public func removeAnimation(forKey key: String) {
-        animations.removeValue(forKey: key)
+        animations.removeValue(forKey: key)?.animationGroup?.animationDidStop(finished: false)
     }
 
     public func removeAllAnimations() {
@@ -64,8 +65,8 @@ extension CALayer {
             update(presentation, for: animation, with: animationProgress)
 
             if animationProgress == 1 && animation.isRemovedOnCompletion {
+                animations.removeValue(forKey: key)
                 animation.animationGroup?.animationDidStop(finished: true)
-                removeAnimation(forKey: key)
             }
         }
 

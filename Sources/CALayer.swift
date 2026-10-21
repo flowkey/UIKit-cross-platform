@@ -1,5 +1,9 @@
 internal import SDL
 
+#if os(macOS)
+import Foundation
+#endif
+
 @MainActor
 open class CALayer {
     open weak var delegate: CALayerDelegate?
@@ -20,6 +24,10 @@ open class CALayer {
     open var contentsScale: CGFloat = 1.0
 
     open var contentsGravity: CALayerContentsGravity = .resize
+
+    open var contentsCenter = CGRect(x: 0, y: 0, width: 1, height: 1) {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
 
     internal(set) public weak var superlayer: CALayer?
     internal(set) public var sublayers: [CALayer]? {
@@ -215,6 +223,7 @@ open class CALayer {
         superlayer = layer.superlayer
         sublayers = layer.sublayers
         contentsGravity = layer.contentsGravity
+        contentsCenter = layer.contentsCenter
     }
 
     open func copy() -> Any {

@@ -113,5 +113,12 @@ class CGRectTests: XCTestCase {
 
         XCTAssert(intersection.isNull)
     }
+
+    func testInsetByEdgeInsets() {
+        let rect = CGRect(x: 0, y: 0, width: 100, height: 100)
+        let insets = UIEdgeInsets(top: 10, left: 20, bottom: 30, right: 40)
+
+        XCTAssertEqual(rect.inset(by: insets), CGRect(x: 20, y: 10, width: 40, height: 60))
+    }
 }
 

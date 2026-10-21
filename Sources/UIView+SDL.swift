@@ -25,7 +25,7 @@ extension UIView {
             needsDisplay = false
         }
 
-        layoutIfNeeded()
+        layoutSelfIfNeeded()
 
         subviews.forEach { $0.sdlDrawAndLayoutTreeIfNeeded(parentAlpha: alpha) }
     }

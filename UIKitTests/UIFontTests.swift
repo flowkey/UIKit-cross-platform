@@ -31,7 +31,8 @@ class UIFontTests: XCTestCase {
     func testGetWrappedMultilineTextSize() {
         let wrapLength: CGFloat = 200
         let calculatedSize = multilineText.size(with: testFont, wrapLength: wrapLength)
-        XCTAssertEqual(calculatedSize.width, CGFloat(wrapLength))
+        XCTAssertGreaterThan(calculatedSize.width, 0)
+        XCTAssertLessThanOrEqual(calculatedSize.width, wrapLength)
 
         let numberOfLines = CGFloat(multilineText.numberOfLines())
 

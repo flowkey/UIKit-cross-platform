@@ -9,6 +9,7 @@ extension UIView {
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
+        let outerAnimationPrototype = currentAnimationPrototype
         currentAnimationPrototype = CABasicAnimationPrototype(
             duration: CGFloat(duration),
             delay: CGFloat(delay),
@@ -20,7 +21,7 @@ extension UIView {
         if currentAnimationPrototype?.animationGroup.queuedAnimations == 0 {
             completion?(true)
         }
-        currentAnimationPrototype = nil
+        currentAnimationPrototype = outerAnimationPrototype
     }
 
     public static func animate(withDuration duration: Double, _ animations: () -> Void) {
@@ -41,6 +42,7 @@ extension UIView {
         animations: () -> Void,
         completion: ((Bool) -> Void)? = nil
     ) {
+        let outerAnimationPrototype = currentAnimationPrototype
         currentAnimationPrototype = CASpringAnimationPrototype(
             duration: CGFloat(duration),
             delay: CGFloat(delay),
@@ -54,7 +56,7 @@ extension UIView {
         if currentAnimationPrototype?.animationGroup.queuedAnimations == 0 {
             completion?(true)
         }
-        currentAnimationPrototype = nil
+        currentAnimationPrototype = outerAnimationPrototype
     }
 
     static func animateIfNeeded(at currentTime: Timer) {
