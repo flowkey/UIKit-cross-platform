@@ -56,6 +56,10 @@ open class UIGestureRecognizer {
 
     public var numberOfTouches: Int { touches.count }
 
+    public func location(ofTouch touchIndex: Int, in view: UIView?) -> CGPoint {
+        touches[touchIndex].location(in: view)
+    }
+
     open func location(in view: UIView?) -> CGPoint {
         let activeTouches = activeTouches
         let relevantTouches = activeTouches.isEmpty ? touches : activeTouches

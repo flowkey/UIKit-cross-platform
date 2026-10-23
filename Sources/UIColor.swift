@@ -117,6 +117,10 @@ extension UIColor {
     public func withAlphaComponent(_ alpha: CGFloat) -> UIColor {
         return UIColor((self.redValue, self.greenValue, self.blueValue, alpha.normalisedToUInt8()))
     }
+
+    func multiplyingAlpha(by opacity: Float) -> UIColor {
+        withAlphaComponent(CGFloat(alphaValue.toNormalisedFloat() * opacity))
+    }
 }
 
 extension UInt8 {

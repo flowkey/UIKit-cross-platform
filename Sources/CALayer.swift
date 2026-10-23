@@ -226,6 +226,11 @@ open class CALayer {
         return CALayer(layer: self)
     }
 
+    func sdlRenderContent(at origin: CGPoint, opacity: Float, renderer: UIScreen) {}
+
+    /// Where `sdlRenderContent` draws beyond `bounds`, so it isn't culled while the bounds are offscreen.
+    var sdlContentBounds: CGRect? { nil }
+
     open func action(forKey event: String) -> CAAction? {
         if let delegate = delegate {
             return delegate.action(forKey: event)
@@ -235,8 +240,9 @@ open class CALayer {
 
     /// returns a non animating copy of the layer
     func createPresentation() -> CALayer {
-        let copy = CALayer(layer: self)
+        let copy = type(of: self).init(layer: self)
         copy.isPresentationForAnotherLayer = true
+        copy._needsDisplay = _needsDisplay
         return copy
     }
 

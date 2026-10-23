@@ -37,7 +37,8 @@ extension CALayer {
 
         // Big performance optimization. Don't render anything that's entirely offscreen:
         let absoluteFrame = renderedBoundsRelativeToAnchorPoint.applying(modelViewTransform)
-        guard absoluteFrame.intersects(renderer.bounds) else {
+        let absoluteContentFrame = sdlContentBounds?.offsetBy(deltaFromAnchorPointToOrigin - bounds.origin).applying(modelViewTransform)
+        guard absoluteFrame.intersects(renderer.bounds) || absoluteContentFrame?.intersects(renderer.bounds) == true else {
             if !masksToBounds, mask == nil {
                 sdlRenderSublayers(modelViewTransform: modelViewTransform, deltaFromAnchorPointToOrigin: deltaFromAnchorPointToOrigin, opacity: opacity)
                 parentOriginTransform.setAsSDLgpuMatrix()
@@ -155,6 +156,8 @@ extension CALayer {
                 }
             }
         }
+
+        sdlRenderContent(at: deltaFromAnchorPointToOrigin - bounds.origin, opacity: opacity, renderer: renderer)
 
         if mask != nil {
             ShaderProgram.deactivateAll()

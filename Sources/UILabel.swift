@@ -101,6 +101,10 @@ open class UILabel: UIView {
         updateLayerContentsGravityFromTextAlignment()
     }
 
+    override open var intrinsicContentSize: CGSize {
+        sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
+    }
+
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         let wrapLength = numberOfLines != 1 && size.width > 0 && size.width < .greatestFiniteMagnitude ? size.width : 0
 
