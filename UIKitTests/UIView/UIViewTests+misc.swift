@@ -64,4 +64,24 @@ class UIViewMiscellaneousTests: XCTestCase {
 
         XCTAssertTrue(childView.didLayout)
     }
+
+    func testLayoutIfNeededLaysOutTheAncestorThatNeedsLayout() {
+        class ParentView: UIView {
+            var didLayout = false
+            override func layoutSubviews() {
+                super.layoutSubviews()
+                didLayout = true
+            }
+        }
+        let parentView = ParentView()
+        let childView = UIView()
+        parentView.addSubview(childView)
+        parentView.layoutIfNeeded()
+        parentView.didLayout = false
+
+        parentView.setNeedsLayout()
+        childView.layoutIfNeeded()
+
+        XCTAssertTrue(parentView.didLayout)
+    }
 }

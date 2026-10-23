@@ -154,7 +154,15 @@ public final class UIScreen {
             UIView.completePendingAnimations()
             UIView.layersWithAnimations.removeAll()
             UIView.currentAnimationPrototype = nil
+            for event in UIEvent.activeEvents {
+                for touch in event.allTouches ?? [] {
+                    touch.phase = .cancelled
+                    event.changedTouch = touch
+                    touch.window?.sendEvent(event)
+                }
+            }
             UIEvent.activeEvents.removeAll()
+            UIGestureRecognizer.resetFinishedRecognizers()
             FontRenderer.cleanupSession()
 
             ShaderProgram.invalidateRoundedRect()

@@ -85,8 +85,14 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     }
 
     public func layoutIfNeeded() {
+        var root = self
+        while let superview = root.superview, superview.needsLayout { root = superview }
+        root.layoutSubtreeIfNeeded()
+    }
+
+    private func layoutSubtreeIfNeeded() {
         layoutSelfIfNeeded()
-        subviews.forEach { $0.layoutIfNeeded() }
+        subviews.forEach { $0.layoutSubtreeIfNeeded() }
     }
 
     internal func layoutSelfIfNeeded() {
@@ -256,8 +262,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     // `public` not `open` because I'm not sure it makes sense to override these:
 
     /// Converts the given point from `self`'s bounds to the bounds of another UIView.
-    /// If the other view is `nil` or is not in the same view hierarchy as `self`,
-    /// the original point will be return unchanged.
+    /// A `nil` view converts to the window's coordinates. A view in another hierarchy gets the point unchanged.
     public func convert(_ point: CGPoint, to otherView: UIView?) -> CGPoint {
         guard let otherView else { return pointInRootCoordinates(point) }
         if otherView == self { return point }

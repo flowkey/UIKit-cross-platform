@@ -114,7 +114,7 @@ open class UILabel: UIView {
 
         guard let text = self.text else { return .zero }
         let size = text.size(with: self.font, wrapLength: wrapLength)
-        // Rounded up like iOS, so drawing at this width wraps the text exactly as measured.
+        // Rounded up, since draw() truncates the width to whole pixels and would otherwise rewrap the last word.
         return wrapLength > 0 ? CGSize(width: size.width.rounded(.up), height: size.height) : size
     }
 

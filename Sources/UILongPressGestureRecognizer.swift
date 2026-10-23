@@ -40,7 +40,6 @@ open class UILongPressGestureRecognizer: UIGestureRecognizer {
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesEnded(touches, with: event)
-        guard activeTouches.isEmpty else { return }
         state = state == .possible ? .failed : .ended
     }
 

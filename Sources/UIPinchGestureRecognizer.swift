@@ -19,7 +19,6 @@ public class UIPinchGestureRecognizer: UIGestureRecognizer {
         }
     }
 
-    /// How much the distance between the fingers changes before the pinch begins.
     private let hysteresis: CGFloat = 4
 
     private var referenceScale: CGFloat = 1
@@ -35,12 +34,12 @@ public class UIPinchGestureRecognizer: UIGestureRecognizer {
         activeTouches.count < 2
     }
 
-    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+    open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
         if referenceDistance == nil { referenceDistance = currentDistance }
     }
 
-    public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+    open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesMoved(touches, with: event)
         guard let distance = currentDistance else { return }
         switch state {
@@ -54,13 +53,13 @@ public class UIPinchGestureRecognizer: UIGestureRecognizer {
         }
     }
 
-    public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+    open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesEnded(touches, with: event)
         guard state == .began || state == .changed else { return }
         state = .ended
     }
 
-    public override func reset() {
+    open override func reset() {
         super.reset()
         referenceScale = 1
         referenceDistance = nil

@@ -1,9 +1,5 @@
 internal import SDL
 
-#if os(macOS)
-import Foundation
-#endif
-
 @MainActor
 open class CALayer {
     open weak var delegate: CALayerDelegate?

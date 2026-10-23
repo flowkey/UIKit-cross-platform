@@ -17,10 +17,12 @@ extension UIScreen {
             return
         }
 
-        // Before the display links, so they read the presentation this frame draws, as with a CADisplayLink.
+        // Before the display links so they read this frame's presentation, and again after so what they set draws this frame.
         UIView.animateIfNeeded(at: frameTimer)
-        for displayLink in DisplayLink.activeDisplayLinks where !displayLink.isPaused {
-            displayLink.callback?()
+        let displayLinks = DisplayLink.activeDisplayLinks.filter { !$0.isPaused }
+        if !displayLinks.isEmpty {
+            displayLinks.forEach { $0.callback?() }
+            UIView.animateIfNeeded(at: frameTimer)
         }
         // XXX: It's possible for drawing to crash if the context is invalid:
         window.sdlDrawAndLayoutTreeIfNeeded()

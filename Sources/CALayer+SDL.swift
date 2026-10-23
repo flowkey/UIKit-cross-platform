@@ -38,7 +38,6 @@ extension CALayer {
         // Big performance optimization. Don't render anything that's entirely offscreen:
         let absoluteFrame = renderedBoundsRelativeToAnchorPoint.applying(modelViewTransform)
         guard absoluteFrame.intersects(renderer.bounds) else {
-            // Like Core Animation, sublayers reaching outside a layer that doesn't clip still draw.
             if !masksToBounds, mask == nil {
                 sdlRenderSublayers(modelViewTransform: modelViewTransform, deltaFromAnchorPointToOrigin: deltaFromAnchorPointToOrigin, opacity: opacity)
                 parentOriginTransform.setAsSDLgpuMatrix()

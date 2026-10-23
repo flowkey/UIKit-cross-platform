@@ -19,12 +19,11 @@ open class UIScrollView: UIView {
     var verticalScrollIndicator = UIView()
     var horizontalScrollIndicator = UIView()
 
-    /// Tells the delegate about every frame of a deceleration, which animates `contentOffset`, as iOS does.
     let decelerationDisplayLink = DisplayLink()
 
     // TODO: should getBoundsCheckedContentOffset also be applied here or in setContentOffset? check again with iOS
     open var contentOffset: CGPoint {
-        get { return bounds.origin }
+        get { return isDecelerating ? visibleContentOffset : bounds.origin }
         set {
             guard newValue != contentOffset else { return }
 
@@ -86,10 +85,8 @@ open class UIScrollView: UIView {
     var weightedAverageVelocity: CGPoint = .zero
 
     override public init(frame: CGRect) {
-        let panGestureRecognizer = UIScrollViewPanGestureRecognizer()
-        self.panGestureRecognizer = panGestureRecognizer
+        panGestureRecognizer = UIScrollViewPanGestureRecognizer()
         super.init(frame: frame)
-        panGestureRecognizer.scrollView = self
         panGestureRecognizer.onAction = { [weak self] in self?.onPan() }
         decelerationDisplayLink.callback = { [weak self] in
             guard let self else { return }
@@ -117,7 +114,6 @@ open class UIScrollView: UIView {
     private func onPan() {
         switch panGestureRecognizer.state {
         case .began:
-            // Like iOS, the content doesn't jump by the distance the finger moved before the pan began.
             panGestureRecognizer.setTranslation(.zero, in: self)
             showScrollIndicators()
             delegate?.scrollViewWillBeginDragging(self)
@@ -202,12 +198,9 @@ public enum UIScrollViewIndicatorStyle {
     }
 }
 
-/// Like iOS's own scroll view pan, it stops a deceleration as soon as a finger lands.
 final class UIScrollViewPanGestureRecognizer: UIPanGestureRecognizer {
-    weak var scrollView: UIScrollView?
-
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
-        scrollView?.cancelDeceleratingIfNeccessary()
+        (view as? UIScrollView)?.cancelDeceleratingIfNeccessary()
     }
 }
