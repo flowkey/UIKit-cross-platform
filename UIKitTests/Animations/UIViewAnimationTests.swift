@@ -340,6 +340,30 @@ class UIViewAnimationTests: XCTestCase {
         XCTAssertEqual(finishedValues, [false])
     }
 
+    func testRemovingAllAnimationsCompletesThemUnfinished() {
+        var finishedValues: [Bool] = []
+
+        UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
+            view.alpha = 0.2
+        }, completion: { finishedValues.append($0) })
+        view.layer.removeAllAnimations()
+
+        XCTAssertEqual(finishedValues, [false])
+    }
+
+    func testAnimationsCompleteUnfinishedWhenOneOfThemWasRemoved() {
+        var finishedValues: [Bool] = []
+
+        UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
+            view.alpha = 0.2
+            view.frame.origin.x = 20
+        }, completion: { finishedValues.append($0) })
+        view.layer.removeAnimation(forKey: "opacity")
+        UIView.animateIfNeeded(at: Timer(startingAt: 10000))
+
+        XCTAssertEqual(finishedValues, [false])
+    }
+
     func testNestedAnimationDoesNotEndTheOuterAnimation() {
         let otherView = UIView()
         otherView.layer.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true

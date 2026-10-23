@@ -11,6 +11,7 @@ class UIViewAnimationGroup {
     var completion: ((Bool) -> ())?
     var queuedAnimations = 0
     var options: UIView.AnimationOptions = []
+    private var allAnimationsFinished = true
 
     init(options: UIView.AnimationOptions, completion: ((Bool) -> Void)?) {
         self.options = options
@@ -18,9 +19,10 @@ class UIViewAnimationGroup {
     }
 
     func animationDidStop(finished: Bool) {
+        allAnimationsFinished = allAnimationsFinished && finished
         queuedAnimations -= 1
         if queuedAnimations == 0 {
-            completion?(finished)
+            completion?(allAnimationsFinished)
         }
     }
 }
