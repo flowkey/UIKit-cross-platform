@@ -75,16 +75,15 @@ public class UIWindow: UIView {
         }
     }
 
-    /// Recognizers can end (and stop tracking the touch) while others are still handling it.
+    /// A recognizer that finishes while the touch is delivered, or that another one prevents, stops getting it.
     private func deliver(_ touch: UITouch, _ action: (UIGestureRecognizer) -> Void) {
-        for recognizer in touch.gestureRecognizers where recognizer.touches.contains(where: { $0 === touch }) {
+        for recognizer in touch.gestureRecognizers where touch.gestureRecognizers.contains(where: { $0 === recognizer }) {
             action(recognizer)
         }
     }
 }
 
 private extension UIView {
-    /// The hit view's recognizers first, then its ancestors', each view's in the order they were added.
     func gestureRecognizerHierarchy() -> [UIGestureRecognizer] {
         var recognizers: [UIGestureRecognizer] = []
         var currentView: UIView? = self

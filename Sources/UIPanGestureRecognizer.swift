@@ -10,7 +10,6 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
     public var minimumNumberOfTouches = 1
     public var maximumNumberOfTouches = Int.max
 
-    /// How far the touches move before the pan begins, like iOS's.
     private let hysteresis: CGFloat = 10
     private let velocitySampleDuration: Double = 0.1
 
@@ -33,7 +32,6 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
         translationOrigin = view?.convert(origin, to: nil) ?? origin
     }
 
-    /// Points per second, over the last tenth of a second.
     open func velocity(in view: UIView?) -> CGPoint {
         guard let last = samples.last, let first = samples.first(where: { last.timestamp - $0.timestamp <= velocitySampleDuration }) else {
             return .zero
@@ -54,7 +52,11 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
-        if translationOrigin == nil { translationOrigin = location(in: nil) }
+        if translationOrigin == nil {
+            translationOrigin = location(in: nil)
+        } else {
+            keepTranslation(whileTouchesChange: touches, joined: true)
+        }
         touches.first.map { recordSample(at: $0.timestamp) }
     }
 
@@ -76,9 +78,23 @@ open class UIPanGestureRecognizer: UIGestureRecognizer {
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesEnded(touches, with: event)
+        if !activeTouches.isEmpty { keepTranslation(whileTouchesChange: touches, joined: false) }
         touches.first.map { recordSample(at: $0.timestamp) }
         guard activeTouches.isEmpty, state == .began || state == .changed else { return }
         state = .ended
+    }
+
+    /// Moves the origin with the centroid when a finger joins or lifts, so the translation and velocity don't jump.
+    private func keepTranslation(whileTouchesChange changedTouches: Set<UITouch>, joined: Bool) {
+        let touchesAfter = activeTouches
+        let touchesBefore = joined ? touchesAfter.filter { !changedTouches.contains($0) } : touchesAfter + changedTouches
+        guard let translationOrigin, !touchesBefore.isEmpty, !touchesAfter.isEmpty else { return }
+        self.translationOrigin = translationOrigin + centroid(of: touchesAfter) - centroid(of: touchesBefore)
+        samples = []
+    }
+
+    private func centroid(of touches: [UITouch]) -> CGPoint {
+        touches.reduce(CGPoint.zero) { $0 + $1.location(in: nil) } / CGFloat(touches.count)
     }
 
     open override func reset() {

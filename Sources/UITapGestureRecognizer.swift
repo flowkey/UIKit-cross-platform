@@ -10,10 +10,9 @@
 open class UITapGestureRecognizer: UIGestureRecognizer {
     public var numberOfTouchesRequired = 1
 
-    /// How far a finger can move before it's no longer a tap, like iOS's.
     private let allowableMovement: CGFloat = 10
 
-    /// Set by `Button`: like a `UIButton`, it fires on touch up within this distance of its bounds wherever the finger moved.
+    /// Set by `Button`, which fires on touch up within this distance of its bounds wherever the finger moved.
     internal var touchUpInsideMargin: CGFloat?
 
     internal var onTouchesBegan: (() -> Void)?

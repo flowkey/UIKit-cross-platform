@@ -56,7 +56,6 @@ open class UIGestureRecognizer {
 
     public var numberOfTouches: Int { touches.count }
 
-    /// The centroid of the touches, as on iOS.
     open func location(in view: UIView?) -> CGPoint {
         let activeTouches = activeTouches
         let relevantTouches = activeTouches.isEmpty ? touches : activeTouches
@@ -78,6 +77,7 @@ open class UIGestureRecognizer {
     }
 
     private func request(_ newState: UIGestureRecognizerState) {
+        if _state == .ended || _state == .cancelled || _state == .failed { return }
         if newState == _state, newState != .changed, pendingState == nil { return }
 
         if _state == .possible, newState == .began || newState == .ended {
@@ -86,7 +86,7 @@ open class UIGestureRecognizer {
                 if pendingState == .began, newState == .ended { transition(to: .failed) }
                 return
             }
-            guard shouldBegin() else { return transition(to: .failed) }
+            guard shouldBegin(), !isPreventedByAnActiveRecognizer() else { return transition(to: .failed) }
             switch failureRequirementStatus() {
             case .unresolved: pendingState = newState
             case .recognized: transition(to: .failed)
@@ -135,7 +135,7 @@ open class UIGestureRecognizer {
         }
     }
 
-    /// Stops receiving touches, but like iOS stays in its final state until the touch sequence ends.
+    /// Stops receiving touches, but stays in its final state until the touch sequence ends.
     private func finish() {
         for touch in touches { touch.gestureRecognizers.removeAll { $0 === self } }
         pendingState = nil
@@ -159,7 +159,6 @@ open class UIGestureRecognizer {
 
     private static var awaitingReset: [UIGestureRecognizer] = []
 
-    /// Called once every touch of the sequence has ended.
     internal static func resetFinishedRecognizers() {
         let recognizers = awaitingReset
         awaitingReset = []
@@ -171,7 +170,6 @@ open class UIGestureRecognizer {
         return delegate?.gestureRecognizerShouldBegin(self) ?? true
     }
 
-    /// Resets the recognizer's own state once its gesture ended, failed or was cancelled. Subclasses override this.
     open func reset() {}
 
     // MARK: Failure requirements
@@ -246,6 +244,15 @@ open class UIGestureRecognizer {
         }
     }
 
+    /// A recognizer that joins a touch sequence after another one recognized can't begin alongside it.
+    private func isPreventedByAnActiveRecognizer() -> Bool {
+        touches.contains { touch in
+            touch.gestureRecognizers.contains { other in
+                other !== self && (other._state == .began || other._state == .changed) && !canRecognizeSimultaneously(with: other)
+            }
+        }
+    }
+
     private func canRecognizeSimultaneously(with other: UIGestureRecognizer) -> Bool {
         delegate?.gestureRecognizer(self, shouldRecognizeSimultaneouslyWith: other) == true
             || other.delegate?.gestureRecognizer(other, shouldRecognizeSimultaneouslyWith: self) == true
@@ -266,7 +273,6 @@ open class UIGestureRecognizer {
         touch.gestureRecognizers.append(self)
     }
 
-    /// Called once all of this recognizer's touches have ended.
     internal func touchSequenceEnded() {
         guard activeTouches.isEmpty, !touches.isEmpty else { return }
         if _state == .possible, pendingState == nil { transition(to: .failed) }

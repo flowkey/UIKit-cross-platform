@@ -6,7 +6,6 @@
 //  Copyright © 2017 flowkey. All rights reserved.
 //
 
-/// The methods are optional on iOS; the protocol extension below provides iOS's defaults.
 @MainActor
 public protocol UIGestureRecognizerDelegate: AnyObject {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool
