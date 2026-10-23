@@ -30,6 +30,20 @@ open class CAGradientLayer: CALayer {
         didSet { setNeedsDisplay() }
     }
 
+    public required init() {
+        super.init()
+    }
+
+    public required init(layer: Any) {
+        guard let layer = layer as? CAGradientLayer else { fatalError() }
+        colors = layer.colors
+        _colors = layer._colors
+        locations = layer.locations
+        startPoint = layer.startPoint
+        endPoint = layer.endPoint
+        super.init(layer: layer)
+    }
+
     // Rasterises the gradient into `contents` on the GPU, cached until the gradient changes.
     @_optimize(speed)
     override open func display() {

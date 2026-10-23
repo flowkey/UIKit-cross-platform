@@ -29,7 +29,6 @@ open class CAShapeLayer: CALayer {
         didSet { strokeSegmentsDidChange() }
     }
 
-    /// The visible stretches of the path's lines after dashing, in the layer's coordinates.
     private var strokeSegments: [(from: CGPoint, to: CGPoint)]?
 
     private func strokeSegmentsDidChange() {
@@ -53,8 +52,8 @@ open class CAShapeLayer: CALayer {
         super.init(layer: layer)
     }
 
-    open override func copy() -> Any {
-        CAShapeLayer(layer: self)
+    override var sdlContentBounds: CGRect? {
+        path.map { $0.boundingBox.insetBy(dx: -lineWidth / 2, dy: -lineWidth / 2) }
     }
 
     override func sdlRenderContent(at origin: CGPoint, opacity: Float, renderer: UIScreen) {
@@ -70,7 +69,7 @@ open class CAShapeLayer: CALayer {
                     rect.insetBy(dx: -lineWidth / 2, dy: -lineWidth / 2),
                     lineColor: strokeColor.multiplyingAlpha(by: opacity),
                     lineThickness: lineWidth,
-                    cornerRadius: path.cornerRadius + lineWidth / 2
+                    cornerRadius: path.cornerRadius > 0 ? path.cornerRadius + lineWidth / 2 : 0
                 )
             }
             return
@@ -87,7 +86,7 @@ open class CAShapeLayer: CALayer {
         GPU_SetLineThickness(previousLineThickness)
     }
 
-    private func dashedSegments(of path: CGPath) -> [(from: CGPoint, to: CGPoint)] {
+    func dashedSegments(of path: CGPath) -> [(from: CGPoint, to: CGPoint)] {
         let pattern = (lineDashPattern ?? []).map { CGFloat($0.doubleValue) }.filter { $0 >= 0 }
         var segments: [(from: CGPoint, to: CGPoint)] = []
         for subpath in path.subpaths {
@@ -106,12 +105,14 @@ private struct DashState {
     let pattern: [CGFloat]
     var index = 0
     var remainingInDash: CGFloat
-    var isOn: Bool { index % 2 == 0 }
+    var isOn = true
 
     init(pattern: [CGFloat], phase: CGFloat) {
         self.pattern = pattern.reduce(0, +) > 0 ? pattern : []
         remainingInDash = self.pattern.first ?? .infinity
-        var phase = phase
+        // An odd pattern repeats with its dashes and gaps swapped, so a full period is twice as long.
+        let period = self.pattern.reduce(0, +) * (self.pattern.count.isMultiple(of: 2) ? 1 : 2)
+        var phase = self.pattern.isEmpty ? 0 : phase.truncatingRemainder(dividingBy: period)
         while !self.pattern.isEmpty, phase > 0 {
             let step = min(phase, remainingInDash)
             phase -= step
@@ -123,6 +124,7 @@ private struct DashState {
     mutating func advance() {
         index = (index + 1) % pattern.count
         remainingInDash = pattern[index]
+        isOn.toggle()
     }
 
     mutating func stroke(from start: CGPoint, to end: CGPoint, draw: (CGPoint, CGPoint) -> Void) {

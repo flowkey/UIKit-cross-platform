@@ -90,6 +90,7 @@
 		5C8475F8203F0DA400CA2EBF /* UIViewTests+hitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77F1EDBDF40006F90AC /* UIViewTests+hitTest.swift */; };
 		5C8E6A21203A089A00D1DBE0 /* CALayer+ContentsGravity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E6A20203A089A00D1DBE0 /* CALayer+ContentsGravity.swift */; };
 		5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
+		F25AFDD75B483E9A67F3FA07 /* CAShapeLayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8CDAE53BB84F7061DD6922 /* CAShapeLayerTests.swift */; };
 		5C9037251F138B8A0058E592 /* MeteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037241F138B8A0058E592 /* MeteringView.swift */; };
 		5C915950218B6BE300AFEB7E /* Data+fromRelativePathCrossPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C91594F218B6BE300AFEB7E /* Data+fromRelativePathCrossPlatform.swift */; };
 		5C915956218B6C9B00AFEB7E /* UIScreen+render.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C915955218B6C9B00AFEB7E /* UIScreen+render.swift */; };
@@ -170,6 +171,7 @@
 		83E5F8171EF8322E00279C59 /* CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8111EF8316C00279C59 /* CGFloat.swift */; };
 		83E5F8181EF8323500279C59 /* CGAffineTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */; };
 		83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
+		09E8519988A643803BDEE277 /* CAShapeLayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8CDAE53BB84F7061DD6922 /* CAShapeLayerTests.swift */; };
 		83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB01F17988F00347AA8 /* Texture+Size.swift */; };
 		83F02DB41F1798D100347AA8 /* loadCustomFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */; };
 		83F02DB71F1798F200347AA8 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB51F1798ED00347AA8 /* Button.swift */; };
@@ -306,6 +308,7 @@
 		5C8475D5203DC53200CA2EBF /* UIViewTests+misc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+misc.swift"; sourceTree = "<group>"; };
 		5C8E6A20203A089A00D1DBE0 /* CALayer+ContentsGravity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+ContentsGravity.swift"; sourceTree = "<group>"; };
 		5C9037201F137FB70058E592 /* CGRectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGRectTests.swift; sourceTree = "<group>"; };
+		7A8CDAE53BB84F7061DD6922 /* CAShapeLayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAShapeLayerTests.swift; sourceTree = "<group>"; };
 		5C9037241F138B8A0058E592 /* MeteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MeteringView.swift; path = Sources/MeteringView.swift; sourceTree = SOURCE_ROOT; };
 		5C91594F218B6BE300AFEB7E /* Data+fromRelativePathCrossPlatform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+fromRelativePathCrossPlatform.swift"; sourceTree = "<group>"; };
 		5C915955218B6C9B00AFEB7E /* UIScreen+render.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+render.swift"; sourceTree = "<group>"; };
@@ -589,6 +592,7 @@
 				5CCF1C12202382FF00AAF598 /* CALayerTests.swift */,
 				5CB6E1B52031D801001FEAC9 /* CGRect+TransformTests.swift */,
 				5C9037201F137FB70058E592 /* CGRectTests.swift */,
+				7A8CDAE53BB84F7061DD6922 /* CAShapeLayerTests.swift */,
 				03C487271F750C74004BAA0C /* Gestures */,
 				5C27E7BE1ECB2F6500F5020D /* Info.plist */,
 				83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */,
@@ -1074,6 +1078,7 @@
 				5BDE15E01F3DF7A1005620AA /* UIViewAnimationTests.swift in Sources */,
 				5C5095B020C59303002E9DDD /* UIPanGestureRecognizerTests+draggableViews.swift in Sources */,
 				83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */,
+				09E8519988A643803BDEE277 /* CAShapeLayerTests.swift in Sources */,
 				5C8475D7203DC6E700CA2EBF /* UIViewTests+convert.swift in Sources */,
 				83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */,
 				5BEEF828202226FE000286C8 /* UIViewTests+didMoveToSuperView.swift in Sources */,
@@ -1108,6 +1113,7 @@
 				5C8475D9203DCA3C00CA2EBF /* UIViewTests+convert.swift in Sources */,
 				832A7F0D1F16368D0041916B /* ButtonContentAlignmentTests.swift in Sources */,
 				5C9037211F137FB70058E592 /* CGRectTests.swift in Sources */,
+				F25AFDD75B483E9A67F3FA07 /* CAShapeLayerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

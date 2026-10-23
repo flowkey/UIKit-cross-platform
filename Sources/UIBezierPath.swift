@@ -39,8 +39,12 @@ public class UIBezierPath {
     }
 
     public func addLine(to point: CGPoint) {
-        guard !subpaths.isEmpty else { return move(to: point) }
-        subpaths[subpaths.count - 1].points.append(point)
+        guard let current = subpaths.last else { return }
+        if current.isClosed {
+            subpaths.append(CGPath.Subpath(points: [current.points[0], point]))
+        } else {
+            subpaths[subpaths.count - 1].points.append(point)
+        }
     }
 
     public func close() {

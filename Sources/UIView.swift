@@ -123,7 +123,6 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     }
 
     public internal(set) weak var superview: UIView? {
-        willSet { willMove(toSuperview: newValue) }
         didSet {
             didMoveToSuperview()
             if !(self.next is UIViewController) {
@@ -167,12 +166,14 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     // MARK: Subviews, Superviews
 
     open func addSubview(_ view: UIView) {
+        view.willMove(toSuperview: self)
         self.setNeedsLayout()
         layer.addSublayer(view.layer)
         insertSubviewWithoutTouchingLayer(view, at: subviews.endIndex)
     }
 
     open func insertSubview(_ view: UIView, aboveSubview siblingSubview: UIView) {
+        view.willMove(toSuperview: self)
         // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
         if let layerIndex = layer.sublayers?.firstIndex(of: siblingSubview.layer) {
             layer.insertSublayer(view.layer, at: UInt32(layerIndex + 1))
@@ -186,6 +187,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     }
 
     open func insertSubview(_ view: UIView, belowSubview siblingSubview: UIView) {
+        view.willMove(toSuperview: self)
         // CALayer traps when trying to add below / above a non-existent sibling, so we need to double up some logic:
         if let layerIndex = layer.sublayers?.firstIndex(of: siblingSubview.layer) {
             layer.insertSublayer(view.layer, at: UInt32(layerIndex))
@@ -200,6 +202,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     }
 
     open func insertSubview(_ view: UIView, at index: Int) {
+        view.willMove(toSuperview: self)
         // XXX: This might not cover all cases yet. Managing these two hierarchies is complex...
         if index == 0 {
             layer.insertSublayer(view.layer, at: 0)
@@ -237,6 +240,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
 
     open func removeFromSuperview() {
         guard let superview = superview else { return }
+        willMove(toSuperview: nil)
         self.layer.removeFromSuperlayer()
 
         superview.subviews.removeAll(where: { $0 == self })
@@ -244,8 +248,9 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
         superview.setNeedsLayout()
     }
 
-    /// Called when the view was added to a non-nil subview
     open func willMove(toSuperview newSuperview: UIView?) {}
+
+    /// Called when the view was added to a non-nil subview
     open func didMoveToSuperview() {}
 
     internal var parentViewController: UIViewController? {
