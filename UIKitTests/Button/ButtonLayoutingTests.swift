@@ -32,4 +32,16 @@ class ButtonLayoutingTests: XCTestCase {
         XCTAssertEqual(button.frame.width, 300)
         XCTAssertEqual(button.frame.height, 100)
     }
+
+    func testMultilineTitleWrapsAtButtonWidth() {
+        button.setTitle("Back to wait mode", for: .normal)
+        button.titleLabel!.font = UIFont(name: "roboto-medium", size: largeFontSize)!
+        button.titleLabel!.numberOfLines = 0
+        button.frame = CGRect(x: 0, y: 0, width: 150, height: 200)
+        button.layoutIfNeeded()
+
+        let singleLineHeight = button.titleLabel!.font.lineHeight
+        XCTAssertLessThanOrEqual(button.titleLabel!.frame.width, 150)
+        XCTAssertGreaterThan(button.titleLabel!.frame.height, singleLineHeight * 1.5)
+    }
 }
