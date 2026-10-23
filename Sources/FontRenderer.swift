@@ -330,8 +330,9 @@ extension FontRenderer {
                 if searchIndex == tok {
                     if charIsDelimiter(searchIndex.pointee) {
                         searchIndex.pointee = CChar(0)
+                    } else {
+                        widestLineWidth = Int32(wrapLength)
                     }
-                    widestLineWidth = Int32(wrapLength)
                     break
                 }
 

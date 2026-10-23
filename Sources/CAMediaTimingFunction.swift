@@ -13,7 +13,7 @@ public let kCAMediaTimingFunctionEaseInEaseOut = "easeInEaseOut"
 public let kCAMediaTimingFunctionDefault = "default"
 let kCAMediaTimingFunctionCustomEaseOut = "customEaseOut"
 
-public struct CAMediaTimingFunctionName: RawRepresentable, Hashable {
+public struct CAMediaTimingFunctionName: RawRepresentable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
 

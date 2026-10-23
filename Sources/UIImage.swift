@@ -99,9 +99,7 @@ public class UIImage {
             }
         }
 
-        guard
-            let image = CGImage(width: width, height: height)
-        else { return self }
+        guard let image = CGImage(width: width, height: height) else { return self }
         tinted.withUnsafeBufferPointer { image.replacePixels(with: $0.baseAddress!, bytesPerPixel: 4) }
         return UIImage(cgImage: image, scale: scale)
     }
