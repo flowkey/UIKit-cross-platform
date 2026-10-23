@@ -7,47 +7,61 @@
 //
 
 public class UIPinchGestureRecognizer: UIGestureRecognizer {
-    /// Incremental scale since the last `.changed`, matching iOS (which resets it in the action handler).
-    public var scale: CGFloat = 1
+    /// Relative to the distance between the fingers when the pinch began, or when `scale` was last set.
+    public var scale: CGFloat {
+        get {
+            guard let distance = currentDistance, let referenceDistance, referenceDistance > 0 else { return referenceScale }
+            return referenceScale * distance / referenceDistance
+        }
+        set {
+            referenceScale = newValue
+            referenceDistance = currentDistance
+        }
+    }
 
-    private var previousDistance: CGFloat?
+    private let hysteresis: CGFloat = 4
+
+    private var referenceScale: CGFloat = 1
+    private var referenceDistance: CGFloat?
+
+    private var currentDistance: CGFloat? {
+        let activeTouches = activeTouches
+        guard activeTouches.count == 2 else { return nil }
+        return (activeTouches[0].location(in: nil) - activeTouches[1].location(in: nil)).magnitude
+    }
+
+    override var canTrackAnotherTouch: Bool {
+        activeTouches.count < 2
+    }
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
-        guard let distance = Self.distance(between: event.allTouches) else { return }
-        // Track a finger that owns a recognizer hierarchy, so cancellation can reach the pan to cancel it.
-        trackedTouch = event.allTouches?.first(where: { !$0.gestureRecognizers.isEmpty }) ?? touches.first
-        previousDistance = distance
-        scale = 1
-        state = .began
-        cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
+        if referenceDistance == nil { referenceDistance = currentDistance }
     }
 
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesMoved(touches, with: event)
-        guard
-            let previousDistance, previousDistance > 0,
-            let distance = Self.distance(between: event.allTouches), distance > 0
-        else { return }
-        scale = distance / previousDistance
-        self.previousDistance = distance
-        state = .changed
-        onAction?()
+        guard let distance = currentDistance else { return }
+        switch state {
+        case .possible:
+            guard let referenceDistance, abs(distance - referenceDistance) >= hysteresis else { return }
+            state = .began
+        case .began, .changed:
+            state = .changed
+        case .ended, .cancelled, .failed:
+            break
+        }
     }
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesEnded(touches, with: event)
-        guard previousDistance != nil else { return } // wasn't pinching
-        previousDistance = nil
-        scale = 1
-        trackedTouch = nil
+        guard state == .began || state == .changed else { return }
         state = .ended
     }
 
-    private static func distance(between touches: Set<UITouch>?) -> CGFloat? {
-        guard let locations = touches?.map({ $0.location(in: nil) }), locations.count >= 2 else { return nil }
-        let dx = locations[0].x - locations[1].x
-        let dy = locations[0].y - locations[1].y
-        return (dx * dx + dy * dy).squareRoot()
+    open override func reset() {
+        super.reset()
+        referenceScale = 1
+        referenceDistance = nil
     }
 }

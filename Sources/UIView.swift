@@ -351,15 +351,20 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     // MARK: Event handling
     // Reference: http://smnh.me/hit-testing-in-ios/
 
-    internal var gestureRecognizers: Set<UIGestureRecognizer> = []
+    internal var gestureRecognizers: [UIGestureRecognizer] = []
     open func addGestureRecognizer(_ recognizer: UIGestureRecognizer) {
+        recognizer.view?.removeGestureRecognizer(recognizer)
         recognizer.view = self
-        gestureRecognizers.insert(recognizer)
+        gestureRecognizers.append(recognizer)
+    }
+
+    open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        true
     }
 
     open func removeGestureRecognizer(_ recognizer: UIGestureRecognizer) {
         recognizer.view = nil
-        gestureRecognizers.remove(recognizer)
+        gestureRecognizers.removeAll { $0 === recognizer }
     }
 
     open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {

@@ -9,92 +9,292 @@
 public enum UIGestureRecognizerState {
     case possible
     case began
-    case recognized
     case changed
     case ended
     case cancelled
     case failed
+
+    public static let recognized = UIGestureRecognizerState.ended
 }
 
-// Reference: https://developer.apple.com/library/content/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/ImplementingaCustomGestureRecognizer.html#//apple_ref/doc/uid/TP40009541-CH8-SW1
+// Reference: https://developer.apple.com/documentation/uikit/uigesturerecognizer
+// and https://developer.apple.com/documentation/uikit/about_the_gesture_recognizer_state_machine
 
 @MainActor
 open class UIGestureRecognizer {
-    public var minimumNumberOfTouches = 0
-    public var maximumNumberOfTouches = 0
     public var isEnabled = true {
-        didSet { if !isEnabled { state = .cancelled } }
-    }
-    public weak var delegate: UIGestureRecognizerDelegate?
-    internal weak var trackedTouch: UITouch?
-
-    open func location(in view: UIView?) -> CGPoint {
-        return trackedTouch?.location(in: view) ?? .zero
-    }
-
-    public var state: UIGestureRecognizerState = .possible {
         didSet {
-            if state == oldValue { return }
-            onStateChanged?()
+            guard !isEnabled, !touches.isEmpty else { return }
             switch state {
-            case .recognized, .ended, .failed:
-                state = .possible
-            default: break
+            case .possible: transition(to: .failed)
+            case .began, .changed: transition(to: .cancelled)
+            case .ended, .cancelled, .failed: break
             }
         }
     }
-    var onStateChanged: (() -> Void)? = nil
 
-    public typealias OnActionCallback = (() -> Void)?
+    public weak var delegate: UIGestureRecognizerDelegate?
+    public internal(set) weak var view: UIView?
+
+    public var cancelsTouchesInView = true
+    public var delaysTouchesBegan = false
+    public var delaysTouchesEnded = true
+
+    public typealias OnActionCallback = (@MainActor () -> Void)?
     internal var onAction: OnActionCallback
 
     public init(onAction: OnActionCallback = nil) {
         self.onAction = onAction
     }
 
+    /// Every touch of the current sequence, including those that already ended, in the order they began.
+    internal private(set) var touches: [UITouch] = []
+
+    internal var activeTouches: [UITouch] {
+        touches.filter { $0.phase != .ended && $0.phase != .cancelled }
+    }
+
+    public var numberOfTouches: Int { touches.count }
+
+    open func location(in view: UIView?) -> CGPoint {
+        let activeTouches = activeTouches
+        let relevantTouches = activeTouches.isEmpty ? touches : activeTouches
+        guard !relevantTouches.isEmpty else { return .zero }
+        let sum = relevantTouches.reduce(CGPoint.zero) { $0 + $1.location(in: view) }
+        return sum / CGFloat(relevantTouches.count)
+    }
+
+    // MARK: State machine
+
+    private var _state: UIGestureRecognizerState = .possible
+
+    /// A recognition held back while a recognizer this one requires to fail is still undecided.
+    private var pendingState: UIGestureRecognizerState?
+
+    public var state: UIGestureRecognizerState {
+        get { _state }
+        set { request(newValue) }
+    }
+
+    private func request(_ newState: UIGestureRecognizerState) {
+        if _state == .ended || _state == .cancelled || _state == .failed { return }
+        if newState == _state, newState != .changed, pendingState == nil { return }
+
+        if _state == .possible, newState == .began || newState == .ended {
+            if let pendingState {
+                // A continuous gesture that ends while still waiting never began.
+                if pendingState == .began, newState == .ended { transition(to: .failed) }
+                return
+            }
+            guard shouldBegin(), !isPreventedByAnActiveRecognizer() else { return transition(to: .failed) }
+            switch failureRequirementStatus() {
+            case .unresolved: pendingState = newState
+            case .recognized: transition(to: .failed)
+            case .failed: transition(to: newState)
+            }
+            return
+        }
+
+        if pendingState != nil {
+            switch newState {
+            case .changed: return
+            case .cancelled, .failed:
+                transition(to: .failed)
+            default: break
+            }
+            return
+        }
+
+        transition(to: newState)
+    }
+
+    private func transition(to newState: UIGestureRecognizerState) {
+        let oldState = _state
+        _state = newState
+
+        if oldState == .possible, newState == .began || newState == .ended {
+            preventOtherGestureRecognizers()
+            for touch in touches {
+                touch.discardDelayedViewTouches()
+                if cancelsTouchesInView { touch.cancelForViews() } else { touch.flushDelayedViewTouches() }
+            }
+            dependents.forEach { $0.requirementRecognized() }
+        }
+
+        switch newState {
+        case .began, .changed:
+            onAction?()
+        case .ended, .cancelled:
+            onAction?()
+            finish()
+        case .failed:
+            dependents.forEach { $0.requirementFailed() }
+            finish()
+        case .possible:
+            break
+        }
+    }
+
+    /// Stops receiving touches, but stays in its final state until the touch sequence ends.
+    private func finish() {
+        for touch in touches { touch.gestureRecognizers.removeAll { $0 === self } }
+        pendingState = nil
+        touches.forEach { $0.flushDelayedViewTouches() }
+
+        let isSequenceOver = UIEvent.activeEvents.allSatisfy { event in
+            event.allTouches?.allSatisfy { $0.phase == .ended || $0.phase == .cancelled } ?? true
+        }
+        if isSequenceOver {
+            resetToPossible()
+        } else {
+            UIGestureRecognizer.awaitingReset.append(self)
+        }
+    }
+
+    private func resetToPossible() {
+        touches = []
+        _state = .possible
+        reset()
+    }
+
+    private static var awaitingReset: [UIGestureRecognizer] = []
+
+    internal static func resetFinishedRecognizers() {
+        let recognizers = awaitingReset
+        awaitingReset = []
+        recognizers.forEach { $0.resetToPossible() }
+    }
+
+    private func shouldBegin() -> Bool {
+        if let view, !view.gestureRecognizerShouldBegin(self) { return false }
+        return delegate?.gestureRecognizerShouldBegin(self) ?? true
+    }
+
+    open func reset() {}
+
+    // MARK: Failure requirements
+
+    private var failureRequirements: [WeakGestureRecognizer] = []
+    private var weakDependents: [WeakGestureRecognizer] = []
+    private var dependents: [UIGestureRecognizer] { weakDependents.compactMap(\.value) }
+
     public func require(toFail other: UIGestureRecognizer) {
-        // TODO: Not implemented
+        failureRequirements.append(WeakGestureRecognizer(other))
+        other.weakDependents.append(WeakGestureRecognizer(self))
     }
 
-    public weak var view: UIView?
-    public var cancelsTouchesInView = true
-    public var delaysTouchesBegan = false
-    public var delaysTouchesEnded = true
+    private enum RequirementStatus { case unresolved, recognized, failed }
 
-    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        if !isEnabled { state = .cancelled; return }
+    private func failureRequirementStatus() -> RequirementStatus {
+        var others = failureRequirements.compactMap(\.value)
+        for touch in touches {
+            for other in touch.gestureRecognizers where other !== self && !others.contains(where: { $0 === other }) {
+                if delegate?.gestureRecognizer(self, shouldRequireFailureOf: other) == true
+                    || other.delegate?.gestureRecognizer(other, shouldBeRequiredToFailBy: self) == true
+                {
+                    others.append(other)
+                }
+            }
+        }
+
+        var status = RequirementStatus.failed
+        for other in others where !other.touches.isEmpty {
+            switch other._state {
+            case .began, .changed, .ended: return .recognized
+            case .possible: status = .unresolved
+            case .cancelled, .failed: break
+            }
+        }
+        return status
     }
+
+    private func requirementRecognized() {
+        if pendingState != nil { transition(to: .failed) }
+    }
+
+    private func requirementFailed() {
+        guard let pendingState else { return }
+        switch failureRequirementStatus() {
+        case .unresolved: return
+        case .recognized:
+            transition(to: .failed)
+        case .failed:
+            self.pendingState = nil
+            transition(to: pendingState)
+        }
+    }
+
+    // MARK: Simultaneous recognition
+
+    private func preventOtherGestureRecognizers() {
+        var prevented: [UIGestureRecognizer] = []
+        for touch in touches {
+            for other in touch.gestureRecognizers where other !== self && !prevented.contains(where: { $0 === other }) {
+                if canRecognizeSimultaneously(with: other) { continue }
+                prevented.append(other)
+            }
+        }
+
+        for other in prevented {
+            switch other._state {
+            case .possible: other.transition(to: .failed)
+            case .began, .changed: other.transition(to: .cancelled)
+            case .ended, .cancelled, .failed: break
+            }
+        }
+    }
+
+    /// A recognizer that joins a touch sequence after another one recognized can't begin alongside it.
+    private func isPreventedByAnActiveRecognizer() -> Bool {
+        touches.contains { touch in
+            touch.gestureRecognizers.contains { other in
+                other !== self && (other._state == .began || other._state == .changed) && !canRecognizeSimultaneously(with: other)
+            }
+        }
+    }
+
+    private func canRecognizeSimultaneously(with other: UIGestureRecognizer) -> Bool {
+        delegate?.gestureRecognizer(self, shouldRecognizeSimultaneouslyWith: other) == true
+            || other.delegate?.gestureRecognizer(other, shouldRecognizeSimultaneouslyWith: self) == true
+    }
+
+    // MARK: Touch delivery (called by UIWindow)
+
+    internal func shouldReceive(_ touch: UITouch) -> Bool {
+        let isFinished = _state == .ended || _state == .cancelled || _state == .failed
+        return isEnabled && !isFinished && delegate?.gestureRecognizer(self, shouldReceive: touch) != false
+    }
+
+    /// Pans follow at most `maximumNumberOfTouches` fingers and ignore the rest.
+    internal var canTrackAnotherTouch: Bool { true }
+
+    internal func add(_ touch: UITouch) {
+        touches.append(touch)
+        touch.gestureRecognizers.append(self)
+    }
+
+    internal func touchSequenceEnded() {
+        guard activeTouches.isEmpty, !touches.isEmpty else { return }
+        if _state == .possible, pendingState == nil { transition(to: .failed) }
+    }
+
+    /// A recognition still waiting for its requirements when the touches are gone never happens.
+    internal func failIfStillPending() {
+        if pendingState != nil, activeTouches.isEmpty { transition(to: .failed) }
+    }
+
+    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {}
     open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {}
     open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {}
 
-    // Cancelled arrives when the in-flight gesture
     open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
-        state = .cancelled
+        state = _state == .possible ? .failed : .cancelled
     }
 }
 
-extension UIGestureRecognizer {
-    func cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously() {
-        guard
-            let touch = self.trackedTouch,
-            self.state != .cancelled && self.state != .failed
-        else { return }
-
-        let otherActiveRecognizers = touch.gestureRecognizers.filter {
-            $0 != self && ($0.state == .began || $0.state == .changed)
-        }
-
-        otherActiveRecognizers.forEach { other in
-            // iOS lets two recognizers run together when *either* delegate opts in.
-            let recognizeSimultaneously =
-                other.delegate?.gestureRecognizer(other, shouldRecognizeSimultaneouslyWith: self) == true ||
-                self.delegate?.gestureRecognizer(self, shouldRecognizeSimultaneouslyWith: other) == true
-
-            if recognizeSimultaneously { return }
-
-            other.touchesCancelled([touch], with: UIEvent())
-        }
-    }
+internal struct WeakGestureRecognizer {
+    weak var value: UIGestureRecognizer?
+    init(_ value: UIGestureRecognizer) { self.value = value }
 }
 
 // Allow UIGestureRecognizers to be added to a `Set` etc.

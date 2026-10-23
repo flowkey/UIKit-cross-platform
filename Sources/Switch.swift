@@ -20,7 +20,7 @@ open class Switch: UIControl {
     }
 
     public init() {
-        tapGestureRecognizer = UITapGestureRecognizer(onPress: nil)
+        tapGestureRecognizer = UITapGestureRecognizer()
 
         super.init(
             frame: CGRect(origin: CGPoint(x: 0, y: 0), size: frameSize)
@@ -34,8 +34,7 @@ open class Switch: UIControl {
         thumb.backgroundColor = isOn ? thumbTintColor : .white
         addSubview(thumb)
 
-        tapGestureRecognizer.view = self
-        tapGestureRecognizer.onPress = {
+        tapGestureRecognizer.onAction = {
             self.setOn(!self.isOn, animated: true)
             self.onPress?(self.isOn)
         }
