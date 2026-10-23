@@ -123,6 +123,9 @@ extension CALayer {
     static func defaultAction(forKey event: String) -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: AnimationKeyPath(stringLiteral: event))
         animation.duration = CATransaction.animationDuration()
+        if let timingFunction = CATransaction.animationTimingFunction() {
+            animation.timingFunction = timingFunction
+        }
         return animation
     }
 }

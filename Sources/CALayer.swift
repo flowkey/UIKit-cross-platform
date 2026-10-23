@@ -230,6 +230,9 @@ open class CALayer {
         return CALayer(layer: self)
     }
 
+    /// Where subclasses draw what they add to `contents`, in this layer's coordinates offset by `origin`.
+    func sdlRenderContent(at origin: CGPoint, opacity: Float, renderer: UIScreen) {}
+
     open func action(forKey event: String) -> CAAction? {
         if let delegate = delegate {
             return delegate.action(forKey: event)
@@ -239,7 +242,7 @@ open class CALayer {
 
     /// returns a non animating copy of the layer
     func createPresentation() -> CALayer {
-        let copy = CALayer(layer: self)
+        let copy = self.copy() as! CALayer
         copy.isPresentationForAnotherLayer = true
         return copy
     }

@@ -10,6 +10,7 @@ public struct CATransaction {
     // These properties have an underscore suffix to avoid conflicts between instance and static members:
     private var disableActions_ = false
     private var animationDuration_: CGFloat = CALayer.defaultAnimationDuration
+    private var animationTimingFunction_: CAMediaTimingFunction?
 
     private static var transactionStack = [CATransaction]()
 
@@ -37,6 +38,15 @@ public struct CATransaction {
     public static func setAnimationDuration(_ newValue: CGFloat) {
         if transactionStack.isEmpty { return }
         transactionStack[transactionStack.count - 1].animationDuration_ = newValue
+    }
+
+    public static func animationTimingFunction() -> CAMediaTimingFunction? {
+        return transactionStack.last?.animationTimingFunction_
+    }
+
+    public static func setAnimationTimingFunction(_ newValue: CAMediaTimingFunction?) {
+        if transactionStack.isEmpty { return }
+        transactionStack[transactionStack.count - 1].animationTimingFunction_ = newValue
     }
 }
     

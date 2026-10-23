@@ -157,6 +157,8 @@ extension CALayer {
             }
         }
 
+        sdlRenderContent(at: deltaFromAnchorPointToOrigin - bounds.origin, opacity: opacity, renderer: renderer)
+
         if mask != nil {
             ShaderProgram.deactivateAll()
         }

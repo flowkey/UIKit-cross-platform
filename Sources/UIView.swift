@@ -117,9 +117,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     }
 
     public internal(set) weak var superview: UIView? {
-        // willSet {
-        // XXX: We should call willMoveToSuperview(newValue) here, but we haven't implemented it yet
-        // }
+        willSet { willMove(toSuperview: newValue) }
         didSet {
             didMoveToSuperview()
             if !(self.next is UIViewController) {
@@ -241,6 +239,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     }
 
     /// Called when the view was added to a non-nil subview
+    open func willMove(toSuperview newSuperview: UIView?) {}
     open func didMoveToSuperview() {}
 
     internal var parentViewController: UIViewController? {
@@ -384,6 +383,12 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
 
     open func sizeThatFits(_ size: CGSize) -> CGSize {
         return bounds.size
+    }
+
+    public static let noIntrinsicMetric: CGFloat = -1
+
+    open var intrinsicContentSize: CGSize {
+        CGSize(width: UIView.noIntrinsicMetric, height: UIView.noIntrinsicMetric)
     }
 
     open func sizeToFit() {
