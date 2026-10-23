@@ -8,7 +8,14 @@
 
 extension CALayer {
     public func add(_ animation: CABasicAnimation, forKey keyPath: String) {
-        let copy = CABasicAnimation(from: animation)
+        if let group = animation as? CAAnimationGroup {
+            for (index, groupedAnimation) in group.groupedAnimations().enumerated() {
+                add(groupedAnimation, forKey: "\(keyPath).\(index)")
+            }
+            return
+        }
+
+        let copy = animation.copy()
         copy.creationTime = Timer()
 
         // animation.fromValue is optional, set it to currently visible state if nil
@@ -24,6 +31,11 @@ extension CALayer {
 
     public func removeAnimation(forKey key: String) {
         animations.removeValue(forKey: key)
+
+        let groupedAnimationPrefix = key + "."
+        for groupedAnimationKey in animations.keys where groupedAnimationKey.hasPrefix(groupedAnimationPrefix) {
+            animations.removeValue(forKey: groupedAnimationKey)
+        }
     }
 
     public func removeAllAnimations() {
@@ -111,8 +123,27 @@ extension CALayer {
             )
             presentation.transform = interpolatedTransform
 
+        case .transformScale, .transformScaleX:
+            guard let scale = numericValue(for: animation, at: progress) else { return }
+            let scaleY = keyPath == .transformScaleX ? 1 : scale
+            presentation.transform = presentation.transform.concat(
+                CATransform3DMakeScale(scale, scaleY, 1)
+            )
+
         case .unknown: break
         }
+    }
+
+    private func numericValue(for animation: CABasicAnimation, at progress: CGFloat) -> CGFloat? {
+        if let keyframeAnimation = animation as? CAKeyframeAnimation {
+            return keyframeAnimation.value(at: progress)
+        }
+
+        guard let keyPath = animation.keyPath, let start = animation.fromValue as? CGFloat else {
+            return nil
+        }
+        let end = animation.toValue as? CGFloat ?? value(forKeyPath: keyPath) as? CGFloat ?? start
+        return start + (end - start) * progress
     }
 }
 
@@ -133,6 +164,7 @@ extension CALayer {
         case .opacity: return opacity
         case .bounds: return bounds
         case .transform: return transform
+        case .transformScale, .transformScaleX: return CGFloat(transform.m11)
         case .position: return position
         case .anchorPoint: return anchorPoint
         case .unknown: return nil

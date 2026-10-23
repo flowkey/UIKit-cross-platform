@@ -8,6 +8,8 @@
 
 public enum AnimationKeyPath: String, ExpressibleByStringLiteral {
     case backgroundColor, opacity, bounds, transform, position, anchorPoint, unknown
+    case transformScale = "transform.scale"
+    case transformScaleX = "transform.scale.x"
 
     public init(stringLiteral value: String) {
         switch value {
@@ -15,6 +17,8 @@ public enum AnimationKeyPath: String, ExpressibleByStringLiteral {
         case "opacity": self = .opacity
         case "bounds": self = .bounds
         case "transform": self = .transform
+        case "transform.scale": self = .transformScale
+        case "transform.scale.x": self = .transformScaleX
         case "position": self = .position
         case "anchorPoint": self = .anchorPoint
         default:
