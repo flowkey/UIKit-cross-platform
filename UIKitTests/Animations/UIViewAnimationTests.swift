@@ -328,6 +328,63 @@ class UIViewAnimationTests: XCTestCase {
         UIView.animateIfNeeded(at: Timer(startingAt: 10000))
         XCTAssertEqual(completionCounter, 1)
     }
+
+    func testRemovingAnAnimationCompletesItUnfinished() {
+        var finishedValues: [Bool] = []
+
+        UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
+            view.alpha = 0.2
+        }, completion: { finishedValues.append($0) })
+        view.layer.removeAnimation(forKey: "opacity")
+
+        XCTAssertEqual(finishedValues, [false])
+    }
+
+    func testRemovingAllAnimationsCompletesThemUnfinished() {
+        var finishedValues: [Bool] = []
+
+        UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
+            view.alpha = 0.2
+        }, completion: { finishedValues.append($0) })
+        view.layer.removeAllAnimations()
+
+        XCTAssertEqual(finishedValues, [false])
+    }
+
+    func testAnimationsCompleteUnfinishedWhenOneOfThemWasRemoved() {
+        var finishedValues: [Bool] = []
+
+        UIView.animate(withDuration: 5, delay: 0, options: [], animations: {
+            view.alpha = 0.2
+            view.frame.origin.x = 20
+        }, completion: { finishedValues.append($0) })
+        view.layer.removeAnimation(forKey: "opacity")
+        UIView.animateIfNeeded(at: Timer(startingAt: 10000))
+
+        XCTAssertEqual(finishedValues, [false])
+    }
+
+    func testNestedAnimationDoesNotEndTheOuterAnimation() {
+        let otherView = UIView()
+        otherView.layer.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
+
+        UIView.animate(withDuration: 5, delay: 0, options: [.curveLinear], animations: {
+            UIView.animate(withDuration: 1, animations: { otherView.alpha = 0.5 })
+            view.alpha = 0.2
+        })
+
+        XCTAssertEqual(view.layer.animations.count, 1)
+    }
+
+    func testViewCreatedInsideAnAnimationDoesNotAnimateItsInitialFrame() {
+        var createdView: UIView?
+
+        UIView.animate(withDuration: 5, animations: {
+            createdView = UIView(frame: CGRect(x: 10, y: 10, width: 10, height: 10))
+        })
+
+        XCTAssertEqual(createdView?.layer.animations.count, 0)
+    }
 }
 
 

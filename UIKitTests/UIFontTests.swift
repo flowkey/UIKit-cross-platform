@@ -28,10 +28,28 @@ class UIFontTests: XCTestCase {
         XCTAssertEqual(calculatedSize.height, testFont.lineHeight)
     }
 
+    func testBlankLineDoesNotWidenWrappedText() {
+        let calculatedSize = "a\n\nb".size(with: testFont, wrapLength: 200)
+        XCTAssertEqual(calculatedSize.width, "a".size(with: testFont).width, accuracy: 1)
+    }
+
+    func testLabelWrapsAtTheWidthItIsAskedToFit() {
+        let label = UILabel()
+        label.font = testFont
+        label.numberOfLines = 0
+        label.text = multilineText.replacingOccurrences(of: "\n", with: " ")
+
+        let size = label.sizeThatFits(CGSize(width: 200, height: .greatestFiniteMagnitude))
+
+        XCTAssertLessThanOrEqual(size.width, 200)
+        XCTAssertGreaterThan(size.height, testFont.lineHeight)
+    }
+
     func testGetWrappedMultilineTextSize() {
         let wrapLength: CGFloat = 200
         let calculatedSize = multilineText.size(with: testFont, wrapLength: wrapLength)
-        XCTAssertEqual(calculatedSize.width, CGFloat(wrapLength))
+        let widestLineWidth = multilineText.split(separator: "\n").map { String($0).size(with: testFont).width }.max()
+        XCTAssertEqual(calculatedSize.width, widestLineWidth)
 
         let numberOfLines = CGFloat(multilineText.numberOfLines())
 

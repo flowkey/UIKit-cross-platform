@@ -65,14 +65,14 @@ open class UILabel: UIView {
     }
 
     /// Wrap width in device pixels for the attributed-text path (0 = single line = no wrapping).
-    private var attributedWrapLength: Int {
-        Int((numberOfLines != 1 ? bounds.width : 0) * (UIScreen.lastKnownScreenScale ?? 2))
+    private func attributedWrapLength(forWidth width: CGFloat) -> Int {
+        Int((numberOfLines != 1 ? width : 0) * (UIScreen.lastKnownScreenScale ?? 2))
     }
 
     open override func draw() {
         super.draw()
         if let attributedText = attributedText {
-            layer.contents = FontRenderer.renderAttributedString(attributedText, color: textColor, wrapLength: attributedWrapLength, alignment: textAlignment, defaultFont: font)
+            layer.contents = FontRenderer.renderAttributedString(attributedText, color: textColor, wrapLength: attributedWrapLength(forWidth: bounds.width), alignment: textAlignment, defaultFont: font)
             return
         }
         // Single-line, tail-truncating labels get a trailing ellipsis to fit their width, matching
@@ -102,14 +102,16 @@ open class UILabel: UIView {
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        let wrapLength = numberOfLines != 1 && size.width > 0 && size.width < .greatestFiniteMagnitude ? size.width : 0
+
         if let attributedText = attributedText {
-            return FontRenderer.getAttributedStringSize(attributedText, wrapLength: attributedWrapLength, defaultFont: font) / (UIScreen.lastKnownScreenScale ?? 2)
+            return FontRenderer.getAttributedStringSize(attributedText, wrapLength: attributedWrapLength(forWidth: wrapLength), defaultFont: font) / (UIScreen.lastKnownScreenScale ?? 2)
         }
 
         guard let text = self.text else { return .zero }
-        let wrapLength = (numberOfLines != 1) ? bounds.width : 0
-
-        return text.size(with: self.font, wrapLength: wrapLength)
+        let size = text.size(with: self.font, wrapLength: wrapLength)
+        // Rounded up, since draw() truncates the width to whole pixels and would otherwise rewrap the last word.
+        return wrapLength > 0 ? CGSize(width: size.width.rounded(.up), height: size.height) : size
     }
 
     open var shadowColor: UIColor? {

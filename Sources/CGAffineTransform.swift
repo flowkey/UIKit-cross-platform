@@ -17,6 +17,18 @@ public extension CGAffineTransform {
         self.init(rotationByRadians: rotationAngle)
     }
 
+    init(translationX: CGFloat, y: CGFloat) {
+        self.init(translationByX: translationX, byY: y)
+    }
+
+    func scaledBy(x: CGFloat, y: CGFloat) -> CGAffineTransform {
+        CGAffineTransform(scaleX: x, y: y).concatenated(self)
+    }
+
+    func translatedBy(x: CGFloat, y: CGFloat) -> CGAffineTransform {
+        CGAffineTransform(translationX: x, y: y).concatenated(self)
+    }
+
     var isIdentity: Bool {
         return self == .identity
     }

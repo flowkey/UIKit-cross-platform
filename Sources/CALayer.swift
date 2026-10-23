@@ -21,6 +21,10 @@ open class CALayer {
 
     open var contentsGravity: CALayerContentsGravity = .resize
 
+    open var contentsCenter = CGRect(x: 0, y: 0, width: 1, height: 1) {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
+
     internal(set) public weak var superlayer: CALayer?
     internal(set) public var sublayers: [CALayer]? {
         didSet { CALayer.layerTreeIsDirty = true }
@@ -215,6 +219,7 @@ open class CALayer {
         superlayer = layer.superlayer
         sublayers = layer.sublayers
         contentsGravity = layer.contentsGravity
+        contentsCenter = layer.contentsCenter
     }
 
     open func copy() -> Any {

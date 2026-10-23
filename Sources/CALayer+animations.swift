@@ -18,16 +18,20 @@ extension CALayer {
 
         copy.animationGroup?.queuedAnimations += 1
 
-        animations[keyPath]?.animationGroup?.animationDidStop(finished: false)
+        if let replacedGroup = animations[keyPath]?.animationGroup {
+            replacedGroup.animationDidStop(finished: replacedGroup === copy.animationGroup)
+        }
         animations[keyPath] = copy
     }
 
     public func removeAnimation(forKey key: String) {
-        animations.removeValue(forKey: key)
+        animations.removeValue(forKey: key)?.animationGroup?.animationDidStop(finished: false)
     }
 
     public func removeAllAnimations() {
+        let removedAnimations = animations.values
         animations.removeAll()
+        removedAnimations.forEach { $0.animationGroup?.animationDidStop(finished: false) }
     }
 
     func onWillSet(keyPath: AnimationKeyPath) {
@@ -64,8 +68,8 @@ extension CALayer {
             update(presentation, for: animation, with: animationProgress)
 
             if animationProgress == 1 && animation.isRemovedOnCompletion {
+                animations.removeValue(forKey: key)
                 animation.animationGroup?.animationDidStop(finished: true)
-                removeAnimation(forKey: key)
             }
         }
 

@@ -198,6 +198,23 @@ extension CGRect: Equatable {
     }
 }
 
+extension CGRect {
+    /// The smallest rect containing all the points, or `.zero` without any.
+    init<Points: Sequence<CGPoint>>(boundingPoints points: Points) {
+        var iterator = points.makeIterator()
+        guard let first = iterator.next() else {
+            self = .zero
+            return
+        }
+        var minPoint = first, maxPoint = first
+        while let point = iterator.next() {
+            minPoint = CGPoint(x: Swift.min(minPoint.x, point.x), y: Swift.min(minPoint.y, point.y))
+            maxPoint = CGPoint(x: Swift.max(maxPoint.x, point.x), y: Swift.max(maxPoint.y, point.y))
+        }
+        self.init(x: minPoint.x, y: minPoint.y, width: maxPoint.x - minPoint.x, height: maxPoint.y - minPoint.y)
+    }
+}
+
 // MARK: Performance optimizations:
 // The unspecialised generic versions of these functions take over 20% of the render func's CPU time in debug
 // As they are written here they don't even register in the profiler:

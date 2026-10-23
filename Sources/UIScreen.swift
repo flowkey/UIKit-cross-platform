@@ -32,7 +32,7 @@ public extension UIScreen {
     nonisolated(unsafe) internal static var contextGeneration: UInt64 = 0
 }
 
-@MainActor
+@preconcurrency @MainActor
 public final class UIScreen {
     // If we could use `private` members from an extension this would be private
     // Keep that in mind when using it: i.e. if possible, don't ;)
@@ -236,6 +236,14 @@ fileprivate func getAndroidScreenDimension() -> (width: CGFloat, height: CGFloat
     else { return(0, 0, 2) }
 
     return (CGFloat(width), CGFloat(height), CGFloat(scale))
+}
+
+extension UIScreen {
+    /// Android only: the radius of the display's rounded corners, which iOS has no public API for.
+    public var displayCornerRadius: CGFloat {
+        let radius: JavaFloat = (try? jni.call("getDisplayCornerRadius", on: getSDLView())) ?? 0
+        return CGFloat(radius)
+    }
 }
 #endif
 

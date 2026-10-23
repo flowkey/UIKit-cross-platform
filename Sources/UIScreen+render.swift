@@ -17,10 +17,13 @@ extension UIScreen {
             return
         }
 
-        for displayLink in DisplayLink.activeDisplayLinks where !displayLink.isPaused {
-            displayLink.callback?()
-        }
+        // Before the display links so they read this frame's presentation, and again after so what they set draws this frame.
         UIView.animateIfNeeded(at: frameTimer)
+        let displayLinks = DisplayLink.activeDisplayLinks.filter { !$0.isPaused }
+        if !displayLinks.isEmpty {
+            displayLinks.forEach { $0.callback?() }
+            UIView.animateIfNeeded(at: frameTimer)
+        }
         // XXX: It's possible for drawing to crash if the context is invalid:
         window.sdlDrawAndLayoutTreeIfNeeded()
 
@@ -68,6 +71,55 @@ extension UIScreen {
             Float(contentsGravity.scale.width / contentsScale),
             Float(contentsGravity.scale.height / contentsScale)
         )
+
+        try throwOnErrors(ofType: [GPU_ERROR_USER_ERROR])
+    }
+
+    func blit(
+        _ image: CGImage,
+        in rect: CGRect,
+        contentsCenter center: CGRect,
+        contentsScale: CGFloat,
+        opacity: Float
+    ) throws {
+        GPU_SetRGBA(image.rawPointer, 255, 255, 255, opacity.normalisedToUInt8())
+
+        // Snapping rounds each slice on its own, which opens gaps between neighbouring slices.
+        let snapMode = GPU_GetSnapMode(image.rawPointer)
+        GPU_SetSnapMode(image.rawPointer, GPU_SNAP_NONE)
+        defer { GPU_SetSnapMode(image.rawPointer, snapMode) }
+
+        func slices(length: CGFloat, centerStart: CGFloat, centerEnd: CGFloat, from start: CGFloat, to end: CGFloat)
+            -> (source: [CGFloat], destination: [CGFloat])
+        {
+            let source = [0, centerStart * length, centerEnd * length, length]
+            let leadingCap = source[1] / contentsScale
+            let trailingCap = (length - source[2]) / contentsScale
+            let capScale = min(1, (end - start) / max(leadingCap + trailingCap, .leastNonzeroMagnitude))
+            return (source, [start, start + leadingCap * capScale, end - trailingCap * capScale, end])
+        }
+
+        let columns = slices(length: CGFloat(image.width), centerStart: center.minX, centerEnd: center.maxX, from: rect.minX, to: rect.maxX)
+        let rows = slices(length: CGFloat(image.height), centerStart: center.minY, centerEnd: center.maxY, from: rect.minY, to: rect.maxY)
+
+        for row in 0 ..< 3 {
+            for column in 0 ..< 3 {
+                var source = GPU_Rect(
+                    x: Float(columns.source[column]),
+                    y: Float(rows.source[row]),
+                    w: Float(columns.source[column + 1] - columns.source[column]),
+                    h: Float(rows.source[row + 1] - rows.source[row])
+                )
+                var destination = GPU_Rect(
+                    x: Float(columns.destination[column]),
+                    y: Float(rows.destination[row]),
+                    w: Float(columns.destination[column + 1] - columns.destination[column]),
+                    h: Float(rows.destination[row + 1] - rows.destination[row])
+                )
+                if source.w <= 0 || source.h <= 0 || destination.w <= 0 || destination.h <= 0 { continue }
+                GPU_BlitRect(image.rawPointer, &source, self.rawPointer, &destination)
+            }
+        }
 
         try throwOnErrors(ofType: [GPU_ERROR_USER_ERROR])
     }
