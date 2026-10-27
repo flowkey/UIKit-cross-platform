@@ -239,14 +239,6 @@ fileprivate func getAndroidScreenDimension() -> (width: CGFloat, height: CGFloat
 
     return (CGFloat(width), CGFloat(height), CGFloat(scale))
 }
-
-extension UIScreen {
-    /// Android only: the radius of the display's rounded corners, which iOS has no public API for.
-    public var displayCornerRadius: CGFloat {
-        let radius: JavaFloat = (try? jni.call("getDisplayCornerRadius", on: getSDLView())) ?? 0
-        return CGFloat(radius)
-    }
-}
 #endif
 
 @MainActor
