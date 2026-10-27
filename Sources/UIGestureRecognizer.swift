@@ -14,7 +14,7 @@ public enum UIGestureRecognizerState {
     case cancelled
     case failed
 
-    /// What discrete gestures like taps end in, the same state as `ended` on iOS.
+    /// Same as `ended`. iOS uses this name for gestures like taps, which happen at once instead of over time.
     /// https://developer.apple.com/documentation/uikit/uigesturerecognizer/state/recognized
     public static let recognized = UIGestureRecognizerState.ended
 }
