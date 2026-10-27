@@ -213,6 +213,8 @@ extension UIScreen {
         guard let image = CGImage(width: width, height: height) else { return nil }
         // Blending into the cleared image with `GPU_BLEND_NORMAL_FACTOR_ALPHA` leaves premultiplied colours.
         GPU_SetBlendMode(image.rawPointer, GPU_BLEND_PREMULTIPLIED_ALPHA)
+        // Snapping shifts a quad of odd size by half a point (renderer_GL_common.inl:4313), which this one has to cover exactly.
+        GPU_SetSnapMode(image.rawPointer, GPU_SNAP_NONE)
         cachedGroupOpacityImage = (image, UIScreen.contextGeneration)
         return image
     }
