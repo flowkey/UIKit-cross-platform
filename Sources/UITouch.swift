@@ -49,7 +49,7 @@ public class UITouch {
     private var delayedViewPhases: [UITouchPhase] = []
 
     /// Hands the touch's current phase to its view, unless a recognizer cancelled it or delays it.
-    func deliverToView() {
+    func maybeDeliverToView() {
         if hasBeenCancelledByAGestureRecognizer { return }
         if !delayedViewPhases.isEmpty || isDelayedByAGestureRecognizer {
             delayedViewPhases.append(phase)

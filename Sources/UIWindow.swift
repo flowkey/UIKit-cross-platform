@@ -49,11 +49,11 @@ public class UIWindow: UIView {
             }
 
             deliver(touch) { $0.touchesBegan(touches, with: event) }
-            touch.deliverToView()
+            touch.maybeDeliverToView()
 
         case .moved, .stationary:
             deliver(touch) { $0.touchesMoved(touches, with: event) }
-            touch.deliverToView()
+            touch.maybeDeliverToView()
 
         case .ended, .cancelled:
             let recognizers = touch.gestureRecognizers
@@ -62,7 +62,7 @@ public class UIWindow: UIView {
             } else {
                 deliver(touch) { $0.touchesCancelled(touches, with: event) }
             }
-            touch.deliverToView()
+            touch.maybeDeliverToView()
 
             recognizers.forEach { $0.touchSequenceEnded() }
             recognizers.forEach { $0.failIfStillPending() }
