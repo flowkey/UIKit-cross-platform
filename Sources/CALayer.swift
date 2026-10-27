@@ -230,7 +230,7 @@ open class CALayer {
         return CALayer(layer: self)
     }
 
-    /// Where subclasses draw what they add to `contents`, in this layer's coordinates offset by `origin`.
+    /// Layers are drawn with SDL rather than into a `CGContext`, so a subclass that draws more than `contents`, like `CAShapeLayer`, does it here.
     func sdlRenderContent(at origin: CGPoint, opacity: Float, renderer: UIScreen) {}
 
     open func action(forKey event: String) -> CAAction? {

@@ -1,4 +1,4 @@
-@preconcurrency @MainActor
+@MainActor
 open class UIFont {
     public let fontName: String
     public var familyName: String? {

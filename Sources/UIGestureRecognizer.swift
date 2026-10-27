@@ -151,7 +151,7 @@ open class UIGestureRecognizer {
         if isSequenceOver {
             resetToPossible()
         } else {
-            UIGestureRecognizer.awaitingReset.append(self)
+            UIGestureRecognizer.recognizersAwaitingReset.append(self)
         }
     }
 
@@ -161,12 +161,12 @@ open class UIGestureRecognizer {
         reset()
     }
 
-    private static var awaitingReset: [UIGestureRecognizer] = []
+    private static var recognizersAwaitingReset: [UIGestureRecognizer] = []
 
     /// Called once every touch of the sequence has ended.
     internal static func resetFinishedRecognizers() {
-        let recognizers = awaitingReset
-        awaitingReset = []
+        let recognizers = recognizersAwaitingReset
+        recognizersAwaitingReset = []
         recognizers.forEach { $0.resetToPossible() }
     }
 
