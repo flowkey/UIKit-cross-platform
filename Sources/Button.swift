@@ -99,7 +99,6 @@ open class Button: UIControl {
         addSubview(imageView)
         self.imageView = imageView
 
-        tapGestureRecognizer.touchUpInsideMargin = 70
         tapGestureRecognizer.onTouchesBegan = { [weak self] in
             self?.isHighlighted = true
         }
