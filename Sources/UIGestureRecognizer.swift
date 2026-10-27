@@ -14,6 +14,7 @@ public enum UIGestureRecognizerState {
     case cancelled
     case failed
 
+    /// What discrete gestures like taps end in, the same state as `ended` on iOS.
     public static let recognized = UIGestureRecognizerState.ended
 }
 
