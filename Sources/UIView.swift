@@ -1,7 +1,6 @@
 internal import SDL
 
-// @preconcurrency: nonisolated app code that compiles against Apple's UIKit compiles against this too.
-@preconcurrency @MainActor
+@MainActor
 open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     open class var layerClass: CALayer.Type {
         return CALayer.self

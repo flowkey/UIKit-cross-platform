@@ -8,8 +8,7 @@ import RegexBuilder
 import _StringProcessing
 #endif
 
-// @preconcurrency: nonisolated app code that compiles against Apple's UIKit compiles against this too.
-@preconcurrency @MainActor // UIImage is MainActor but CGImage is not
+@MainActor // UIImage is MainActor but CGImage is not
 public class UIImage {
     public let cgImage: CGImage
     public let size: CGSize

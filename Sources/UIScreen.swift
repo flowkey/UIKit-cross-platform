@@ -32,8 +32,7 @@ public extension UIScreen {
     nonisolated(unsafe) internal static var contextGeneration: UInt64 = 0
 }
 
-// @preconcurrency: nonisolated app code that compiles against Apple's UIKit compiles against this too.
-@preconcurrency @MainActor
+@MainActor
 public final class UIScreen {
     // If we could use `private` members from an extension this would be private
     // Keep that in mind when using it: i.e. if possible, don't ;)
