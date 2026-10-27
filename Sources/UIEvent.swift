@@ -13,6 +13,10 @@ public class UIEvent {
 
     public init() {}
 
+    public func touches(for gestureRecognizer: UIGestureRecognizer) -> Set<UITouch>? {
+        Set(gestureRecognizer.touches.filter { allTouches?.contains($0) ?? false })
+    }
+
     internal init(touch: UITouch) {
         allTouches = Set<UITouch>([touch])
         changedTouch = touch

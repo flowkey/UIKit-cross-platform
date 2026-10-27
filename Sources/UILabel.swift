@@ -101,6 +101,10 @@ open class UILabel: UIView {
         updateLayerContentsGravityFromTextAlignment()
     }
 
+    override open var intrinsicContentSize: CGSize {
+        sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
+    }
+
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         if let attributedText = attributedText {
             return FontRenderer.getAttributedStringSize(attributedText, wrapLength: attributedWrapLength, defaultFont: font) / (UIScreen.lastKnownScreenScale ?? 2)

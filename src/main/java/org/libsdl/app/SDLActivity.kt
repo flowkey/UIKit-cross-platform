@@ -126,6 +126,20 @@ open class SDLActivity internal constructor (context: Context?) : RelativeLayout
         return zeroRect
     }
 
+    @Suppress("unused") // accessed via JNI
+    fun getDisplayCornerRadius(): Float {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return 0f
+        val insets = rootWindowInsets ?: return 0f
+        val corners = listOf(
+            RoundedCorner.POSITION_TOP_LEFT,
+            RoundedCorner.POSITION_TOP_RIGHT,
+            RoundedCorner.POSITION_BOTTOM_RIGHT,
+            RoundedCorner.POSITION_BOTTOM_LEFT
+        )
+        val radius = corners.maxOf { insets.getRoundedCorner(it)?.radius ?: 0 }
+        return radius.toFloat() / getDeviceDensity()
+    }
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         Log.v(TAG, "onWindowFocusChanged(): " + hasFocus)

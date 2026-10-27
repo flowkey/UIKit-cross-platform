@@ -1,6 +1,6 @@
 internal import SDL
 
-@MainActor
+@preconcurrency @MainActor
 open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     open class var layerClass: CALayer.Type {
         return CALayer.self
@@ -112,15 +112,22 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     }
 
     public internal(set) weak var superview: UIView? {
-        // willSet {
-        // XXX: We should call willMoveToSuperview(newValue) here, but we haven't implemented it yet
-        // }
+        willSet { willMove(toSuperview: newValue) }
         didSet {
             didMoveToSuperview()
             if !(self.next is UIViewController) {
                 self.next = superview
             }
         }
+    }
+
+    public var window: UIWindow? {
+        var view: UIView? = self
+        while let current = view {
+            if let window = current as? UIWindow { return window }
+            view = current.superview
+        }
+        return nil
     }
 
     internal(set) public var subviews: [UIView] = [] {
@@ -224,6 +231,7 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     }
 
     /// Called when the view was added to a non-nil subview
+    open func willMove(toSuperview newSuperview: UIView?) {}
     open func didMoveToSuperview() {}
 
     internal var parentViewController: UIViewController? {
@@ -243,8 +251,8 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     /// If the other view is `nil` or is not in the same view hierarchy as `self`,
     /// the original point will be return unchanged.
     public func convert(_ point: CGPoint, to otherView: UIView?) -> CGPoint {
-        // Fastest path is doing no work :)
-        guard let otherView, otherView != self else { return point }
+        guard let otherView else { return pointInRootCoordinates(point) }
+        if otherView == self { return point }
 
         // Fast paths:
         if self == otherView.superview {
@@ -304,7 +312,25 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     }
 
     public func convert(_ point: CGPoint, from view: UIView?) -> CGPoint {
-        return view?.convert(point, to: self) ?? point
+        guard let view else { return rootCoordinatesToLocal(point) }
+        return view.convert(point, to: self)
+    }
+
+    public func convert(_ rect: CGRect, to otherView: UIView?) -> CGRect {
+        boundingBox(of: rect) { convert($0, to: otherView) }
+    }
+
+    public func convert(_ rect: CGRect, from view: UIView?) -> CGRect {
+        boundingBox(of: rect) { convert($0, from: view) }
+    }
+
+    private func boundingBox(of rect: CGRect, converting convertPoint: (CGPoint) -> CGPoint) -> CGRect {
+        CGRect(boundingPoints: [
+            convertPoint(CGPoint(x: rect.minX, y: rect.minY)),
+            convertPoint(CGPoint(x: rect.maxX, y: rect.minY)),
+            convertPoint(CGPoint(x: rect.minX, y: rect.maxY)),
+            convertPoint(CGPoint(x: rect.maxX, y: rect.maxY)),
+        ])
     }
 
 
@@ -349,6 +375,12 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
 
     open func sizeThatFits(_ size: CGSize) -> CGSize {
         return bounds.size
+    }
+
+    public static let noIntrinsicMetric: CGFloat = -1
+
+    open var intrinsicContentSize: CGSize {
+        CGSize(width: UIView.noIntrinsicMetric, height: UIView.noIntrinsicMetric)
     }
 
     open func sizeToFit() {
