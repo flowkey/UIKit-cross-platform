@@ -132,7 +132,7 @@ extension CALayer {
 
         if let contents = contents {
             do {
-                if contentsCenter != CGRect(x: 0, y: 0, width: 1, height: 1), contentsGravity == .resize {
+                if contentsCenter != .defaultContentsCenter, contentsGravity == .resize {
                     try renderer.blit(
                         contents,
                         in: renderedBoundsRelativeToAnchorPoint,

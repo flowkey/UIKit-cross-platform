@@ -1,9 +1,5 @@
 internal import SDL
 
-#if os(macOS)
-import Foundation
-#endif
-
 @MainActor
 open class CALayer {
     open weak var delegate: CALayerDelegate?
@@ -25,7 +21,7 @@ open class CALayer {
 
     open var contentsGravity: CALayerContentsGravity = .resize
 
-    open var contentsCenter = CGRect(x: 0, y: 0, width: 1, height: 1) {
+    open var contentsCenter = CGRect.defaultContentsCenter {
         didSet { CALayer.layerTreeIsDirty = true }
     }
 
@@ -321,4 +317,9 @@ extension CALayer: Hashable {
 public protocol CALayerDelegate: AnyObject {
     func action(forKey event: String) -> CABasicAnimation?
     func display(_ layer: CALayer)
+}
+
+extension CGRect {
+    /// The whole of `contents` stretches, as on iOS: https://developer.apple.com/documentation/quartzcore/calayer/contentscenter
+    static let defaultContentsCenter = CGRect(x: 0, y: 0, width: 1, height: 1)
 }
