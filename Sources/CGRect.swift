@@ -200,7 +200,7 @@ extension CGRect: Equatable {
 
 extension CGRect {
     /// The smallest rect containing all the points, or `.zero` without any.
-    init<Points: Sequence<CGPoint>>(boundingPoints points: Points) {
+    init(boundingPoints points: some Sequence<CGPoint>) {
         var iterator = points.makeIterator()
         guard let first = iterator.next() else {
             self = .zero
