@@ -191,8 +191,7 @@ open class CALayer {
 
     public var masksToBounds = false
 
-    /// Off by default, unlike iOS: compositing a fading subtree as one costs an offscreen pass per frame.
-    public var allowsGroupOpacity = false
+    public var allowsGroupOpacity = true
 
     public required init() {}
 
