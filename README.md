@@ -64,9 +64,9 @@ brew install cmake && brew install ninja
     2. Go to Appearance & Behavior -> System Settings -> Android SDK
     3. under SDK Platforms: install SDK for API Level 29
     4. under SDK Tools, install `Android SDK Build Tools`
-    5. under SDK Tools, install NDK 27.1.12297006 (tick `Show Package Details` to see all available versions)
+    5. under SDK Tools, install NDK 30.0.16248370 (tick `Show Package Details` to see all available versions)
     6. Press Apply / OK to install SDKs
-    7. create a symlink in `/usr/local/ndk/27.1.12297006/` pointing to the path of the NDK (`ln -vsi ~/Library/Android/sdk/ndk/27.1.12297006 /usr/local/ndk/27.1.12297006`)
+    7. create a symlink in `/usr/local/ndk/30.0.16248370/` pointing to the path of the NDK (`ln -vsi ~/Library/Android/sdk/ndk/30.0.16248370 /usr/local/ndk/30.0.16248370`)
 
 ## Architecture
 
