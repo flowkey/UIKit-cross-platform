@@ -40,4 +40,5 @@ extension CGColor: AnimatableProperty {
 extension CGRect: AnimatableProperty {}
 extension CGPoint: AnimatableProperty {}
 extension Float: AnimatableProperty {}
+extension CGFloat: AnimatableProperty {}
 extension CATransform3D: AnimatableProperty {}
