@@ -320,6 +320,5 @@ public protocol CALayerDelegate: AnyObject {
 }
 
 extension CGRect {
-    /// The whole of `contents` stretches, as on iOS: https://developer.apple.com/documentation/quartzcore/calayer/contentscenter
     static let defaultContentsCenter = CGRect(x: 0, y: 0, width: 1, height: 1)
 }
