@@ -12,18 +12,9 @@ extension CALayer {
     @MainActor
     final func sdlRender(parentAbsoluteOpacity: Float = 1) {
         guard let renderer = UIScreen.main else { return }
-        let opacity = self.opacity * parentAbsoluteOpacity
+        var opacity = self.opacity * parentAbsoluteOpacity
         if isHidden || opacity < 0.01 { return }
 
-        if allowsGroupOpacity, self.opacity < 1, sublayers?.isEmpty == false, !renderer.isRenderingGroupOpacity {
-            renderer.renderWithGroupOpacity(opacity) { sdlRender(renderer: renderer, opacity: 1) }
-        } else {
-            sdlRender(renderer: renderer, opacity: opacity)
-        }
-    }
-
-    @MainActor
-    private func sdlRender(renderer: UIScreen, opacity: Float) {
         // The basis for all our transformations is `position` (in parent coordinates), which in this layer's
         // coordinates is `anchorPoint`. To make this happen, we translate (in our parent's coordinate system
         // – which may in turn be affected by its parents, and so on) to `position`, and then render rectangles
@@ -46,7 +37,9 @@ extension CALayer {
 
         // Big performance optimization. Don't render anything that's entirely offscreen:
         let absoluteFrame = renderedBoundsRelativeToAnchorPoint.applying(modelViewTransform)
-        guard absoluteFrame.intersects(renderer.bounds) else { return }
+        guard absoluteFrame.intersects(renderer.bounds) else {
+            return
+        }
 
         self.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
 
@@ -62,6 +55,11 @@ extension CALayer {
             // If a previous clippingRect exists restrict it further, otherwise just set it:
             renderer.clippingRect = previousClippingRect?.intersection(absoluteFrame) ?? absoluteFrame
         }
+
+        let groupOpacity = opacity
+        let rendersAsGroup = allowsGroupOpacity && self.opacity < 1 && sublayers?.isEmpty == false
+            && !renderer.isRenderingGroupOpacity && renderer.beginGroupOpacity()
+        if rendersAsGroup { opacity = 1 }
 
         // If a mask exists, take it into account when rendering by combining absoluteFrame with the mask's frame
         if let mask = mask {
@@ -185,6 +183,8 @@ extension CALayer {
                 (sublayer._presentation ?? sublayer).sdlRender(parentAbsoluteOpacity: opacity)
             }
         }
+
+        if rendersAsGroup { renderer.endGroupOpacity(groupOpacity) }
 
         // We're done rendering this part of the tree
         // To render further siblings we need to return to our parent's transform (at its `origin`).

@@ -177,7 +177,7 @@ open class UIGestureRecognizer {
         return delegate?.gestureRecognizerShouldBegin(self) ?? true
     }
 
-    /// Resets the recognizer's own state once its gesture ended, failed or was cancelled. Subclasses override this.
+    /// Resets the recognizer's own state once its gesture ended, failed or was cancelled.
     open func reset() {}
 
     // MARK: Failure requirements
@@ -264,7 +264,6 @@ open class UIGestureRecognizer {
         return isEnabled && !isFinished && delegate?.gestureRecognizer(self, shouldReceive: touch) != false
     }
 
-    /// Pans follow at most `maximumNumberOfTouches` fingers and ignore the rest.
     internal var canTrackAnotherTouch: Bool { true }
 
     internal func add(_ touch: UITouch) {
@@ -272,7 +271,6 @@ open class UIGestureRecognizer {
         touch.gestureRecognizers.append(self)
     }
 
-    /// Called once all of this recognizer's touches have ended.
     internal func touchSequenceEnded() {
         guard activeTouches.isEmpty, !touches.isEmpty else { return }
         if _state == .possible, pendingState == nil { transition(to: .failed) }

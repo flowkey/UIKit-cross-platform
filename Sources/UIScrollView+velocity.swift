@@ -31,7 +31,6 @@ extension UIScrollView {
         // This calculation is a weird approximation but it's close enough for now...
         let animationTime = log(Double(distanceToBoundsCheckedTarget.magnitude)) * animationTimeConstant
 
-        decelerationDisplayLink.isPaused = false
         UIView.animate(
             withDuration: animationTime,
             options: [.beginFromCurrentState, .customEaseOut, .allowUserInteraction],
@@ -40,7 +39,6 @@ extension UIScrollView {
                 self.contentOffset = targetOffset
             },
             completion: { finished in
-                self.decelerationDisplayLink.isPaused = true
                 self.isDecelerating = false
                 if finished { self.delegate?.scrollViewDidEndDecelerating(self) }
             }
@@ -53,7 +51,6 @@ extension UIScrollView {
         // Get the presentation value from the current animation
         setContentOffset(visibleContentOffset, animated: false)
         cancelDecelerationAnimations()
-        decelerationDisplayLink.isPaused = true
         isDecelerating = false
     }
 

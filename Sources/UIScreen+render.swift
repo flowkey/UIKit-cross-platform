@@ -175,25 +175,31 @@ extension UIScreen {
     /// Only the window's target has a context, an image target doesn't.
     var isRenderingGroupOpacity: Bool { rawPointer.pointee.context == nil }
 
-    /// Draws `body` into an offscreen copy of the screen and composites it with `opacity` once, as Core Animation's
+    /// Draws into an offscreen copy of the screen until `endGroupOpacity` composites it once, as Core Animation's
     /// group opacity does, so overlapping translucent sublayers don't show through each other.
     @MainActor
-    func renderWithGroupOpacity(_ opacity: Float, _ body: () -> Void) {
+    func beginGroupOpacity() -> Bool {
         guard
             let screenTarget = rawPointer,
             let context = screenTarget.pointee.context,
             let image = groupOpacityImage(width: Int(context.pointee.drawable_w), height: Int(context.pointee.drawable_h)),
             let target = GPU_GetTarget(image.rawPointer)
-        else { return body() }
+        else { return false }
 
         GPU_SetVirtualResolution(target, screenTarget.pointee.w, screenTarget.pointee.h)
         let screenClippingRect = clippingRect
         rawPointer = target
         clippingRect = screenClippingRect
         GPU_Clear(target)
-        body()
+        return true
+    }
+
+    @MainActor
+    func endGroupOpacity(_ opacity: Float) {
+        guard let image = cachedGroupOpacityImage?.image, let screenTarget = GPU_GetContextTarget() else { return }
+        let groupClippingRect = clippingRect
         rawPointer = screenTarget
-        clippingRect = screenClippingRect
+        clippingRect = groupClippingRect
 
         let alpha = opacity.normalisedToUInt8()
         GPU_SetRGBA(image.rawPointer, alpha, alpha, alpha, alpha)
@@ -244,8 +250,7 @@ extension UIScreen {
     }
 
     func lines(_ segments: [(from: CGPoint, to: CGPoint)], offsetBy offset: CGPoint, color: UIColor, lineThickness: CGFloat) {
-        let previousLineThickness = GPU_SetLineThickness(Float(lineThickness))
-        defer { GPU_SetLineThickness(previousLineThickness) }
+        GPU_SetLineThickness(Float(lineThickness))
         let color = color.sdlColor
         for segment in segments {
             let from = segment.from + offset, to = segment.to + offset

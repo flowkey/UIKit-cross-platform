@@ -107,6 +107,7 @@ open class UIScrollView: UIView {
 
     open var isDecelerating = false {
         didSet {
+            decelerationDisplayLink.isPaused = !isDecelerating
             // Hide when we stop decelerating, but only when that wasn't because of a pan
             if !isDecelerating && panGestureRecognizer.state == .possible {
                 hideScrollIndicators()

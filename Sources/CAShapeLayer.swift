@@ -76,8 +76,9 @@ open class CAShapeLayer: CALayer {
         }
 
         guard let strokeColor, lineWidth > 0 else { return }
-        if strokeSegments == nil { strokeSegments = dashedSegments(of: path) }
-        renderer.lines(strokeSegments ?? [], offsetBy: origin, color: strokeColor.multiplyingAlpha(by: opacity), lineThickness: lineWidth)
+        let segments = strokeSegments ?? dashedSegments(of: path)
+        strokeSegments = segments
+        renderer.lines(segments, offsetBy: origin, color: strokeColor.multiplyingAlpha(by: opacity), lineThickness: lineWidth)
     }
 
     private func dashedSegments(of path: CGPath) -> [(from: CGPoint, to: CGPoint)] {
