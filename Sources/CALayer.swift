@@ -1,5 +1,9 @@
 internal import SDL
 
+#if os(macOS)
+import Foundation
+#endif
+
 @MainActor
 open class CALayer {
     open weak var delegate: CALayerDelegate?
@@ -20,6 +24,10 @@ open class CALayer {
     open var contentsScale: CGFloat = 1.0
 
     open var contentsGravity: CALayerContentsGravity = .resize
+
+    open var contentsCenter = CGRect(x: 0, y: 0, width: 1, height: 1) {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
 
     internal(set) public weak var superlayer: CALayer?
     internal(set) public var sublayers: [CALayer]? {
@@ -187,6 +195,9 @@ open class CALayer {
 
     public var masksToBounds = false
 
+    /// Off by default, unlike iOS: compositing a fading subtree as one costs an offscreen pass per frame.
+    public var allowsGroupOpacity = false
+
     public required init() {}
 
     public required init(layer: Any) {
@@ -209,12 +220,14 @@ open class CALayer {
         shadowOpacity = layer.shadowOpacity
         mask = layer.mask
         masksToBounds = layer.masksToBounds
+        allowsGroupOpacity = layer.allowsGroupOpacity
         minificationFilter = layer.minificationFilter
         contents = layer.contents // XXX: we should make a copy here
         contentsScale = layer.contentsScale
         superlayer = layer.superlayer
         sublayers = layer.sublayers
         contentsGravity = layer.contentsGravity
+        contentsCenter = layer.contentsCenter
     }
 
     open func copy() -> Any {

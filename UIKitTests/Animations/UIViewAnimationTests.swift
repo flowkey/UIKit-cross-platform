@@ -328,6 +328,18 @@ class UIViewAnimationTests: XCTestCase {
         UIView.animateIfNeeded(at: Timer(startingAt: 10000))
         XCTAssertEqual(completionCounter, 1)
     }
+
+    func testNestedAnimationDoesNotEndTheOuterAnimation() {
+        let otherView = UIView()
+        otherView.layer.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
+
+        UIView.animate(withDuration: 5, delay: 0, options: [.curveLinear], animations: {
+            UIView.animate(withDuration: 1, animations: { otherView.alpha = 0.5 })
+            view.alpha = 0.2
+        })
+
+        XCTAssertEqual(view.layer.animations.count, 1)
+    }
 }
 
 

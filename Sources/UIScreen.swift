@@ -38,6 +38,8 @@ public final class UIScreen {
     // Keep that in mind when using it: i.e. if possible, don't ;)
     internal var rawPointer: UnsafeMutablePointer<GPU_Target>!
 
+    var cachedGroupOpacityImage: (image: CGImage, contextGeneration: UInt64)?
+
     public var bounds: CGRect {
         didSet {
             let newWidth = UInt16(bounds.width.rounded())

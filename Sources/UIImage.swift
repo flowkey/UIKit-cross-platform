@@ -99,7 +99,9 @@ public class UIImage {
             }
         }
 
-        guard let image = CGImage(width: width, height: height) else { return self }
+        guard
+            let image = CGImage(width: width, height: height)
+        else { return self }
         tinted.withUnsafeBufferPointer { image.replacePixels(with: $0.baseAddress!, bytesPerPixel: 4) }
         // Rebuilt from PNG data, which the image can decode again after Android loses the GL context.
         guard let pngData = image.pngData(), let recoverableImage = CGImage(pngData) else { return UIImage(cgImage: image, scale: scale) }

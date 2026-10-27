@@ -29,8 +29,8 @@ open class UIView: UIResponder, CALayerDelegate, UIAccessibilityIdentification {
     }
 
     open var center: CGPoint {
-        get { return CGPoint(x: frame.midX, y: frame.midY) }
-        set { frame.midX = newValue.x; frame.midY = newValue.y }
+        get { return layer.position }
+        set { layer.position = newValue }
     }
 
     open var transform: CGAffineTransform {

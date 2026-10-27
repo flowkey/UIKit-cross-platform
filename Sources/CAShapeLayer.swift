@@ -1,4 +1,3 @@
-internal import SDL_gpu
 
 #if os(macOS)
 import Foundation
@@ -78,13 +77,7 @@ open class CAShapeLayer: CALayer {
 
         guard let strokeColor, lineWidth > 0 else { return }
         if strokeSegments == nil { strokeSegments = dashedSegments(of: path) }
-        let color = strokeColor.multiplyingAlpha(by: opacity).sdlColor
-        let previousLineThickness = GPU_SetLineThickness(Float(lineWidth))
-        for segment in strokeSegments ?? [] {
-            let from = segment.from + origin, to = segment.to + origin
-            GPU_Line(renderer.rawPointer, Float(from.x), Float(from.y), Float(to.x), Float(to.y), color)
-        }
-        GPU_SetLineThickness(previousLineThickness)
+        renderer.lines(strokeSegments ?? [], offsetBy: origin, color: strokeColor.multiplyingAlpha(by: opacity), lineThickness: lineWidth)
     }
 
     private func dashedSegments(of path: CGPath) -> [(from: CGPoint, to: CGPoint)] {

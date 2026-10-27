@@ -15,6 +15,15 @@ extension CALayer {
         let opacity = self.opacity * parentAbsoluteOpacity
         if isHidden || opacity < 0.01 { return }
 
+        if allowsGroupOpacity, self.opacity < 1, sublayers?.isEmpty == false, !renderer.isRenderingGroupOpacity {
+            renderer.renderWithGroupOpacity(opacity) { sdlRender(renderer: renderer, opacity: 1) }
+        } else {
+            sdlRender(renderer: renderer, opacity: opacity)
+        }
+    }
+
+    @MainActor
+    private func sdlRender(renderer: UIScreen, opacity: Float) {
         // The basis for all our transformations is `position` (in parent coordinates), which in this layer's
         // coordinates is `anchorPoint`. To make this happen, we translate (in our parent's coordinate system
         // – which may in turn be affected by its parents, and so on) to `position`, and then render rectangles
@@ -37,9 +46,7 @@ extension CALayer {
 
         // Big performance optimization. Don't render anything that's entirely offscreen:
         let absoluteFrame = renderedBoundsRelativeToAnchorPoint.applying(modelViewTransform)
-        guard absoluteFrame.intersects(renderer.bounds) else {
-            return
-        }
+        guard absoluteFrame.intersects(renderer.bounds) else { return }
 
         self.hasBeenRenderedInThisPartOfOverallLayerHierarchy = true
 
@@ -125,13 +132,23 @@ extension CALayer {
 
         if let contents = contents {
             do {
-                try renderer.blit(
-                    contents,
-                    anchorPoint: anchorPoint,
-                    contentsScale: contentsScale,
-                    contentsGravity: ContentsGravityTransformation(for: self),
-                    opacity: opacity
-                )
+                if contentsCenter != CGRect(x: 0, y: 0, width: 1, height: 1), contentsGravity == .resize {
+                    try renderer.blit(
+                        contents,
+                        in: renderedBoundsRelativeToAnchorPoint,
+                        contentsCenter: contentsCenter,
+                        contentsScale: contentsScale,
+                        opacity: opacity
+                    )
+                } else {
+                    try renderer.blit(
+                        contents,
+                        anchorPoint: anchorPoint,
+                        contentsScale: contentsScale,
+                        contentsGravity: ContentsGravityTransformation(for: self),
+                        opacity: opacity
+                    )
+                }
             } catch {
                 // Try to recreate contents from source data if it exists
                 if contents.reloadFromSourceData() == false {

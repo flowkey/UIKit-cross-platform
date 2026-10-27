@@ -102,7 +102,7 @@ open class UILabel: UIView {
     }
 
     override open var intrinsicContentSize: CGSize {
-        sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
+        sizeThatFits(bounds.size)
     }
 
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
