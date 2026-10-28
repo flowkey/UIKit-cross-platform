@@ -82,6 +82,12 @@ extension ShaderProgram {
             GPU_SetUniformfv(location, 4, 1, &vals)
         }
 
+        func set(_ newValue: CACornerMask) {
+            let corners: [CACornerMask] = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            var vals = corners.map { newValue.contains($0) ? Float(1) : 0 }
+            GPU_SetUniformfv(location, 4, 1, &vals)
+        }
+
         func set(_ newValue: CGImage) {
             let textureUnit: Int32 = 1 // Texture unit 0 is the one used internally for SDL_gpu's blitting funcs
             GPU_SetShaderImage(newValue.rawPointer, location, textureUnit)

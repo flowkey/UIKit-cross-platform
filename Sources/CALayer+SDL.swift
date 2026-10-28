@@ -101,6 +101,7 @@ extension CALayer {
                 shadowShape.offsetBy(CGPoint(x: shadowOffset.width, y: shadowOffset.height)),
                 color: shadowColor.withAlphaComponent(CGFloat(shadowAlpha)),
                 cornerRadius: shadowPath?.cornerRadius ?? cornerRadius,
+                maskedCorners: shadowPath == nil ? maskedCorners : .all,
                 blurRadius: shadowRadius
             )
         }
@@ -110,7 +111,8 @@ extension CALayer {
             renderer.fill(
                 renderedBoundsRelativeToAnchorPoint,
                 with: backgroundColor.withAlphaComponent(CGFloat(backgroundColorOpacity)),
-                cornerRadius: cornerRadius
+                cornerRadius: cornerRadius,
+                maskedCorners: maskedCorners
             )
         }
 
@@ -119,7 +121,8 @@ extension CALayer {
                 renderedBoundsRelativeToAnchorPoint,
                 lineColor: borderColor.withAlphaComponent(CGFloat(opacity)),
                 lineThickness: borderWidth,
-                cornerRadius: cornerRadius
+                cornerRadius: cornerRadius,
+                maskedCorners: maskedCorners
             )
         }
 

@@ -1,5 +1,17 @@
 internal import SDL
 
+public struct CACornerMask: OptionSet, Sendable {
+    public let rawValue: UInt
+    public init(rawValue: UInt) { self.rawValue = rawValue }
+
+    public static let layerMinXMinYCorner = CACornerMask(rawValue: 1 << 0)
+    public static let layerMaxXMinYCorner = CACornerMask(rawValue: 1 << 1)
+    public static let layerMinXMaxYCorner = CACornerMask(rawValue: 1 << 2)
+    public static let layerMaxXMaxYCorner = CACornerMask(rawValue: 1 << 3)
+
+    static let all: CACornerMask = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+}
+
 @MainActor
 open class CALayer {
     open weak var delegate: CALayerDelegate?
@@ -173,6 +185,7 @@ open class CALayer {
     }
     
     public var cornerRadius: CGFloat = 0
+    public var maskedCorners: CACornerMask = .all
 
     // TODO: Implement these!
     public var borderWidth: CGFloat = 0
@@ -206,6 +219,7 @@ open class CALayer {
         backgroundColor = layer.backgroundColor
         isHidden = layer.isHidden
         cornerRadius = layer.cornerRadius
+        maskedCorners = layer.maskedCorners
         borderWidth = layer.borderWidth
         borderColor = layer.borderColor
         shadowColor = layer.shadowColor

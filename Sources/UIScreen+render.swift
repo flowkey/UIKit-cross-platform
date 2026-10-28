@@ -225,12 +225,12 @@ extension UIScreen {
         return image
     }
 
-    func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat) {
+    func fill(_ rect: CGRect, with color: UIColor, cornerRadius: CGFloat, maskedCorners: CACornerMask = .all) {
         if cornerRadius >= 1 {
             let snappedRect = pixelSnapped(rect)
             let previousProgram = ShaderProgram.currentlyActive
             ShaderProgram.roundedRect.activate()
-            ShaderProgram.roundedRect.setFill(rect: snappedRect, cornerRadius: cornerRadius)
+            ShaderProgram.roundedRect.setFill(rect: snappedRect, cornerRadius: cornerRadius, maskedCorners: maskedCorners)
             GPU_RectangleFilled(rawPointer, roundedShaderQuad(for: snappedRect), color: color.sdlColor)
             restoreShaderProgram(previousProgram)
         } else {
@@ -241,10 +241,10 @@ extension UIScreen {
     /// Draw a feathered drop shadow: opaque inside `shapeRect`, fading to zero over `blurRadius`
     /// pixels outside it (and up over the same distance inside). The draw quad is expanded by
     /// `blurRadius` so the feathered edge isn't clipped.
-    func shadow(_ shapeRect: CGRect, color: UIColor, cornerRadius: CGFloat, blurRadius: CGFloat) {
+    func shadow(_ shapeRect: CGRect, color: UIColor, cornerRadius: CGFloat, maskedCorners: CACornerMask = .all, blurRadius: CGFloat) {
         let previousProgram = ShaderProgram.currentlyActive
         ShaderProgram.shadow.activate()
-        ShaderProgram.shadow.setShadow(rect: shapeRect, cornerRadius: cornerRadius, blurRadius: blurRadius)
+        ShaderProgram.shadow.setShadow(rect: shapeRect, cornerRadius: cornerRadius, maskedCorners: maskedCorners, blurRadius: blurRadius)
         GPU_RectangleFilled(rawPointer, gpuRect(shapeRect.insetBy(dx: -blurRadius, dy: -blurRadius)), color: color.sdlColor)
         restoreShaderProgram(previousProgram)
     }
@@ -273,14 +273,14 @@ extension UIScreen {
         GPU_Rectangle(rawPointer, scaledGpuRect, color: lineColor.sdlColor)
     }
 
-    func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat, cornerRadius: CGFloat) {
+    func outline(_ rect: CGRect, lineColor: UIColor, lineThickness: CGFloat, cornerRadius: CGFloat, maskedCorners: CACornerMask = .all) {
         if cornerRadius > 1 {
             // SDF ring: stroke is drawn from the rect boundary inward by `lineThickness`,
             // which matches CSS/iOS "border" semantics.
             let snappedRect = pixelSnapped(rect)
             let previousProgram = ShaderProgram.currentlyActive
             ShaderProgram.roundedRect.activate()
-            ShaderProgram.roundedRect.setStroke(rect: snappedRect, cornerRadius: cornerRadius, borderWidth: lineThickness)
+            ShaderProgram.roundedRect.setStroke(rect: snappedRect, cornerRadius: cornerRadius, maskedCorners: maskedCorners, borderWidth: lineThickness)
             GPU_RectangleFilled(rawPointer, roundedShaderQuad(for: snappedRect), color: lineColor.sdlColor)
             restoreShaderProgram(previousProgram)
         } else {
