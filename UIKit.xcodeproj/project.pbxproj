@@ -84,6 +84,7 @@
 		5C6AB77E1ED71867006F90AC /* CATransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77D1ED71867006F90AC /* CATransaction.swift */; };
 		5C6AB7801EDBDF40006F90AC /* UIViewTests+hitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB77F1EDBDF40006F90AC /* UIViewTests+hitTest.swift */; };
 		5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6AB7811EDC18BA006F90AC /* UITouch.swift */; };
+		D0E7A11C2F00000100A1B2C3 /* UITraitCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E7A11B2F00000100A1B2C3 /* UITraitCollection.swift */; };
 		5C8475D7203DC6E700CA2EBF /* UIViewTests+convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8475CD203DC4CC00CA2EBF /* UIViewTests+convert.swift */; };
 		5C8475D8203DC6EE00CA2EBF /* UIViewTests+misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8475D5203DC53200CA2EBF /* UIViewTests+misc.swift */; };
 		5C8475D9203DCA3C00CA2EBF /* UIViewTests+convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C8475CD203DC4CC00CA2EBF /* UIViewTests+convert.swift */; };
@@ -302,6 +303,7 @@
 		5C6AB77D1ED71867006F90AC /* CATransaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CATransaction.swift; path = Sources/CATransaction.swift; sourceTree = SOURCE_ROOT; };
 		5C6AB77F1EDBDF40006F90AC /* UIViewTests+hitTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewTests+hitTest.swift"; sourceTree = "<group>"; };
 		5C6AB7811EDC18BA006F90AC /* UITouch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UITouch.swift; path = Sources/UITouch.swift; sourceTree = SOURCE_ROOT; };
+		D0E7A11B2F00000100A1B2C3 /* UITraitCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UITraitCollection.swift; path = Sources/UITraitCollection.swift; sourceTree = SOURCE_ROOT; };
 		5C8475CD203DC4CC00CA2EBF /* UIViewTests+convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+convert.swift"; sourceTree = "<group>"; };
 		5C8475D5203DC53200CA2EBF /* UIViewTests+misc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewTests+misc.swift"; sourceTree = "<group>"; };
 		5C8E6A20203A089A00D1DBE0 /* CALayer+ContentsGravity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+ContentsGravity.swift"; sourceTree = "<group>"; };
@@ -562,6 +564,7 @@
 				5CE5C5701EDC6AA100680154 /* UITapGestureRecognizer.swift */,
 				5BA1FC4D1F6694CA005843B9 /* UITextView.swift */,
 				5C6AB7811EDC18BA006F90AC /* UITouch.swift */,
+				D0E7A11B2F00000100A1B2C3 /* UITraitCollection.swift */,
 				5C6AB7161ED3BECD006F90AC /* UIView.swift */,
 				5C6AB76A1ED5A648006F90AC /* UIView+animate.swift */,
 				5C4CD519206160EC00217B4C /* UIView+printViewHierarchy.swift */,
@@ -940,6 +943,7 @@
 				60D6D8A2275E6CEC00892A7E /* Switch.swift in Sources */,
 				5C6AB71E1ED3BECD006F90AC /* UIView.swift in Sources */,
 				5C6AB7821EDC18BA006F90AC /* UITouch.swift in Sources */,
+				D0E7A11C2F00000100A1B2C3 /* UITraitCollection.swift in Sources */,
 				5C1F06AF1F3210F300EFF087 /* UIViewController.swift in Sources */,
 				5CB6E1C52035BC4F001FEAC9 /* CGPoint+animations.swift in Sources */,
 				5C93AEAE208A4242005BE853 /* UINavigationControllerContainerView.swift in Sources */,
