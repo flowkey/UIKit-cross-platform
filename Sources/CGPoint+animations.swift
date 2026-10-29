@@ -14,4 +14,8 @@ extension CGPoint {
     static func /(lhs: CGPoint, rhs: CGFloat) -> CGPoint {
         return CGPoint(x: lhs.x / rhs, y: lhs.y / rhs)
     }
+
+    var magnitude: CGFloat {
+        return (x * x + y * y).squareRoot()
+    }
 }

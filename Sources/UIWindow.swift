@@ -32,62 +32,66 @@ public class UIWindow: UIView {
     }
 
     public func sendEvent(_ event: UIEvent) {
-        guard
-            let currentTouch = event.changedTouch ?? event.allTouches?.first,
-            let hitView = currentTouch.view ?? hitTest(currentTouch.location(in: nil), with: nil)
-        else { return }
+        guard let touch = event.changedTouch ?? event.allTouches?.first else { return }
+        let touches: Set<UITouch> = [touch]
+        touch.event = event
 
-        // Deliver only the touch that changed for this event; `event.allTouches` still exposes every finger
-        // down for multi-touch recognizers. For a single finger this is identical to before.
-        let phaseTouches: Set<UITouch> = [currentTouch]
-
-        switch currentTouch.phase {
+        switch touch.phase {
         case .began:
+            guard let hitView = touch.view ?? hitTest(touch.location(in: nil), with: nil) else { return }
             UIEvent.activeEvents.insert(event)
-            currentTouch.view = hitView
-            currentTouch.gestureRecognizers = hitView.getRecognizerHierachy()
+            touch.view = hitView
 
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesBegan(phaseTouches, with: event) }
-
-            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
-                hitView.touchesBegan(phaseTouches, with: event)
+            for recognizer in hitView.gestureRecognizerHierarchy()
+                where recognizer.shouldReceive(touch) && recognizer.canTrackAnotherTouch
+            {
+                recognizer.add(touch)
             }
 
-        case .moved:
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesMoved(phaseTouches, with: event) }
-            if !currentTouch.hasBeenCancelledByAGestureRecognizer {
-                hitView.touchesMoved(phaseTouches, with: event)
+            deliver(touch) { $0.touchesBegan(touches, with: event) }
+            touch.maybeDeliverToView()
+
+        case .moved, .stationary:
+            deliver(touch) { $0.touchesMoved(touches, with: event) }
+            touch.maybeDeliverToView()
+
+        case .ended, .cancelled:
+            let recognizers = touch.gestureRecognizers
+            if touch.phase == .ended {
+                deliver(touch) { $0.touchesEnded(touches, with: event) }
+            } else {
+                deliver(touch) { $0.touchesCancelled(touches, with: event) }
             }
+            touch.maybeDeliverToView()
 
-        case .ended:
-            // compute the value before ending the touch on the recognizer hierachy
-            // otherwise `hasBeenCancelledByAGestureRecognizer` will be false because the state was reset already
-            let hasBeenCancelledByAGestureRecognizer = currentTouch.hasBeenCancelledByAGestureRecognizer
+            recognizers.forEach { $0.touchSequenceEnded() }
+            recognizers.forEach { $0.failIfStillPending() }
 
-            currentTouch.runTouchActionOnRecognizerHierachy { $0.touchesEnded(phaseTouches, with: event) }
-
-            if !hasBeenCancelledByAGestureRecognizer {
-                hitView.touchesEnded(phaseTouches, with: event)
-            }
-
-            event.allTouches?.remove(currentTouch)
+            event.allTouches?.remove(touch)
             if event.allTouches?.isEmpty ?? true {
                 UIEvent.activeEvents.remove(event)
+                UIGestureRecognizer.resetFinishedRecognizers()
             }
+        }
+    }
+
+    /// Recognizers can end (and stop tracking the touch) while others are still handling it.
+    private func deliver(_ touch: UITouch, _ action: (UIGestureRecognizer) -> Void) {
+        for recognizer in touch.gestureRecognizers where recognizer.touches.contains(where: { $0 === touch }) {
+            action(recognizer)
         }
     }
 }
 
 private extension UIView {
-    func getRecognizerHierachy() -> [UIGestureRecognizer] {
-        var recognizerHierachy: [UIGestureRecognizer] = []
-        var currentView = self
-
-        while let superview = currentView.superview {
-            recognizerHierachy.append(contentsOf: currentView.gestureRecognizers)
-            currentView = superview
+    /// The hit view's recognizers first, then its ancestors', each view's in the order they were added.
+    func gestureRecognizerHierarchy() -> [UIGestureRecognizer] {
+        var recognizers: [UIGestureRecognizer] = []
+        var currentView: UIView? = self
+        while let view = currentView {
+            recognizers.append(contentsOf: view.gestureRecognizers)
+            currentView = view.superview
         }
-
-        return recognizerHierachy
+        return recognizers
     }
 }

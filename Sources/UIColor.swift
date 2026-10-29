@@ -28,6 +28,10 @@ public class UIColor: Hashable {
         self.alphaValue = alpha.normalisedToUInt8()
     }
 
+    public convenience init(white: CGFloat, alpha: CGFloat) {
+        self.init(red: white, green: white, blue: white, alpha: alpha)
+    }
+
     // from wikipedia: https://en.wikipedia.org/wiki/HSL_and_HSV
     // XXX: This is not currently working as it should but it is better than nothing
     // We currently only use this in testing, but whoever needs it for real should have a look at fixing it..
@@ -112,6 +116,10 @@ extension UIColor {
 
     public func withAlphaComponent(_ alpha: CGFloat) -> UIColor {
         return UIColor((self.redValue, self.greenValue, self.blueValue, alpha.normalisedToUInt8()))
+    }
+
+    func multiplyingAlpha(by opacity: Float) -> UIColor {
+        withAlphaComponent(CGFloat(alphaValue.toNormalisedFloat() * opacity))
     }
 }
 

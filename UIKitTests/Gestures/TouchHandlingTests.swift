@@ -36,8 +36,8 @@ class TouchHandlingTests: XCTestCase {
 
     func testRecognizerOnActionWasCalled() {
         handleTouchDown(CGPoint(x: 10, y: 10))
-        handleTouchMove(CGPoint(x: 15, y: 10))
-        handleTouchUp(CGPoint(x: 15, y: 10))
+        handleTouchMove(CGPoint(x: 35, y: 10))
+        handleTouchUp(CGPoint(x: 35, y: 10))
 
         XCTAssertTrue(recognizer.onActionWasCalled)
     }
@@ -50,29 +50,31 @@ class TouchHandlingTests: XCTestCase {
         handleTouchDown(CGPoint(x: 10, y: 10))
         handleTouchUp(CGPoint(x: 10, y: 10))
 
-        XCTAssertFalse(view.touchesBeganWasCalled)
+        XCTAssertTrue(view.touchesBeganWasCalled)
         XCTAssertFalse(view.touchesEndedWasCalled)
+        XCTAssertTrue(view.touchesCancelledWasCalled)
     }
 
     func testCancelsTouchesInViewWithPanGestureRecognizer() {
         recognizer.cancelsTouchesInView = true
 
         handleTouchDown(CGPoint(x: 10, y: 10))
-        handleTouchMove(CGPoint(x: 15, y: 10))
-        handleTouchUp(CGPoint(x: 15, y: 10))
+        handleTouchMove(CGPoint(x: 35, y: 10))
+        handleTouchUp(CGPoint(x: 35, y: 10))
 
         XCTAssertTrue(view.touchesBeganWasCalled)
 
         XCTAssertFalse(view.touchesMovedWasCalled)
         XCTAssertFalse(view.touchesEndedWasCalled)
+        XCTAssertTrue(view.touchesCancelledWasCalled)
     }
 
     func testDoesNotCancelTouchesInView() {
         recognizer.cancelsTouchesInView = false
 
         handleTouchDown(CGPoint(x: 10, y: 10))
-        handleTouchMove(CGPoint(x: 15, y: 10))
-        handleTouchUp(CGPoint(x: 15, y: 10))
+        handleTouchMove(CGPoint(x: 35, y: 10))
+        handleTouchUp(CGPoint(x: 35, y: 10))
 
         XCTAssertTrue(view.touchesMovedWasCalled)
         XCTAssertTrue(view.touchesEndedWasCalled)
@@ -86,11 +88,64 @@ class TouchHandlingTests: XCTestCase {
         view.addSubview(anotherView)
 
         handleTouchDown(CGPoint(x: 10, y: 10))
-        handleTouchMove(CGPoint(x: 15, y: 10))
-        handleTouchUp(CGPoint(x: 15, y: 10))
+        handleTouchMove(CGPoint(x: 35, y: 10))
+        handleTouchUp(CGPoint(x: 35, y: 10))
 
         XCTAssertFalse(recognizer.onActionWasCalled)
         XCTAssertTrue(anotherRecognizer.onActionWasCalled)
+    }
+
+    func testTapFailsWhenTheTouchMoves() {
+        var tapped = false
+        view.addGestureRecognizer(UITapGestureRecognizer(onAction: { tapped = true }))
+
+        handleTouchDown(CGPoint(x: 10, y: 10))
+        handleTouchMove(CGPoint(x: 25, y: 10))
+        handleTouchUp(CGPoint(x: 25, y: 10))
+
+        XCTAssertFalse(tapped)
+    }
+
+    func testFailedRecognizerStaysFailedUntilTheTouchesEnd() {
+        let tap = UITapGestureRecognizer()
+        view.addGestureRecognizer(tap)
+
+        handleTouchDown(CGPoint(x: 10, y: 10))
+        handleTouchMove(CGPoint(x: 35, y: 10))
+        XCTAssertEqual(tap.state, .failed)
+
+        handleTouchUp(CGPoint(x: 35, y: 10))
+        XCTAssertEqual(tap.state, .possible)
+    }
+
+    func testRequireToFailWaitsForTheOtherRecognizer() {
+        var tapped = false
+        let twoFingerTap = UITapGestureRecognizer()
+        twoFingerTap.numberOfTouchesRequired = 2
+        let tap = UITapGestureRecognizer(onAction: { tapped = true })
+        tap.require(toFail: twoFingerTap)
+        view.addGestureRecognizer(twoFingerTap)
+        subsubview.addGestureRecognizer(tap)
+
+        handleTouchDown(CGPoint(x: 10, y: 10))
+        handleTouchUp(CGPoint(x: 10, y: 10))
+
+        XCTAssertTrue(tapped)
+    }
+
+    func testLongPressBeginsAfterTheMinimumPressDuration() {
+        let began = expectation(description: "Long press began")
+        let longPress = UILongPressGestureRecognizer()
+        longPress.minimumPressDuration = 0.05
+        longPress.onAction = { [unowned longPress] in if longPress.state == .began { began.fulfill() } }
+        view.addGestureRecognizer(longPress)
+
+        handleTouchDown(CGPoint(x: 10, y: 10))
+        XCTAssertEqual(longPress.state, .possible)
+
+        wait(for: [began], timeout: 1)
+        handleTouchUp(CGPoint(x: 10, y: 10))
+        XCTAssertEqual(longPress.state, .possible)
     }
 
     func testSecondFingerJoinsTheSameEvent() {
@@ -101,20 +156,26 @@ class TouchHandlingTests: XCTestCase {
         XCTAssertEqual(UIEvent.activeEvents.first?.allTouches?.count, 2)
     }
 
-    func testPinchBeginsOnSecondFingerAndReportsScale() {
+    func testPinchBeginsWhenTheFingersMoveAndReportsScale() {
+        view.removeGestureRecognizer(recognizer) // a pan on the same view would begin first, as on iOS
         let pinch = UIPinchGestureRecognizer()
         view.addGestureRecognizer(pinch)
 
         touchDown(id: 0, CGPoint(x: 100, y: 100))
         touchDown(id: 1, CGPoint(x: 200, y: 100)) // fingers 100pt apart
-        XCTAssertEqual(pinch.state, .began)
+        XCTAssertEqual(pinch.state, .possible)
 
         touchMove(id: 1, CGPoint(x: 300, y: 100)) // now 200pt apart, so scale doubles
-        XCTAssertEqual(pinch.state, .changed)
+        XCTAssertEqual(pinch.state, .began)
         XCTAssertEqual(pinch.scale, 2, accuracy: 0.0001)
+
+        touchMove(id: 1, CGPoint(x: 400, y: 100))
+        XCTAssertEqual(pinch.state, .changed)
+        XCTAssertEqual(pinch.scale, 3, accuracy: 0.0001)
     }
 
     func testSingleFingerDoesNotBeginPinch() {
+        view.removeGestureRecognizer(recognizer)
         let pinch = UIPinchGestureRecognizer()
         view.addGestureRecognizer(pinch)
 
@@ -132,6 +193,7 @@ private extension TouchHandlingTests {
         var touchesBeganWasCalled = false
         var touchesMovedWasCalled = false
         var touchesEndedWasCalled = false
+        var touchesCancelledWasCalled = false
 
         override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
             touchesBeganWasCalled = true
@@ -143,6 +205,10 @@ private extension TouchHandlingTests {
 
         override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
             touchesEndedWasCalled = true
+        }
+
+        override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+            touchesCancelledWasCalled = true
         }
     }
 

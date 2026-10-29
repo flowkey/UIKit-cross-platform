@@ -138,4 +138,16 @@ class TransformTests: XCTestCase {
             }
         }
     }
+
+    func testScaledByScalesBeforeTheTransform() {
+        let transform = UIKit.CGAffineTransform(translationX: 10, y: 0).scaledBy(x: 2, y: 2)
+
+        XCTAssertEqual(UIKit.CGPoint(x: 1, y: 1).applying(transform), UIKit.CGPoint(x: 12, y: 2))
+    }
+
+    func testTranslatedByTranslatesBeforeTheTransform() {
+        let transform = UIKit.CGAffineTransform(scaleX: 2, y: 2).translatedBy(x: 10, y: 0)
+
+        XCTAssertEqual(UIKit.CGPoint(x: 1, y: 1).applying(transform), UIKit.CGPoint(x: 22, y: 2))
+    }
 }

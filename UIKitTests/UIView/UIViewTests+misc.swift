@@ -26,6 +26,17 @@ class UIViewMiscellaneousTests: XCTestCase {
         XCTAssertEqual(subview.frame.height, 100)
     }
 
+    func testCenterIsTheLayerPosition() {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 10))
+        view.layer.anchorPoint = CGPoint(x: 0.5, y: 0.8)
+        view.transform = CGAffineTransform(rotationAngle: .pi / 4)
+
+        view.center = CGPoint(x: 50, y: 60)
+
+        XCTAssertEqual(view.layer.position, CGPoint(x: 50, y: 60))
+        XCTAssertEqual(view.bounds.size, CGSize(width: 20, height: 10))
+    }
+
     func testPreventStrongReferenceCyclesBetweenSubviews() {
         var view: UIView? = UIView()
         view!.addSubview(UIView())

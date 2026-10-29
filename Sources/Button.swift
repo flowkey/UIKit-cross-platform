@@ -78,13 +78,13 @@ open class Button: UIControl {
 
     public let tapGestureRecognizer: UITapGestureRecognizer
     public var onPress: (@MainActor () -> Void)? {
-        get { return tapGestureRecognizer.onPress }
-        set { tapGestureRecognizer.onPress = newValue }
+        get { return tapGestureRecognizer.onAction }
+        set { tapGestureRecognizer.onAction = newValue }
     }
 
     @MainActor
     public override init(frame: CGRect) {
-        tapGestureRecognizer = UITapGestureRecognizer(onPress: nil)
+        tapGestureRecognizer = UITapGestureRecognizer()
         super.init(frame: frame)
 
         let titleLabel = UILabel(frame: .zero)
@@ -107,7 +107,6 @@ open class Button: UIControl {
             self?.isHighlighted = false
         }
 
-        tapGestureRecognizer.view = self
         addGestureRecognizer(tapGestureRecognizer)
     }
 

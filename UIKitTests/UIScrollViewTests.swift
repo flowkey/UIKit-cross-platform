@@ -161,9 +161,14 @@ class UIScrollViewTests: XCTestCase {
     func mockTouch(toPoint: CGPoint, inScrollView scrollView: UIScrollView) {
         let mockTouch = UITouch(touchId: 0, at: CGPoint(x: 0, y: 0), timestamp: 0)
 
+        scrollView.panGestureRecognizer.add(mockTouch)
         scrollView.panGestureRecognizer.touchesBegan([mockTouch], with: UIEvent())
-        mockTouch.updateAbsoluteLocation(CGPoint(x: 100, y: 100))
+        mockTouch.phase = .moved
+        mockTouch.updateAbsoluteLocation(toPoint / 2)
         scrollView.panGestureRecognizer.touchesMoved([mockTouch], with: UIEvent())
+        mockTouch.updateAbsoluteLocation(toPoint)
+        scrollView.panGestureRecognizer.touchesMoved([mockTouch], with: UIEvent())
+        mockTouch.phase = .ended
         scrollView.panGestureRecognizer.touchesEnded([mockTouch], with: UIEvent())
     }
 }

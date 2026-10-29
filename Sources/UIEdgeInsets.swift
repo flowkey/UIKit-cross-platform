@@ -25,3 +25,14 @@ public struct UIEdgeInsets: Equatable {
             && lhs.top == rhs.top
     }
 }
+
+public extension CGRect {
+    func inset(by insets: UIEdgeInsets) -> CGRect {
+        CGRect(
+            x: origin.x + insets.left,
+            y: origin.y + insets.top,
+            width: size.width - insets.left - insets.right,
+            height: size.height - insets.top - insets.bottom
+        )
+    }
+}

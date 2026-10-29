@@ -32,6 +32,7 @@ class DraggableViews: XCTestCase {
         touch.view = draggable
 
         touch.move(to: initialTouchPoint)
+        draggable.panHandler.add(touch)
         draggable.panHandler.touchesBegan([touch], with: UIEvent())
 
         touch.move(to: finalTouchPoint)

@@ -8,43 +8,41 @@
 
 @MainActor
 open class UITapGestureRecognizer: UIGestureRecognizer {
-    var onTouchesBegan: (() -> Void)?
-    var onTouchesEnded: (() -> Void)?
-    var onPress: (@MainActor () -> Void)?
+    public var numberOfTouchesRequired = 1
 
-    public init(onPress: (@MainActor () -> Void)? = nil) {
-        self.onPress = onPress
-    }
+    private let allowableMovement: CGFloat = 10
+
+    internal var onTouchesBegan: (() -> Void)?
+    internal var onTouchesEnded: (() -> Void)?
+
+    private var startLocations: [UITouch: CGPoint] = [:]
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
-        trackedTouch = touches.first
-        self.state = .began
-        onTouchesBegan?()
+        for touch in touches { startLocations[touch] = touch.location(in: nil) }
+        if numberOfTouches > numberOfTouchesRequired { state = .failed; return }
+        if numberOfTouches == touches.count { onTouchesBegan?() }
+    }
 
-        // run potential cancellation of touches in view and other recognizers
-        // after `self.state` has been mutated
-        if cancelsTouchesInView {
-            trackedTouch?.hasBeenCancelledByAGestureRecognizer = true
+    open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+        super.touchesMoved(touches, with: event)
+        for touch in touches {
+            guard let start = startLocations[touch] else { continue }
+            if (touch.location(in: nil) - start).magnitude > allowableMovement { state = .failed; return }
         }
-        cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
     }
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesEnded(touches, with: event)
-        if let trackedTouch = trackedTouch, touches.first == trackedTouch {
-            let trackedTouchLocationInView = trackedTouch.location(in: view)
-            if
-                let view = self.view, view.point(inside: trackedTouchLocationInView, with: event),
-                self.state == .began
-            {
-                self.state = .recognized
-                onPress?()
-                self.state = .possible
-            } else {
-                self.state = .failed
-            }
-        }
-        onTouchesEnded?()
+        guard activeTouches.isEmpty, state == .possible else { return }
+        guard numberOfTouches == numberOfTouchesRequired else { state = .failed; return }
+
+        state = .recognized
+    }
+
+    open override func reset() {
+        super.reset()
+        if !startLocations.isEmpty { onTouchesEnded?() }
+        startLocations = [:]
     }
 }

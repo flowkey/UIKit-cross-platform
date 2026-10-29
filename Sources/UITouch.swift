@@ -38,14 +38,69 @@ public class UITouch {
         return window?.convert(previousAbsoluteLocation, to: view) ?? previousAbsoluteLocation
     }
 
-    public var gestureRecognizers: [UIGestureRecognizer] = []
-    func runTouchActionOnRecognizerHierachy(_ action: (_ recognizer: UIGestureRecognizer) -> Void) {
-        for recognizer in gestureRecognizers {
-            action(recognizer)
+    public internal(set) var gestureRecognizers: [UIGestureRecognizer] = []
+
+    internal weak var event: UIEvent?
+
+    /// Set once a recognizer cancelled this touch for its view: the view gets `touchesCancelled` and nothing after.
+    internal private(set) var hasBeenCancelledByAGestureRecognizer = false
+    private enum ViewDelivery { case pending, began, discarded, finished }
+    private var viewDelivery = ViewDelivery.pending
+    private var delayedViewPhases: [UITouchPhase] = []
+
+    /// Hands the touch's current phase to its view, unless a recognizer cancelled it or delays it.
+    func maybeDeliverToView() {
+        if hasBeenCancelledByAGestureRecognizer { return }
+        if !delayedViewPhases.isEmpty || isDelayedByAGestureRecognizer {
+            delayedViewPhases.append(phase)
+            return
+        }
+        deliverToView(phase)
+    }
+
+    private var isDelayedByAGestureRecognizer: Bool {
+        viewDelivery == .pending && gestureRecognizers.contains {
+            $0.delaysTouchesBegan && $0.state == .possible
         }
     }
 
-    internal var hasBeenCancelledByAGestureRecognizer = false
+    private func deliverToView(_ phase: UITouchPhase) {
+        guard let view, let event else { return }
+        switch phase {
+        case .began:
+            viewDelivery = .began
+            view.touchesBegan([self], with: event)
+        case .moved, .stationary:
+            view.touchesMoved([self], with: event)
+        case .ended:
+            viewDelivery = .finished
+            view.touchesEnded([self], with: event)
+        case .cancelled:
+            viewDelivery = .finished
+            view.touchesCancelled([self], with: event)
+        }
+    }
+
+    func cancelForViews() {
+        if hasBeenCancelledByAGestureRecognizer { return }
+        hasBeenCancelledByAGestureRecognizer = true
+        delayedViewPhases = []
+        if viewDelivery == .began { deliverToView(.cancelled) }
+    }
+
+    /// A recognizer that recognizes discards the touches it delayed.
+    func discardDelayedViewTouches() {
+        guard delayedViewPhases.first == .began else { return }
+        delayedViewPhases.removeFirst()
+        viewDelivery = .discarded
+    }
+
+    func flushDelayedViewTouches() {
+        guard !isDelayedByAGestureRecognizer, !hasBeenCancelledByAGestureRecognizer else { return }
+        let phases = delayedViewPhases
+        delayedViewPhases = []
+        phases.forEach(deliverToView)
+    }
 }
 
 extension UITouch: Hashable {
@@ -59,6 +114,6 @@ extension UITouch: Hashable {
 }
 
 public enum UITouchPhase: Int {
-    case began, moved, ended
+    case began, moved, stationary, ended, cancelled
 }
 

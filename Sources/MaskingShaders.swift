@@ -146,6 +146,7 @@ extension FragmentShader {
 
         uniform vec4 rectFrame;
         uniform float cornerRadius;
+        uniform vec4 roundedCorners; // per CACornerMask corner: minXminY, maxXminY, minXmaxY, maxXmaxY
         uniform float borderWidth;
 
         float sdRoundedBox(vec2 p, vec2 b, float r) {
@@ -157,9 +158,11 @@ extension FragmentShader {
         {
             vec2 halfSize = vec2(rectFrame.w, rectFrame.z) * 0.5;
             vec2 center = vec2(rectFrame.x, rectFrame.y) + halfSize;
-            float r = min(cornerRadius, min(halfSize.x, halfSize.y));
+            vec2 p = absolutePixelPos - center;
+            vec2 rowCorners = p.y < 0.0 ? roundedCorners.xy : roundedCorners.zw;
+            float r = min(cornerRadius, min(halfSize.x, halfSize.y)) * (p.x < 0.0 ? rowCorners.x : rowCorners.y);
 
-            float d = sdRoundedBox(absolutePixelPos - center, halfSize, r);
+            float d = sdRoundedBox(p, halfSize, r);
             float aa = max(fwidth(d), 1e-5) * 0.5;
 
             // Centred anti-aliasing: the fade straddles the true boundary (d in [-aa, aa]), so the
@@ -187,6 +190,7 @@ extension FragmentShader {
 
         uniform vec4 rectFrame;
         uniform float cornerRadius;
+        uniform vec4 roundedCorners; // per CACornerMask corner: minXminY, maxXminY, minXmaxY, maxXmaxY
         uniform float blurRadius;
 
         float sdRoundedBox(vec2 p, vec2 b, float r) {
@@ -198,9 +202,11 @@ extension FragmentShader {
         {
             vec2 halfSize = vec2(rectFrame.w, rectFrame.z) * 0.5;
             vec2 center = vec2(rectFrame.x, rectFrame.y) + halfSize;
-            float r = min(cornerRadius, min(halfSize.x, halfSize.y));
+            vec2 p = absolutePixelPos - center;
+            vec2 rowCorners = p.y < 0.0 ? roundedCorners.xy : roundedCorners.zw;
+            float r = min(cornerRadius, min(halfSize.x, halfSize.y)) * (p.x < 0.0 ? rowCorners.x : rowCorners.y);
 
-            float d = sdRoundedBox(absolutePixelPos - center, halfSize, r);
+            float d = sdRoundedBox(p, halfSize, r);
 
             // Soft, symmetric falloff centred on the shape edge (approximates a Gaussian):
             // it reads as a blurred shadow rather than a hard offset band. The edge sits at

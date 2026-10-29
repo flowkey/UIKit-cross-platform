@@ -7,112 +7,83 @@
 //
 
 open class UIPanGestureRecognizer: UIGestureRecognizer {
-    private var initialTouchPoint: CGPoint?
+    public var minimumNumberOfTouches = 1
+    public var maximumNumberOfTouches = Int.max
 
-    private var previousTouchesMovedTimestamp: Double?
-    private var touchesMovedTimestamp: Double?
+    /// How far the touches move before the pan begins, like iOS's.
+    private let hysteresis: CGFloat = 10
+    private let velocitySampleDuration: Double = 0.1
 
-    private let minimumTranslationThreshold: CGFloat = 5
+    /// Where the translation is measured from, in window coordinates.
+    private var translationOrigin: CGPoint?
+    private var samples: [(location: CGPoint, timestamp: Double)] = []
+
+    override var canTrackAnotherTouch: Bool {
+        activeTouches.count < maximumNumberOfTouches
+    }
 
     open func translation(in view: UIView?) -> CGPoint {
-        guard
-            let trackedTouch = trackedTouch,
-            let initialTouchPoint = initialTouchPoint
-        else { return .zero }
-
-        let positionInTargetView = trackedTouch.location(in: view)
-        let initialPositionInTargetView = view?.convert(initialTouchPoint, from: trackedTouch.window)
-            ?? initialTouchPoint
-
-        return positionInTargetView - initialPositionInTargetView
+        guard let translationOrigin, !touches.isEmpty else { return .zero }
+        return convert(location(in: nil), to: view) - convert(translationOrigin, to: view)
     }
 
     open func setTranslation(_ translation: CGPoint, in view: UIView?) {
-        guard let trackedTouch = trackedTouch else { return }
-        let positionInTargetView = trackedTouch.location(in: nil)
-        initialTouchPoint = positionInTargetView - translation
+        guard !touches.isEmpty else { return }
+        let origin = convert(location(in: nil), to: view) - translation
+        translationOrigin = view?.convert(origin, to: nil) ?? origin
     }
 
-    // The velocity of the pan gesture, which is expressed in points per second.
-    // The velocity is broken into horizontal and vertical components.
-    func velocity(in view: UIView?, timeDiffSeconds: Double) -> CGPoint {
-        guard
-            let curPos = trackedTouch?.location(in: view),
-            let prevPos = trackedTouch?.previousLocation(in: view),
-            timeDiffSeconds.isZero == false
-        else { return CGPoint.zero }
-
-        return (curPos - prevPos) / CGFloat(timeDiffSeconds)
-    }
-
+    /// Points per second, over the last tenth of a second.
     open func velocity(in view: UIView?) -> CGPoint {
-        guard
-            let touchesMovedTimestamp = touchesMovedTimestamp,
-            let previousTouchesMovedTimestamp = previousTouchesMovedTimestamp
-        else { return CGPoint.zero }
-        
-        let timeDiffSeconds = touchesMovedTimestamp - previousTouchesMovedTimestamp
-        return velocity(in: view, timeDiffSeconds: timeDiffSeconds)
+        guard let last = samples.last, let first = samples.first(where: { last.timestamp - $0.timestamp <= velocitySampleDuration }) else {
+            return .zero
+        }
+        let duration = last.timestamp - first.timestamp
+        guard duration > 0 else { return .zero }
+        return (convert(last.location, to: view) - convert(first.location, to: view)) / CGFloat(duration)
+    }
+
+    private func convert(_ windowPoint: CGPoint, to view: UIView?) -> CGPoint {
+        view?.convert(windowPoint, from: nil) ?? windowPoint
+    }
+
+    private func recordSample(at timestamp: Double) {
+        samples.append((location(in: nil), timestamp))
+        samples.removeAll { timestamp - $0.timestamp > velocitySampleDuration * 2 }
     }
 
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
-        // A pan follows a single finger; ignore additional fingers (e.g. the second finger of a pinch).
-        guard trackedTouch == nil, let trackedTouch = touches.first else { return }
-        self.trackedTouch = trackedTouch
-        initialTouchPoint = trackedTouch.location(in: nil)
-        touchesMovedTimestamp = trackedTouch.timestamp
-        state = .began
+        if translationOrigin == nil { translationOrigin = location(in: nil) }
+        touches.first.map { recordSample(at: $0.timestamp) }
     }
 
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesMoved(touches, with: event)
-        guard
-            let trackedTouch = trackedTouch,
-            touches.contains(trackedTouch),
-            let initialTouchPoint = initialTouchPoint
-        else {
-            return // not our finger moving (e.g. the pinch's second finger); leave our state untouched
-        }
+        touches.first.map { recordSample(at: $0.timestamp) }
 
-        let location = trackedTouch.location(in: nil)
-
-        self.previousTouchesMovedTimestamp = touchesMovedTimestamp ?? 0
-        self.touchesMovedTimestamp = trackedTouch.timestamp
-
-        if  state == .began,
-            (location.x - initialTouchPoint.x).magnitude >= minimumTranslationThreshold ||
-            (location.y - initialTouchPoint.y).magnitude >= minimumTranslationThreshold
-        {
-            // Activate:
-            state = .changed
-
-            // run potential cancellation of touches in view and other recognizers
-            // after state has been mutated
-            if cancelsTouchesInView {
-                trackedTouch.hasBeenCancelledByAGestureRecognizer = true
+        switch state {
+        case .possible:
+            if activeTouches.count >= minimumNumberOfTouches, translation(in: nil).magnitude >= hysteresis {
+                state = .began
             }
-            cancelOtherGestureRecognizersThatShouldNotRecognizeSimultaneously()
-        }
-
-        if state == .changed {
-            onAction?()
+        case .began, .changed:
+            state = .changed
+        case .ended, .cancelled, .failed:
+            break
         }
     }
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesEnded(touches, with: event)
-        guard let trackedTouch = trackedTouch, touches.contains(trackedTouch) else { return }
-        self.previousTouchesMovedTimestamp = touchesMovedTimestamp ?? 0
-        self.touchesMovedTimestamp = trackedTouch.timestamp
+        touches.first.map { recordSample(at: $0.timestamp) }
+        guard activeTouches.isEmpty, state == .began || state == .changed else { return }
         state = .ended
-        reset()
     }
 
-    private func reset() {
-        trackedTouch = nil
-        previousTouchesMovedTimestamp = nil
-        touchesMovedTimestamp = nil
-        initialTouchPoint = .zero
+    open override func reset() {
+        super.reset()
+        translationOrigin = nil
+        samples = []
     }
 }

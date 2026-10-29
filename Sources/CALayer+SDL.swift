@@ -12,7 +12,7 @@ extension CALayer {
     @MainActor
     final func sdlRender(parentAbsoluteOpacity: Float = 1) {
         guard let renderer = UIScreen.main else { return }
-        let opacity = self.opacity * parentAbsoluteOpacity
+        var opacity = self.opacity * parentAbsoluteOpacity
         if isHidden || opacity < 0.01 { return }
 
         // The basis for all our transformations is `position` (in parent coordinates), which in this layer's
@@ -56,6 +56,11 @@ extension CALayer {
             renderer.clippingRect = previousClippingRect?.intersection(absoluteFrame) ?? absoluteFrame
         }
 
+        let groupOpacity = opacity
+        let rendersAsGroup = allowsGroupOpacity && self.opacity < 1 && sublayers?.isEmpty == false
+            && !renderer.isRenderingGroupOpacity && renderer.beginGroupOpacity()
+        if rendersAsGroup { opacity = 1 }
+
         // If a mask exists, take it into account when rendering by combining absoluteFrame with the mask's frame
         if let mask = mask {
             // The mask's frame is in this layer's own (bounds) coordinate space, so it must go through the
@@ -96,6 +101,7 @@ extension CALayer {
                 shadowShape.offsetBy(CGPoint(x: shadowOffset.width, y: shadowOffset.height)),
                 color: shadowColor.withAlphaComponent(CGFloat(shadowAlpha)),
                 cornerRadius: shadowPath?.cornerRadius ?? cornerRadius,
+                maskedCorners: shadowPath == nil ? maskedCorners : .all,
                 blurRadius: shadowRadius
             )
         }
@@ -105,7 +111,8 @@ extension CALayer {
             renderer.fill(
                 renderedBoundsRelativeToAnchorPoint,
                 with: backgroundColor.withAlphaComponent(CGFloat(backgroundColorOpacity)),
-                cornerRadius: cornerRadius
+                cornerRadius: cornerRadius,
+                maskedCorners: maskedCorners
             )
         }
 
@@ -114,7 +121,8 @@ extension CALayer {
                 renderedBoundsRelativeToAnchorPoint,
                 lineColor: borderColor.withAlphaComponent(CGFloat(opacity)),
                 lineThickness: borderWidth,
-                cornerRadius: cornerRadius
+                cornerRadius: cornerRadius,
+                maskedCorners: maskedCorners
             )
         }
 
@@ -125,13 +133,23 @@ extension CALayer {
 
         if let contents = contents {
             do {
-                try renderer.blit(
-                    contents,
-                    anchorPoint: anchorPoint,
-                    contentsScale: contentsScale,
-                    contentsGravity: ContentsGravityTransformation(for: self),
-                    opacity: opacity
-                )
+                if contentsCenter != .defaultContentsCenter, contentsGravity == .resize {
+                    try renderer.blit(
+                        contents,
+                        in: renderedBoundsRelativeToAnchorPoint,
+                        contentsCenter: contentsCenter,
+                        contentsScale: contentsScale,
+                        opacity: opacity
+                    )
+                } else {
+                    try renderer.blit(
+                        contents,
+                        anchorPoint: anchorPoint,
+                        contentsScale: contentsScale,
+                        contentsGravity: ContentsGravityTransformation(for: self),
+                        opacity: opacity
+                    )
+                }
             } catch {
                 // Try to recreate contents from source data if it exists
                 if contents.reloadFromSourceData() == false {
@@ -141,6 +159,8 @@ extension CALayer {
                 }
             }
         }
+
+        sdlRenderContent(at: deltaFromAnchorPointToOrigin - bounds.origin, opacity: opacity, renderer: renderer)
 
         if mask != nil {
             ShaderProgram.deactivateAll()
@@ -166,6 +186,8 @@ extension CALayer {
                 (sublayer._presentation ?? sublayer).sdlRender(parentAbsoluteOpacity: opacity)
             }
         }
+
+        if rendersAsGroup { renderer.endGroupOpacity(groupOpacity) }
 
         // We're done rendering this part of the tree
         // To render further siblings we need to return to our parent's transform (at its `origin`).

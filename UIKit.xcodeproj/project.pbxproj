@@ -28,6 +28,9 @@
 		5BA87A9C2018FC990080C876 /* CATransform3D+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA87A942018FC980080C876 /* CATransform3D+animations.swift */; };
 		5BAF8E4A203DA89D00DA1EBF /* TouchHandlingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BAF8E49203DA89D00DA1EBF /* TouchHandlingTests.swift */; };
 		5BB2C09B2F1140870033F0AD /* CAGradientLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB2C09A2F1140870033F0AD /* CAGradientLayer.swift */; };
+		96ACA742A120355090B45443 /* Foundation+Android.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3CFFFCAA0EED3F545FE9FD /* Foundation+Android.swift */; };
+		E0F2B0C54B39ED3B403DE9D6 /* UILongPressGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8764B0A805E9F43B739ED0EB /* UILongPressGestureRecognizer.swift */; };
+		28B5CC98BBD419264E796AC5 /* CAShapeLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4FEFC7873E5C59FA66AFCA /* CAShapeLayer.swift */; };
 		5BBEECA51F39E7A6006E3416 /* CGRect+animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */; };
 		5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */; };
 		5BD3D1F31F5979E0007671D4 /* AnimationKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */; };
@@ -241,6 +244,9 @@
 		5BA87A942018FC980080C876 /* CATransform3D+animations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CATransform3D+animations.swift"; path = "Sources/CATransform3D+animations.swift"; sourceTree = SOURCE_ROOT; };
 		5BAF8E49203DA89D00DA1EBF /* TouchHandlingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchHandlingTests.swift; sourceTree = "<group>"; };
 		5BB2C09A2F1140870033F0AD /* CAGradientLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAGradientLayer.swift; sourceTree = "<group>"; };
+		9D3CFFFCAA0EED3F545FE9FD /* Foundation+Android.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+Android.swift"; sourceTree = "<group>"; };
+		8764B0A805E9F43B739ED0EB /* UILongPressGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILongPressGestureRecognizer.swift; sourceTree = "<group>"; };
+		5A4FEFC7873E5C59FA66AFCA /* CAShapeLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAShapeLayer.swift; sourceTree = "<group>"; };
 		5BBEECA41F39E7A6006E3416 /* CGRect+animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CGRect+animations.swift"; path = "Sources/CGRect+animations.swift"; sourceTree = SOURCE_ROOT; };
 		5BC6F7A71F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CABasicAnimation+updateProgress.swift"; path = "Sources/CABasicAnimation+updateProgress.swift"; sourceTree = SOURCE_ROOT; };
 		5BD3D1F21F5979E0007671D4 /* AnimationKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnimationKeyPath.swift; path = Sources/AnimationKeyPath.swift; sourceTree = SOURCE_ROOT; };
@@ -517,6 +523,9 @@
 				5CAF2D0F1EE67DA2004C6380 /* CAAction.swift */,
 				5C6AB7111ED3BECD006F90AC /* CALayer.swift */,
 				5BB2C09A2F1140870033F0AD /* CAGradientLayer.swift */,
+				9D3CFFFCAA0EED3F545FE9FD /* Foundation+Android.swift */,
+				8764B0A805E9F43B739ED0EB /* UILongPressGestureRecognizer.swift */,
+				5A4FEFC7873E5C59FA66AFCA /* CAShapeLayer.swift */,
 				5C8E6A20203A089A00D1DBE0 /* CALayer+ContentsGravity.swift */,
 				5C6AB77D1ED71867006F90AC /* CATransaction.swift */,
 				5CCF1C09201B887400AAF598 /* CATransform3D.swift */,
@@ -976,6 +985,9 @@
 				FF0000010000000000000005 /* UIBezierPath.swift in Sources */,
 				5BC6F7A81F4B1A3600F9C432 /* CABasicAnimation+updateProgress.swift in Sources */,
 				5BB2C09B2F1140870033F0AD /* CAGradientLayer.swift in Sources */,
+				96ACA742A120355090B45443 /* Foundation+Android.swift in Sources */,
+				E0F2B0C54B39ED3B403DE9D6 /* UILongPressGestureRecognizer.swift in Sources */,
+				28B5CC98BBD419264E796AC5 /* CAShapeLayer.swift in Sources */,
 				83AB7B5C1F2B6A2000C7997D /* UIGestureRecognizerDelegate.swift in Sources */,
 				5C6AB7611ED5762A006F90AC /* UIEdgeInsets.swift in Sources */,
 				83AB7B4C1F2B515B00C7997D /* UIAlertAction.swift in Sources */,
@@ -1351,7 +1363,7 @@
 				DEVELOPMENT_TEAM = FTSYMMN5B5;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "UIKitTests/iOSTestTarget-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1376,7 +1388,7 @@
 				DEVELOPMENT_TEAM = FTSYMMN5B5;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "UIKitTests/iOSTestTarget-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

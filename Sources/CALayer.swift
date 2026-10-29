@@ -1,5 +1,17 @@
 internal import SDL
 
+public struct CACornerMask: OptionSet, Sendable {
+    public let rawValue: UInt
+    public init(rawValue: UInt) { self.rawValue = rawValue }
+
+    public static let layerMinXMinYCorner = CACornerMask(rawValue: 1 << 0)
+    public static let layerMaxXMinYCorner = CACornerMask(rawValue: 1 << 1)
+    public static let layerMinXMaxYCorner = CACornerMask(rawValue: 1 << 2)
+    public static let layerMaxXMaxYCorner = CACornerMask(rawValue: 1 << 3)
+
+    static let all: CACornerMask = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+}
+
 @MainActor
 open class CALayer {
     open weak var delegate: CALayerDelegate?
@@ -20,6 +32,10 @@ open class CALayer {
     open var contentsScale: CGFloat = 1.0
 
     open var contentsGravity: CALayerContentsGravity = .resize
+
+    open var contentsCenter = CGRect.defaultContentsCenter {
+        didSet { CALayer.layerTreeIsDirty = true }
+    }
 
     internal(set) public weak var superlayer: CALayer?
     internal(set) public var sublayers: [CALayer]? {
@@ -169,6 +185,7 @@ open class CALayer {
     }
     
     public var cornerRadius: CGFloat = 0
+    public var maskedCorners: CACornerMask = .all
 
     // TODO: Implement these!
     public var borderWidth: CGFloat = 0
@@ -187,6 +204,8 @@ open class CALayer {
 
     public var masksToBounds = false
 
+    public var allowsGroupOpacity = true
+
     public required init() {}
 
     public required init(layer: Any) {
@@ -200,6 +219,7 @@ open class CALayer {
         backgroundColor = layer.backgroundColor
         isHidden = layer.isHidden
         cornerRadius = layer.cornerRadius
+        maskedCorners = layer.maskedCorners
         borderWidth = layer.borderWidth
         borderColor = layer.borderColor
         shadowColor = layer.shadowColor
@@ -209,17 +229,22 @@ open class CALayer {
         shadowOpacity = layer.shadowOpacity
         mask = layer.mask
         masksToBounds = layer.masksToBounds
+        allowsGroupOpacity = layer.allowsGroupOpacity
         minificationFilter = layer.minificationFilter
         contents = layer.contents // XXX: we should make a copy here
         contentsScale = layer.contentsScale
         superlayer = layer.superlayer
         sublayers = layer.sublayers
         contentsGravity = layer.contentsGravity
+        contentsCenter = layer.contentsCenter
     }
 
     open func copy() -> Any {
         return CALayer(layer: self)
     }
+
+    /// Layers are drawn with SDL rather than into a `CGContext`, so a subclass that draws more than `contents`, like `CAShapeLayer`, does it here.
+    func sdlRenderContent(at origin: CGPoint, opacity: Float, renderer: UIScreen) {}
 
     open func action(forKey event: String) -> CAAction? {
         if let delegate = delegate {
@@ -230,7 +255,7 @@ open class CALayer {
 
     /// returns a non animating copy of the layer
     func createPresentation() -> CALayer {
-        let copy = CALayer(layer: self)
+        let copy = self.copy() as! CALayer
         copy.isPresentationForAnotherLayer = true
         return copy
     }
@@ -305,4 +330,9 @@ extension CALayer: Hashable {
 public protocol CALayerDelegate: AnyObject {
     func action(forKey event: String) -> CABasicAnimation?
     func display(_ layer: CALayer)
+}
+
+extension CGRect {
+    /// https://developer.apple.com/documentation/quartzcore/calayer/contentscenter
+    static let defaultContentsCenter = CGRect(x: 0, y: 0, width: 1, height: 1)
 }

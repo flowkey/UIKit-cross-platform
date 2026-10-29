@@ -191,6 +191,16 @@ class UIViewPointConversionTests: XCTestCase {
         XCTAssertEqual(rootView.convert(point, from: nil), point)
     }
 
+    func testConvertToNilViewConvertsToTheWindow() {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        let view = UIView(frame: CGRect(x: 10, y: 20, width: 30, height: 30))
+        window.addSubview(view)
+
+        XCTAssertEqual(view.convert(CGPoint.zero, to: nil), CGPoint(x: 10, y: 20))
+        XCTAssertEqual(view.convert(CGPoint(x: 10, y: 20), from: nil), .zero)
+        XCTAssertEqual(view.convert(view.bounds, to: nil), view.frame)
+    }
+
     func testConvertToSubviewWithSubviewTransform() {
         let testPoint = CGPoint(x: 60, y: 20)
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 80, height: 40))
