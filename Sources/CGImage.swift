@@ -98,6 +98,18 @@ public class CGImage {
         if rawPointer.pointee.has_mipmaps { GPU_GenerateMipmaps(rawPointer) }
     }
 
+    /// Decodes the source data again on the CPU, to read the pixels without a GPU readback.
+    public func withDecodedRGBA<Result>(_ body: (_ rgba: UnsafeBufferPointer<UInt8>, _ width: Int, _ height: Int) -> Result) -> Result? {
+        guard let sourceData else { return nil }
+        var width: Int32 = 0
+        var height: Int32 = 0
+        guard let rgba = sourceData.withUnsafeBufferPointer({
+            stbi_load_from_memory($0.baseAddress, Int32($0.count), &width, &height, nil, 4)
+        }) else { return nil }
+        defer { rgba.deallocate() }
+        return body(UnsafeBufferPointer(start: rgba, count: Int(width) * Int(height) * 4), Int(width), Int(height))
+    }
+
     /// Builds an image from premultiplied-RGBA bytes (R,G,B,A in memory, alpha-premultiplied), composited with
     /// premultiplied blending. Mirrors the iOS CoreGraphics factory of the same name so callers have one path.
     public static func premultipliedRGBA(_ bytes: UnsafePointer<UInt8>, width: Int, height: Int) -> CGImage? {
