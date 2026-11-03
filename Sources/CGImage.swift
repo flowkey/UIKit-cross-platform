@@ -44,17 +44,17 @@ public class CGImage {
     }
 
     internal convenience init?(_ sourceData: Data) {
-        var data = sourceData
+        #if os(Android)
+        // Android natively supports 2-channel textures. Use them to save 50% (GPU) RAM.
+        let requestedChannels: Int32 = 0
+        #elseif os(macOS)
+        // OpenGL on macOS does not natively support 2-channel textures (`unit 0 GLD_TEXTURE_INDEX_2D is unloadable`).
+        // Instead, force `stb_image` to load all images as if they had 4 channels.
+        // This is more compatible, but requires more memory.
+        let requestedChannels: Int32 = 4
+        #endif
 
-        guard let gpuImagePtr = data.withUnsafeMutableBytes({ buffer -> UnsafeMutablePointer<GPU_Image>? in
-            var width: Int32 = 0
-            var height: Int32 = 0
-            var channels: Int32 = 4
-
-            #if os(Android)
-            // Android natively supports 2-channel textures. Use them to save 50% (GPU) RAM.
-            let data = stbi_load_from_memory(buffer.baseAddress, Int32(buffer.count), &width, &height, &channels, 0)
-
+        let gpuImagePtr = Self.decode(sourceData, channels: requestedChannels) { pixels, width, height, channels -> UnsafeMutablePointer<GPU_Image>? in
             let format: GPU_FormatEnum = switch channels {
             case 1: GPU_FORMAT_ALPHA
             case 2: GPU_FORMAT_LUMINANCE_ALPHA
@@ -62,22 +62,29 @@ public class CGImage {
             case 4: GPU_FORMAT_RGBA
             default: fatalError()
             }
-            #elseif os(macOS)
-            // OpenGL on macOS does not natively support 2-channel textures (`unit 0 GLD_TEXTURE_INDEX_2D is unloadable`).
-            // Instead, force `stb_image` to load all images as if they had 4 channels.
-            // This is more compatible, but requires more memory.
-            let data = stbi_load_from_memory(buffer.baseAddress, Int32(buffer.count), &width, &height, nil, channels)
-            let format = GPU_FORMAT_RGBA
-            #endif
-
             let img = GPU_CreateImage(UInt16(width), UInt16(height), format)
-            GPU_UpdateImageBytes(img, nil, data, width * channels)
-            data?.deallocate()
-
+            GPU_UpdateImageBytes(img, nil, pixels, width * channels)
             return img
-        }) else { return nil }
+        }
+        guard let gpuImagePtr = gpuImagePtr ?? nil else { return nil }
 
-        self.init(gpuImagePtr, sourceData: data)
+        self.init(gpuImagePtr, sourceData: sourceData)
+    }
+
+    /// The pixels are freed once `body` returns.
+    private static func decode<Result>(
+        _ data: Data,
+        channels requestedChannels: Int32,
+        _ body: (_ pixels: UnsafeMutablePointer<UInt8>, _ width: Int32, _ height: Int32, _ channels: Int32) -> Result
+    ) -> Result? {
+        var width: Int32 = 0
+        var height: Int32 = 0
+        var channelsInData: Int32 = 0
+        guard let pixels = data.withUnsafeBufferPointer({
+            stbi_load_from_memory($0.baseAddress, Int32($0.count), &width, &height, &channelsInData, requestedChannels)
+        }) else { return nil }
+        defer { stbi_image_free(pixels) }
+        return body(pixels, width, height, requestedChannels == 0 ? channelsInData : requestedChannels)
     }
 
     convenience init?(surface: UnsafeMutablePointer<SDLSurface>) {
@@ -98,16 +105,13 @@ public class CGImage {
         if rawPointer.pointee.has_mipmaps { GPU_GenerateMipmaps(rawPointer) }
     }
 
-    /// Decodes the source data again on the CPU, to read the pixels without a GPU readback.
-    public func withDecodedRGBA<Result>(_ body: (_ rgba: UnsafeBufferPointer<UInt8>, _ width: Int, _ height: Int) -> Result) -> Result? {
+    /// Straight, not premultiplied, pixels at the image's own channel count, decoded on the CPU to read them without a GPU readback.
+    /// Nil for an image not made from encoded data.
+    public func withDecodedPixels<Result>(_ body: (_ pixels: UnsafeBufferPointer<UInt8>, _ channels: Int) -> Result) -> Result? {
         guard let sourceData else { return nil }
-        var width: Int32 = 0
-        var height: Int32 = 0
-        guard let rgba = sourceData.withUnsafeBufferPointer({
-            stbi_load_from_memory($0.baseAddress, Int32($0.count), &width, &height, nil, 4)
-        }) else { return nil }
-        defer { rgba.deallocate() }
-        return body(UnsafeBufferPointer(start: rgba, count: Int(width) * Int(height) * 4), Int(width), Int(height))
+        return Self.decode(sourceData, channels: 0) { pixels, width, height, channels in
+            body(UnsafeBufferPointer(start: pixels, count: Int(width) * Int(height) * Int(channels)), Int(channels))
+        }
     }
 
     /// Builds an image from premultiplied-RGBA bytes (R,G,B,A in memory, alpha-premultiplied), composited with
