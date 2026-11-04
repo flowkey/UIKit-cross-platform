@@ -17,6 +17,8 @@ public class CGImage {
 
     public let width: Int
     public let height: Int
+    public let bitsPerPixel: Int
+    public private(set) var alphaInfo: CGImageAlphaInfo
 
     /**
      Initialize a `CGImage` by passing a reference to a `GPU_Image`, which is usually the result of SDL_gpu's `GPU_*Image*` creation functions. May be null.
@@ -41,6 +43,13 @@ public class CGImage {
 
         width = Int(rawPointer.pointee.w)
         height = Int(rawPointer.pointee.h)
+        bitsPerPixel = 8 * Int(rawPointer.pointee.bytes_per_pixel)
+        alphaInfo = switch rawPointer.pointee.format {
+        case GPU_FORMAT_ALPHA: .alphaOnly
+        case GPU_FORMAT_LUMINANCE_ALPHA, GPU_FORMAT_RGBA, GPU_FORMAT_BGRA: .last
+        case GPU_FORMAT_ABGR: .first
+        default: .none
+        }
     }
 
     internal convenience init?(_ sourceData: Data) {
@@ -98,18 +107,20 @@ public class CGImage {
         if rawPointer.pointee.has_mipmaps { GPU_GenerateMipmaps(rawPointer) }
     }
 
-    /// Straight, not premultiplied, pixels at the image's own channel count, decoded on the CPU to read them without a GPU readback.
-    /// Nil for an image not made from encoded data.
-    public func withDecodedPixels<Result>(_ body: (_ pixels: UnsafeBufferPointer<UInt8>, _ channels: Int) -> Result) -> Result? {
+    public var bitsPerComponent: Int { 8 }
+    public var bytesPerRow: Int { width * bitsPerPixel / 8 }
+    public var byteOrderInfo: CGImageByteOrderInfo { .orderDefault }
+
+    /// Decodes the source data on the CPU in the texture's pixel format, as reading the texture back needs the GL context.
+    public var dataProvider: CGDataProvider? {
         guard let sourceData else { return nil }
-        var width: Int32 = 0
-        var height: Int32 = 0
-        var channels: Int32 = 0
+        var decodedWidth: Int32 = 0
+        var decodedHeight: Int32 = 0
         guard let pixels = sourceData.withUnsafeBufferPointer({
-            stbi_load_from_memory($0.baseAddress, Int32($0.count), &width, &height, &channels, 0)
+            stbi_load_from_memory($0.baseAddress, Int32($0.count), &decodedWidth, &decodedHeight, nil, Int32(bitsPerPixel / 8))
         }) else { return nil }
         defer { stbi_image_free(pixels) }
-        return body(UnsafeBufferPointer(start: pixels, count: Int(width) * Int(height) * Int(channels)), Int(channels))
+        return CGDataProvider(data: Data(UnsafeBufferPointer(start: pixels, count: bytesPerRow * height)))
     }
 
     /// Builds an image from premultiplied-RGBA bytes (R,G,B,A in memory, alpha-premultiplied), composited with
@@ -121,6 +132,7 @@ public class CGImage {
         GPU_UpdateImageBytes(pointer, &rect, bytes, Int32(width) * 4)
         guard let image = CGImage(pointer, sourceData: nil) else { return nil }
         GPU_SetBlendMode(image.rawPointer, GPU_BLEND_PREMULTIPLIED_ALPHA)
+        image.alphaInfo = .premultipliedLast
         return image
     }
 
@@ -205,4 +217,12 @@ public class CGImage {
 
         return data.count > 0 ? data : nil
     }
+}
+
+public enum CGImageAlphaInfo: UInt32 {
+    case none, premultipliedLast, premultipliedFirst, last, first, noneSkipLast, noneSkipFirst, alphaOnly
+}
+
+public enum CGImageByteOrderInfo: UInt32 {
+    case orderMask = 0x7000, orderDefault = 0, order16Little = 0x1000, order32Little = 0x2000, order16Big = 0x3000, order32Big = 0x4000
 }
