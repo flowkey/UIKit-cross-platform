@@ -44,10 +44,9 @@ public class CGImage {
         width = Int(rawPointer.pointee.w)
         height = Int(rawPointer.pointee.h)
         bitsPerPixel = 8 * Int(rawPointer.pointee.bytes_per_pixel)
-        alphaInfo = switch rawPointer.pointee.format {
-        case GPU_FORMAT_ALPHA: .alphaOnly
-        case GPU_FORMAT_LUMINANCE_ALPHA, GPU_FORMAT_RGBA, GPU_FORMAT_BGRA: .last
-        case GPU_FORMAT_ABGR: .first
+        alphaInfo = switch rawPointer.pointee.bytes_per_pixel {
+        case 1: .alphaOnly
+        case 2, 4: .last
         default: .none
         }
     }
@@ -111,7 +110,7 @@ public class CGImage {
     public var bytesPerRow: Int { width * bitsPerPixel / 8 }
     public var byteOrderInfo: CGImageByteOrderInfo { .orderDefault }
 
-    /// Decodes the source data on the CPU in the texture's pixel format, as reading the texture back needs the GL context.
+    /// Decodes the source data on the CPU, in stb_image's R,G,B,A order at the texture's channel count, as reading the texture back needs the GL context.
     public var dataProvider: CGDataProvider? {
         guard let sourceData else { return nil }
         var decodedWidth: Int32 = 0
@@ -120,6 +119,7 @@ public class CGImage {
             stbi_load_from_memory($0.baseAddress, Int32($0.count), &decodedWidth, &decodedHeight, nil, Int32(bitsPerPixel / 8))
         }) else { return nil }
         defer { stbi_image_free(pixels) }
+        guard decodedWidth == width, decodedHeight == height else { return nil }
         return CGDataProvider(data: Data(UnsafeBufferPointer(start: pixels, count: bytesPerRow * height)))
     }
 
