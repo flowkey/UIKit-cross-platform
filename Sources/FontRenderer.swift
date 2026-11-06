@@ -78,7 +78,8 @@ public class FontRenderer {
     init?(_ source: CGDataProvider, size: Int32) {
         if !FontRenderer.initialize() { return nil }
 
-        let rwOp = SDL_RWFromConstMem(source.data, Int32(source.data.count))
+        guard let data = source.data else { return nil }
+        let rwOp = SDL_RWFromConstMem(data, Int32(data.count))
         guard let font = TTF_OpenFontRW(rwOp, 1, size) else { return nil }
 
         TTF_SetFontHinting(font, TTF_HINTING_LIGHT) // recommended in docs for max quality

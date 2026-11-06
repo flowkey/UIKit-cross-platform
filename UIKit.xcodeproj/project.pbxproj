@@ -174,6 +174,7 @@
 		83E5F8181EF8323500279C59 /* CGAffineTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */; };
 		83F02DAD1F177BDC00347AA8 /* CGRectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9037201F137FB70058E592 /* CGRectTests.swift */; };
 		83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB01F17988F00347AA8 /* Texture+Size.swift */; };
+		C61A00022F0A000000CA11E5 /* CGImageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61A00012F0A000000CA11E5 /* CGImageTests.swift */; };
 		83F02DB41F1798D100347AA8 /* loadCustomFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */; };
 		83F02DB71F1798F200347AA8 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB51F1798ED00347AA8 /* Button.swift */; };
 		83F02DB91F1799D200347AA8 /* UIImage+testImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */; };
@@ -387,6 +388,7 @@
 		83E5F8121EF8316C00279C59 /* CGSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CGSize.swift; path = Sources/CGSize.swift; sourceTree = SOURCE_ROOT; };
 		83E5F8141EF831CE00279C59 /* CGAffineTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CGAffineTransform.swift; path = Sources/CGAffineTransform.swift; sourceTree = SOURCE_ROOT; };
 		83F02DB01F17988F00347AA8 /* Texture+Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Texture+Size.swift"; sourceTree = "<group>"; };
+		C61A00012F0A000000CA11E5 /* CGImageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGImageTests.swift; sourceTree = "<group>"; };
 		83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = loadCustomFont.swift; sourceTree = "<group>"; };
 		83F02DB51F1798ED00347AA8 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+testImage.swift"; sourceTree = "<group>"; };
@@ -603,6 +605,7 @@
 				83F02DB21F1798BC00347AA8 /* loadCustomFont.swift */,
 				8323F27F1F2FA2EE00C121BB /* TestSetup.swift */,
 				83F02DB01F17988F00347AA8 /* Texture+Size.swift */,
+				C61A00012F0A000000CA11E5 /* CGImageTests.swift */,
 				5CB6E1BF2031ECCE001FEAC9 /* TransformTests.swift */,
 				5CF2BEED1F8D1BD7009FCA1E /* UIFontTests.swift */,
 				83F02DB81F1799D200347AA8 /* UIImage+testImage.swift */,
@@ -1068,6 +1071,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83F02DB11F17988F00347AA8 /* Texture+Size.swift in Sources */,
+				C61A00022F0A000000CA11E5 /* CGImageTests.swift in Sources */,
 				834C94971F6BDE6200F5B40F /* ButtonLayoutingTests.swift in Sources */,
 				5C93AEB6208E09B5005BE853 /* UIViewControllerTests.swift in Sources */,
 				03760AE71F67E8A700F36283 /* UIScrollViewTests.swift in Sources */,

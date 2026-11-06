@@ -17,6 +17,8 @@ public class CGImage {
 
     public let width: Int
     public let height: Int
+    public let bitsPerPixel: Int
+    public private(set) var alphaInfo: CGImageAlphaInfo
 
     /**
      Initialize a `CGImage` by passing a reference to a `GPU_Image`, which is usually the result of SDL_gpu's `GPU_*Image*` creation functions. May be null.
@@ -41,6 +43,12 @@ public class CGImage {
 
         width = Int(rawPointer.pointee.w)
         height = Int(rawPointer.pointee.h)
+        bitsPerPixel = 8 * Int(rawPointer.pointee.bytes_per_pixel)
+        alphaInfo = switch rawPointer.pointee.bytes_per_pixel {
+        case 1: .alphaOnly
+        case 2, 4: .last
+        default: .none
+        }
     }
 
     internal convenience init?(_ sourceData: Data) {
@@ -98,6 +106,23 @@ public class CGImage {
         if rawPointer.pointee.has_mipmaps { GPU_GenerateMipmaps(rawPointer) }
     }
 
+    public var bitsPerComponent: Int { 8 }
+    public var bytesPerRow: Int { width * bitsPerPixel / 8 }
+    public var byteOrderInfo: CGImageByteOrderInfo { .orderDefault }
+
+    /// Decodes the source data on the CPU, in stb_image's R,G,B,A order at the texture's channel count, as reading the texture back needs the GL context.
+    public var dataProvider: CGDataProvider? {
+        guard let sourceData else { return nil }
+        var decodedWidth: Int32 = 0
+        var decodedHeight: Int32 = 0
+        guard let pixels = sourceData.withUnsafeBufferPointer({
+            stbi_load_from_memory($0.baseAddress, Int32($0.count), &decodedWidth, &decodedHeight, nil, Int32(bitsPerPixel / 8))
+        }) else { return nil }
+        defer { stbi_image_free(pixels) }
+        guard decodedWidth == width, decodedHeight == height else { return nil }
+        return CGDataProvider(data: Data(UnsafeBufferPointer(start: pixels, count: bytesPerRow * height)))
+    }
+
     /// Builds an image from premultiplied-RGBA bytes (R,G,B,A in memory, alpha-premultiplied), composited with
     /// premultiplied blending. Mirrors the iOS CoreGraphics factory of the same name so callers have one path.
     public static func premultipliedRGBA(_ bytes: UnsafePointer<UInt8>, width: Int, height: Int) -> CGImage? {
@@ -107,6 +132,7 @@ public class CGImage {
         GPU_UpdateImageBytes(pointer, &rect, bytes, Int32(width) * 4)
         guard let image = CGImage(pointer, sourceData: nil) else { return nil }
         GPU_SetBlendMode(image.rawPointer, GPU_BLEND_PREMULTIPLIED_ALPHA)
+        image.alphaInfo = .premultipliedLast
         return image
     }
 
@@ -191,4 +217,12 @@ public class CGImage {
 
         return data.count > 0 ? data : nil
     }
+}
+
+public enum CGImageAlphaInfo: UInt32 {
+    case none, premultipliedLast, premultipliedFirst, last, first, noneSkipLast, noneSkipFirst, alphaOnly
+}
+
+public enum CGImageByteOrderInfo: UInt32 {
+    case orderMask = 0x7000, orderDefault = 0, order16Little = 0x1000, order32Little = 0x2000, order16Big = 0x3000, order32Big = 0x4000
 }
