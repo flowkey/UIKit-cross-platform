@@ -119,7 +119,7 @@ extension CALayer {
         if borderWidth > 0 {
             renderer.outline(
                 renderedBoundsRelativeToAnchorPoint,
-                lineColor: borderColor.withAlphaComponent(CGFloat(opacity)),
+                lineColor: borderColor.multiplyingAlpha(by: opacity),
                 lineThickness: borderWidth,
                 cornerRadius: cornerRadius,
                 maskedCorners: maskedCorners
