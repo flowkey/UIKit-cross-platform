@@ -196,15 +196,54 @@ public class FontRenderer {
         return lines
     }
 
-    /// `wrapLines(of:wrapLength:)` limited to `maximumLineCount`, truncating the last line with an ellipsis.
-    func wrapLines(of text: String, wrapLength: Int, maximumLineCount: Int) -> [String] {
-        let lines = wrapLines(of: text, wrapLength: wrapLength)
-        guard lines.count > maximumLineCount else { return lines }
-        let lastLine = lines[maximumLineCount - 1] + " " + lines[maximumLineCount]
+    /// Wraps `text` into at most `maximumLineCount` lines as UIKit's word wrapping does, ending the last line with an
+    /// ellipsis when text is left over.
+    func wordWrappedLines(of text: String, wrapLength: Int, maximumLineCount: Int) -> [String] {
+        let ranges = wordWrappedLineRanges(of: text, wrapLength: wrapLength)
+        guard ranges.count > maximumLineCount else { return ranges.map { String(text[$0]) } }
+        let lastLine = String(text[ranges[maximumLineCount - 1].lowerBound...].prefix { $0 != "\n" })
         let truncatedLastLine = truncateTextIfNeeded(lastLine, wrapLength: CGFloat(wrapLength))
-        return lines.prefix(maximumLineCount - 1) + [
-            truncatedLastLine == lastLine ? truncateTextIfNeeded(lines[maximumLineCount - 1] + "…", wrapLength: CGFloat(wrapLength)) : truncatedLastLine
+        return ranges.prefix(maximumLineCount - 1).map { String(text[$0]) } + [
+            truncatedLastLine == lastLine ? truncateTextIfNeeded(lastLine + "…", wrapLength: CGFloat(wrapLength)) : truncatedLastLine
         ]
+    }
+
+    /// Breaks after spaces and hyphens, splits a word wider than `wrapLength` and honours explicit newlines.
+    private func wordWrappedLineRanges(of text: String, wrapLength: Int) -> [Range<String.Index>] {
+        var ranges: [Range<String.Index>] = []
+        var lineStart = text.startIndex
+        var lastBreak: (lineEnd: String.Index, nextLineStart: String.Index)?
+        var index = text.startIndex
+        while index < text.endIndex {
+            let character = text[index]
+            let next = text.index(after: index)
+            if character == "\n" {
+                ranges.append(lineStart..<index)
+                (lineStart, index, lastBreak) = (next, next, nil)
+                continue
+            }
+            if character != " ", index > lineStart, width(of: text[lineStart..<next]) > wrapLength {
+                let (lineEnd, nextLineStart) = lastBreak.flatMap { $0.lineEnd > lineStart ? $0 : nil } ?? (index, index)
+                ranges.append(lineStart..<lineEnd)
+                (lineStart, index, lastBreak) = (nextLineStart, nextLineStart, nil)
+                continue
+            }
+            if character == " " {
+                lastBreak = (index, next)
+            } else if character == "-" || character == "–" {
+                lastBreak = (next, next)
+            }
+            index = next
+        }
+        ranges.append(lineStart..<text.endIndex)
+        return ranges
+    }
+
+    private func width(of text: Substring) -> Int {
+        var width: Int32 = 0
+        var height: Int32 = 0
+        TTF_SizeUTF8(rawPointer, String(text), &width, &height)
+        return Int(width)
     }
 
     func render(lines: [String], color: UIColor, wrapLength: Int, alignment: NSTextAlignment) -> CGImage? {
