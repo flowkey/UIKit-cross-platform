@@ -196,6 +196,22 @@ public class FontRenderer {
         return lines
     }
 
+    /// `wrapLines(of:wrapLength:)` limited to `maximumLineCount`, truncating the last line with an ellipsis.
+    func wrapLines(of text: String, wrapLength: Int, maximumLineCount: Int) -> [String] {
+        let lines = wrapLines(of: text, wrapLength: wrapLength)
+        guard lines.count > maximumLineCount else { return lines }
+        let lastLine = lines[(maximumLineCount - 1)...].joined(separator: " ")
+        return lines.prefix(maximumLineCount - 1) + [truncateTextIfNeeded(lastLine, wrapLength: CGFloat(wrapLength))]
+    }
+
+    func render(lines: [String], color: UIColor, wrapLength: Int, alignment: NSTextAlignment) -> CGImage? {
+        renderWrapped(lines, color: color, wrapLength: wrapLength, alignment: alignment)
+    }
+
+    func size(ofLines lines: [String], wrapLength: Int) -> CGSize {
+        CGSize(width: wrapLength, height: Int(Self.totalHeight(lineCount: lines.count, lineHeight: TTF_FontHeight(rawPointer))))
+    }
+
     /// Composes pre-wrapped `lines` into a single surface of `wrapLength` width, positioning each
     /// line according to `alignment`.
     private func renderWrapped(_ lines: [String], color: UIColor, wrapLength: Int, alignment: NSTextAlignment) -> CGImage? {
