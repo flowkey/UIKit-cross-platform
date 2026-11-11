@@ -78,7 +78,9 @@ open class UILabel: UIView {
     }
 
     private var limitedLines: (lines: [String], renderer: FontRenderer)? {
-        guard numberOfLines > 1, lineBreakMode == .byTruncatingTail, let text = text, bounds.width > 0, let renderer = font.fontRenderer else { return nil }
+        guard numberOfLines > 1, lineBreakMode == .byTruncatingTail, let text = text, bounds.width > 0, let renderer = font.fontRenderer,
+              renderer.wrapLines(of: text, wrapLength: Int(wrapLengthInPixels)).count > numberOfLines
+        else { return nil }
         return (renderer.wrapLines(of: text, wrapLength: Int(wrapLengthInPixels), maximumLineCount: numberOfLines), renderer)
     }
 

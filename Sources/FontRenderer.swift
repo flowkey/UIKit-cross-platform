@@ -200,8 +200,11 @@ public class FontRenderer {
     func wrapLines(of text: String, wrapLength: Int, maximumLineCount: Int) -> [String] {
         let lines = wrapLines(of: text, wrapLength: wrapLength)
         guard lines.count > maximumLineCount else { return lines }
-        let lastLine = lines[(maximumLineCount - 1)...].joined(separator: " ")
-        return lines.prefix(maximumLineCount - 1) + [truncateTextIfNeeded(lastLine, wrapLength: CGFloat(wrapLength))]
+        let lastLine = lines[maximumLineCount - 1] + " " + lines[maximumLineCount]
+        let truncatedLastLine = truncateTextIfNeeded(lastLine, wrapLength: CGFloat(wrapLength))
+        return lines.prefix(maximumLineCount - 1) + [
+            truncatedLastLine == lastLine ? truncateTextIfNeeded(lines[maximumLineCount - 1] + "…", wrapLength: CGFloat(wrapLength)) : truncatedLastLine
+        ]
     }
 
     func render(lines: [String], color: UIColor, wrapLength: Int, alignment: NSTextAlignment) -> CGImage? {
