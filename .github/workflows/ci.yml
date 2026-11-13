@@ -1,0 +1,36 @@
+name: CI
+
+on:
+    push:
+        branches: [master]
+    pull_request:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+    build:
+        runs-on: macos-26
+        timeout-minutes: 60
+        steps:
+            # Without an ssh-key, checkout rewrites the git@github.com: submodule URLs to HTTPS.
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  submodules: recursive
+                  persist-credentials: false
+
+            - run: sudo xcode-select -s /Applications/Xcode_27.2.app
+
+            - name: Test UIKit for macOS
+              run: xcodebuild -sdk macosx -scheme UIKit CODE_SIGNING_ALLOWED=NO test
+
+            - name: Test iOSTestTarget
+              run: xcodebuild -destination 'platform=iOS Simulator,OS=latest,name=iPhone 17' -scheme "UIKit iOSTestTarget" CODE_SIGNING_ALLOWED=NO test
+
+            - name: Build demo app for iOS
+              working-directory: samples/getting-started
+              run: xcodebuild -destination 'platform=iOS Simulator,OS=latest,name=iPhone 17' -scheme DemoApp CODE_SIGNING_ALLOWED=NO build
