@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
     build:
-        runs-on: macos-26
+        runs-on: xcode-27
         timeout-minutes: 60
         steps:
             # Without an ssh-key, checkout rewrites the git@github.com: submodule URLs to HTTPS.
