@@ -47,6 +47,17 @@ class UIViewAnimationTests: XCTestCase {
         )
     }
 
+    func testPerformWithoutAnimationInsideAnAnimationDoesNotAnimate() {
+        UIView.animate(withDuration: 5, delay: 0, options: [.curveLinear], animations: {
+            UIView.performWithoutAnimation { view.alpha = 0.2 }
+            view.frame = CGRect(x: 20, y: 20, width: 20, height: 20)
+        })
+
+        XCTAssertEqual(view.alpha, 0.2, accuracy: 0.001)
+        XCTAssertNil(view.layer.animations["opacity"])
+        XCTAssertFalse(view.layer.animations.isEmpty)
+    }
+
     func testCanAnimateOpacity() {
         UIView.animate(withDuration: 5, delay: 0, options: [.curveLinear], animations: {
             view.alpha = 0.2

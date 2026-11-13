@@ -59,6 +59,13 @@ extension UIView {
         currentAnimationPrototype = outerAnimationPrototype
     }
 
+    public static func performWithoutAnimation(_ actionsWithoutAnimation: () -> Void) {
+        let outerAnimationPrototype = currentAnimationPrototype
+        currentAnimationPrototype = nil
+        actionsWithoutAnimation()
+        currentAnimationPrototype = outerAnimationPrototype
+    }
+
     static func animateIfNeeded(at currentTime: Timer) {
         layersWithAnimations.forEach { $0.animate(at: currentTime) }
     }
