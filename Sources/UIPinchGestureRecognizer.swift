@@ -45,7 +45,7 @@ public class UIPinchGestureRecognizer: UIGestureRecognizer {
         guard let distance = currentDistance else { return }
         switch state {
         case .possible:
-            guard let referenceDistance, abs(distance - referenceDistance) >= hysteresis else { return }
+            guard let referenceDistance, (distance - referenceDistance).magnitude >= hysteresis else { return }
             state = .began
         case .began, .changed:
             state = .changed
