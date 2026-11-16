@@ -23,9 +23,11 @@ import androidx.media3.exoplayer.SeekParameters
 import androidx.media3.ui.PlayerView
 import org.libsdl.app.SDLActivity
 import okhttp3.Cache as OkHttpCache
+import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import java.io.File
+import java.net.CookieHandler
 import kotlin.math.absoluteValue
 
 @Suppress("unused")
@@ -217,6 +219,7 @@ object Media3Singleton {
         okHttpClient = OkHttpClient.Builder()
             .cache(okCache)
             .protocols(listOf(Protocol.HTTP_2, Protocol.HTTP_1_1))
+            .apply { CookieHandler.getDefault()?.let { cookieJar(JavaNetCookieJar(it)) } }
             .build()
 
         // 2. Shared ExoPlayer disk cache (LRU evictor)
