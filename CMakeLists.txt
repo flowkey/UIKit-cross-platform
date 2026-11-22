@@ -103,6 +103,7 @@ add_library(UIKit SHARED
     Sources/UITapGestureRecognizer.swift
     Sources/UITextView.swift
     Sources/UITouch.swift
+    Sources/UITraitCollection.swift
     Sources/UIView+SDL.swift
     Sources/UIView+animate.swift
     Sources/UIView+printViewHierarchy.swift
