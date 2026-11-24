@@ -69,22 +69,34 @@ open class UILabel: UIView {
         Int((numberOfLines != 1 ? bounds.width : 0) * (UIScreen.lastKnownScreenScale ?? 2))
     }
 
+    // Available width in device pixels, rounded up to a whole pixel. A label sized to exactly
+    // fit stores its width as `textPixels / scale`; multiplying back by scale can land a hair
+    // below `textPixels` at fractional scales, so rounding up recovers the whole pixel and text
+    // that fits isn't clipped.
+    private var wrapLengthInPixels: CGFloat {
+        (bounds.width * (UIScreen.lastKnownScreenScale ?? 2)).rounded(.up)
+    }
+
+    private var limitedLines: (lines: [String], renderer: FontRenderer)? {
+        guard numberOfLines > 1, lineBreakMode == .byTruncatingTail, let text = text, bounds.width > 0, let renderer = font.fontRenderer else { return nil }
+        return (renderer.wordWrappedLines(of: text, wrapLength: Int(wrapLengthInPixels), maximumLineCount: numberOfLines), renderer)
+    }
+
     open override func draw() {
         super.draw()
         if let attributedText = attributedText {
             layer.contents = FontRenderer.renderAttributedString(attributedText, color: textColor, wrapLength: attributedWrapLength, alignment: textAlignment, defaultFont: font)
             return
         }
+        if let limited = limitedLines {
+            layer.contents = limited.renderer.render(lines: limited.lines, color: textColor, wrapLength: Int(wrapLengthInPixels), alignment: textAlignment)
+            return
+        }
         // Single-line, tail-truncating labels get a trailing ellipsis to fit their width, matching
         // UIKit's default behaviour instead of overflowing/clipping.
         var textToRender = text
         if numberOfLines == 1, lineBreakMode == .byTruncatingTail, let text = text, bounds.width > 0, let renderer = font.fontRenderer {
-            // Available width in device pixels, rounded up to a whole pixel. A label sized to exactly
-            // fit stores its width as `textPixels / scale`; multiplying back by scale can land a hair
-            // below `textPixels` at fractional scales, so rounding up recovers the whole pixel and text
-            // that fits isn't clipped.
-            let availableWidthInPixels = (bounds.width * (UIScreen.lastKnownScreenScale ?? 2)).rounded(.up)
-            textToRender = renderer.truncateTextIfNeeded(text, wrapLength: availableWidthInPixels)
+            textToRender = renderer.truncateTextIfNeeded(text, wrapLength: wrapLengthInPixels)
         }
 
         let wrapLength = (numberOfLines != 1) ? bounds.width : 0
@@ -108,6 +120,9 @@ open class UILabel: UIView {
     override open func sizeThatFits(_ size: CGSize) -> CGSize {
         if let attributedText = attributedText {
             return FontRenderer.getAttributedStringSize(attributedText, wrapLength: attributedWrapLength, defaultFont: font) / (UIScreen.lastKnownScreenScale ?? 2)
+        }
+        if let limited = limitedLines {
+            return limited.renderer.size(ofLines: limited.lines, wrapLength: Int(wrapLengthInPixels)) / (UIScreen.lastKnownScreenScale ?? 2)
         }
 
         guard let text = self.text else { return .zero }
